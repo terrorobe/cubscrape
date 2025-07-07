@@ -307,7 +307,83 @@
       "positive_review_percentage": 88,
       "review_count": 48,
       "last_updated": "2025-07-07T18:24:38.944501"
+    },
+    "https://squidcor.itch.io/second-earth": {
+      "itch_url": "https://squidcor.itch.io/second-earth",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Second Earth",
+      "header_image": "https://img.itch.zone/aW1nLzE4ODg2MTIuZ2lm/original/ku6j0v.gif",
+      "tags": [
+        "3D",
+        "City Builder",
+        "Economy",
+        "Management",
+        "Real-Time",
+        "Real time strategy",
+        "Sci-fi",
+        "Tower Defense"
+      ],
+      "positive_review_percentage": 90,
+      "review_count": 134,
+      "last_updated": "2025-07-07T23:02:24.448071"
+    },
+    "https://korbohned.itch.io/you-found-a-hole-in-the-ground": {
+      "itch_url": "https://korbohned.itch.io/you-found-a-hole-in-the-ground",
+      "platform": "itch",
+      "is_free": true,
+      "name": "YOU FOUND A HOLE IN THE GROUND",
+      "header_image": "https://img.itch.zone/aW1nLzEzMjM3NTQxLnBuZw==/original/OuWLsz.png",
+      "tags": [
+        "2D",
+        "Clicker",
+        "Idle",
+        "Incremental",
+        "Management",
+        "resource-management",
+        "Singleplayer",
+        "Story Rich",
+        "upgrades"
+      ],
+      "positive_review_percentage": 94,
+      "review_count": 67,
+      "last_updated": "2025-07-07T23:02:58.981304"
+    },
+    "https://barribob.itch.io/apex-machina": {
+      "itch_url": "https://barribob.itch.io/apex-machina",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Apex Machina",
+      "header_image": "https://img.itch.zone/aW1nLzE2NDc2OTM0LnBuZw==/original/PaL%2BI4.png",
+      "tags": [
+        "2D",
+        "Idle",
+        "Incremental",
+        "Pixel Art",
+        "Tactical",
+        "upgrades"
+      ],
+      "positive_review_percentage": 90,
+      "review_count": 87,
+      "last_updated": "2025-07-07T23:04:10.528737"
+    },
+    "https://barribob.itch.io/slamwall": {
+      "itch_url": "https://barribob.itch.io/slamwall",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Slamwall",
+      "header_image": "https://img.itch.zone/aW1nLzE2NzUzNjkxLnBuZw==/original/u54CRx.png",
+      "tags": [
+        "dwarf",
+        "Idle",
+        "Incremental",
+        "Pixel Art",
+        "upgrades"
+      ],
+      "positive_review_percentage": 88,
+      "review_count": 138,
+      "last_updated": "2025-07-07T23:04:29.407412"
     }
   },
-  "last_updated": "2025-07-07T18:24:38.944510"
+  "last_updated": "2025-07-07T23:04:29.407419"
 }

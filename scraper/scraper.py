@@ -17,10 +17,6 @@ import argparse
 import requests
 from bs4 import BeautifulSoup
 import yt_dlp
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -71,86 +67,24 @@ class YouTubeSteamScraper:
                 return json.load(f)
         return default
     
+    def save_data(self, data_dict: Dict, file_path: str):
+        """Save data to JSON file with timestamp"""
+        data_dict['last_updated'] = datetime.now().isoformat()
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'w') as f:
+            json.dump(data_dict, f, indent=2)
+    
     def save_videos(self):
         """Save video data to JSON file"""
-        self.videos_data['last_updated'] = datetime.now().isoformat()
-        os.makedirs(os.path.dirname(self.videos_file), exist_ok=True)
-        with open(self.videos_file, 'w') as f:
-            json.dump(self.videos_data, f, indent=2)
+        self.save_data(self.videos_data, self.videos_file)
     
     def save_steam(self):
         """Save Steam data to JSON file"""
-        self.steam_data['last_updated'] = datetime.now().isoformat()
-        os.makedirs(os.path.dirname(self.steam_file), exist_ok=True)
-        with open(self.steam_file, 'w') as f:
-            json.dump(self.steam_data, f, indent=2)
+        self.save_data(self.steam_data, self.steam_file)
     
     def save_other_games(self):
         """Save other games data to JSON file"""
-        self.other_games_data['last_updated'] = datetime.now().isoformat()
-        os.makedirs(os.path.dirname(self.other_games_file), exist_ok=True)
-        with open(self.other_games_file, 'w') as f:
-            json.dump(self.other_games_data, f, indent=2)
-    
-    def get_channel_videos(self, channel_url: str, max_results: int = 50) -> List[Dict]:
-        """Fetch videos from YouTube channel using yt-dlp"""
-        videos = []
-        
-        # For channel videos, we need to extract the full playlist
-        ydl_opts_videos = self.ydl_opts.copy()
-        ydl_opts_videos['playlistend'] = max_results
-        
-        with yt_dlp.YoutubeDL(ydl_opts_videos) as ydl:
-            try:
-                # Extract channel videos
-                logging.info(f"Fetching videos from {channel_url}")
-                info = ydl.extract_info(channel_url, download=False)
-                
-                if 'entries' in info:
-                    # Channel or playlist
-                    entries = info['entries'][:max_results]
-                else:
-                    # Single video
-                    entries = [info]
-                
-                # Now get detailed info for each video
-                for entry in entries:
-                    if not entry:
-                        continue
-                        
-                    video_id = entry.get('id')
-                    if not video_id:
-                        continue
-                    
-                    # Stop if we have enough videos
-                    if len(videos) >= max_results:
-                        logging.info(f"Reached max_results limit ({max_results}), stopping fetch")
-                        break
-                    
-                    # Get full video info
-                    try:
-                        logging.info(f"Fetching details for video {video_id}")
-                        video_url = f"https://www.youtube.com/watch?v={video_id}"
-                        video_info = ydl.extract_info(video_url, download=False)
-                        
-                        videos.append({
-                            'video_id': video_id,
-                            'title': video_info.get('title', ''),
-                            'description': video_info.get('description', ''),
-                            'published_at': datetime.fromtimestamp(
-                                video_info.get('timestamp', 0)
-                            ).isoformat() if video_info.get('timestamp') else '',
-                            'thumbnail': video_info.get('thumbnail', '')
-                        })
-                        
-                    except Exception as e:
-                        logging.error(f"Error fetching video {video_id}: {e}")
-                        continue
-                        
-            except Exception as e:
-                logging.error(f"Error fetching channel videos: {e}")
-                
-        return videos
+        self.save_data(self.other_games_data, self.other_games_file)
     
     def extract_game_links(self, description: str) -> Dict[str, str]:
         """Extract game store links from video description"""
@@ -215,7 +149,6 @@ class YouTubeSteamScraper:
             if not match:
                 return None
             
-            import json
             data = json.loads(match.group(1))
             
             # Navigate to the rich metadata renderer
@@ -928,13 +861,12 @@ class YouTubeSteamScraper:
                 if new_videos_processed >= max_new_videos:
                     break
                 
-                video_date = video.get('published_at', '')[:10] if video.get('published_at') else 'Unknown Date'
-                logging.info(f"Processing: {video.get('title', 'Unknown Title')} ({video_date})")
-                
                 # Get full video metadata
                 try:
                     full_video = self.get_full_video_metadata(video_id)
                     if full_video:
+                        video_date = full_video.get('published_at', '')[:10] if full_video.get('published_at') else 'Unknown'
+                        logging.info(f"Processing: {full_video.get('title', 'Unknown Title')} ({video_date})")
                         # Process video with game link extraction
                         video_data = self._process_video_game_links(full_video)
                         
@@ -952,6 +884,9 @@ class YouTubeSteamScraper:
         
         self.save_videos()
         logging.info(f"Video processing complete. Processed {new_videos_processed} new videos.")
+        
+        # Show progress summary
+        self._show_channel_progress(channel_url)
     
     def _process_video_game_links(self, video: Dict) -> Dict:
         """Extract and process game links from a video"""
@@ -1040,8 +975,9 @@ class YouTubeSteamScraper:
         updated_count = 0
         
         for video_id, video_data in self.videos_data['videos'].items():
-            video_date = video_data.get('published_at', '')[:10] if video_data.get('published_at') else 'Unknown Date'
-            logging.info(f"Reprocessing: {video_data.get('title', 'Unknown Title')} ({video_date})")
+            video_date = video_data.get('published_at', '')[:10] if video_data.get('published_at') else None
+            date_str = video_date if video_date else 'No date'
+            logging.info(f"Reprocessing: {video_data.get('title', 'Unknown Title')} ({date_str})")
             
             # Store original data for comparison
             original_steam_id = video_data.get('steam_app_id')
@@ -1066,62 +1002,6 @@ class YouTubeSteamScraper:
         
         self.save_videos()
         logging.info(f"Reprocessing complete. Processed {videos_processed} videos, updated {updated_count} videos.")
-    
-    def get_channel_videos_with_offset(self, channel_url: str, skip_count: int, batch_size: int) -> List[Dict]:
-        """Fetch videos from YouTube channel with offset support"""
-        videos = []
-        
-        # Use playlist start/end to simulate offset
-        ydl_opts_videos = self.ydl_opts.copy()
-        ydl_opts_videos['playliststart'] = skip_count + 1
-        ydl_opts_videos['playlistend'] = skip_count + batch_size
-        
-        with yt_dlp.YoutubeDL(ydl_opts_videos) as ydl:
-            try:
-                logging.info(f"Fetching videos from {channel_url}")
-                info = ydl.extract_info(channel_url, download=False)
-                
-                if 'entries' in info:
-                    entries = info['entries']
-                else:
-                    entries = [info] if info else []
-                
-                # Process entries
-                for entry in entries:
-                    if not entry:
-                        continue
-                        
-                    video_id = entry.get('id')
-                    if not video_id:
-                        continue
-                    
-                    # Stop if we have enough videos for this batch
-                    if len(videos) >= batch_size:
-                        break
-                    
-                    try:
-                        logging.info(f"Fetching details for video {video_id}")
-                        video_url = f"https://www.youtube.com/watch?v={video_id}"
-                        video_info = ydl.extract_info(video_url, download=False)
-                        
-                        videos.append({
-                            'video_id': video_id,
-                            'title': video_info.get('title', ''),
-                            'description': video_info.get('description', ''),
-                            'published_at': datetime.fromtimestamp(
-                                video_info.get('timestamp', 0)
-                            ).isoformat() if video_info.get('timestamp') else '',
-                            'thumbnail': video_info.get('thumbnail', '')
-                        })
-                        
-                    except Exception as e:
-                        logging.error(f"Error fetching video {video_id}: {e}")
-                        continue
-                        
-            except Exception as e:
-                logging.error(f"Error fetching channel videos: {e}")
-                
-        return videos
     
     def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> List[Dict]:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
@@ -1161,7 +1041,7 @@ class YouTubeSteamScraper:
                         'title': entry.get('title', ''),
                         'published_at': datetime.fromtimestamp(
                             entry.get('timestamp', 0)
-                        ).isoformat() if entry.get('timestamp') else '',
+                        ).isoformat() if entry.get('timestamp') and entry.get('timestamp') > 0 else None,
                         'thumbnail': entry.get('thumbnail', '')
                     })
                         
@@ -1566,6 +1446,51 @@ class YouTubeSteamScraper:
         except Exception as e:
             logging.error(f"Error finding Steam match for '{game_name}': {e}")
             return None
+    
+    def _show_channel_progress(self, channel_url: str):
+        """Show channel scraping progress summary"""
+        try:
+            # Get total video count from channel
+            ydl_opts = {
+                'quiet': True,
+                'no_warnings': True,
+                'extract_flat': True,
+                # Don't limit playlist, we need the count
+            }
+            
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(channel_url, download=False)
+                total_videos = info.get('playlist_count', 0)
+                channel_name = info.get('channel', self.channel_id)
+            
+            # Get scraped video count
+            scraped_videos = len(self.videos_data.get('videos', {}))
+            
+            # Calculate coverage
+            if total_videos > 0:
+                coverage = (scraped_videos / total_videos) * 100
+                summary = f"\n{'='*60}\n"
+                summary += f"CHANNEL PROGRESS SUMMARY: {channel_name}\n"
+                summary += f"{'='*60}\n"
+                summary += f"Total videos on channel: {total_videos:,}\n"
+                summary += f"Videos in database: {scraped_videos:,}\n"
+                summary += f"Coverage: {coverage:.1f}%\n"
+                
+                # Show game data coverage
+                videos_with_games = sum(1 for v in self.videos_data['videos'].values() 
+                                      if any([v.get('steam_app_id'), v.get('itch_url'), v.get('crazygames_url')]))
+                game_coverage = (videos_with_games / scraped_videos * 100) if scraped_videos > 0 else 0
+                summary += f"Videos with game data: {videos_with_games:,} ({game_coverage:.1f}% of scraped)\n"
+                summary += f"{'='*60}"
+                
+                # Log and print for visibility
+                logging.info(summary)
+                print(summary)
+            else:
+                logging.info(f"Could not get total video count for {channel_name}")
+                
+        except Exception as e:
+            logging.debug(f"Error showing channel progress: {e}")
     
     def extract_potential_game_names(self, title: str) -> List[str]:
         """Extract potential game names from video titles"""
