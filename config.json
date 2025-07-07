@@ -1,0 +1,14 @@
+{
+  "channels": {
+    "idlecub": {
+      "name": "Idle Cub",
+      "url": "https://www.youtube.com/@idlecub/videos",
+      "enabled": true
+    },
+    "dextag": {
+      "name": "DexTag",
+      "url": "https://www.youtube.com/@DexTag/videos",
+      "enabled": true
+    }
+  }
+}

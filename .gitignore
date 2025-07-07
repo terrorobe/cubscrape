@@ -22,7 +22,6 @@ venv/
 Thumbs.db
 
 # API Keys
-config.json
 secrets.json
 
 
