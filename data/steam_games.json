@@ -4409,9 +4409,9 @@
       "review_count": 35660,
       "review_summary": "Very Positive",
       "recent_review_percentage": 82,
-      "recent_review_count": 619,
+      "recent_review_count": 622,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-07T18:28:15.990322"
+      "last_updated": "2025-07-07T18:57:06.807798"
     },
     "2772700": {
       "steam_app_id": "2772700",
@@ -10428,8 +10428,58 @@
       "recent_review_percentage": 75,
       "recent_review_count": 724,
       "recent_review_summary": "Mostly Positive",
-      "last_updated": "2025-07-07T18:28:09.734698"
+      "last_updated": "2025-07-07T18:57:05.454065"
+    },
+    "1823390": {
+      "steam_app_id": "1823390",
+      "steam_url": "https://store.steampowered.com/app/1823390",
+      "name": "Escape The Mad Empire",
+      "is_free": false,
+      "release_date": "22 Apr, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Indie",
+        "RPG",
+        "Strategy",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "XperimentalZ Games"
+      ],
+      "publishers": [
+        "Paradox Arc"
+      ],
+      "price": "13,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1823390/header.jpg?t=1746725874",
+      "tags": [
+        "Early Access",
+        "Roguelite",
+        "Party-Based RPG",
+        "Pixel Graphics",
+        "Isometric",
+        "Management",
+        "Singleplayer",
+        "CRPG",
+        "Tactical RPG",
+        "Dungeon Crawler"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2779630",
+      "is_demo": false,
+      "is_early_access": true,
+      "positive_review_percentage": 88,
+      "review_count": 234,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 91,
+      "recent_review_count": 23,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T18:59:42.552418"
     }
   },
-  "last_updated": "2025-07-07T18:28:16.566683"
+  "last_updated": "2025-07-07T18:59:43.129101"
 }

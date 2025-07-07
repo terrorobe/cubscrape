@@ -160,7 +160,8 @@ class YouTubeSteamScraper:
         steam_patterns = [
             r'https?://store\.steampowered\.com/app/(\d+)',
             r'https?://steam\.com/app/(\d+)',
-            r'https?://s\.team/a/(\d+)'
+            r'https?://s\.team/a/(\d+)',
+            r'https?://store\.steampowered\.com/news/app/(\d+)'
         ]
         
         for pattern in steam_patterns:
@@ -195,6 +196,54 @@ class YouTubeSteamScraper:
                 break
         
         return links
+    
+    def extract_youtube_detected_game(self, video_id: str) -> Optional[str]:
+        """Extract YouTube's detected game from JSON data as last resort"""
+        try:
+            url = f"https://www.youtube.com/watch?v={video_id}"
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            
+            response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                return None
+            
+            page_content = response.text
+            
+            # Look for YouTube's initial data JSON
+            pattern = r'var ytInitialData = ({.*?});'
+            match = re.search(pattern, page_content)
+            if not match:
+                return None
+            
+            import json
+            data = json.loads(match.group(1))
+            
+            # Navigate to the rich metadata renderer
+            try:
+                contents = data['contents']['twoColumnWatchNextResults']['results']['results']['contents']
+                for content in contents:
+                    if 'videoSecondaryInfoRenderer' in content:
+                        metadata_container = content['videoSecondaryInfoRenderer'].get('metadataRowContainer', {})
+                        rows = metadata_container.get('metadataRowContainerRenderer', {}).get('rows', [])
+                        
+                        for row in rows:
+                            if 'richMetadataRowRenderer' in row:
+                                rich_contents = row['richMetadataRowRenderer'].get('contents', [])
+                                for rich_content in rich_contents:
+                                    if 'richMetadataRenderer' in rich_content:
+                                        title = rich_content['richMetadataRenderer'].get('title', {})
+                                        if 'simpleText' in title:
+                                            game_title = title['simpleText'].strip()
+                                            if game_title and len(game_title) > 3:
+                                                return game_title
+            except (KeyError, TypeError):
+                pass
+            
+            return None
+            
+        except Exception as e:
+            logging.debug(f"Error extracting YouTube detected game for {video_id}: {e}")
+            return None
     
     def fetch_itch_data(self, itch_url: str) -> Dict:
         """Fetch game data from Itch.io"""
@@ -962,7 +1011,24 @@ class YouTubeSteamScraper:
                     self.save_other_games()
                     
         else:
-            logging.info(f"  No game links found")
+            logging.info(f"  No game links found, trying YouTube detection...")
+            
+            # Last resort: try YouTube's detected game
+            detected_game = self.extract_youtube_detected_game(video['video_id'])
+            if detected_game:
+                logging.info(f"  YouTube detected game: {detected_game}")
+                video_data['youtube_detected_game'] = detected_game
+                
+                # Try to find this game on Steam
+                steam_match = self.find_steam_match(detected_game, confidence_threshold=0.6)
+                if steam_match:
+                    video_data['steam_app_id'] = steam_match['app_id']
+                    video_data['youtube_detected_matched'] = True
+                    logging.info(f"  Matched to Steam: {steam_match['name']} (App ID: {steam_match['app_id']}, confidence: {steam_match['confidence']:.2f})")
+                else:
+                    logging.info(f"  No confident Steam matches found for YouTube detected game")
+            else:
+                logging.info(f"  No YouTube detected game found")
         
         return video_data
     
@@ -1464,6 +1530,43 @@ class YouTubeSteamScraper:
         
         return []
     
+    def find_steam_match(self, game_name: str, confidence_threshold: float = 0.5) -> Optional[Dict]:
+        """Find best Steam match for a game name with confidence scoring"""
+        try:
+            results = self.search_steam_games(game_name)
+            if not results:
+                return None
+            
+            best_match = None
+            best_confidence = 0
+            
+            for result in results[:3]:  # Check top 3 results
+                steam_game_name = result['name'].lower()
+                search_name = game_name.lower()
+                
+                # Calculate similarity (simple word overlap)
+                search_words = set(search_name.split())
+                game_words = set(steam_game_name.split())
+                overlap = len(search_words & game_words)
+                confidence = overlap / max(len(search_words), len(game_words))
+                
+                if confidence > best_confidence and confidence > confidence_threshold:
+                    best_match = result
+                    best_confidence = confidence
+            
+            if best_match:
+                return {
+                    'app_id': str(best_match['id']),
+                    'name': best_match['name'],
+                    'confidence': best_confidence
+                }
+            
+            return None
+            
+        except Exception as e:
+            logging.error(f"Error finding Steam match for '{game_name}': {e}")
+            return None
+    
     def extract_potential_game_names(self, title: str) -> List[str]:
         """Extract potential game names from video titles"""
         # Common patterns in gaming videos
@@ -1481,8 +1584,8 @@ class YouTubeSteamScraper:
             match = re.search(pattern, title, re.IGNORECASE)
             if match:
                 name = match.group(1).strip()
-                # Clean up common words and punctuation
-                name = re.sub(r'\b(the|a|an|this|new|amazing|incredible|insane|crazy)\b', '', name, flags=re.IGNORECASE)
+                # Clean up common words and punctuation (but preserve 'the' for game titles)
+                name = re.sub(r'\b(a|an|this|new|amazing|incredible|insane|crazy)\b', '', name, flags=re.IGNORECASE)
                 name = re.sub(r'[!?]+$', '', name)  # Remove trailing exclamation/question marks
                 name = re.sub(r'\s+', ' ', name).strip()
                 if len(name) > 3 and name not in potential_names:  # Avoid very short matches and duplicates
@@ -1543,30 +1646,18 @@ class YouTubeSteamScraper:
                 
                 # Search Steam for each potential name
                 best_match = None
-                best_confidence = 0
                 
                 for name in potential_names:
-                    results = self.search_steam_games(name)
-                    if results:
-                        # Simple confidence scoring based on name similarity
-                        for result in results[:3]:  # Check top 3 results
-                            game_name = result['name'].lower()
-                            search_name = name.lower()
-                            
-                            # Calculate similarity (simple word overlap)
-                            search_words = set(search_name.split())
-                            game_words = set(game_name.split())
-                            overlap = len(search_words & game_words)
-                            confidence = overlap / max(len(search_words), len(game_words))
-                            
-                            if confidence > best_confidence and confidence > 0.5:  # At least 50% word overlap
-                                best_match = result
-                                best_confidence = confidence
+                    steam_match = self.find_steam_match(name, confidence_threshold=0.5)
+                    if steam_match:
+                        # Keep the best match across all potential names
+                        if not best_match or steam_match['confidence'] > best_match['confidence']:
+                            best_match = steam_match
                 
                 if best_match:
-                    app_id = str(best_match['id'])
+                    app_id = best_match['app_id']
                     game_name = best_match['name']
-                    print(f"      ✅ Found match: {game_name} (App ID: {app_id}, confidence: {best_confidence:.2f})")
+                    print(f"      ✅ Found match: {game_name} (App ID: {app_id}, confidence: {best_match['confidence']:.2f})")
                     
                     # Update video data
                     video['steam_app_id'] = app_id
