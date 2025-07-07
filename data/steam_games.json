@@ -297,7 +297,7 @@
       "positive_review_percentage": 97,
       "review_count": 76,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-07T14:40:01.910471"
+      "last_updated": "2025-07-07T15:26:39.448656"
     },
     "3352240": {
       "steam_app_id": "3352240",
@@ -578,10 +578,11 @@
         "Top-Down"
       ],
       "has_demo": true,
+      "demo_app_id": "3707160",
       "is_demo": false,
       "is_early_access": false,
       "planned_release_date": "August 2025",
-      "last_updated": "2025-07-07T14:39:53.482551"
+      "last_updated": "2025-07-07T15:29:40.892543"
     },
     "3267900": {
       "steam_app_id": "3267900",
@@ -1102,7 +1103,2129 @@
       "full_game_app_id": "2377620",
       "is_early_access": false,
       "last_updated": "2025-07-07T14:40:05.646063"
+    },
+    "3707160": {
+      "steam_app_id": "3707160",
+      "steam_url": "https://store.steampowered.com/app/3707160",
+      "name": "Iron Core: Mech Survivor Demo",
+      "is_free": true,
+      "release_date": "30 May, 2025",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements"
+      ],
+      "developers": [
+        "Soda Game Studio"
+      ],
+      "publishers": [
+        "Soda Game Studio"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3707160/f280add1398014d13544370fc679071a7288feb1/header.jpg?t=1749560106",
+      "tags": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Action Roguelike",
+        "Shooter",
+        "Tower Defense",
+        "Hero Shooter",
+        "Top-Down Shooter",
+        "Realistic",
+        "Top-Down"
+      ],
+      "has_demo": true,
+      "is_demo": true,
+      "full_game_app_id": "3586420",
+      "is_early_access": false,
+      "last_updated": "2025-07-07T15:27:48.538922"
+    },
+    "3703420": {
+      "steam_app_id": "3703420",
+      "steam_url": "https://store.steampowered.com/app/3703420",
+      "name": "\u9b54\u4e66\u5c04\u7206\uff08Book Shooter\uff09 Demo",
+      "is_free": true,
+      "release_date": "9 May, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "SOS GameLab."
+      ],
+      "publishers": [
+        "YuetteGames"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3703420/521c62f3d2fee9d01e24293a356b8e9414fc340c/header.jpg?t=1750703570",
+      "tags": [
+        "Casual",
+        "Strategy",
+        "Tower Defense",
+        "Roguelike",
+        "Bullet Hell",
+        "Shooter",
+        "Roguelite",
+        "Magic",
+        "Combat",
+        "Mythology"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3551370",
+      "is_early_access": false,
+      "positive_review_percentage": 95,
+      "review_count": 24,
+      "review_summary": "Positive",
+      "recent_review_percentage": 100,
+      "recent_review_count": 22,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T15:57:16.694300"
+    },
+    "3551370": {
+      "steam_app_id": "3551370",
+      "steam_url": "https://store.steampowered.com/app/3551370",
+      "name": "\u9b54\u4e66\u5c04\u7206\uff08Book Shooter\uff09",
+      "is_free": false,
+      "release_date": "Coming soon",
+      "coming_soon": true,
+      "genres": [
+        "Casual",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Workshop",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "SOS GameLab."
+      ],
+      "publishers": [
+        "YuetteGames"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3551370/fe0776d4321afc01f306e3e4f52866cd3e45bcdc/header.jpg?t=1750703574",
+      "tags": [
+        "Casual",
+        "Roguelike",
+        "Tower Defense",
+        "Shooter",
+        "Bullet Hell",
+        "Bullet Time",
+        "Indie",
+        "Magic",
+        "Dark Fantasy",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3703420",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "Coming soon",
+      "last_updated": "2025-07-07T15:57:17.383093"
+    },
+    "3697950": {
+      "steam_app_id": "3697950",
+      "steam_url": "https://store.steampowered.com/app/3697950",
+      "name": "Scratchers",
+      "is_free": false,
+      "release_date": "16 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "muffler"
+      ],
+      "publishers": [
+        "muffler"
+      ],
+      "price": "2,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3697950/7143774fdd8a4422fd45572a820c1c521d41b860/header.jpg?t=1750347665",
+      "tags": [
+        "Casual",
+        "Simulation",
+        "Clicker",
+        "Idler",
+        "Management",
+        "Relaxing",
+        "Pixel Graphics",
+        "Colorful",
+        "Point & Click",
+        "2D"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 64,
+      "review_count": 106,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-07T15:57:18.289936"
+    },
+    "2066020": {
+      "steam_app_id": "2066020",
+      "steam_url": "https://store.steampowered.com/app/2066020",
+      "name": "Soulstone Survivors",
+      "is_free": false,
+      "release_date": "17 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Stats",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Game Smithing Limited"
+      ],
+      "publishers": [
+        "Game Smithing Limited"
+      ],
+      "price": "9,74\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2066020/6079b934d5f581fc5e1d8d748ea2ebed93a84a3f/header_alt_assets_0.jpg?t=1750941838",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Roguelite",
+        "Action RPG",
+        "Early Access",
+        "Roguelike",
+        "Top-Down",
+        "Arcade",
+        "Action",
+        "Singleplayer"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2083070",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 91,
+      "review_count": 22062,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 88,
+      "recent_review_count": 1045,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T15:57:19.178170"
+    },
+    "2083070": {
+      "steam_app_id": "2083070",
+      "steam_url": "https://store.steampowered.com/app/2083070",
+      "name": "Soulstone Survivors Demo",
+      "is_free": true,
+      "release_date": "27 Jul, 2022",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Game Smithing Limited"
+      ],
+      "publishers": [
+        "Game Smithing Limited"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2083070/header.jpg?t=1727126903",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Roguelite",
+        "Action RPG",
+        "Early Access",
+        "Roguelike",
+        "Top-Down",
+        "Arcade",
+        "Action",
+        "Singleplayer"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2083070",
+      "is_demo": true,
+      "full_game_app_id": "2066020",
+      "is_early_access": false,
+      "positive_review_percentage": 91,
+      "review_count": 22062,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 88,
+      "recent_review_count": 1045,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T15:57:20.431278"
+    },
+    "3199360": {
+      "steam_app_id": "3199360",
+      "steam_url": "https://store.steampowered.com/app/3199360",
+      "name": "Skull Horde",
+      "is_free": false,
+      "release_date": "2025",
+      "coming_soon": true,
+      "genres": [
+        "Action",
+        "Adventure"
+      ],
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Camera Comfort",
+        "Keyboard Only Option",
+        "Playable without Timed Input",
+        "Stereo Sound",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "8BitSkull"
+      ],
+      "publishers": [
+        "8BitSkull"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3199360/2d1fefb82914c42bc56710e51c8846d90aefd935/header.jpg?t=1750411613",
+      "tags": [
+        "Dungeon Crawler",
+        "Action Roguelike",
+        "Auto Battler",
+        "Hack and Slash",
+        "Procedural Generation",
+        "Roguelite",
+        "Roguelike",
+        "Loot",
+        "Action",
+        "Adventure"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3762070",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "2025",
+      "last_updated": "2025-07-07T15:57:21.255400"
+    },
+    "3762070": {
+      "steam_app_id": "3762070",
+      "steam_url": "https://store.steampowered.com/app/3762070",
+      "name": "Skull Horde Demo",
+      "is_free": true,
+      "release_date": "20 Jun, 2025",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Camera Comfort",
+        "Keyboard Only Option",
+        "Playable without Timed Input",
+        "Stereo Sound",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "8BitSkull"
+      ],
+      "publishers": [
+        "8BitSkull"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3762070/2d1fefb82914c42bc56710e51c8846d90aefd935/header.jpg?t=1750704878",
+      "tags": [
+        "Dungeon Crawler",
+        "Action Roguelike",
+        "Auto Battler",
+        "Hack and Slash",
+        "Procedural Generation",
+        "Roguelite",
+        "Roguelike",
+        "Loot",
+        "Action",
+        "Adventure"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3762070",
+      "is_demo": true,
+      "full_game_app_id": "3199360",
+      "is_early_access": false,
+      "last_updated": "2025-07-07T15:57:22.644485"
+    },
+    "2470480": {
+      "steam_app_id": "2470480",
+      "steam_url": "https://store.steampowered.com/app/2470480",
+      "name": "Paris Transylvania Demo",
+      "is_free": true,
+      "release_date": "23 Aug, 2023",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Includes level editor"
+      ],
+      "developers": [
+        "Magneticlake"
+      ],
+      "publishers": [
+        "Magneticlake"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2470480/d9e1243011351445d6bccbe9aa3ba763cf73ad9b/header.jpg?t=1749980322",
+      "tags": [
+        "Deckbuilding",
+        "Roguelike",
+        "Roguelite",
+        "Pinball",
+        "Turn-Based",
+        "Strategy",
+        "Perma Death",
+        "2.5D",
+        "Replay Value",
+        "RPG"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "2459560",
+      "is_early_access": false,
+      "positive_review_percentage": 69,
+      "review_count": 33,
+      "review_summary": "Mixed",
+      "recent_review_percentage": 60,
+      "recent_review_count": 23,
+      "recent_review_summary": "Mixed",
+      "last_updated": "2025-07-07T15:57:23.827104"
+    },
+    "2459560": {
+      "steam_app_id": "2459560",
+      "steam_url": "https://store.steampowered.com/app/2459560",
+      "name": "Paris Transylvania",
+      "is_free": false,
+      "release_date": "2025",
+      "coming_soon": true,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Stats",
+        "Includes level editor",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Magneticlake"
+      ],
+      "publishers": [
+        "Magneticlake"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2459560/78e0f0beb699a1d56df8716ace505a176244dab2/header.jpg?t=1749980329",
+      "tags": [
+        "Deckbuilding",
+        "Roguelike",
+        "Roguelite",
+        "Pinball",
+        "Turn-Based",
+        "Strategy",
+        "Perma Death",
+        "2.5D",
+        "Replay Value",
+        "RPG"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2470480",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "2025",
+      "last_updated": "2025-07-07T15:57:24.773741"
+    },
+    "2224120": {
+      "steam_app_id": "2224120",
+      "steam_url": "https://store.steampowered.com/app/2224120",
+      "name": "Zombie Rollerz: The Last Ship",
+      "is_free": false,
+      "release_date": "Jun 24, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Zing Games Inc.",
+        "\u7d2b\u82f1\u4e92\u5a31"
+      ],
+      "publishers": [
+        "Wandering Wizard"
+      ],
+      "price": "$8.99",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2224120/header.jpg?t=1750820855",
+      "tags": [
+        "Action Roguelike",
+        "Exploration",
+        "Bullet Hell",
+        "Shoot 'Em Up",
+        "Roguelite",
+        "Tower Defense",
+        "Driving",
+        "PvE",
+        "Action-Adventure",
+        "Roguelike"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2338110",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 68,
+      "review_count": 72,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-07T15:57:25.663166"
+    },
+    "2338110": {
+      "steam_app_id": "2338110",
+      "steam_url": "https://store.steampowered.com/app/2338110",
+      "name": "Zombie Rollerz: The Last Ship - Demo",
+      "is_free": true,
+      "release_date": "5 May, 2025",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "Zing Games Inc.",
+        "\u7d2b\u82f1\u4e92\u5a31"
+      ],
+      "publishers": [
+        "Wandering Wizard"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2338110/2fb04360e6fb0d47c40b16bf7f9d3a680d9b0835/header.jpg?t=1749442944",
+      "tags": [
+        "Action Roguelike",
+        "Exploration",
+        "Bullet Hell",
+        "Shoot 'Em Up",
+        "Roguelite",
+        "Tower Defense",
+        "Driving",
+        "PvE",
+        "Action-Adventure",
+        "Roguelike"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2338110",
+      "is_demo": true,
+      "full_game_app_id": "2224120",
+      "is_early_access": false,
+      "positive_review_percentage": 68,
+      "review_count": 72,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-07T15:57:26.810707"
+    },
+    "3198890": {
+      "steam_app_id": "3198890",
+      "steam_url": "https://store.steampowered.com/app/3198890",
+      "name": "Scale the Depths",
+      "is_free": false,
+      "release_date": "Q2 2026",
+      "coming_soon": true,
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Glass Gecko Games"
+      ],
+      "publishers": [
+        "Glass Gecko Games"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3198890/bbfb5114e3eba752c28b065eadd8a758133fe85c/header.jpg?t=1750348026",
+      "tags": [
+        "Fishing",
+        "Casual",
+        "Relaxing",
+        "Cute",
+        "Singleplayer",
+        "Simulation",
+        "Cooking",
+        "Arcade",
+        "Underwater",
+        "Pixel Graphics"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3821770",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "Q2 2026",
+      "last_updated": "2025-07-07T15:57:27.602588"
+    },
+    "3821770": {
+      "steam_app_id": "3821770",
+      "steam_url": "https://store.steampowered.com/app/3821770",
+      "name": "Scale the Depths Demo",
+      "is_free": true,
+      "release_date": "19 Jun, 2025",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Playable without Timed Input"
+      ],
+      "developers": [
+        "Glass Gecko Games"
+      ],
+      "publishers": [
+        "Glass Gecko Games"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3821770/bbfb5114e3eba752c28b065eadd8a758133fe85c/header.jpg?t=1750340961",
+      "tags": [
+        "Fishing",
+        "Casual",
+        "Relaxing",
+        "Cute",
+        "Singleplayer",
+        "Simulation",
+        "Cooking",
+        "Arcade",
+        "Underwater",
+        "Pixel Graphics"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3821770",
+      "is_demo": true,
+      "full_game_app_id": "3198890",
+      "is_early_access": false,
+      "last_updated": "2025-07-07T15:57:28.560621"
+    },
+    "3612640": {
+      "steam_app_id": "3612640",
+      "steam_url": "https://store.steampowered.com/app/3612640",
+      "name": "Infiniclick",
+      "is_free": false,
+      "release_date": "20 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Nacho AB"
+      ],
+      "publishers": [
+        "Nacho AB"
+      ],
+      "price": "7,79\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3612640/6ae6833867b49c958a9bea00e253df35b9bf1d45/header.jpg?t=1750413456",
+      "tags": [
+        "Casual",
+        "Tower Defense",
+        "Clicker",
+        "Idler",
+        "2D",
+        "Cartoon",
+        "Capitalism",
+        "Economy",
+        "Funny",
+        "Hacking"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3710150",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 69,
+      "review_count": 85,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-07T15:57:29.630453"
+    },
+    "3710150": {
+      "steam_app_id": "3710150",
+      "steam_url": "https://store.steampowered.com/app/3710150",
+      "name": "Infiniclick Demo",
+      "is_free": true,
+      "release_date": "12 May, 2025",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Custom Volume Controls",
+        "Mouse Only Option",
+        "Save Anytime",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Nacho AB"
+      ],
+      "publishers": [
+        "Nacho AB"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3710150/6ae6833867b49c958a9bea00e253df35b9bf1d45/header.jpg?t=1747079525",
+      "tags": [
+        "Casual",
+        "Tower Defense",
+        "Clicker",
+        "Idler",
+        "2D",
+        "Cartoon",
+        "Capitalism",
+        "Economy",
+        "Funny",
+        "Hacking"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3710150",
+      "is_demo": true,
+      "full_game_app_id": "3612640",
+      "is_early_access": false,
+      "positive_review_percentage": 69,
+      "review_count": 85,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-07T15:57:30.725852"
+    },
+    "3372980": {
+      "steam_app_id": "3372980",
+      "steam_url": "https://store.steampowered.com/app/3372980",
+      "name": "Tower Wizard",
+      "is_free": false,
+      "release_date": "19 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Indie",
+        "RPG",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Adjustable Text Size",
+        "Color Alternatives",
+        "Custom Volume Controls",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Barribob"
+      ],
+      "publishers": [
+        "Barribob"
+      ],
+      "price": "2,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372980/header.jpg?t=1750465489",
+      "tags": [
+        "Strategy",
+        "Clicker",
+        "Fantasy",
+        "Resource Management",
+        "Idler",
+        "2D",
+        "Colorful",
+        "Cute",
+        "Building",
+        "Pixel Graphics"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 97,
+      "review_count": 3398,
+      "review_summary": "Overwhelmingly Positive",
+      "last_updated": "2025-07-07T15:57:31.582361"
+    },
+    "3690720": {
+      "steam_app_id": "3690720",
+      "steam_url": "https://store.steampowered.com/app/3690720",
+      "name": "Growmancer",
+      "is_free": false,
+      "release_date": "23 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Partial Controller Support",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Challenging Games"
+      ],
+      "publishers": [
+        "Challenging Games"
+      ],
+      "price": "4,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690720/1dd997d0bf666f6055310a39043128a50e5f9ed5/header.jpg?t=1750683693",
+      "tags": [
+        "Clicker",
+        "Idler",
+        "Nature",
+        "Relaxing",
+        "Cozy",
+        "Casual",
+        "Resource Management",
+        "3D",
+        "Colorful",
+        "Abstract"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 92,
+      "review_count": 14,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-07T15:57:32.419826"
+    },
+    "3339780": {
+      "steam_app_id": "3339780",
+      "steam_url": "https://store.steampowered.com/app/3339780",
+      "name": "Desktop Survivors 98",
+      "is_free": false,
+      "release_date": "20 May, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Adjustable Text Size",
+        "Mouse Only Option",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Brandon Hesslau"
+      ],
+      "publishers": [
+        "Brandon Hesslau"
+      ],
+      "price": "3,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3339780/4484cf3a01e26ab0227ababd0e7c57e35d123552/header.jpg?t=1747755040",
+      "tags": [
+        "Action Roguelike",
+        "Action",
+        "Casual",
+        "Bullet Hell",
+        "Dungeon Crawler",
+        "2D",
+        "Roguelike",
+        "Pixel Graphics",
+        "1990's",
+        "Retro"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3353360",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 95,
+      "review_count": 769,
+      "review_summary": "Overwhelmingly Positive",
+      "recent_review_percentage": 96,
+      "recent_review_count": 201,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "last_updated": "2025-07-07T15:57:33.342905"
+    },
+    "3353360": {
+      "steam_app_id": "3353360",
+      "steam_url": "https://store.steampowered.com/app/3353360",
+      "name": "Desktop Survivors 98 Demo",
+      "is_free": true,
+      "release_date": "14 Dec, 2024",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "Brandon Hesslau"
+      ],
+      "publishers": [
+        "Brandon Hesslau"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3353360/82356c68af54d5139bb386d47c64113b65c7fc5b/header.jpg?t=1740615762",
+      "tags": [
+        "Action Roguelike",
+        "Action",
+        "Casual",
+        "Bullet Hell",
+        "Dungeon Crawler",
+        "2D",
+        "Roguelike",
+        "Pixel Graphics",
+        "1990's",
+        "Retro"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3353360",
+      "is_demo": true,
+      "full_game_app_id": "3339780",
+      "is_early_access": false,
+      "positive_review_percentage": 95,
+      "review_count": 769,
+      "review_summary": "Overwhelmingly Positive",
+      "recent_review_percentage": 96,
+      "recent_review_count": 201,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "last_updated": "2025-07-07T15:57:34.245186"
+    },
+    "2062430": {
+      "steam_app_id": "2062430",
+      "steam_url": "https://store.steampowered.com/app/2062430",
+      "name": "BALL x PIT",
+      "is_free": false,
+      "release_date": "2025",
+      "coming_soon": true,
+      "genres": [
+        "Action",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Kenny Sun"
+      ],
+      "publishers": [
+        "Devolver Digital"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2062430/a157aa8de4bd9070194ddffb27c31636355dca05/header.jpg?t=1750676973",
+      "tags": [
+        "Action",
+        "Arcade",
+        "Roguelike",
+        "Action Roguelike",
+        "Bullet Hell",
+        "Roguelite",
+        "Shoot 'Em Up",
+        "Top-Down Shooter",
+        "2D",
+        "Pixel Graphics"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3651790",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "2025",
+      "last_updated": "2025-07-07T16:11:02.987314"
+    },
+    "3651790": {
+      "steam_app_id": "3651790",
+      "steam_url": "https://store.steampowered.com/app/3651790",
+      "name": "BALL x PIT Demo",
+      "is_free": true,
+      "release_date": "6 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "Kenny Sun"
+      ],
+      "publishers": [
+        "Devolver Digital"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3651790/a157aa8de4bd9070194ddffb27c31636355dca05/header.jpg?t=1750677512",
+      "tags": [
+        "Action",
+        "Action Roguelike",
+        "Bullet Hell",
+        "Roguelite",
+        "2D",
+        "Pixel Graphics",
+        "Top-Down",
+        "Building",
+        "Crafting",
+        "Base Building"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "2062430",
+      "is_early_access": false,
+      "positive_review_percentage": 96,
+      "review_count": 1116,
+      "review_summary": "Overwhelmingly Positive",
+      "last_updated": "2025-07-07T16:03:33.027021"
+    },
+    "3166810": {
+      "steam_app_id": "3166810",
+      "steam_url": "https://store.steampowered.com/app/3166810",
+      "name": "Insider Trading",
+      "is_free": false,
+      "release_date": "2025",
+      "coming_soon": true,
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Naiive"
+      ],
+      "publishers": [
+        "Naiive"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3166810/fb81b043a51c39833c5346e2424d3ce6df9de22c/header.jpg?t=1749977863",
+      "tags": [
+        "Strategy",
+        "Roguelike Deckbuilder",
+        "Gambling",
+        "Trading",
+        "Economy",
+        "Deckbuilding",
+        "Management",
+        "Capitalism",
+        "Roguelike",
+        "Roguelite"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3271420",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "2025",
+      "last_updated": "2025-07-07T16:03:33.970500"
+    },
+    "3271420": {
+      "steam_app_id": "3271420",
+      "steam_url": "https://store.steampowered.com/app/3271420",
+      "name": "Insider Trading Demo",
+      "is_free": true,
+      "release_date": "11 Oct, 2024",
+      "coming_soon": false,
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements"
+      ],
+      "developers": [
+        "Naiive"
+      ],
+      "publishers": [
+        "Naiive"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3271420/fb81b043a51c39833c5346e2424d3ce6df9de22c/header.jpg?t=1749977960",
+      "tags": [
+        "Strategy",
+        "Roguelike Deckbuilder",
+        "Gambling",
+        "Trading",
+        "Economy",
+        "Deckbuilding",
+        "Management",
+        "Capitalism",
+        "Roguelite",
+        "Auto Battler"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3166810",
+      "is_early_access": false,
+      "positive_review_percentage": 95,
+      "review_count": 204,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 95,
+      "recent_review_count": 197,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "last_updated": "2025-07-07T16:03:34.728395"
+    },
+    "3680510": {
+      "steam_app_id": "3680510",
+      "steam_url": "https://store.steampowered.com/app/3680510",
+      "name": "Sip Fisher",
+      "is_free": false,
+      "release_date": "Coming soon",
+      "coming_soon": true,
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Syphon Software"
+      ],
+      "publishers": [
+        "Developed Vacuum Solutions"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3680510/9a0b7fd9d47b8406a5ecd981ca2cd6a3d7c6f6fc/header.jpg?t=1750373698",
+      "tags": [
+        "Atmospheric",
+        "Adventure",
+        "Colorful",
+        "Building",
+        "Family Friendly",
+        "Indie",
+        "Cozy",
+        "Exploration",
+        "Sandbox",
+        "Fishing"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3766980",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "Coming soon",
+      "last_updated": "2025-07-07T16:03:35.398617"
+    },
+    "3766980": {
+      "steam_app_id": "3766980",
+      "steam_url": "https://store.steampowered.com/app/3766980",
+      "name": "Sip Fisher Demo",
+      "is_free": true,
+      "release_date": "9 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Syphon Software"
+      ],
+      "publishers": [
+        "Developed Vacuum Solutions"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3766980/d281c8ea773941cc9aa859fe2737f817546b9c5f/header.jpg?t=1750373618",
+      "tags": [
+        "Exploration",
+        "Sandbox",
+        "Fishing",
+        "Economy",
+        "Capitalism",
+        "Tutorial",
+        "First-Person",
+        "Physics",
+        "Arcade",
+        "Relaxing"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3680510",
+      "is_early_access": false,
+      "positive_review_percentage": 89,
+      "review_count": 29,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-07T16:03:36.222935"
+    },
+    "3631070": {
+      "steam_app_id": "3631070",
+      "steam_url": "https://store.steampowered.com/app/3631070",
+      "name": "Beavageddon",
+      "is_free": false,
+      "release_date": "2025",
+      "coming_soon": true,
+      "genres": [
+        "Action"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Playable without Timed Input",
+        "Stereo Sound",
+        "Steam Cloud",
+        "Stats",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Crab Bucket Software"
+      ],
+      "publishers": [
+        "Crab Bucket Software"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3631070/dad09e8d747e7de8afecd8e1f082fc3c1879e77b/header.jpg?t=1749660567",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Shoot 'Em Up",
+        "Top-Down Shooter",
+        "Roguelite",
+        "Driving",
+        "Tanks",
+        "Vehicular Combat",
+        "PvE",
+        "Roguelike"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "2025",
+      "last_updated": "2025-07-07T16:03:37.142997"
+    },
+    "3234100": {
+      "steam_app_id": "3234100",
+      "steam_url": "https://store.steampowered.com/app/3234100",
+      "name": "Dead Engine",
+      "is_free": false,
+      "release_date": "2025",
+      "coming_soon": true,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Strategy",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Chocolate Dungeon Games"
+      ],
+      "publishers": [
+        "Red Axe Games"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3234100/e23eeac06c353e243ebef09fd5c76053074e3fd1/header.jpg?t=1750088267",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Roguelite",
+        "Roguelike",
+        "Strategy",
+        "Adventure",
+        "Top-Down",
+        "Post-apocalyptic",
+        "Open World",
+        "Action"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3679970",
+      "is_demo": false,
+      "is_early_access": true,
+      "planned_release_date": "2025",
+      "last_updated": "2025-07-07T16:03:38.118757"
+    },
+    "3679970": {
+      "steam_app_id": "3679970",
+      "steam_url": "https://store.steampowered.com/app/3679970",
+      "name": "Dead Engine Demo",
+      "is_free": true,
+      "release_date": "9 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        " Chocolate Dungeon Games"
+      ],
+      "publishers": [
+        "Red Axe Games"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3679970/cce6c9d6b9ab2dd62e63a910384f9f64b6579bfc/header.jpg?t=1750145864",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Strategy",
+        "Roguelite",
+        "Roguelike",
+        "Top-Down",
+        "Post-apocalyptic",
+        "Action",
+        "Open World",
+        "Story Rich"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3234100",
+      "is_early_access": false,
+      "positive_review_percentage": 94,
+      "review_count": 34,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-07T16:03:38.914563"
+    },
+    "3596700": {
+      "steam_app_id": "3596700",
+      "steam_url": "https://store.steampowered.com/app/3596700",
+      "name": "TerraTech Legion",
+      "is_free": false,
+      "release_date": "Coming soon",
+      "coming_soon": true,
+      "genres": [
+        "Action"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Payload Studios"
+      ],
+      "publishers": [
+        "Mythwright"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3596700/a8914f20065b0b8e964561b6820b52f8a63a39c8/header_alt_assets_0.jpg?t=1750957911",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Vehicular Combat",
+        "Third-Person Shooter",
+        "Crafting",
+        "Roguelite",
+        "Arcade",
+        "Arena Shooter",
+        "PvE",
+        "Mechs"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3729960",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "Coming soon",
+      "last_updated": "2025-07-07T16:03:39.634695"
+    },
+    "3729960": {
+      "steam_app_id": "3729960",
+      "steam_url": "https://store.steampowered.com/app/3729960",
+      "name": "TerraTech Legion Demo",
+      "is_free": true,
+      "release_date": "8 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "Payload Studios"
+      ],
+      "publishers": [
+        "Mythwright"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3729960/1478a3b3ffb23c415b31c1323dc2079df1ce6e9f/header.jpg?t=1750179757",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Vehicular Combat",
+        "Third-Person Shooter",
+        "Crafting",
+        "Roguelite",
+        "Arcade",
+        "Arena Shooter",
+        "PvE",
+        "Mining"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3596700",
+      "is_early_access": false,
+      "positive_review_percentage": 90,
+      "review_count": 411,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-07T16:03:40.404419"
+    },
+    "3430450": {
+      "steam_app_id": "3430450",
+      "steam_url": "https://store.steampowered.com/app/3430450",
+      "name": "Zombie Graveyard Simulator",
+      "is_free": false,
+      "release_date": "5 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "threeW"
+      ],
+      "publishers": [
+        "PlayWay S.A."
+      ],
+      "price": "13,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3430450/4b1ceae30f892b0ac84c8f1cd13cfb19eb2fa119/header.jpg?t=1749175802",
+      "tags": [
+        "Simulation",
+        "Building",
+        "Zombies",
+        "Life Sim",
+        "Management",
+        "Survival",
+        "FPS",
+        "Crafting",
+        "Agriculture",
+        "Action"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3523730",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 88,
+      "review_count": 229,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 87,
+      "recent_review_count": 181,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T16:03:41.165070"
+    },
+    "3523730": {
+      "steam_app_id": "3523730",
+      "steam_url": "https://store.steampowered.com/app/3523730",
+      "name": "Zombie Graveyard Simulator Demo",
+      "is_free": true,
+      "release_date": "21 Feb, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "threeW"
+      ],
+      "publishers": [
+        "PlayWay S.A."
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3523730/fd7a7b5feadb8c8baa0ada0cb2ed11ba88ef0917/header.jpg?t=1748572705",
+      "tags": [
+        "Simulation",
+        "Action",
+        "Zombies",
+        "FPS",
+        "Casual",
+        "Building",
+        "Management",
+        "3D",
+        "Survival",
+        "Agriculture"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3430450",
+      "is_early_access": false,
+      "positive_review_percentage": 80,
+      "review_count": 25,
+      "review_summary": "Positive",
+      "recent_review_percentage": 58,
+      "recent_review_count": 12,
+      "recent_review_summary": "Mixed",
+      "last_updated": "2025-07-07T16:03:41.863538"
+    },
+    "3697890": {
+      "steam_app_id": "3697890",
+      "steam_url": "https://store.steampowered.com/app/3697890",
+      "name": "Mango's Fisharium",
+      "is_free": false,
+      "release_date": "16 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Color Alternatives",
+        "Keyboard Only Option",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Touch Only Option",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Evrac Studio"
+      ],
+      "publishers": [
+        "Evrac Studio"
+      ],
+      "price": "2,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3697890/da32a5bd202016a9080e5825c2a3deaeaae40297/header.jpg?t=1750913231",
+      "tags": [
+        "Short",
+        "Idler",
+        "Clicker",
+        "Simulation",
+        "Fishing",
+        "Management",
+        "2D",
+        "Cute",
+        "Creature Collector",
+        "Collectathon"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3725820",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 81,
+      "review_count": 59,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-07T16:03:42.750352"
+    },
+    "3725820": {
+      "steam_app_id": "3725820",
+      "steam_url": "https://store.steampowered.com/app/3725820",
+      "name": "Mango's Fisharium Demo",
+      "is_free": true,
+      "release_date": "21 May, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements",
+        "Full controller support",
+        "Color Alternatives",
+        "Keyboard Only Option",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Touch Only Option"
+      ],
+      "developers": [
+        "Evrac Studio"
+      ],
+      "publishers": [
+        "Evrac Studio"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3725820/da32a5bd202016a9080e5825c2a3deaeaae40297/header.jpg?t=1747811328",
+      "tags": [
+        "Casual",
+        "Clicker",
+        "Idler",
+        "Simulation",
+        "Fishing",
+        "Creature Collector",
+        "2D",
+        "Collectathon",
+        "Colorful",
+        "Cute"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3697890",
+      "is_early_access": false,
+      "last_updated": "2025-07-07T16:03:43.558647"
+    },
+    "2854620": {
+      "steam_app_id": "2854620",
+      "steam_url": "https://store.steampowered.com/app/2854620",
+      "name": "SCAD",
+      "is_free": false,
+      "release_date": "Q3 2025",
+      "coming_soon": true,
+      "genres": [
+        "Action",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "NAISU"
+      ],
+      "publishers": [
+        "NAISU"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2854620/8a07221351911d5724aac1da500ec27cde34f3e8/header.jpg?t=1750493822",
+      "tags": [
+        "Roguelite",
+        "Bullet Hell",
+        "Top-Down Shooter",
+        "Action Roguelike",
+        "Roguelike",
+        "Crafting",
+        "Twin Stick Shooter",
+        "Action",
+        "Isometric",
+        "Top-Down"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3762420",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "Q3 2025",
+      "last_updated": "2025-07-07T16:03:44.245740"
+    },
+    "3762420": {
+      "steam_app_id": "3762420",
+      "steam_url": "https://store.steampowered.com/app/3762420",
+      "name": "SCAD Demo",
+      "is_free": true,
+      "release_date": "26 May, 2025",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "NAISU"
+      ],
+      "publishers": [
+        "NAISU"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3762420/8a07221351911d5724aac1da500ec27cde34f3e8/header.jpg?t=1749643309",
+      "tags": [
+        "Roguelite",
+        "Bullet Hell",
+        "Top-Down Shooter",
+        "Action Roguelike",
+        "Roguelike",
+        "Crafting",
+        "Twin Stick Shooter",
+        "Action",
+        "Isometric",
+        "Top-Down"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3762420",
+      "is_demo": true,
+      "full_game_app_id": "2854620",
+      "is_early_access": false,
+      "last_updated": "2025-07-07T16:03:45.106858"
+    },
+    "3483740": {
+      "steam_app_id": "3483740",
+      "steam_url": "https://store.steampowered.com/app/3483740",
+      "name": "Cast n Chill",
+      "is_free": false,
+      "release_date": "16 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie",
+        "RPG",
+        "Simulation",
+        "Sports"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Camera Comfort",
+        "Keyboard Only Option",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Stereo Sound",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Wombat Brawler"
+      ],
+      "publishers": [
+        "Wombat Brawler"
+      ],
+      "price": "14,79\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3483740/060225195a8432c90ea7339e86570f287c72795b/header.jpg?t=1750092358",
+      "tags": [
+        "Relaxing",
+        "Pixel Graphics",
+        "Fishing",
+        "Creature Collector",
+        "Idler",
+        "Cozy",
+        "Minimalist",
+        "Resource Management",
+        "Casual",
+        "Simulation"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 92,
+      "review_count": 2089,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-07T16:03:45.877109"
+    },
+    "3716650": {
+      "steam_app_id": "3716650",
+      "steam_url": "https://store.steampowered.com/app/3716650",
+      "name": "Antivirus PROTOCOL",
+      "is_free": false,
+      "release_date": "Q3 2025",
+      "coming_soon": true,
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "FIREHIVE Games"
+      ],
+      "publishers": [
+        "FIREHIVE Games"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3716650/17b124b2ce793e18c92a7f38e5618a7d5c93494f/header.jpg?t=1750494629",
+      "tags": [
+        "Action",
+        "Clicker",
+        "Idler",
+        "Simulation",
+        "Strategy",
+        "Casual",
+        "Colorful",
+        "Abstract",
+        "Minimalist",
+        "Relaxing"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3797060",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "Q3 2025",
+      "last_updated": "2025-07-07T16:03:46.751322"
+    },
+    "3797060": {
+      "steam_app_id": "3797060",
+      "steam_url": "https://store.steampowered.com/app/3797060",
+      "name": "Antivirus PROTOCOL Demo",
+      "is_free": true,
+      "release_date": "8 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Casual",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "FIREHIVE Games"
+      ],
+      "publishers": [
+        "FIREHIVE Games"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3797060/17b124b2ce793e18c92a7f38e5618a7d5c93494f/header.jpg?t=1750188473",
+      "tags": [
+        "Action",
+        "Simulation",
+        "Strategy",
+        "Clicker",
+        "Idler",
+        "Casual",
+        "Colorful",
+        "Abstract",
+        "Minimalist",
+        "Relaxing"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3716650",
+      "is_early_access": false,
+      "positive_review_percentage": 86,
+      "review_count": 22,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-07T16:03:47.508583"
+    },
+    "3017760": {
+      "steam_app_id": "3017760",
+      "steam_url": "https://store.steampowered.com/app/3017760",
+      "name": "Relic Abyss",
+      "is_free": false,
+      "release_date": "To be announced",
+      "coming_soon": true,
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Reverse Loop"
+      ],
+      "publishers": [
+        "Reverse Loop"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017760/ea170308c2303bb212013d61e002c23d726bc901/header.jpg?t=1748602497",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Action",
+        "Roguelite",
+        "Action RPG",
+        "2D",
+        "Inventory Management",
+        "Early Access",
+        "RPG",
+        "Magic"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3694300",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "To be announced",
+      "last_updated": "2025-07-07T16:33:43.715033"
+    },
+    "3694300": {
+      "steam_app_id": "3694300",
+      "steam_url": "https://store.steampowered.com/app/3694300",
+      "name": "Relic Abyss Demo",
+      "is_free": true,
+      "release_date": "27 May, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Casual",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Keyboard Only Option"
+      ],
+      "developers": [
+        "Reverse Loop"
+      ],
+      "publishers": [
+        "Reverse Loop"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3694300/ea170308c2303bb212013d61e002c23d726bc901/header.jpg?t=1748877496",
+      "tags": [
+        "Action",
+        "Action Roguelike",
+        "Bullet Hell",
+        "Roguelite",
+        "Action RPG",
+        "RPG",
+        "2D",
+        "Inventory Management",
+        "Magic",
+        "Roguelike"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3017760",
+      "is_early_access": false,
+      "positive_review_percentage": 91,
+      "review_count": 35,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-07T16:33:44.460144"
+    },
+    "3469750": {
+      "steam_app_id": "3469750",
+      "steam_url": "https://store.steampowered.com/app/3469750",
+      "name": "Military Incremental Complex",
+      "is_free": false,
+      "release_date": "Q3 2025",
+      "coming_soon": true,
+      "genres": [
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Space Kraken Studios"
+      ],
+      "publishers": [
+        "Space Kraken Studios"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3469750/header.jpg?t=1749426358",
+      "tags": [
+        "Idler",
+        "Clicker",
+        "Simulation",
+        "Automation",
+        "Capitalism",
+        "Management",
+        "Economy",
+        "Military",
+        "1990's",
+        "Resource Management"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3472810",
+      "is_demo": false,
+      "is_early_access": false,
+      "planned_release_date": "Q3 2025",
+      "last_updated": "2025-07-07T16:33:45.135395"
+    },
+    "3472810": {
+      "steam_app_id": "3472810",
+      "steam_url": "https://store.steampowered.com/app/3472810",
+      "name": "Military Incremental Complex Demo",
+      "is_free": true,
+      "release_date": "3 Feb, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Save Anytime"
+      ],
+      "developers": [
+        "Space Kraken Studios"
+      ],
+      "publishers": [
+        "Space Kraken Studios"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3472810/header.jpg?t=1749426404",
+      "tags": [
+        "Strategy",
+        "Clicker",
+        "Idler",
+        "Building",
+        "Roguelike",
+        "Military",
+        "Capitalism",
+        "Simulation",
+        "Management",
+        "1990's"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "3469750",
+      "is_early_access": false,
+      "positive_review_percentage": 97,
+      "review_count": 181,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 92,
+      "recent_review_count": 39,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T16:33:45.813411"
+    },
+    "3498680": {
+      "steam_app_id": "3498680",
+      "steam_url": "https://store.steampowered.com/app/3498680",
+      "name": "The Mindvasion",
+      "is_free": false,
+      "release_date": "26 Jun, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Mastodonte"
+      ],
+      "publishers": [
+        "Mastodonte"
+      ],
+      "price": "4,12\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498680/304acc4b3575cfdad1d89490966a81e104edf4ae/header.jpg?t=1750952363",
+      "tags": [
+        "Casual",
+        "Action",
+        "Bullet Hell",
+        "Action Roguelike",
+        "Pixel Graphics",
+        "2D",
+        "Hack and Slash",
+        "Fantasy",
+        "Indie",
+        "Early Access"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": true,
+      "last_updated": "2025-07-07T16:33:46.714567"
     }
   },
-  "last_updated": "2025-07-07T14:54:56.089319"
+  "last_updated": "2025-07-07T17:17:58.276862"
 }

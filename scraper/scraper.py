@@ -25,14 +25,25 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class YouTubeSteamScraper:
-    def __init__(self):
+    def __init__(self, channel_id: str):
         # Get the directory of this script, then build paths relative to project root
         script_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(script_dir)
-        self.videos_file = os.path.join(project_root, 'data', 'videos.json')
+        
+        # Load config
+        self.config = self.load_config()
+        
+        # Set up file paths
+        self.videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
         self.steam_file = os.path.join(project_root, 'data', 'steam_games.json')
+        self.other_games_file = os.path.join(project_root, 'data', 'other_games.json')
+        
         self.videos_data = self.load_json(self.videos_file, {'videos': {}, 'last_updated': None})
         self.steam_data = self.load_json(self.steam_file, {'games': {}, 'last_updated': None})
+        self.other_games_data = self.load_json(self.other_games_file, {'games': {}, 'last_updated': None})
+        
+        # Store channel info
+        self.channel_id = channel_id
         
         # yt-dlp options
         self.ydl_opts = {
@@ -42,6 +53,17 @@ class YouTubeSteamScraper:
             'force_generic_extractor': False,
         }
         
+    def load_config(self) -> Dict:
+        """Load configuration from config.json"""
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(script_dir)
+        config_path = os.path.join(project_root, 'config.json')
+        
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as f:
+                return json.load(f)
+        return {'channels': {}}
+    
     def load_json(self, filepath: str, default: Dict) -> Dict:
         """Load JSON file or return default"""
         if os.path.exists(filepath):
@@ -62,6 +84,13 @@ class YouTubeSteamScraper:
         os.makedirs(os.path.dirname(self.steam_file), exist_ok=True)
         with open(self.steam_file, 'w') as f:
             json.dump(self.steam_data, f, indent=2)
+    
+    def save_other_games(self):
+        """Save other games data to JSON file"""
+        self.other_games_data['last_updated'] = datetime.now().isoformat()
+        os.makedirs(os.path.dirname(self.other_games_file), exist_ok=True)
+        with open(self.other_games_file, 'w') as f:
+            json.dump(self.other_games_data, f, indent=2)
     
     def get_channel_videos(self, channel_url: str, max_results: int = 50) -> List[Dict]:
         """Fetch videos from YouTube channel using yt-dlp"""
@@ -153,7 +182,250 @@ class YouTubeSteamScraper:
                 links['itch'] = match.group(0)
                 break
         
+        # CrazyGames patterns
+        crazygames_patterns = [
+            r'https?://www\.crazygames\.com/game/([^/\s]+)',
+            r'https?://crazygames\.com/game/([^/\s]+)'
+        ]
+        
+        for pattern in crazygames_patterns:
+            match = re.search(pattern, description)
+            if match:
+                links['crazygames'] = match.group(0)
+                break
+        
         return links
+    
+    def fetch_itch_data(self, itch_url: str) -> Dict:
+        """Fetch game data from Itch.io"""
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        
+        try:
+            response = requests.get(itch_url, headers=headers)
+            if response.status_code != 200:
+                return {}
+            
+            soup = BeautifulSoup(response.content, 'lxml')
+            result = {
+                'itch_url': itch_url,
+                'platform': 'itch',
+                'is_free': True,  # Most itch games are free or pay-what-you-want
+            }
+            
+            # Get game name
+            title_elem = soup.find('h1', class_='game_title') or soup.find('h1')
+            if title_elem:
+                result['name'] = title_elem.get_text(strip=True)
+            
+            # Get preview image from meta tags
+            og_image = soup.find('meta', property='og:image')
+            if og_image and og_image.get('content'):
+                result['header_image'] = og_image['content']
+            
+            # Get tags - try multiple selectors
+            tags = []
+            
+            # First try to find tags in the info table (most reliable for Itch.io)
+            table_rows = soup.select('table tr')
+            for row in table_rows:
+                cells = row.find_all('td')
+                if len(cells) == 2 and cells[0].get_text(strip=True) == 'Tags':
+                    # Found the tags row, extract tags from second cell
+                    tag_links = cells[1].find_all('a')
+                    for tag_link in tag_links[:10]:
+                        tag_text = tag_link.get_text(strip=True)
+                        if tag_text and len(tag_text) > 1 and tag_text not in tags:
+                            tags.append(tag_text)
+                    break
+            
+            # Fallback selectors if table approach didn't work
+            if not tags:
+                tag_selectors = [
+                    '.game_genre_tag',
+                    '.genre_tag', 
+                    'a[href*="/genre/"]',
+                    'a[href*="/tag/"]',
+                    '.tags a',
+                    '.game_tags a'
+                ]
+                
+                for selector in tag_selectors:
+                    tag_elements = soup.select(selector)
+                    for tag in tag_elements[:10]:  # Limit per selector
+                        tag_text = tag.get_text(strip=True)
+                        if tag_text and len(tag_text) > 1 and tag_text not in tags:
+                            tags.append(tag_text)
+                    if tags:  # Stop at first working selector
+                        break
+                    
+            result['tags'] = tags[:10]  # Limit to 10 tags total
+            
+            # Get rating (itch uses 5-star system, convert to 0-100)
+            # Itch.io specific selectors
+            rating_elem = soup.select_one('.aggregate_rating') or soup.select_one('.star_value')
+            if rating_elem:
+                rating_text = rating_elem.get_text(strip=True)
+                # Extract rating like "Rated 4.7 out of 5 stars"
+                rating_match = re.search(r'(\d+\.?\d*)', rating_text)
+                if rating_match:
+                    stars = float(rating_match.group(1))
+                    # Convert 5-star to 0-100 percentage
+                    result['positive_review_percentage'] = int((stars / 5.0) * 100)
+                    
+                    # Also extract review count if available
+                    count_match = re.search(r'\((\d+)\s*total ratings?\)', rating_text)
+                    if count_match:
+                        result['review_count'] = int(count_match.group(1))
+            
+            # Get download count as proxy for review count
+            count_selectors = [
+                'span.download_count',
+                '.downloads',
+                '.plays_count',
+                '[data-downloads]'
+            ]
+            
+            for selector in count_selectors:
+                count_elem = soup.select_one(selector)
+                if count_elem:
+                    count_text = count_elem.get_text(strip=True) or count_elem.get('data-downloads', '')
+                    # Extract number from "1,234 downloads" or "1,234 plays"
+                    count_match = re.search(r'([\d,]+)', count_text)
+                    if count_match:
+                        result['review_count'] = int(count_match.group(1).replace(',', ''))
+                        break
+            
+            return result
+            
+        except Exception as e:
+            logging.error(f"Error fetching itch.io data: {e}")
+            return {}
+    
+    def fetch_crazygames_data(self, crazygames_url: str) -> Dict:
+        """Fetch game data from CrazyGames"""
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        
+        try:
+            response = requests.get(crazygames_url, headers=headers)
+            if response.status_code != 200:
+                return {}
+            
+            soup = BeautifulSoup(response.content, 'lxml')
+            page_text = response.text
+            
+            result = {
+                'crazygames_url': crazygames_url,
+                'platform': 'crazygames',
+                'is_free': True,  # CrazyGames are free browser games
+            }
+            
+            # Get game name from title or h1
+            title_elem = soup.find('h1') or soup.find('title')
+            if title_elem:
+                title_text = title_elem.get_text(strip=True)
+                # Clean up title (remove " - CrazyGames" suffix)
+                result['name'] = title_text.split(' - CrazyGames')[0].split(' | CrazyGames')[0]
+            
+            # Get tags/categories - CrazyGames specific selectors
+            tags = []
+            # CrazyGames uses specific CSS classes
+            tag_elements = soup.select('.GameTags_gameTagChipContainer__F5xPO a')
+            
+            for tag in tag_elements[:10]:  # Limit to 10 tags
+                tag_text = tag.get_text(strip=True)
+                if tag_text:
+                    # Clean up tag text - remove trailing numbers like "Casual1,157"
+                    import re
+                    clean_tag = re.sub(r'[\d,]+$', '', tag_text).strip()
+                    if clean_tag and len(clean_tag) > 2 and clean_tag not in tags:
+                        tags.append(clean_tag)
+                        
+            result['tags'] = tags
+            
+            # Look for rating in structured data (JSON-LD)
+            script_tags = soup.find_all('script', type='application/ld+json')
+            for script in script_tags:
+                try:
+                    json_data = json.loads(script.string)
+                    # Handle both single dict and array of dicts
+                    if isinstance(json_data, list):
+                        # Find the main game entity
+                        for item in json_data:
+                            if isinstance(item, dict) and item.get('@type') in ['ItemPage', 'VideoGame']:
+                                # Check mainEntity for VideoGame type
+                                main_entity = item.get('mainEntity', {})
+                                if main_entity.get('aggregateRating'):
+                                    aggregate_rating = main_entity['aggregateRating']
+                                    rating_value = float(aggregate_rating['ratingValue'])
+                                    best_rating = float(aggregate_rating.get('bestRating', 10))
+                                    percentage = round((rating_value / best_rating) * 100)
+                                    result['positive_review_percentage'] = int(percentage)
+                                    result['review_count'] = int(aggregate_rating.get('ratingCount', 0))
+                                    logging.info(f"  Found rating in JSON-LD: {rating_value}/{best_rating} = {percentage}%")
+                                    break
+                    elif isinstance(json_data, dict):
+                        # Check for aggregateRating
+                        aggregate_rating = json_data.get('aggregateRating', {})
+                        if aggregate_rating.get('ratingValue'):
+                            rating_value = float(aggregate_rating['ratingValue'])
+                            best_rating = float(aggregate_rating.get('bestRating', 10))
+                            # Convert to 0-100 scale
+                            percentage = round((rating_value / best_rating) * 100)
+                            result['positive_review_percentage'] = int(percentage)
+                            result['review_count'] = int(aggregate_rating.get('ratingCount', 0))
+                            logging.info(f"  Found rating in JSON-LD: {rating_value}/{best_rating} = {percentage}%")
+                            break
+                except Exception as e:
+                    logging.debug(f"  Error parsing JSON-LD: {e}")
+            
+            # Fallback: Look for rating in page text using regex patterns
+            if 'positive_review_percentage' not in result:
+                # Pattern for "X.X / 10" or "X.X out of 10" ratings
+                rating_patterns = [
+                    r'(\d+\.?\d*)\s*(?:/|out of)\s*10\b',
+                    r'rating["\s:]+(\d+\.?\d*)',
+                    r'"ratingValue"[:\s]+["\']?(\d+\.?\d*)',
+                ]
+                
+                for pattern in rating_patterns:
+                    match = re.search(pattern, page_text, re.IGNORECASE)
+                    if match:
+                        rating = float(match.group(1))
+                        if rating <= 10:  # Out of 10 rating
+                            result['positive_review_percentage'] = int((rating / 10.0) * 100)
+                        elif rating <= 100:  # Already percentage
+                            result['positive_review_percentage'] = int(rating)
+                        break
+            
+            # Look for vote/review count
+            if 'review_count' not in result:
+                count_patterns = [
+                    r'(\d{1,3}(?:,\d{3})*)\s*(?:votes?|ratings?)',
+                    r'"ratingCount"[:\s]+["\']?(\d+)',
+                    r'Total Votes[:\s]+(\d{1,3}(?:,\d{3})*)',
+                ]
+                
+                for pattern in count_patterns:
+                    match = re.search(pattern, page_text, re.IGNORECASE)
+                    if match:
+                        count_str = match.group(1).replace(',', '')
+                        result['review_count'] = int(count_str)
+                        break
+            
+            # Get preview image from meta tags
+            og_image = soup.find('meta', property='og:image')
+            if og_image and og_image.get('content'):
+                result['header_image'] = og_image['content']
+            
+            return result
+            
+        except Exception as e:
+            logging.error(f"Error fetching CrazyGames data: {e}")
+            return {}
     
     def fetch_steam_data(self, steam_url: str) -> Dict:
         """Fetch game data from Steam"""
@@ -359,6 +631,20 @@ class YouTubeSteamScraper:
         
         # Method 1: Search raw HTML content for Steam app URLs containing 'demo'
         if html_content:
+            # Look for steam:// protocol install links
+            steam_protocol_pattern = r'steam://install/(\d+)'
+            matches = re.findall(steam_protocol_pattern, html_content)
+            for demo_id in matches:
+                if demo_id != current_id:
+                    return demo_id
+            
+            # Look for JavaScript ShowGotSteamModal calls
+            js_modal_pattern = r'ShowGotSteamModal.*?[\'"]steam://install/(\d+)[\'"]'
+            matches = re.findall(js_modal_pattern, html_content)
+            for demo_id in matches:
+                if demo_id != current_id:
+                    return demo_id
+            
             # Look for patterns like: store.steampowered.com/app/1234567/Game_Demo/
             demo_url_pattern = r'store\.steampowered\.com/app/(\d+)/[^"\']*[Dd]emo[^"\'/]*/?'
             matches = re.findall(demo_url_pattern, html_content)
@@ -417,6 +703,44 @@ class YouTubeSteamScraper:
     
     def _extract_planned_release_date(self, soup: BeautifulSoup, page_text: str) -> Optional[str]:
         """Extract more specific planned release date for coming soon games"""
+        
+        def is_valid_date_string(date_str: str) -> bool:
+            """Validate that a date string looks like an actual date, not system specs"""
+            date_str = date_str.lower().strip()
+            
+            # Invalid patterns (system requirements, etc.)
+            invalid_patterns = [
+                r'\b(at|while|during|via|per)\s+\d+',  # "at 1080", "while 60", etc.
+                r'\d+p\b',                              # "1080p", "720p", etc.
+                r'fps|hz|mhz|ghz',                      # Performance specs
+                r'\b\d+\s*(mb|gb|tb)\b',               # Storage specs
+            ]
+            
+            for pattern in invalid_patterns:
+                if re.search(pattern, date_str, re.IGNORECASE):
+                    return False
+            
+            # Valid patterns (actual dates)
+            valid_patterns = [
+                r'^(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+\d{4}$',
+                r'^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s+\d{1,2},?\s+\d{4}$',
+                r'^(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{4}$',
+                r'^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s+\d{4}$',
+                r'^q[1-4]\s+\d{4}$',
+                r'^\d{4}$',
+                r'^(early|mid|late)\s+\d{4}$',
+                r'^(spring|summer|fall|autumn|winter)\s+\d{4}$',
+                r'^coming soon$',
+                r'^tbd$',
+                r'^to be announced$',
+            ]
+            
+            for pattern in valid_patterns:
+                if re.search(pattern, date_str, re.IGNORECASE):
+                    return True
+                    
+            return False
+        
         # Method 1: Look for specific date patterns in Coming Soon section
         coming_soon_patterns = [
             r'Coming Soon.*?(\w+ \d{1,2},? \d{4})',  # "Coming Soon - January 15, 2025"
@@ -426,9 +750,7 @@ class YouTubeSteamScraper:
             r'Release Date.*?(\w+ \d{1,2},? \d{4})', # "Release Date: January 15, 2025"
             r'Release Date.*?(\w+ \d{4})',           # "Release Date: March 2025"
             r'Release Date.*?(Q[1-4] \d{4})',        # "Release Date: Q2 2025"
-            r'Available.*?(\w+ \d{1,2},? \d{4})',    # "Available January 15, 2025"
-            r'Available.*?(\w+ \d{4})',              # "Available March 2025"
-            r'Available.*?(Q[1-4] \d{4})',           # "Available Q2 2025"
+            # Removed the problematic "Available" patterns that match system requirements
         ]
         
         # Look for date patterns in page text
@@ -436,8 +758,9 @@ class YouTubeSteamScraper:
             match = re.search(pattern, page_text, re.IGNORECASE)
             if match:
                 date_str = match.group(1).strip()
-                # Return the most specific date found
-                return date_str
+                # Validate the date string before returning it
+                if is_valid_date_string(date_str):
+                    return date_str
         
         # Method 2: Look for release date in structured elements
         release_date_element = soup.find('div', class_='release_date')
@@ -446,7 +769,9 @@ class YouTubeSteamScraper:
             # Extract date from "Release Date: DATE" format
             date_match = re.search(r'Release Date:?\s*(.+)', date_text, re.IGNORECASE)
             if date_match:
-                return date_match.group(1).strip()
+                extracted_date = date_match.group(1).strip()
+                if is_valid_date_string(extracted_date):
+                    return extracted_date
         
         # Method 3: Look for coming soon date in meta description or other elements
         coming_soon_element = soup.find('div', string=re.compile(r'Coming Soon', re.IGNORECASE))
@@ -456,7 +781,9 @@ class YouTubeSteamScraper:
             for pattern in [r'(\w+ \d{1,2},? \d{4})', r'(\w+ \d{4})', r'(Q[1-4] \d{4})']:
                 match = re.search(pattern, context)
                 if match:
-                    return match.group(1).strip()
+                    extracted_date = match.group(1).strip()
+                    if is_valid_date_string(extracted_date):
+                        return extracted_date
         
         return None
     
@@ -469,17 +796,24 @@ class YouTubeSteamScraper:
         
         known_video_ids = set(self.videos_data['videos'].keys())
         new_videos_processed = 0
-        batch_size = max_new_videos  # Fetch exactly what we need per batch
+        batch_size = min(max_new_videos * 2, 50)  # Fetch more IDs to account for known videos
         videos_fetched_total = 0
+        consecutive_known_batches = 0
+        
+        # Smart starting position: if we have videos, start from a reasonable offset
+        smart_start_offset = max(0, len(known_video_ids) - 10) if known_video_ids else 0
+        if smart_start_offset > 0:
+            logging.info(f"Smart start: skipping to position {smart_start_offset + 1} (have {len(known_video_ids)} videos)")
+            videos_fetched_total = smart_start_offset
         
         while new_videos_processed < max_new_videos:
             # Calculate how many videos to skip (based on total fetched so far)
             skip_count = videos_fetched_total
             
-            logging.info(f"Fetching {batch_size} videos starting from position {skip_count + 1}")
+            logging.info(f"Fetching {batch_size} video IDs starting from position {skip_count + 1}")
             
-            # Fetch videos with offset
-            videos = self.get_channel_videos_with_offset(channel_url, skip_count, batch_size)
+            # Fetch videos with offset (lightweight - just IDs and basic info)
+            videos = self.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
             
             if not videos:
                 logging.info("No more videos available from channel")
@@ -487,7 +821,9 @@ class YouTubeSteamScraper:
             
             videos_fetched_total += len(videos)
             batch_new_count = 0
+            new_videos_in_batch = []
             
+            # First pass: identify new videos without fetching full metadata
             for video in videos:
                 video_id = video['video_id']
                 
@@ -499,22 +835,49 @@ class YouTubeSteamScraper:
                 if video_id in known_video_ids:
                     continue
                 
-                logging.info(f"Processing: {video['title']}")
-                
-                # Process video with game link extraction
-                video_data = self._process_video_game_links(video)
-                
-                self.videos_data['videos'][video_id] = video_data
-                known_video_ids.add(video_id)  # Add to our tracking set
-                new_videos_processed += 1
-                batch_new_count += 1
+                new_videos_in_batch.append(video)
+                if len(new_videos_in_batch) >= max_new_videos - new_videos_processed:
+                    break
             
-            # If we found new videos, great! Continue if we need more
-            if batch_new_count > 0:
-                logging.info(f"Found {batch_new_count} new videos in this batch")
-            else:
-                # No new videos in this batch - we've likely caught up to known videos
+            if not new_videos_in_batch:
+                consecutive_known_batches += 1
                 logging.info(f"No new videos in this batch, continuing deeper into channel history")
+                # If we've had 3 consecutive batches with no new videos, we're likely caught up
+                if consecutive_known_batches >= 3:
+                    logging.info("Hit 3 consecutive batches with no new videos, stopping search")
+                    break
+                continue
+            else:
+                consecutive_known_batches = 0
+            
+            # Second pass: fetch full metadata only for new videos
+            logging.info(f"Found {len(new_videos_in_batch)} new videos, fetching full metadata")
+            for video in new_videos_in_batch:
+                video_id = video['video_id']
+                
+                if new_videos_processed >= max_new_videos:
+                    break
+                
+                logging.info(f"Processing: {video.get('title', 'Unknown Title')}")
+                
+                # Get full video metadata
+                try:
+                    full_video = self.get_full_video_metadata(video_id)
+                    if full_video:
+                        # Process video with game link extraction
+                        video_data = self._process_video_game_links(full_video)
+                        
+                        self.videos_data['videos'][video_id] = video_data
+                        known_video_ids.add(video_id)  # Add to our tracking set
+                        new_videos_processed += 1
+                        batch_new_count += 1
+                    else:
+                        logging.warning(f"Failed to get full metadata for {video_id}")
+                except Exception as e:
+                    logging.error(f"Error processing video {video_id}: {e}")
+                    continue
+            
+            logging.info(f"Processed {batch_new_count} new videos in this batch")
         
         self.save_videos()
         logging.info(f"Video processing complete. Processed {new_videos_processed} new videos.")
@@ -530,24 +893,52 @@ class YouTubeSteamScraper:
             'steam_app_id': None,
             'itch_url': None,
             'itch_is_demo': False,  # Flag to indicate itch.io is demo/test version
+            'crazygames_url': None,
             'last_updated': datetime.now().isoformat()
         }
         
-        # Prioritize Steam when both platforms exist
-        if game_links.get('steam') and game_links.get('itch'):
-            # Both Steam and itch.io found - prioritize Steam, mark itch as demo
+        # Priority: Steam > Itch.io > CrazyGames, but store all found links
+        if game_links.get('steam'):
             app_id = re.search(r'/app/(\d+)', game_links['steam']).group(1)
             video_data['steam_app_id'] = app_id
-            video_data['itch_url'] = game_links['itch']
-            video_data['itch_is_demo'] = True
-            logging.info(f"  Found both platforms - Steam (primary): {game_links['steam']}, Itch.io (demo): {game_links['itch']}")
-        elif game_links.get('steam'):
-            app_id = re.search(r'/app/(\d+)', game_links['steam']).group(1)
-            video_data['steam_app_id'] = app_id
-            logging.info(f"  Found Steam link: {game_links['steam']}")
+            # Store other platforms as secondary
+            if game_links.get('itch'):
+                video_data['itch_url'] = game_links['itch']
+                video_data['itch_is_demo'] = True
+            if game_links.get('crazygames'):
+                video_data['crazygames_url'] = game_links['crazygames']
+            logging.info(f"  Found Steam link: {game_links['steam']}" + 
+                        (f", Itch.io: {game_links['itch']}" if game_links.get('itch') else "") +
+                        (f", CrazyGames: {game_links['crazygames']}" if game_links.get('crazygames') else ""))
         elif game_links.get('itch'):
             video_data['itch_url'] = game_links['itch']
-            logging.info(f"  Found Itch.io link: {game_links['itch']}")
+            if game_links.get('crazygames'):
+                video_data['crazygames_url'] = game_links['crazygames']
+            logging.info(f"  Found Itch.io link: {game_links['itch']}" +
+                        (f", CrazyGames: {game_links['crazygames']}" if game_links.get('crazygames') else ""))
+            
+            # Fetch itch.io metadata if not already cached
+            if game_links['itch'] not in self.other_games_data['games']:
+                logging.info(f"  Fetching Itch.io metadata...")
+                itch_data = self.fetch_itch_data(game_links['itch'])
+                if itch_data:
+                    itch_data['last_updated'] = datetime.now().isoformat()
+                    self.other_games_data['games'][game_links['itch']] = itch_data
+                    self.save_other_games()
+                    
+        elif game_links.get('crazygames'):
+            video_data['crazygames_url'] = game_links['crazygames']
+            logging.info(f"  Found CrazyGames link: {game_links['crazygames']}")
+            
+            # Fetch CrazyGames metadata if not already cached
+            if game_links['crazygames'] not in self.other_games_data['games']:
+                logging.info(f"  Fetching CrazyGames metadata...")
+                crazygames_data = self.fetch_crazygames_data(game_links['crazygames'])
+                if crazygames_data:
+                    crazygames_data['last_updated'] = datetime.now().isoformat()
+                    self.other_games_data['games'][game_links['crazygames']] = crazygames_data
+                    self.save_other_games()
+                    
         else:
             logging.info(f"  No game links found")
         
@@ -567,6 +958,7 @@ class YouTubeSteamScraper:
             original_steam_id = video_data.get('steam_app_id')
             original_itch_url = video_data.get('itch_url')
             original_itch_is_demo = video_data.get('itch_is_demo', False)
+            original_crazygames_url = video_data.get('crazygames_url')
             
             # Reprocess with current logic
             updated_video_data = self._process_video_game_links(video_data)
@@ -574,7 +966,8 @@ class YouTubeSteamScraper:
             # Check if anything changed
             if (updated_video_data['steam_app_id'] != original_steam_id or
                 updated_video_data['itch_url'] != original_itch_url or
-                updated_video_data['itch_is_demo'] != original_itch_is_demo):
+                updated_video_data['itch_is_demo'] != original_itch_is_demo or
+                updated_video_data['crazygames_url'] != original_crazygames_url):
                 updated_count += 1
                 logging.info(f"  Updated game links for video")
             
@@ -641,6 +1034,73 @@ class YouTubeSteamScraper:
                 
         return videos
     
+    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> List[Dict]:
+        """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
+        videos = []
+        
+        # Use playlist start/end to simulate offset
+        ydl_opts_lightweight = {
+            'quiet': True,
+            'no_warnings': True,
+            'extract_flat': True,
+            'force_generic_extractor': False,
+            'playliststart': skip_count + 1,
+            'playlistend': skip_count + batch_size
+        }
+        
+        with yt_dlp.YoutubeDL(ydl_opts_lightweight) as ydl:
+            try:
+                logging.info(f"Fetching lightweight data from {channel_url}")
+                info = ydl.extract_info(channel_url, download=False)
+                
+                if 'entries' in info:
+                    entries = info['entries']
+                else:
+                    entries = [info] if info else []
+                
+                # Process entries - just extract basic info
+                for entry in entries:
+                    if not entry:
+                        continue
+                        
+                    video_id = entry.get('id')
+                    if not video_id:
+                        continue
+                    
+                    videos.append({
+                        'video_id': video_id,
+                        'title': entry.get('title', ''),
+                        'published_at': datetime.fromtimestamp(
+                            entry.get('timestamp', 0)
+                        ).isoformat() if entry.get('timestamp') else '',
+                        'thumbnail': entry.get('thumbnail', '')
+                    })
+                        
+            except Exception as e:
+                logging.error(f"Error fetching lightweight channel videos: {e}")
+                
+        return videos
+    
+    def get_full_video_metadata(self, video_id: str) -> Optional[Dict]:
+        """Fetch full metadata for a specific video"""
+        try:
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
+            with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
+                video_info = ydl.extract_info(video_url, download=False)
+                
+                return {
+                    'video_id': video_id,
+                    'title': video_info.get('title', ''),
+                    'description': video_info.get('description', ''),
+                    'published_at': datetime.fromtimestamp(
+                        video_info.get('timestamp', 0)
+                    ).isoformat() if video_info.get('timestamp') else '',
+                    'thumbnail': video_info.get('thumbnail', '')
+                }
+        except Exception as e:
+            logging.error(f"Error fetching full metadata for video {video_id}: {e}")
+            return None
+    
     def update_steam_data(self, days_stale: int = 7, max_updates: Optional[int] = None):
         """Update Steam data for games that haven't been updated recently"""
         logging.info(f"Updating Steam data (stale after {days_stale} days)")
@@ -668,7 +1128,9 @@ class YouTubeSteamScraper:
                 if last_updated:
                     last_updated_date = datetime.fromisoformat(last_updated)
                     if last_updated_date > stale_date:
-                        logging.info(f"Skipping app {app_id} - recently updated")
+                        game_name = self.steam_data['games'][app_id].get('name', 'Unknown Game')
+                        days_ago = (datetime.now() - last_updated_date).days
+                        logging.info(f"Skipping app {app_id} ({game_name}) - updated {days_ago} days ago")
                         continue
             
             # Fetch/update Steam data
@@ -696,7 +1158,9 @@ class YouTubeSteamScraper:
                                 last_updated_date = datetime.fromisoformat(last_updated)
                                 if last_updated_date > stale_date:
                                     should_update_full = False
-                                    logging.info(f"  Skipping full game {full_game_id} - recently updated")
+                                    full_game_name = self.steam_data['games'][full_game_id].get('name', 'Unknown Game')
+                                    days_ago = (datetime.now() - last_updated_date).days
+                                    logging.info(f"  Skipping full game {full_game_id} ({full_game_name}) - updated {days_ago} days ago")
                         
                         if should_update_full:
                             try:
@@ -722,7 +1186,9 @@ class YouTubeSteamScraper:
                                 last_updated_date = datetime.fromisoformat(last_updated)
                                 if last_updated_date > stale_date:
                                     should_update_demo = False
-                                    logging.info(f"  Skipping demo {demo_id} - recently updated")
+                                    demo_name = self.steam_data['games'][demo_id].get('name', 'Unknown Game')
+                                    days_ago = (datetime.now() - last_updated_date).days
+                                    logging.info(f"  Skipping demo {demo_id} ({demo_name}) - updated {days_ago} days ago")
                         
                         if should_update_demo:
                             try:
@@ -746,31 +1212,111 @@ class YouTubeSteamScraper:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
-    parser.add_argument('--mode', choices=['videos', 'steam', 'both', 'reprocess'], default='both',
-                        help='What to update: videos, steam data, both, or reprocess existing video descriptions')
+    parser.add_argument('mode', choices=['backfill', 'cron', 'reprocess', 'single-app'], 
+                        help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), or single-app')
+    parser.add_argument('--channel', type=str, help='Channel ID for backfill mode')
     parser.add_argument('--max-new', type=int, help='Maximum number of new videos to process')
     parser.add_argument('--max-steam-updates', type=int, help='Maximum number of Steam games to update')
     parser.add_argument('--steam-stale-days', type=int, default=7,
                         help='Consider Steam data stale after this many days (default: 7)')
+    parser.add_argument('--app-id', type=str, help='Steam app ID to fetch (required for single-app mode)')
     args = parser.parse_args()
     
-    scraper = YouTubeSteamScraper()
-    
-    channel_url = os.getenv('YOUTUBE_CHANNEL_URL')
-    
-    if not channel_url and args.mode in ['videos', 'both']:
-        print("Error: YOUTUBE_CHANNEL_URL environment variable not set")
-        print("Please set it in your .env file or environment")
-        sys.exit(1)
-    
-    # Process based on mode
     if args.mode == 'reprocess':
+        if not args.channel:
+            print("Error: --channel is required for reprocess mode")
+            sys.exit(1)
+        
+        scraper = YouTubeSteamScraper(args.channel)
+        
+        if args.channel not in scraper.config['channels']:
+            print(f"Error: Channel '{args.channel}' not found in config.json")
+            sys.exit(1)
+        
+        logging.info(f"Reprocess mode: reprocessing channel {args.channel}")
         scraper.reprocess_video_descriptions()
-    elif args.mode in ['videos', 'both']:
-        scraper.process_videos(channel_url, max_new_videos=args.max_new)
     
-    if args.mode in ['steam', 'both']:
+    elif args.mode == 'backfill':
+        if not args.channel:
+            print("Error: --channel is required for backfill mode")
+            sys.exit(1)
+        
+        scraper = YouTubeSteamScraper(args.channel)
+        
+        if args.channel not in scraper.config['channels']:
+            print(f"Error: Channel '{args.channel}' not found in config.json")
+            sys.exit(1)
+        
+        channel_url = scraper.config['channels'][args.channel]['url']
+        logging.info(f"Backfill mode: processing channel {args.channel}")
+        
+        scraper.process_videos(channel_url, max_new_videos=args.max_new)
         scraper.update_steam_data(
             days_stale=args.steam_stale_days,
             max_updates=args.max_steam_updates
         )
+    
+    elif args.mode == 'cron':
+        # Load config directly
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(script_dir)
+        config_path = os.path.join(project_root, 'config.json')
+        
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        
+        # Process each enabled channel
+        steam_scraper = None
+        for channel_id, channel_config in config['channels'].items():
+            if not channel_config.get('enabled', True):
+                logging.info(f"Skipping disabled channel: {channel_id}")
+                continue
+            
+            logging.info(f"Cron mode: processing channel {channel_id}")
+            scraper = YouTubeSteamScraper(channel_id)
+            
+            # Process recent videos only (smaller batch for cron)
+            scraper.process_videos(channel_config['url'], max_new_videos=10)
+            
+            # Keep one scraper for Steam updates
+            if steam_scraper is None:
+                steam_scraper = scraper
+        
+        # Update Steam data once for all channels
+        if steam_scraper:
+            steam_scraper.update_steam_data(
+                days_stale=args.steam_stale_days,
+                max_updates=args.max_steam_updates
+            )
+    
+    elif args.mode == 'single-app':
+        if not args.app_id:
+            print("Error: --app-id is required for single-app mode")
+            sys.exit(1)
+        
+        # Use any channel for single-app mode (just need Steam data access)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(script_dir)
+        config_path = os.path.join(project_root, 'config.json')
+        
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        
+        # Get first available channel
+        first_channel = next(iter(config['channels'].keys()))
+        scraper = YouTubeSteamScraper(first_channel)
+        
+        steam_url = f"https://store.steampowered.com/app/{args.app_id}"
+        logging.info(f"Fetching single app: {args.app_id}")
+        
+        try:
+            steam_data = scraper.fetch_steam_data(steam_url)
+            if steam_data:
+                steam_data['last_updated'] = datetime.now().isoformat()
+                scraper.steam_data['games'][args.app_id] = steam_data
+                scraper.save_steam()
+                logging.info(f"Updated: {steam_data.get('name', 'Unknown')}")
+            else:
+                logging.warning(f"Failed to fetch data for app {args.app_id}")
+        except Exception as e:
+            logging.error(f"Error fetching app {args.app_id}: {e}")

@@ -4,8 +4,9 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 
 ## Features
 
-- **YouTube Integration**: Fetches videos from channels using yt-dlp (no API key required)
-- **Multi-Platform Support**: Extracts both Steam and Itch.io game links from descriptions
+- **YouTube Integration**: Fetches videos from multiple channels using yt-dlp (no API key required)
+- **Multi-Platform Support**: Extracts Steam, Itch.io, and CrazyGames links from descriptions
+- **Multi-Channel Support**: Configure and process multiple YouTube channels independently
 - **Comprehensive Steam Data**: 
   - Overall and recent review scores with counts
   - Tags, release status, pricing, demo availability
@@ -21,9 +22,10 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
   - Dark theme optimized for game discovery
   - Smart game consolidation (no duplicate games)
   - Intelligent demo/full game card selection
-  - Filters by platform, release status, rating, tags
+  - Filters by platform, release status, rating, tags, and channel
   - Sortable by rating, date, or name
   - Shows both overall and recent review data
+  - Unified rating scale (0-100) across all platforms
 
 ## Setup
 
@@ -45,10 +47,10 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
    pip install -r scraper/requirements.txt
    ```
 
-4. Configure environment variables:
+4. Configure channels:
    ```bash
-   # Edit .env with your YouTube channel URL
-   # The .env file is already present with example configuration
+   # Edit config.json to add/remove YouTube channels
+   # Channels are configured with their URLs and enabled status
    ```
 
 ### Virtual Environment Management
@@ -64,44 +66,48 @@ This project uses a Python virtual environment (`.venv/`) and includes a `.envrc
 ```bash
 # Ensure virtual environment is activated
 source .venv/bin/activate  # Or use direnv
+```
 
-# Run the scraper from project root
-python scraper/scraper.py
+### Processing Modes
+
+**Backfill Mode** - Process a specific channel with full options:
+```bash
+python scraper/scraper.py backfill --channel idlecub --max-new 20
+python scraper/scraper.py backfill --channel dextag --max-steam-updates 10
+```
+
+**Cron Mode** - Process recent videos from all enabled channels:
+```bash
+python scraper/scraper.py cron
+```
+
+**Reprocess Mode** - Reprocess existing videos to extract new game links:
+```bash
+python scraper/scraper.py reprocess --channel idlecub
+```
+
+**Single App Mode** - Fetch specific Steam game data:
+```bash
+python scraper/scraper.py single-app --app-id 123456
 ```
 
 The scraper will:
-- Fetch recent videos from the configured YouTube channel
-- Extract Steam/Itch links from descriptions
-- Fetch comprehensive game data from Steam
+- Fetch videos from configured YouTube channels
+- Extract Steam/Itch.io/CrazyGames links from descriptions
+- Fetch comprehensive game metadata from all platforms
 - Detect and fetch demo/full game relationships
 - Save data to separate files:
-  - `data/videos.json` - YouTube video data
+  - `data/videos-{channel}.json` - YouTube video data per channel
   - `data/steam_games.json` - Steam game data (including demos)
-
-### Update Modes
-
-```bash
-# Update only videos (incremental, fetches new videos only)
-python scraper/scraper.py --mode videos --max-new 10
-
-# Update only Steam data (refreshes stale game data)
-python scraper/scraper.py --mode steam --max-steam-updates 5 --steam-stale-days 7
-
-# Update both (default)
-python scraper/scraper.py --mode both
-
-# Examples:
-python scraper/scraper.py --max-new 20  # Get 20 new videos + update stale Steam data
-python scraper/scraper.py --mode steam --steam-stale-days 0  # Force refresh all Steam data
-```
+  - `data/other_games.json` - Itch.io and CrazyGames metadata
 
 ### Viewing the Web Interface
 
-1. Open `web/index.html` in a web browser
+1. Open `index.html` in a web browser
 2. Or serve it with a local web server:
    ```bash
    python -m http.server 8000
-   # Visit http://localhost:8000/web/
+   # Visit http://localhost:8000/
    ```
 
 ## GitHub Actions Setup
@@ -117,7 +123,7 @@ See `.github/workflows/scrape.yml` for the workflow configuration.
 
 The scraper saves data in two separate files:
 
-**videos.json** - YouTube video data:
+**videos-{channel}.json** - YouTube video data per channel:
 ```json
 {
   "videos": {
@@ -128,6 +134,10 @@ The scraper saves data in two separate files:
       "published_at": "...",
       "thumbnail": "...",
       "steam_app_id": "12345",
+      "itch_url": "https://...",
+      "crazygames_url": "https://...",
+      "channel_id": "idlecub",
+      "channel_name": "Idle Cub",
       "last_updated": "2025-01-07T..."
     }
   },

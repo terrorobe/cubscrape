@@ -27,15 +27,34 @@
 
 ### Smart Pagination Logic
 - **Problem**: Resume scraping without refetching known videos
-- **Solution**: Track `videos_fetched_total` and use as offset
-- **Benefit**: Efficient channel traversal, natural termination
+- **Solution**: Two-phase approach with smart starting position
+- **Phase 1**: Lightweight ID fetching to identify new videos
+- **Phase 2**: Full metadata fetching only for new videos
+- **Smart Start**: Skip to `len(known_videos) - 10` to avoid redundant API calls
+- **Benefit**: Dramatically reduced YouTube API usage and faster processing
+
+### Platform Prioritization (Steam vs Itch.io)
+- **Challenge**: Some games have both Steam and itch.io versions
+- **Solution**: Prioritize Steam as primary platform, mark itch.io as demo/test version
+- **Logic**: When both platforms detected, Steam becomes main game, itch.io flagged as `itch_is_demo: true`
+- **Web Display**: Shows "Steam" link as primary + "Itch.io Demo" as secondary
+- **Use Case**: Games like Simultree where itch.io hosts the demo/test version
 
 ### Bidirectional Demo/Full Game Detection
 - **Challenge**: Videos can link to either demos or main games
 - **Solution**: Detect relationships in both directions and fetch missing data
-- **Demo Detection**: Search HTML for Steam app URLs containing "demo"
+- **Demo Detection**: Search for `steam://install/` protocol links and JavaScript modal calls
 - **Full Game Detection**: Use Community Hub links and text patterns
 - **Auto-fetching**: When updating one, automatically fetch the other if stale
+- **Fixed Issue**: Steam protocol links (`steam://install/3707160`) were missed by URL patterns
+
+### Planned Release Date Extraction
+- **Challenge**: Steam pages contain system requirements that match date patterns
+- **Problem**: "Available... at 1080p resolution" was extracted as "at 1080"
+- **Solution**: Added comprehensive validation to filter false matches
+- **Invalid Patterns**: `at/while/during + numbers`, resolution specs (`1080p`), performance specs (`fps`)
+- **Valid Patterns**: Actual dates, quarters (`Q1 2025`), years (`2025`), month-year combinations
+- **Result**: Robust extraction that ignores system requirements and technical specifications
 
 ### Environment Configuration
 - **Virtual Environment**: Uses `.venv/` directory with pip dependencies
@@ -90,17 +109,24 @@
 # Ensure virtual environment is active
 source .venv/bin/activate
 
-# Test video fetching
+# Test video fetching (uses smart pagination)
 python scraper/scraper.py --mode videos --max-new 5
 
-# Test Steam data refresh
+# Test Steam data refresh with enhanced logging
 python scraper/scraper.py --mode steam --max-steam-updates 3 --steam-stale-days 0
 
 # Test full pipeline
 python scraper/scraper.py --max-new 10
 
-# Test demo detection (force refresh BROTANK demo)
-python scraper/scraper.py --mode steam --max-steam-updates 1 --steam-stale-days 0
+# Reprocess existing video descriptions (apply new platform logic)
+python scraper/scraper.py --mode reprocess
+
+# Fetch single Steam app (useful for debugging)
+python scraper/scraper.py --mode single-app --app-id 3586420
+
+# Test demo detection (Iron Core example)
+python scraper/scraper.py --mode single-app --app-id 3586420  # Main game
+python scraper/scraper.py --mode single-app --app-id 3707160  # Demo
 ```
 
 ### Debug Script Pattern

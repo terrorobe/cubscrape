@@ -1,0 +1,130 @@
+{
+  "games": {
+    "https://juanggz.itch.io/spartan-survivors": {
+      "itch_url": "https://juanggz.itch.io/spartan-survivors",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Spartan Survivors",
+      "tags": [
+        "2D",
+        "Bullet Hell",
+        "halo",
+        "Roguelite"
+      ],
+      "positive_review_percentage": 94,
+      "review_count": 9,
+      "header_image": "https://img.itch.zone/aW1nLzIxMzY0MTc4LnBuZw==/original/MlZx%2Fl.png",
+      "last_updated": "2025-07-07T17:13:42.655475"
+    },
+    "https://koreanois.itch.io/mercedes": {
+      "itch_url": "https://koreanois.itch.io/mercedes",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Mercedes",
+      "tags": [
+        "2D",
+        "Idle",
+        "Incremental",
+        "Pixel Art"
+      ],
+      "header_image": "https://img.itch.zone/aW1nLzIxOTA5MzY4LnBuZw==/original/6M2Ohh.png",
+      "last_updated": "2025-07-07T17:13:43.442675"
+    },
+    "https://www.crazygames.com/game/mini-crushers": {
+      "crazygames_url": "https://www.crazygames.com/game/mini-crushers",
+      "platform": "crazygames",
+      "is_free": true,
+      "name": "Mini Crushers",
+      "tags": [
+        "Casual",
+        "Destroy",
+        "Side Scrolling",
+        "Incremental",
+        "Collect"
+      ],
+      "positive_review_percentage": 93,
+      "review_count": 6278,
+      "header_image": "https://imgs.crazygames.com/mini-crushers_16x9/20240408085816/mini-crushers_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
+      "last_updated": "2025-07-07T17:13:43.906775"
+    },
+    "https://www.crazygames.com/game/stone-grass-mowing-simulator": {
+      "crazygames_url": "https://www.crazygames.com/game/stone-grass-mowing-simulator",
+      "platform": "crazygames",
+      "is_free": true,
+      "name": "Stone Grass: Mowing Simulator",
+      "tags": [
+        "Casual",
+        "Top-Down",
+        "Simulation",
+        "Relaxing",
+        "Farming",
+        "Incremental",
+        "Collect"
+      ],
+      "positive_review_percentage": 89,
+      "review_count": 301284,
+      "header_image": "https://imgs.crazygames.com/stone-grass-mowing-simulator_16x9/20250410062107/stone-grass-mowing-simulator_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
+      "last_updated": "2025-07-07T17:13:44.015407"
+    },
+    "https://www.crazygames.com/game/block-wall-destroyer": {
+      "crazygames_url": "https://www.crazygames.com/game/block-wall-destroyer",
+      "platform": "crazygames",
+      "is_free": true,
+      "name": "Block Wall Destroyer",
+      "tags": [
+        "Clicker",
+        "Mobile",
+        "Destroy",
+        "Physics",
+        "Incremental",
+        "Mouse",
+        "Block",
+        "Idle"
+      ],
+      "positive_review_percentage": 89,
+      "review_count": 84542,
+      "header_image": "https://imgs.crazygames.com/block-wall-destroyer_16x9/20250602093150/block-wall-destroyer_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
+      "last_updated": "2025-07-07T17:13:44.120068"
+    },
+    "https://aboxwithinabox.itch.io/plinko-idle": {
+      "itch_url": "https://aboxwithinabox.itch.io/plinko-idle",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Plinko Idle",
+      "tags": [
+        "2D",
+        "Godot",
+        "Idle",
+        "Incremental",
+        "No AI",
+        "Relaxing",
+        "Singleplayer"
+      ],
+      "positive_review_percentage": 80,
+      "review_count": 19,
+      "header_image": "https://img.itch.zone/aW1nLzIxNDA0NTUxLnBuZw==/original/o4ytL%2B.png",
+      "last_updated": "2025-07-07T17:13:45.163363"
+    },
+    "https://www.crazygames.com/game/corn-tycoon": {
+      "crazygames_url": "https://www.crazygames.com/game/corn-tycoon",
+      "platform": "crazygames",
+      "is_free": true,
+      "name": "Corn Tycoon",
+      "tags": [
+        "Clicker",
+        "Mobile",
+        "Relaxing",
+        "Farming",
+        "Business",
+        "Incremental",
+        "Management",
+        "Idle"
+      ],
+      "positive_review_percentage": 91,
+      "review_count": 36557,
+      "header_image": "https://imgs.crazygames.com/corn-tycoon_16x9/20250303071102/corn-tycoon_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
+      "last_updated": "2025-07-07T17:13:45.279397"
+    }
+  },
+  "last_updated": "2025-07-07T17:13:45.279403"
+}
