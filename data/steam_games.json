@@ -14738,7 +14738,510 @@
       "recent_review_count": 12,
       "recent_review_summary": "Very Positive",
       "last_updated": "2025-07-07T23:12:52.353315"
+    },
+    "1637320": {
+      "steam_app_id": "1637320",
+      "steam_url": "https://store.steampowered.com/app/1637320",
+      "name": "Dome Keeper",
+      "is_free": false,
+      "release_date": "27 Sep, 2022",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Workshop",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Bippinbits"
+      ],
+      "publishers": [
+        "Raw Fury"
+      ],
+      "price": "7,19\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1637320/59d43bf0c4500a3aa0a39b506d5dd5a39090ab00/header.jpg?t=1749460476",
+      "tags": [
+        "Singleplayer",
+        "Post-apocalyptic",
+        "Roguelike",
+        "Action",
+        "Sci-fi",
+        "Combat",
+        "Resource Management",
+        "Tower Defense",
+        "Pixel Graphics",
+        "Atmospheric"
+      ],
+      "has_demo": true,
+      "demo_app_id": "1650980",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 92,
+      "review_count": 14211,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 95,
+      "recent_review_count": 172,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "last_updated": "2025-07-07T23:28:58.095537"
+    },
+    "1650980": {
+      "steam_app_id": "1650980",
+      "steam_url": "https://store.steampowered.com/app/1650980",
+      "name": "Dome Keeper Demo",
+      "is_free": true,
+      "release_date": "14 Feb, 2022",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "Bippinbits"
+      ],
+      "publishers": [
+        "Raw Fury"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1650980/header.jpg?t=1730898719",
+      "tags": [
+        "Action",
+        "Adventure",
+        "Simulation",
+        "Roguelike",
+        "Tower Defense",
+        "Exploration",
+        "2D",
+        "Pixel Graphics",
+        "Atmospheric",
+        "Post-apocalyptic"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "1637320",
+      "is_early_access": false,
+      "positive_review_percentage": 89,
+      "review_count": 64,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-07T23:28:58.797418"
+    },
+    "2858150": {
+      "steam_app_id": "2858150",
+      "steam_url": "https://store.steampowered.com/app/2858150",
+      "name": "Airships: Lost Flotilla",
+      "is_free": false,
+      "release_date": "23 Jan, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Steam Workshop",
+        "Camera Comfort",
+        "Color Alternatives",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Keyboard Only Option",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Stereo Sound",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "David Stark"
+      ],
+      "publishers": [
+        "David Stark",
+        "Metaroot"
+      ],
+      "price": "4,41\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2858150/header.jpg?t=1748682600",
+      "tags": [
+        "Arcade",
+        "Roguelike",
+        "Singleplayer",
+        "Action Roguelike",
+        "Bullet Hell",
+        "Survival",
+        "Arena Shooter",
+        "Roguelite",
+        "Hack and Slash",
+        "Replay Value"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 90,
+      "review_count": 190,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 92,
+      "recent_review_count": 14,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T23:30:33.962391"
+    },
+    "2927780": {
+      "steam_app_id": "2927780",
+      "steam_url": "https://store.steampowered.com/app/2927780",
+      "name": "Last Outpost",
+      "is_free": false,
+      "release_date": "6 Feb, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Indie",
+        "Strategy",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Troyd Games"
+      ],
+      "publishers": [
+        "Troyd Games"
+      ],
+      "price": "7,49\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2927780/8b9f8b79599febe3bb4a75f435980bce0b48da5a/header.jpg?t=1751658916",
+      "tags": [
+        "Tower Defense",
+        "Strategy",
+        "City Builder",
+        "RTS",
+        "Roguelike",
+        "Base Building",
+        "Minimalist",
+        "Pixel Graphics",
+        "Indie",
+        "Early Access"
+      ],
+      "has_demo": false,
+      "is_demo": false,
+      "is_early_access": true,
+      "positive_review_percentage": 76,
+      "review_count": 42,
+      "review_summary": "Mostly Positive",
+      "last_updated": "2025-07-07T23:30:35.123026"
+    },
+    "3307570": {
+      "steam_app_id": "3307570",
+      "steam_url": "https://store.steampowered.com/app/3307570",
+      "name": "Crown of Greed Demo",
+      "is_free": true,
+      "release_date": "20 Jan, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "BLUM Entertainment"
+      ],
+      "publishers": [
+        "ConsoleWay"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3307570/header.jpg?t=1737643223",
+      "tags": [
+        "Strategy",
+        "Dark Fantasy",
+        "Tower Defense",
+        "Real Time Tactics",
+        "Grand Strategy",
+        "3D",
+        "Building",
+        "Base Building",
+        "Economy",
+        "Fantasy"
+      ],
+      "has_demo": false,
+      "is_demo": true,
+      "full_game_app_id": "1697870",
+      "is_early_access": false,
+      "positive_review_percentage": 88,
+      "review_count": 340,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 63,
+      "recent_review_count": 19,
+      "recent_review_summary": "Mixed",
+      "last_updated": "2025-07-07T23:30:36.069587"
+    },
+    "1697870": {
+      "steam_app_id": "1697870",
+      "steam_url": "https://store.steampowered.com/app/1697870",
+      "name": "Crown of Greed",
+      "is_free": false,
+      "release_date": "Q1 2026",
+      "coming_soon": true,
+      "genres": [
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Family Sharing"
+      ],
+      "developers": [
+        "BLUM Entertainment"
+      ],
+      "publishers": [
+        "PlayWay S.A.",
+        "ConsoleWay"
+      ],
+      "price": null,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1697870/header.jpg?t=1750667144",
+      "tags": [
+        "Strategy",
+        "Simulation",
+        "City Builder",
+        "Fantasy",
+        "RTS",
+        "Economy",
+        "Building",
+        "Strategy RPG",
+        "3D",
+        "Historical"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3307570",
+      "is_demo": false,
+      "is_early_access": false,
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "planned_release_date": "Q1 2026",
+      "last_updated": "2025-07-07T23:30:36.738235"
+    },
+    "619820": {
+      "steam_app_id": "619820",
+      "steam_url": "https://store.steampowered.com/app/619820",
+      "name": "Heroes of Hammerwatch II",
+      "is_free": false,
+      "release_date": "14 Jan, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Crackshell"
+      ],
+      "publishers": [
+        "Crackshell"
+      ],
+      "price": "11,36\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/619820/header.jpg?t=1738105739",
+      "tags": [
+        "RPG",
+        "Action RPG",
+        "Action Roguelike",
+        "Action",
+        "Roguelike",
+        "Dungeon Crawler",
+        "Adventure",
+        "Roguelite",
+        "Procedural Generation",
+        "Hack and Slash"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3264410",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 85,
+      "review_count": 4094,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 78,
+      "recent_review_count": 113,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-07T23:30:38.745721"
+    },
+    "3264410": {
+      "steam_app_id": "3264410",
+      "steam_url": "https://store.steampowered.com/app/3264410",
+      "name": "Heroes of Hammerwatch II Demo",
+      "is_free": true,
+      "release_date": "13 Oct, 2024",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Game demo",
+        "Partial Controller Support"
+      ],
+      "developers": [
+        "Crackshell"
+      ],
+      "publishers": [
+        "Crackshell"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3264410/header.jpg?t=1728846203",
+      "tags": [
+        "RPG",
+        "Action RPG",
+        "Action Roguelike",
+        "Action",
+        "Roguelike",
+        "Dungeon Crawler",
+        "Adventure",
+        "Roguelite",
+        "Procedural Generation",
+        "Hack and Slash"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3264410",
+      "is_demo": true,
+      "full_game_app_id": "619820",
+      "is_early_access": false,
+      "positive_review_percentage": 85,
+      "review_count": 4094,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 78,
+      "recent_review_count": 113,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-07T23:30:40.001160"
+    },
+    "3428620": {
+      "steam_app_id": "3428620",
+      "steam_url": "https://store.steampowered.com/app/3428620",
+      "name": "Max Manos",
+      "is_free": false,
+      "release_date": "6 Mar, 2025",
+      "coming_soon": false,
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Stats",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Max Manos",
+        "Jumoh"
+      ],
+      "publishers": [
+        "Max Manos"
+      ],
+      "price": "4,41\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3428620/header.jpg?t=1747732882",
+      "tags": [
+        "Clicker",
+        "Strategy",
+        "Arcade",
+        "Simulation",
+        "Idler",
+        "Management",
+        "Abstract",
+        "Relaxing",
+        "Minimalist",
+        "Colorful"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3474480",
+      "is_demo": false,
+      "is_early_access": false,
+      "positive_review_percentage": 94,
+      "review_count": 349,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 95,
+      "recent_review_count": 24,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T23:30:40.808641"
+    },
+    "3474480": {
+      "steam_app_id": "3474480",
+      "steam_url": "https://store.steampowered.com/app/3474480",
+      "name": "Max Manos Demo",
+      "is_free": true,
+      "release_date": "25 Jan, 2025",
+      "coming_soon": false,
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Max Manos"
+      ],
+      "publishers": [
+        "Max Manos"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3474480/header.jpg?t=1738848544",
+      "tags": [
+        "Clicker",
+        "Strategy",
+        "Arcade",
+        "Simulation",
+        "Idler",
+        "Management",
+        "Abstract",
+        "Relaxing",
+        "Minimalist",
+        "Colorful"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3474480",
+      "is_demo": true,
+      "full_game_app_id": "3428620",
+      "is_early_access": false,
+      "positive_review_percentage": 94,
+      "review_count": 349,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 95,
+      "recent_review_count": 24,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-07T23:30:41.727540"
     }
   },
-  "last_updated": "2025-07-07T23:12:52.353416"
+  "last_updated": "2025-07-07T23:30:42.074607"
 }
