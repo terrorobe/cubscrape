@@ -577,6 +577,27 @@ class YouTubeSteamScraper:
             result['positive_review_percentage'] = percentage
             result['review_count'] = count
             result['review_summary'] = summary
+        else:
+            # Check for cases where there are reviews but not enough for a score
+            insufficient_review_patterns = [
+                r'Need more user reviews to generate a score.*?(\d+)\s*user review',
+                r'(\d+)\s*user review.*?Need more user reviews',
+                r'(\d+)\s*review.*?Need more.*?score',
+            ]
+            
+            for pattern in insufficient_review_patterns:
+                match = re.search(pattern, page_text, re.IGNORECASE | re.DOTALL)
+                if match:
+                    review_count = int(match.group(1))
+                    result['review_count'] = review_count
+                    result['insufficient_reviews'] = True
+                    result['review_summary'] = 'Need more reviews for score'
+                    break
+            
+            # Also check for "No user reviews" case
+            if 'No user reviews' in page_text:
+                result['review_count'] = 0
+                result['review_summary'] = 'No user reviews'
         
         # Extract more specific planned release date for coming soon games
         if app_data and app_data.get('release_date', {}).get('coming_soon'):
@@ -858,7 +879,8 @@ class YouTubeSteamScraper:
                 if new_videos_processed >= max_new_videos:
                     break
                 
-                logging.info(f"Processing: {video.get('title', 'Unknown Title')}")
+                video_date = video.get('published_at', '')[:10] if video.get('published_at') else 'Unknown Date'
+                logging.info(f"Processing: {video.get('title', 'Unknown Title')} ({video_date})")
                 
                 # Get full video metadata
                 try:
@@ -952,7 +974,8 @@ class YouTubeSteamScraper:
         updated_count = 0
         
         for video_id, video_data in self.videos_data['videos'].items():
-            logging.info(f"Reprocessing: {video_data.get('title', 'Unknown Title')}")
+            video_date = video_data.get('published_at', '')[:10] if video_data.get('published_at') else 'Unknown Date'
+            logging.info(f"Reprocessing: {video_data.get('title', 'Unknown Title')} ({video_date})")
             
             # Store original data for comparison
             original_steam_id = video_data.get('steam_app_id')
@@ -1098,7 +1121,13 @@ class YouTubeSteamScraper:
                     'thumbnail': video_info.get('thumbnail', '')
                 }
         except Exception as e:
-            logging.error(f"Error fetching full metadata for video {video_id}: {e}")
+            error_msg = str(e)
+            if "This video is available to this channel's members" in error_msg:
+                logging.info(f"Skipping member-only video {video_id}")
+            elif "Private video" in error_msg or "Video unavailable" in error_msg:
+                logging.info(f"Skipping unavailable video {video_id}")
+            else:
+                logging.error(f"Error fetching full metadata for video {video_id}: {e}")
             return None
     
     def update_steam_data(self, days_stale: int = 7, max_updates: Optional[int] = None):
@@ -1208,12 +1237,385 @@ class YouTubeSteamScraper:
         self.save_steam()
         logging.info(f"Steam data update complete. Updated {updates_done} games.")
     
+    def check_data_quality(self, channels_config: Dict):
+        """Check data quality across all channels and games"""
+        print("\n" + "="*80)
+        print("DATA QUALITY REPORT")
+        print("="*80)
+        
+        total_issues = 0
+        
+        # 1. Check for videos with missing game data
+        print("\n1. CHECKING VIDEOS WITH MISSING GAME DATA")
+        print("-" * 50)
+        
+        videos_missing_games = 0
+        videos_with_games = 0
+        
+        # Load all channel video files
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(script_dir)
+        
+        for channel_id in channels_config.keys():
+            videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
+            if not os.path.exists(videos_file):
+                print(f"⚠️  Missing video file for channel {channel_id}: {videos_file}")
+                total_issues += 1
+                continue
+                
+            with open(videos_file, 'r') as f:
+                channel_data = json.load(f)
+            
+            channel_videos_missing = 0
+            channel_videos_with_games = 0
+            
+            for video_id, video in channel_data.get('videos', {}).items():
+                has_game = bool(video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url'))
+                
+                if has_game:
+                    videos_with_games += 1
+                    channel_videos_with_games += 1
+                else:
+                    videos_missing_games += 1
+                    channel_videos_missing += 1
+                    if channel_videos_missing <= 5:  # Show first 5 examples
+                        print(f"   📺 {channel_id}: '{video.get('title', 'Unknown')}' (ID: {video_id})")
+            
+            if channel_videos_missing > 5:
+                print(f"   ... and {channel_videos_missing - 5} more videos in {channel_id}")
+            
+            print(f"Channel {channel_id}: {channel_videos_with_games} with games, {channel_videos_missing} without")
+        
+        print(f"\nSUMMARY: {videos_with_games} videos with games, {videos_missing_games} videos without games")
+        if videos_missing_games > 0:
+            percentage = (videos_missing_games / (videos_with_games + videos_missing_games)) * 100
+            print(f"📊 {percentage:.1f}% of videos are missing game data")
+            total_issues += videos_missing_games
+        
+        # 2. Check Steam games for missing metadata
+        print("\n\n2. CHECKING STEAM GAMES METADATA")
+        print("-" * 50)
+        
+        steam_issues = 0
+        required_steam_fields = ['name', 'steam_app_id', 'tags', 'positive_review_percentage']
+        optional_steam_fields = ['header_image', 'review_summary', 'price']
+        
+        for app_id, game in self.steam_data.get('games', {}).items():
+            missing_required = []
+            missing_optional = []
+            
+            # Check required fields, but skip positive_review_percentage for coming soon games
+            for field in required_steam_fields:
+                if not game.get(field):
+                    # Coming soon games legitimately don't have review data
+                    if field == 'positive_review_percentage' and game.get('coming_soon'):
+                        continue
+                    # Games with insufficient reviews also legitimately don't have percentage scores
+                    if field == 'positive_review_percentage' and game.get('insufficient_reviews'):
+                        continue
+                    # Games with no reviews also legitimately don't have percentage scores
+                    if field == 'positive_review_percentage' and game.get('review_count') == 0:
+                        continue
+                    missing_required.append(field)
+            
+            for field in optional_steam_fields:
+                if not game.get(field):
+                    # Coming soon games legitimately don't have price or review data
+                    if game.get('coming_soon') and field in ['review_summary', 'price']:
+                        continue
+                    missing_optional.append(field)
+            
+            if missing_required:
+                print(f"❌ Steam game {app_id} ({game.get('name', 'Unknown')}) missing required: {', '.join(missing_required)}")
+                steam_issues += 1
+                total_issues += 1
+            elif missing_optional:
+                print(f"⚠️  Steam game {app_id} ({game.get('name', 'Unknown')}) missing optional: {', '.join(missing_optional)}")
+        
+        # Count coming soon games and insufficient reviews for informational purposes
+        coming_soon_count = sum(1 for game in self.steam_data.get('games', {}).values() if game.get('coming_soon'))
+        insufficient_reviews_count = sum(1 for game in self.steam_data.get('games', {}).values() if game.get('insufficient_reviews'))
+        no_reviews_count = sum(1 for game in self.steam_data.get('games', {}).values() if game.get('review_count') == 0)
+        
+        print(f"\nSteam games checked: {len(self.steam_data.get('games', {}))}")
+        print(f"Coming soon games (no reviews expected): {coming_soon_count}")
+        if insufficient_reviews_count > 0:
+            print(f"Games with insufficient reviews for score: {insufficient_reviews_count}")
+        if no_reviews_count > 0:
+            print(f"Games with no reviews yet: {no_reviews_count}")
+        if steam_issues == 0:
+            print("✅ All Steam games have required metadata")
+        else:
+            print(f"❌ {steam_issues} Steam games have missing required metadata")
+        
+        # 3. Check other games (Itch.io, CrazyGames) for missing metadata
+        print("\n\n3. CHECKING OTHER GAMES METADATA")
+        print("-" * 50)
+        
+        other_issues = 0
+        required_other_fields = ['name', 'platform', 'tags']
+        optional_other_fields = ['header_image', 'positive_review_percentage', 'review_count']
+        
+        for url, game in self.other_games_data.get('games', {}).items():
+            missing_required = []
+            missing_optional = []
+            
+            for field in required_other_fields:
+                if not game.get(field) or (field == 'tags' and len(game.get(field, [])) == 0):
+                    missing_required.append(field)
+            
+            for field in optional_other_fields:
+                if not game.get(field):
+                    missing_optional.append(field)
+            
+            if missing_required:
+                print(f"❌ {game.get('platform', 'Unknown')} game '{game.get('name', 'Unknown')}' missing required: {', '.join(missing_required)}")
+                other_issues += 1
+                total_issues += 1
+            elif missing_optional:
+                print(f"⚠️  {game.get('platform', 'Unknown')} game '{game.get('name', 'Unknown')}' missing optional: {', '.join(missing_optional)}")
+        
+        print(f"\nOther games checked: {len(self.other_games_data.get('games', {}))}")
+        if other_issues == 0:
+            print("✅ All other games have required metadata")
+        else:
+            print(f"❌ {other_issues} other games have missing required metadata")
+        
+        # 4. Check for stale data
+        print("\n\n4. CHECKING FOR STALE DATA")
+        print("-" * 50)
+        
+        stale_threshold = datetime.now() - timedelta(days=30)  # 30 days
+        stale_steam = 0
+        stale_other = 0
+        
+        for app_id, game in self.steam_data.get('games', {}).items():
+            last_updated = game.get('last_updated')
+            if last_updated:
+                try:
+                    last_updated_date = datetime.fromisoformat(last_updated)
+                    if last_updated_date < stale_threshold:
+                        days_old = (datetime.now() - last_updated_date).days
+                        print(f"🕐 Steam game {app_id} ({game.get('name', 'Unknown')}) is {days_old} days old")
+                        stale_steam += 1
+                except ValueError:
+                    print(f"❌ Steam game {app_id} has invalid last_updated format: {last_updated}")
+                    total_issues += 1
+        
+        for url, game in self.other_games_data.get('games', {}).items():
+            last_updated = game.get('last_updated')
+            if last_updated:
+                try:
+                    last_updated_date = datetime.fromisoformat(last_updated)
+                    if last_updated_date < stale_threshold:
+                        days_old = (datetime.now() - last_updated_date).days
+                        print(f"🕐 {game.get('platform', 'Unknown')} game '{game.get('name', 'Unknown')}' is {days_old} days old")
+                        stale_other += 1
+                except ValueError:
+                    print(f"❌ {game.get('platform', 'Unknown')} game has invalid last_updated format: {last_updated}")
+                    total_issues += 1
+        
+        if stale_steam == 0 and stale_other == 0:
+            print("✅ No stale game data found")
+        else:
+            print(f"📊 {stale_steam} Steam games and {stale_other} other games are older than 30 days")
+        
+        # 5. Summary
+        print("\n\n" + "="*80)
+        print("SUMMARY")
+        print("="*80)
+        
+        print(f"📊 Total videos: {videos_with_games + videos_missing_games}")
+        print(f"📊 Videos with games: {videos_with_games}")
+        print(f"📊 Videos without games: {videos_missing_games}")
+        print(f"📊 Steam games: {len(self.steam_data.get('games', {}))}")
+        print(f"📊 Other games: {len(self.other_games_data.get('games', {}))}")
+        print(f"📊 Stale Steam games (>30 days): {stale_steam}")
+        print(f"📊 Stale other games (>30 days): {stale_other}")
+        
+        if total_issues == 0:
+            print("\n✅ DATA QUALITY: EXCELLENT - No critical issues found!")
+        elif total_issues <= 5:
+            print(f"\n⚠️  DATA QUALITY: GOOD - {total_issues} minor issues found")
+        elif total_issues <= 20:
+            print(f"\n⚠️  DATA QUALITY: FAIR - {total_issues} issues found")
+        else:
+            print(f"\n❌ DATA QUALITY: POOR - {total_issues} issues found")
+        
+        print("="*80)
+        return total_issues
+    
+    def search_steam_games(self, query: str) -> List[Dict]:
+        """Search Steam for games by name"""
+        url = "https://store.steampowered.com/api/storesearch/"
+        params = {
+            'term': query,
+            'l': 'english',
+            'cc': 'US'
+        }
+        
+        try:
+            response = requests.get(url, params=params)
+            if response.status_code == 200:
+                data = response.json()
+                return data.get('items', [])
+        except Exception as e:
+            logging.error(f"Error searching Steam for '{query}': {e}")
+        
+        return []
+    
+    def extract_potential_game_names(self, title: str) -> List[str]:
+        """Extract potential game names from video titles"""
+        # Common patterns in gaming videos
+        patterns = [
+            r'\|\s*([^|]+?)\s*$',                                    # "Something | Game Name"
+            r'^([^!|]+?)(?:\s+is\s+|\s+Review|\s+Gameplay|\s*\|)',  # "Game Name is Amazing!" or "Game Name | Channel"
+            r'^\s*(.+?)\s+(?:Review|Gameplay|First Impression)',     # "Game Name Review"
+            r'^(?:Playing|I Played|This)\s+(.+?)\s+(?:for|and|is)', # "I Played Game Name for..."
+            r'^(.+?)\s+(?:Has|Will|Can|Gets)',                      # "Game Name Has Amazing Features"
+        ]
+        
+        potential_names = []
+        
+        for pattern in patterns:
+            match = re.search(pattern, title, re.IGNORECASE)
+            if match:
+                name = match.group(1).strip()
+                # Clean up common words and punctuation
+                name = re.sub(r'\b(the|a|an|this|new|amazing|incredible|insane|crazy)\b', '', name, flags=re.IGNORECASE)
+                name = re.sub(r'[!?]+$', '', name)  # Remove trailing exclamation/question marks
+                name = re.sub(r'\s+', ' ', name).strip()
+                if len(name) > 3 and name not in potential_names:  # Avoid very short matches and duplicates
+                    potential_names.append(name)
+        
+        return potential_names
+    
+    def infer_games_from_titles(self, channels_config: Dict):
+        """Infer games from video titles using Steam search"""
+        print("\n" + "="*80)
+        print("GAME INFERENCE FROM VIDEO TITLES")
+        print("="*80)
+        
+        total_videos_processed = 0
+        games_found = 0
+        
+        # Load all channel video files
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(script_dir)
+        
+        for channel_id in channels_config.keys():
+            videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
+            if not os.path.exists(videos_file):
+                print(f"⚠️  Missing video file for channel {channel_id}: {videos_file}")
+                continue
+                
+            with open(videos_file, 'r') as f:
+                channel_data = json.load(f)
+            
+            print(f"\n📺 Processing channel: {channel_id}")
+            
+            videos_without_games = []
+            for video_id, video in channel_data.get('videos', {}).items():
+                has_game = bool(video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url'))
+                if not has_game:
+                    videos_without_games.append((video_id, video))
+            
+            if not videos_without_games:
+                print("   ✅ All videos already have game data")
+                continue
+            
+            print(f"   🔍 Found {len(videos_without_games)} videos without game data")
+            
+            channel_games_found = 0
+            for video_id, video in videos_without_games:
+                total_videos_processed += 1
+                title = video.get('title', '')
+                
+                print(f"\n   📹 {title}")
+                
+                # Extract potential game names
+                potential_names = self.extract_potential_game_names(title)
+                if not potential_names:
+                    print("      ❌ No potential game names found in title")
+                    continue
+                
+                print(f"      🎯 Potential names: {potential_names}")
+                
+                # Search Steam for each potential name
+                best_match = None
+                best_confidence = 0
+                
+                for name in potential_names:
+                    results = self.search_steam_games(name)
+                    if results:
+                        # Simple confidence scoring based on name similarity
+                        for result in results[:3]:  # Check top 3 results
+                            game_name = result['name'].lower()
+                            search_name = name.lower()
+                            
+                            # Calculate similarity (simple word overlap)
+                            search_words = set(search_name.split())
+                            game_words = set(game_name.split())
+                            overlap = len(search_words & game_words)
+                            confidence = overlap / max(len(search_words), len(game_words))
+                            
+                            if confidence > best_confidence and confidence > 0.5:  # At least 50% word overlap
+                                best_match = result
+                                best_confidence = confidence
+                
+                if best_match:
+                    app_id = str(best_match['id'])
+                    game_name = best_match['name']
+                    print(f"      ✅ Found match: {game_name} (App ID: {app_id}, confidence: {best_confidence:.2f})")
+                    
+                    # Update video data
+                    video['steam_app_id'] = app_id
+                    video['inferred_game'] = True  # Mark as inferred for review
+                    video['last_updated'] = datetime.now().isoformat()
+                    
+                    # Fetch full game data
+                    try:
+                        steam_url = f"https://store.steampowered.com/app/{app_id}"
+                        steam_data = self.fetch_steam_data(steam_url)
+                        if steam_data:
+                            steam_data['last_updated'] = datetime.now().isoformat()
+                            self.steam_data['games'][app_id] = steam_data
+                            print(f"      📊 Fetched game metadata: {steam_data.get('name', 'Unknown')}")
+                    except Exception as e:
+                        logging.error(f"      ❌ Error fetching Steam data for {app_id}: {e}")
+                    
+                    games_found += 1
+                    channel_games_found += 1
+                else:
+                    print("      ❌ No confident matches found on Steam")
+            
+            # Save updated video data
+            if channel_games_found > 0:
+                with open(videos_file, 'w') as f:
+                    json.dump(channel_data, f, indent=2)
+                print(f"   💾 Saved {channel_games_found} game inferences for {channel_id}")
+        
+        # Save updated Steam data
+        if games_found > 0:
+            self.save_steam()
+        
+        print(f"\n" + "="*80)
+        print("GAME INFERENCE SUMMARY")
+        print("="*80)
+        print(f"📊 Videos processed: {total_videos_processed}")
+        print(f"🎮 Games found: {games_found}")
+        if games_found > 0:
+            print(f"✅ Success rate: {(games_found/total_videos_processed)*100:.1f}%")
+            print("\n⚠️  Note: Inferred games are marked with 'inferred_game: true' for review")
+        print("="*80)
+        
+        return games_found
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
-    parser.add_argument('mode', choices=['backfill', 'cron', 'reprocess', 'single-app'], 
-                        help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), or single-app')
+    parser.add_argument('mode', choices=['backfill', 'cron', 'reprocess', 'single-app', 'data-quality', 'infer-games'], 
+                        help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), single-app, data-quality, or infer-games')
     parser.add_argument('--channel', type=str, help='Channel ID for backfill mode')
     parser.add_argument('--max-new', type=int, help='Maximum number of new videos to process')
     parser.add_argument('--max-steam-updates', type=int, help='Maximum number of Steam games to update')
@@ -1320,3 +1722,35 @@ if __name__ == "__main__":
                 logging.warning(f"Failed to fetch data for app {args.app_id}")
         except Exception as e:
             logging.error(f"Error fetching app {args.app_id}: {e}")
+    
+    elif args.mode == 'data-quality':
+        # Load config directly
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(script_dir)
+        config_path = os.path.join(project_root, 'config.json')
+        
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        
+        # Use first available channel to access data files
+        first_channel = next(iter(config['channels'].keys()))
+        scraper = YouTubeSteamScraper(first_channel)
+        
+        logging.info("Data quality check: analyzing all channels and games")
+        scraper.check_data_quality(config['channels'])
+    
+    elif args.mode == 'infer-games':
+        # Load config directly
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(script_dir)
+        config_path = os.path.join(project_root, 'config.json')
+        
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        
+        # Use first available channel to access data files
+        first_channel = next(iter(config['channels'].keys()))
+        scraper = YouTubeSteamScraper(first_channel)
+        
+        logging.info("Game inference: searching for games in video titles")
+        scraper.infer_games_from_titles(config['channels'])

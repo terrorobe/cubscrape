@@ -191,7 +191,9 @@ function processGames() {
             video_id: video.video_id,
             video_title: video.video_title,
             video_date: video.video_date,
-            video_thumbnail: video.video_thumbnail
+            video_thumbnail: video.video_thumbnail,
+            channel_id: video.channel_id,
+            channel_name: video.channel_name
         });
         gameGroups[displayKey].video_count++;
         
@@ -263,7 +265,11 @@ function applyFilters() {
     
     // Release status filter (only applies to Steam games)
     if (releaseFilter === 'released') {
-        filtered = filtered.filter(game => game.platform === 'itch' || game.platform === 'crazygames' || (!game.coming_soon && !game.is_early_access));
+        filtered = filtered.filter(game => 
+            game.platform === 'itch' || 
+            game.platform === 'crazygames' || 
+            (game.platform === 'steam' && !game.coming_soon && !game.is_early_access && !game.is_demo)
+        );
     } else if (releaseFilter === 'early-access') {
         filtered = filtered.filter(game => game.platform === 'steam' && game.is_early_access);
     } else if (releaseFilter === 'coming-soon') {
@@ -300,6 +306,52 @@ function applyFilters() {
 // Render games to grid
 function renderGames() {
     applyFilters();
+}
+
+function generateChannelGroupedVideos(videos) {
+    // Group videos by channel
+    const videosByChannel = {};
+    videos.forEach(video => {
+        const channelKey = video.channel_id || 'unknown';
+        if (!videosByChannel[channelKey]) {
+            videosByChannel[channelKey] = {
+                name: video.channel_name || 'Unknown Channel',
+                videos: []
+            };
+        }
+        videosByChannel[channelKey].videos.push(video);
+    });
+    
+    // Sort videos within each channel by date (newest first)
+    Object.values(videosByChannel).forEach(channel => {
+        channel.videos.sort((a, b) => new Date(b.video_date) - new Date(a.video_date));
+    });
+    
+    // Generate HTML for each channel group
+    return Object.entries(videosByChannel).map(([channelId, channel]) => {
+        const videoItems = channel.videos.map(video => {
+            const formattedDate = new Date(video.video_date).toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            return `
+                <div class="video-item">
+                    <a href="https://youtube.com/watch?v=${video.video_id}" target="_blank">
+                        ${video.video_title}
+                    </a>
+                    <span class="video-item-date">${formattedDate}</span>
+                </div>
+            `;
+        }).join('');
+        
+        return `
+            <div class="channel-group">
+                <div class="channel-header">${channel.name} (${channel.videos.length})</div>
+                ${videoItems}
+            </div>
+        `;
+    }).join('');
 }
 
 function renderFilteredGames(games) {
@@ -386,21 +438,24 @@ function renderFilteredGames(games) {
                     <div class="video-info">
                         <div class="video-title">${game.video_title}</div>
                         <div class="video-date">Video: ${formattedDate}</div>
-                        <div class="channel-info">Channel: ${game.channel_name}</div>
+                        <div class="channel-info">
+                            ${(() => {
+                                // Show multiple channels if game has videos from different creators
+                                const uniqueChannels = [...new Set(game.videos.map(v => v.channel_name))];
+                                if (uniqueChannels.length > 1) {
+                                    return `Channels: ${uniqueChannels.join(', ')}`;
+                                } else {
+                                    return `Channel: ${game.channel_name}`;
+                                }
+                            })()}
+                        </div>
                         ${game.video_count > 1 ? `
                             <div class="video-count">Featured in ${game.video_count} videos</div>
                             <div class="video-expand" onclick="toggleVideos('${game.game_key}', event)">
                                 <span class="expand-text">Show all videos</span>
                             </div>
                             <div class="all-videos" id="videos-${game.game_key}" style="display: none;">
-                                ${game.videos.map(video => `
-                                    <div class="video-item">
-                                        <a href="https://youtube.com/watch?v=${video.video_id}" target="_blank">
-                                            ${video.video_title}
-                                        </a>
-                                        <span class="video-item-date">${new Date(video.video_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                    </div>
-                                `).join('')}
+                                ${generateChannelGroupedVideos(game.videos)}
                             </div>
                         ` : ''}
                     </div>

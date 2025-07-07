@@ -124,7 +124,190 @@
       "review_count": 36557,
       "header_image": "https://imgs.crazygames.com/corn-tycoon_16x9/20250303071102/corn-tycoon_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "last_updated": "2025-07-07T17:13:45.279397"
+    },
+    "https://timberwolfgames.itch.io/arcaneearth": {
+      "itch_url": "https://timberwolfgames.itch.io/arcaneearth",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Arcane Earth - Increment Clicker",
+      "header_image": "https://img.itch.zone/aW1nLzIxMjc1MDEzLnBuZw==/original/X12Mhz.png",
+      "tags": [
+        "2D",
+        "Clicker",
+        "cosy",
+        "Idle",
+        "Incremental",
+        "mining",
+        "Mouse only",
+        "Pixel Art",
+        "upgrades"
+      ],
+      "positive_review_percentage": 86,
+      "review_count": 46,
+      "last_updated": "2025-07-07T17:57:09.618438"
+    },
+    "https://annekatran.itch.io/dig-and-delve": {
+      "itch_url": "https://annekatran.itch.io/dig-and-delve",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Dig and Delve",
+      "header_image": "https://img.itch.zone/aW1nLzIwNjM3MjEwLnBuZw==/original/GBJwnu.png",
+      "tags": [
+        "3D",
+        "Incremental",
+        "Ludum Dare 57",
+        "Unity"
+      ],
+      "positive_review_percentage": 94,
+      "review_count": 63,
+      "last_updated": "2025-07-07T17:57:20.760996"
+    },
+    "https://bicken-bones.itch.io/little-dig-game": {
+      "itch_url": "https://bicken-bones.itch.io/little-dig-game",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Little Dig Game",
+      "header_image": "https://img.itch.zone/aW1nLzIxMTYyMDMyLnBuZw==/original/xKtea3.png",
+      "tags": [
+        "2D",
+        "Casual",
+        "Incremental",
+        "Pixel Art",
+        "Short",
+        "Singleplayer"
+      ],
+      "positive_review_percentage": 92,
+      "review_count": 46,
+      "last_updated": "2025-07-07T18:20:16.932553"
+    },
+    "https://black-heart-games-studio.itch.io/plinkidle": {
+      "itch_url": "https://black-heart-games-studio.itch.io/plinkidle",
+      "platform": "itch",
+      "is_free": true,
+      "name": "PlinkIdle",
+      "header_image": "https://img.itch.zone/aW1nLzIxNDQ4NzgxLnBuZw==/original/yvlO4z.png",
+      "tags": [
+        "Casual",
+        "Cozy",
+        "early-access",
+        "Idle",
+        "Incremental"
+      ],
+      "positive_review_percentage": 88,
+      "review_count": 95,
+      "last_updated": "2025-07-07T18:20:29.030016"
+    },
+    "https://bippinbits.itch.io/shleep": {
+      "itch_url": "https://bippinbits.itch.io/shleep",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Shleep",
+      "header_image": "https://img.itch.zone/aW1nLzIwNjM4MTM3LnBuZw==/original/uY1Isw.png",
+      "tags": [
+        "Clicker",
+        "Incremental",
+        "Ludum Dare",
+        "Ludum Dare 57"
+      ],
+      "positive_review_percentage": 96,
+      "review_count": 515,
+      "last_updated": "2025-07-07T18:21:16.886452"
+    },
+    "https://www.crazygames.com/game/crusher-block-jwd": {
+      "crazygames_url": "https://www.crazygames.com/game/crusher-block-jwd",
+      "platform": "crazygames",
+      "is_free": true,
+      "name": "Crusher Block",
+      "tags": [
+        "Clicker",
+        "Mobile",
+        "Destroy",
+        "Physics",
+        "Incremental",
+        "Mouse",
+        "Idle"
+      ],
+      "positive_review_percentage": 90,
+      "review_count": 8327,
+      "header_image": "https://imgs.crazygames.com/crusher-block-jwd_16x9/20250403023523/crusher-block-jwd_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
+      "last_updated": "2025-07-07T18:22:37.524896"
+    },
+    "https://duocar.itch.io/the-great-hatch": {
+      "itch_url": "https://duocar.itch.io/the-great-hatch",
+      "platform": "itch",
+      "is_free": true,
+      "name": "The great hatch",
+      "header_image": "https://img.itch.zone/aW1nLzIwMTM1NDQ5LnBuZw==/original/5zngVe.png",
+      "tags": [
+        "Casual",
+        "Clicker",
+        "Economy",
+        "Fantasy",
+        "Idle",
+        "Incremental",
+        "Management"
+      ],
+      "positive_review_percentage": 86,
+      "review_count": 46,
+      "last_updated": "2025-07-07T18:22:45.433294"
+    },
+    "https://mezzaninesoftware.itch.io/landsword": {
+      "itch_url": "https://mezzaninesoftware.itch.io/landsword",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Project Landsword",
+      "header_image": "https://img.itch.zone/aW1nLzE2ODExOTk2LnBuZw==/original/Qk8FVz.png",
+      "tags": [
+        "Destruction",
+        "mecha",
+        "Mechs",
+        "Pixel Art",
+        "Sci-fi",
+        "Shoot 'Em Up",
+        "Singleplayer",
+        "Tanks",
+        "Top down shooter"
+      ],
+      "positive_review_percentage": 98,
+      "review_count": 344,
+      "last_updated": "2025-07-07T18:22:57.982912"
+    },
+    "https://luis0413.itch.io/mine-your-way-out-2": {
+      "itch_url": "https://luis0413.itch.io/mine-your-way-out-2",
+      "platform": "itch",
+      "is_free": true,
+      "name": "Mine Your Way Out 2",
+      "header_image": "https://img.itch.zone/aW1nLzIxMDAzMTI2LnBuZw==/original/qbvA3q.png",
+      "tags": [
+        "Boss battle",
+        "Bullet Hell",
+        "cellular-automata",
+        "Destruction",
+        "Exploration",
+        "Incremental",
+        "Pixel Art",
+        "Space"
+      ],
+      "positive_review_percentage": 90,
+      "review_count": 53,
+      "last_updated": "2025-07-07T18:23:33.112486"
+    },
+    "https://fortynina.itch.io/when-civilians-dig-holes": {
+      "itch_url": "https://fortynina.itch.io/when-civilians-dig-holes",
+      "platform": "itch",
+      "is_free": true,
+      "name": "When Civilians Dig Holes",
+      "header_image": "https://img.itch.zone/aW1nLzIwMzMxMTg0LnBuZw==/original/%2Bhukrx.png",
+      "tags": [
+        "Clicker",
+        "Idle",
+        "Incremental",
+        "No AI"
+      ],
+      "positive_review_percentage": 88,
+      "review_count": 48,
+      "last_updated": "2025-07-07T18:24:38.944501"
     }
   },
-  "last_updated": "2025-07-07T17:13:45.279403"
+  "last_updated": "2025-07-07T18:24:38.944510"
 }

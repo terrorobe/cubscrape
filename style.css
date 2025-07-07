@@ -331,6 +331,32 @@ h1 {
     color: var(--text-secondary);
 }
 
+/* Channel grouping styles */
+.channel-group {
+    margin-bottom: 15px;
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+}
+
+.channel-header {
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.channel-group .video-item {
+    margin-left: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--card-bg);
+}
+
+.channel-group .video-item:last-child {
+    border-bottom: none;
+}
+
 @media (max-width: 768px) {
     .filters {
         flex-direction: column;

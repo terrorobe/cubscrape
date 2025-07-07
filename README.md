@@ -22,6 +22,8 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
   - Dark theme optimized for game discovery
   - Smart game consolidation (no duplicate games)
   - Intelligent demo/full game card selection
+  - **Multi-channel support with videos grouped by creator**
+  - **Social preview images for enhanced visual appeal**
   - Filters by platform, release status, rating, tags, and channel
   - Sortable by rating, date, or name
   - Shows both overall and recent review data
@@ -91,11 +93,25 @@ python scraper/scraper.py reprocess --channel idlecub
 python scraper/scraper.py single-app --app-id 123456
 ```
 
+**Data Quality Mode** - Check data integrity and completeness:
+```bash
+python scraper/scraper.py data-quality
+```
+
+**Game Inference Mode** - Find games from video titles using Steam search:
+```bash
+python scraper/scraper.py infer-games
+```
+
 The scraper will:
 - Fetch videos from configured YouTube channels
 - Extract Steam/Itch.io/CrazyGames links from descriptions
+- **Infer games from video titles when links are missing**
 - Fetch comprehensive game metadata from all platforms
+- **Extract social preview images (header images) for all platforms**
 - Detect and fetch demo/full game relationships
+- **Handle insufficient reviews and coming soon games gracefully**
+- **Check data quality and identify missing metadata**
 - Save data to separate files:
   - `data/videos-{channel}.json` - YouTube video data per channel
   - `data/steam_games.json` - Steam game data (including demos)
