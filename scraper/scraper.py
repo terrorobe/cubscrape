@@ -1238,8 +1238,47 @@ class YouTubeSteamScraper:
             print(f"📊 {percentage:.1f}% of videos are missing game data")
             total_issues += videos_missing_games
         
-        # 2. Check Steam games for missing metadata
-        print("\n\n2. CHECKING STEAM GAMES METADATA")
+        # 2. Check for missing Steam games referenced in videos
+        print("\n\n2. CHECKING FOR MISSING STEAM GAMES")
+        print("-" * 50)
+        
+        # Collect all Steam app IDs referenced in videos
+        referenced_steam_apps = set()
+        for channel_id in channels_config.keys():
+            videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
+            if os.path.exists(videos_file):
+                with open(videos_file, 'r') as f:
+                    channel_data = json.load(f)
+                
+                for video_id, video in channel_data.get('videos', {}).items():
+                    steam_app_id = video.get('steam_app_id')
+                    if steam_app_id:
+                        referenced_steam_apps.add(steam_app_id)
+        
+        # Check which referenced Steam games are missing from our database
+        missing_steam_games = []
+        for app_id in referenced_steam_apps:
+            if app_id not in self.steam_data.get('games', {}):
+                missing_steam_games.append(app_id)
+        
+        if missing_steam_games:
+            print(f"❌ Found {len(missing_steam_games)} Steam games referenced in videos but missing from database:")
+            for i, app_id in enumerate(missing_steam_games[:10]):  # Show first 10
+                print(f"   🎮 Steam App ID: {app_id} (https://store.steampowered.com/app/{app_id})")
+            
+            if len(missing_steam_games) > 10:
+                print(f"   ... and {len(missing_steam_games) - 10} more missing Steam games")
+            
+            total_issues += len(missing_steam_games)
+            print(f"\n📊 {len(missing_steam_games)} out of {len(referenced_steam_apps)} referenced Steam games are missing ({(len(missing_steam_games)/len(referenced_steam_apps)*100):.1f}%)")
+        else:
+            print("✅ All referenced Steam games have metadata in database")
+        
+        print(f"Total referenced Steam games: {len(referenced_steam_apps)}")
+        print(f"Steam games in database: {len(self.steam_data.get('games', {}))}")
+        
+        # 3. Check Steam games for missing metadata
+        print("\n\n3. CHECKING STEAM GAMES METADATA")
         print("-" * 50)
         
         steam_issues = 0
@@ -1294,8 +1333,8 @@ class YouTubeSteamScraper:
         else:
             print(f"❌ {steam_issues} Steam games have missing required metadata")
         
-        # 3. Check other games (Itch.io, CrazyGames) for missing metadata
-        print("\n\n3. CHECKING OTHER GAMES METADATA")
+        # 4. Check other games (Itch.io, CrazyGames) for missing metadata
+        print("\n\n4. CHECKING OTHER GAMES METADATA")
         print("-" * 50)
         
         other_issues = 0
@@ -1327,8 +1366,8 @@ class YouTubeSteamScraper:
         else:
             print(f"❌ {other_issues} other games have missing required metadata")
         
-        # 4. Check for stale data
-        print("\n\n4. CHECKING FOR STALE DATA")
+        # 5. Check for stale data
+        print("\n\n5. CHECKING FOR STALE DATA")
         print("-" * 50)
         
         stale_threshold = datetime.now() - timedelta(days=30)  # 30 days
@@ -1366,7 +1405,7 @@ class YouTubeSteamScraper:
         else:
             print(f"📊 {stale_steam} Steam games and {stale_other} other games are older than 30 days")
         
-        # 5. Summary
+        # 6. Summary
         print("\n\n" + "="*80)
         print("SUMMARY")
         print("="*80)
@@ -1447,6 +1486,78 @@ class YouTubeSteamScraper:
             logging.error(f"Error finding Steam match for '{game_name}': {e}")
             return None
     
+    def find_steam_match_interactive(self, game_name: str, confidence_threshold: float = 0.5) -> Optional[Dict]:
+        """Find Steam match with interactive prompting for low confidence results"""
+        try:
+            results = self.search_steam_games(game_name)
+            if not results:
+                print(f"      ❌ No Steam search results for '{game_name}'")
+                return None
+            
+            best_match = None
+            best_confidence = 0
+            low_confidence_matches = []
+            
+            # Check all results
+            for result in results[:5]:  # Check top 5 instead of 3
+                steam_game_name = result['name']
+                search_name = game_name.lower()
+                
+                # Calculate similarity (same logic as find_steam_match)
+                search_words = set(search_name.split())
+                game_words = set(steam_game_name.lower().split())
+                overlap = len(search_words & game_words)
+                confidence = overlap / max(len(search_words), len(game_words))
+                
+                if confidence >= confidence_threshold:
+                    if confidence > best_confidence:
+                        best_match = result
+                        best_confidence = confidence
+                elif confidence >= 0.3:  # Low confidence but potentially valid
+                    low_confidence_matches.append((result, confidence))
+            
+            # If we found a high confidence match, return it
+            if best_match:
+                return {
+                    'app_id': str(best_match['id']),
+                    'name': best_match['name'],
+                    'confidence': best_confidence
+                }
+            
+            # If no high confidence matches, prompt for low confidence ones
+            if low_confidence_matches:
+                print(f"      🤔 Found potential matches for '{game_name}' (low confidence):")
+                for i, (result, conf) in enumerate(low_confidence_matches):
+                    print(f"         {i+1}. {result['name']} (confidence: {conf:.2f})")
+                
+                print(f"         0. None of these / Skip")
+                
+                while True:
+                    try:
+                        choice = input(f"      Select match (0-{len(low_confidence_matches)}): ").strip()
+                        choice_num = int(choice)
+                        
+                        if choice_num == 0:
+                            return None
+                        elif 1 <= choice_num <= len(low_confidence_matches):
+                            selected = low_confidence_matches[choice_num - 1]
+                            return {
+                                'app_id': str(selected[0]['id']),
+                                'name': selected[0]['name'],
+                                'confidence': selected[1]
+                            }
+                        else:
+                            print("      Invalid choice, try again.")
+                    except (ValueError, KeyboardInterrupt):
+                        print("      Skipping this match...")
+                        return None
+            
+            return None
+            
+        except Exception as e:
+            logging.error(f"Error finding Steam match for '{game_name}': {e}")
+            return None
+    
     def _show_channel_progress(self, channel_url: str):
         """Show channel scraping progress summary"""
         try:
@@ -1518,14 +1629,42 @@ class YouTubeSteamScraper:
         
         return potential_names
     
+    def _should_process_video_for_inference(self, video: Dict) -> Optional[str]:
+        """Determine if video needs processing for game inference"""
+        # Case 1: No game data at all
+        if not video.get('steam_app_id') and not video.get('itch_url') and not video.get('crazygames_url'):
+            return "no_game_data"
+        
+        # Case 2: Has steam_app_id but it's missing from our database
+        steam_app_id = video.get('steam_app_id')
+        if steam_app_id and steam_app_id not in self.steam_data.get('games', {}):
+            return "missing_steam_game"
+        
+        return None
+    
+    def _check_steam_availability(self, app_id: str) -> str:
+        """Check if Steam app is still available"""
+        url = f"https://store.steampowered.com/app/{app_id}"
+        try:
+            response = requests.head(url, timeout=5)
+            if response.status_code == 404:
+                return "depublished"
+            elif response.status_code == 200:
+                return "available" 
+            else:
+                return "unknown"
+        except:
+            return "unknown"
+    
     def infer_games_from_titles(self, channels_config: Dict):
-        """Infer games from video titles using Steam search"""
+        """Infer games from video titles and resolve missing Steam games"""
         print("\n" + "="*80)
-        print("GAME INFERENCE FROM VIDEO TITLES")
+        print("GAME INFERENCE AND MISSING STEAM GAMES RESOLUTION")
         print("="*80)
         
         total_videos_processed = 0
         games_found = 0
+        missing_resolved = 0
         
         # Load all channel video files
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -1542,26 +1681,67 @@ class YouTubeSteamScraper:
             
             print(f"\n📺 Processing channel: {channel_id}")
             
-            videos_without_games = []
+            # Find videos that need processing
+            videos_to_process = []
             for video_id, video in channel_data.get('videos', {}).items():
-                has_game = bool(video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url'))
-                if not has_game:
-                    videos_without_games.append((video_id, video))
+                process_reason = self._should_process_video_for_inference(video)
+                if process_reason:
+                    videos_to_process.append((video_id, video, process_reason))
             
-            if not videos_without_games:
-                print("   ✅ All videos already have game data")
+            if not videos_to_process:
+                print("   ✅ All videos have valid game data")
                 continue
             
-            print(f"   🔍 Found {len(videos_without_games)} videos without game data")
+            # Categorize videos
+            no_game_data = [v for v in videos_to_process if v[2] == "no_game_data"]
+            missing_steam = [v for v in videos_to_process if v[2] == "missing_steam_game"]
+            
+            print(f"   🔍 Found {len(no_game_data)} videos without game data")
+            print(f"   🔍 Found {len(missing_steam)} videos with missing Steam games")
             
             channel_games_found = 0
-            for video_id, video in videos_without_games:
+            channel_missing_resolved = 0
+            
+            # Process all videos that need inference
+            for video_id, video, reason in videos_to_process:
                 total_videos_processed += 1
                 title = video.get('title', '')
                 
-                print(f"\n   📹 {title}")
+                if reason == "missing_steam_game":
+                    print(f"\n   📹 {title} [MISSING STEAM: {video.get('steam_app_id')}]")
+                    
+                    # First, try to fetch the missing Steam game directly
+                    missing_app_id = video.get('steam_app_id')
+                    availability = self._check_steam_availability(missing_app_id)
+                    
+                    if availability == "available":
+                        print(f"      🔄 Steam app {missing_app_id} is available, attempting fetch...")
+                        try:
+                            steam_url = f"https://store.steampowered.com/app/{missing_app_id}"
+                            steam_data = self.fetch_steam_data(steam_url)
+                            if steam_data:
+                                steam_data['last_updated'] = datetime.now().isoformat()
+                                self.steam_data['games'][missing_app_id] = steam_data
+                                print(f"      ✅ Successfully fetched: {steam_data.get('name', 'Unknown')}")
+                                missing_resolved += 1
+                                channel_missing_resolved += 1
+                                continue
+                        except Exception as e:
+                            print(f"      ⚠️  Failed to fetch {missing_app_id}: {e}")
+                    
+                    elif availability == "depublished":
+                        print(f"      🚫 Steam app {missing_app_id} is depublished, searching for alternatives...")
+                        # Mark the original as broken and try to find alternatives
+                        video['broken_app_id'] = missing_app_id
+                        video['steam_app_id'] = None  # Clear so we can find alternative
+                    
+                    else:
+                        print(f"      ❓ Steam app {missing_app_id} status unknown, searching for alternatives...")
                 
-                # Extract potential game names
+                else:
+                    print(f"\n   📹 {title}")
+                
+                # Extract potential game names (for both no_game_data and failed missing_steam_game cases)
                 potential_names = self.extract_potential_game_names(title)
                 if not potential_names:
                     print("      ❌ No potential game names found in title")
@@ -1573,7 +1753,7 @@ class YouTubeSteamScraper:
                 best_match = None
                 
                 for name in potential_names:
-                    steam_match = self.find_steam_match(name, confidence_threshold=0.5)
+                    steam_match = self.find_steam_match_interactive(name, confidence_threshold=0.5)
                     if steam_match:
                         # Keep the best match across all potential names
                         if not best_match or steam_match['confidence'] > best_match['confidence']:
@@ -1587,6 +1767,7 @@ class YouTubeSteamScraper:
                     # Update video data
                     video['steam_app_id'] = app_id
                     video['inferred_game'] = True  # Mark as inferred for review
+                    video['inference_reason'] = reason
                     video['last_updated'] = datetime.now().isoformat()
                     
                     # Fetch full game data
@@ -1602,30 +1783,39 @@ class YouTubeSteamScraper:
                     
                     games_found += 1
                     channel_games_found += 1
+                    if reason == "missing_steam_game":
+                        missing_resolved += 1
+                        channel_missing_resolved += 1
                 else:
                     print("      ❌ No confident matches found on Steam")
             
             # Save updated video data
-            if channel_games_found > 0:
+            if channel_games_found > 0 or channel_missing_resolved > 0:
                 with open(videos_file, 'w') as f:
                     json.dump(channel_data, f, indent=2)
-                print(f"   💾 Saved {channel_games_found} game inferences for {channel_id}")
+                print(f"   💾 Saved {channel_games_found} game inferences and {channel_missing_resolved} resolved missing games for {channel_id}")
         
         # Save updated Steam data
-        if games_found > 0:
+        if games_found > 0 or missing_resolved > 0:
             self.save_steam()
         
         print(f"\n" + "="*80)
-        print("GAME INFERENCE SUMMARY")
+        print("GAME INFERENCE AND RESOLUTION SUMMARY")
         print("="*80)
         print(f"📊 Videos processed: {total_videos_processed}")
-        print(f"🎮 Games found: {games_found}")
+        print(f"🎮 New games found via inference: {games_found}")
+        print(f"🔧 Missing Steam games resolved: {missing_resolved}")
+        print(f"✅ Total games found/resolved: {games_found + missing_resolved}")
+        if total_videos_processed > 0:
+            success_rate = ((games_found + missing_resolved) / total_videos_processed) * 100
+            print(f"📈 Success rate: {success_rate:.1f}%")
         if games_found > 0:
-            print(f"✅ Success rate: {(games_found/total_videos_processed)*100:.1f}%")
             print("\n⚠️  Note: Inferred games are marked with 'inferred_game: true' for review")
+        if missing_resolved > 0:
+            print("⚠️  Note: Some videos may have 'broken_app_id' field for depublished games")
         print("="*80)
         
-        return games_found
+        return games_found + missing_resolved
 
 
 if __name__ == "__main__":

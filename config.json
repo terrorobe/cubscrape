@@ -9,6 +9,11 @@
       "name": "DexTag",
       "url": "https://www.youtube.com/@DexTag/videos",
       "enabled": true
+    },
+    "olexa": {
+      "name": "OlexaYT",
+      "url": "https://www.youtube.com/@OlexaYT/videos",
+      "enabled": true
     }
   }
 }

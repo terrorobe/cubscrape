@@ -383,7 +383,27 @@
       "positive_review_percentage": 88,
       "review_count": 138,
       "last_updated": "2025-07-07T23:04:29.407412"
+    },
+    "https://playcebo.itch.io/12-word-searches": {
+      "itch_url": "https://playcebo.itch.io/12-word-searches",
+      "platform": "itch",
+      "is_free": true,
+      "name": "12 Word Searches",
+      "header_image": "https://img.itch.zone/aW1nLzEzNjQ4NTM3LnBuZw==/original/Ujxv5s.png",
+      "tags": [
+        "Difficult",
+        "pdf",
+        "secrets",
+        "SVG",
+        "Text based",
+        "Trivia",
+        "Word game",
+        "word-search"
+      ],
+      "positive_review_percentage": 100,
+      "review_count": 107,
+      "last_updated": "2025-07-08T00:15:58.529815"
     }
   },
-  "last_updated": "2025-07-07T23:04:29.407419"
+  "last_updated": "2025-07-08T00:15:58.529837"
 }
