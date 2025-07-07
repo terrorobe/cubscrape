@@ -4,30 +4,10 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 
 ## Features
 
-- **YouTube Integration**: Fetches videos from multiple channels using yt-dlp (no API key required)
-- **Multi-Platform Support**: Extracts Steam, Itch.io, and CrazyGames links from descriptions
-- **Multi-Channel Support**: Configure and process multiple YouTube channels independently
-- **Comprehensive Steam Data**: 
-  - Overall and recent review scores with counts
-  - Tags, release status, pricing, demo availability
-  - Early access and coming soon detection
-  - Enhanced planned release dates (specific dates, quarters)
-  - Bidirectional demo/full game relationship detection
-- **Smart Incremental Updates**: 
-  - Videos fetched once (immutable)
-  - Steam data refreshed independently with staleness detection
-  - Efficient pagination through channel history
-  - Automatic demo/full game data fetching
-- **Modern Web Interface**: 
-  - Dark theme optimized for game discovery
-  - Smart game consolidation (no duplicate games)
-  - Intelligent demo/full game card selection
-  - **Multi-channel support with videos grouped by creator**
-  - **Social preview images for enhanced visual appeal**
-  - Filters by platform, release status, rating, tags, and channel
-  - Sortable by rating, date, or name
-  - Shows both overall and recent review data
-  - Unified rating scale (0-100) across all platforms
+- **Multi-Platform Support**: Steam, Itch.io, and CrazyGames link extraction and metadata
+- **Multi-Channel Support**: Process multiple YouTube channels independently  
+- **Interactive Game Resolution**: Prompts for low confidence matches, handles missing/depublished games
+- **Web Interface**: Filterable, sortable game discovery with unified 0-100 rating scale
 
 ## Setup
 
@@ -55,20 +35,6 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
    # Channels are configured with their URLs and enabled status
    ```
 
-### Virtual Environment Management
-
-This project uses a Python virtual environment (`.venv/`) and includes a `.envrc` file for automatic activation with direnv:
-
-- **Manual activation**: `source .venv/bin/activate`
-- **With direnv**: The environment activates automatically when entering the directory
-- **Deactivation**: `deactivate` (manual) or leave directory (direnv)
-
-### Running the Scraper
-
-```bash
-# Ensure virtual environment is activated
-source .venv/bin/activate  # Or use direnv
-```
 
 ### Processing Modes
 
@@ -76,6 +42,7 @@ source .venv/bin/activate  # Or use direnv
 ```bash
 python scraper/scraper.py backfill --channel idlecub --max-new 20
 python scraper/scraper.py backfill --channel dextag --max-steam-updates 10
+python scraper/scraper.py backfill --channel olexa --max-new 50
 ```
 
 **Cron Mode** - Process recent videos from all enabled channels:
@@ -96,26 +63,20 @@ python scraper/scraper.py single-app --app-id 123456
 **Data Quality Mode** - Check data integrity and completeness:
 ```bash
 python scraper/scraper.py data-quality
+# Identifies missing Steam games referenced in videos
 ```
 
-**Game Inference Mode** - Find games from video titles using Steam search:
+**Game Inference Mode** - Find games from video titles and resolve missing Steam games:
 ```bash
 python scraper/scraper.py infer-games
+# Interactive prompts for low confidence matches
+# Resolves missing/depublished Steam games
 ```
 
-The scraper will:
-- Fetch videos from configured YouTube channels
-- Extract Steam/Itch.io/CrazyGames links from descriptions
-- **Infer games from video titles when links are missing**
-- Fetch comprehensive game metadata from all platforms
-- **Extract social preview images (header images) for all platforms**
-- Detect and fetch demo/full game relationships
-- **Handle insufficient reviews and coming soon games gracefully**
-- **Check data quality and identify missing metadata**
-- Save data to separate files:
-  - `data/videos-{channel}.json` - YouTube video data per channel
-  - `data/steam_games.json` - Steam game data (including demos)
-  - `data/other_games.json` - Itch.io and CrazyGames metadata
+Data is saved to:
+- `data/videos-{channel}.json` - YouTube video data per channel
+- `data/steam_games.json` - Steam game metadata
+- `data/other_games.json` - Itch.io and CrazyGames metadata
 
 ### Viewing the Web Interface
 
@@ -126,18 +87,9 @@ The scraper will:
    # Visit http://localhost:8000/
    ```
 
-## GitHub Actions Setup
-
-The project can be automated with GitHub Actions to:
-1. Run the scraper periodically
-2. Commit updated data
-3. Deploy to GitHub Pages
-
-See `.github/workflows/scrape.yml` for the workflow configuration.
-
 ## Data Structure
 
-The scraper saves data in two separate files:
+Key data structures:
 
 **videos-{channel}.json** - YouTube video data per channel:
 ```json
@@ -152,6 +104,9 @@ The scraper saves data in two separate files:
       "steam_app_id": "12345",
       "itch_url": "https://...",
       "crazygames_url": "https://...",
+      "broken_app_id": "789012",
+      "inferred_game": true,
+      "inference_reason": "missing_steam_game",
       "channel_id": "idlecub",
       "channel_name": "Idle Cub",
       "last_updated": "2025-01-07T..."
