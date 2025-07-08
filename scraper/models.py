@@ -3,8 +3,8 @@ Data models for the YouTube Steam scraper
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 from datetime import datetime
+from typing import List, Optional
 
 
 @dataclass

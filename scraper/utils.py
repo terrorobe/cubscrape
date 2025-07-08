@@ -2,18 +2,19 @@
 Utility functions for the YouTube Steam scraper
 """
 
-import re
 import json
 import os
+import re
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List
+
 from models import GameLinks
 
 
 def extract_game_links(description: str) -> GameLinks:
     """Extract game store links from video description"""
     links = GameLinks()
-    
+
     # Steam patterns
     steam_patterns = [
         r'https?://store\.steampowered\.com/app/(\d+)',
@@ -21,45 +22,45 @@ def extract_game_links(description: str) -> GameLinks:
         r'https?://s\.team/a/(\d+)',
         r'https?://store\.steampowered\.com/news/app/(\d+)'
     ]
-    
+
     for pattern in steam_patterns:
         match = re.search(pattern, description)
         if match:
             app_id = match.group(1)
             links.steam = f"https://store.steampowered.com/app/{app_id}"
             break
-    
+
     # Itch.io patterns
     itch_patterns = [
         r'https?://([^.]+)\.itch\.io/([^/\s]+)',
         r'https?://itch\.io/games/([^/\s]+)'
     ]
-    
+
     for pattern in itch_patterns:
         match = re.search(pattern, description)
         if match:
             links.itch = match.group(0)
             break
-    
+
     # CrazyGames patterns
     crazygames_patterns = [
         r'https?://www\.crazygames\.com/game/([^/\s]+)',
         r'https?://crazygames\.com/game/([^/\s]+)'
     ]
-    
+
     for pattern in crazygames_patterns:
         match = re.search(pattern, description)
         if match:
             links.crazygames = match.group(0)
             break
-    
+
     return links
 
 
 def is_valid_date_string(date_str: str) -> bool:
     """Validate that a date string looks like an actual date, not system specs"""
     date_str = date_str.lower().strip()
-    
+
     # Invalid patterns (system requirements, etc.)
     invalid_patterns = [
         r'\b(at|while|during|via|per)\s+\d+',  # "at 1080", "while 60", etc.
@@ -67,11 +68,11 @@ def is_valid_date_string(date_str: str) -> bool:
         r'fps|hz|mhz|ghz',                      # Performance specs
         r'\b\d+\s*(mb|gb|tb)\b',               # Storage specs
     ]
-    
+
     for pattern in invalid_patterns:
         if re.search(pattern, date_str, re.IGNORECASE):
             return False
-    
+
     # Valid patterns (actual dates)
     valid_patterns = [
         r'^(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+\d{4}$',
@@ -86,11 +87,11 @@ def is_valid_date_string(date_str: str) -> bool:
         r'^tbd$',
         r'^to be announced$',
     ]
-    
+
     for pattern in valid_patterns:
         if re.search(pattern, date_str, re.IGNORECASE):
             return True
-            
+
     return False
 
 
@@ -112,9 +113,9 @@ def extract_potential_game_names(title: str) -> List[str]:
         r'^(?:Playing|I Played|This)\s+(.+?)\s+(?:for|and|is)', # "I Played Game Name for..."
         r'^(.+?)\s+(?:Has|Will|Can|Gets)',                      # "Game Name Has Amazing Features"
     ]
-    
+
     potential_names = []
-    
+
     for pattern in patterns:
         match = re.search(pattern, title, re.IGNORECASE)
         if match:
@@ -125,14 +126,14 @@ def extract_potential_game_names(title: str) -> List[str]:
             name = re.sub(r'\s+', ' ', name).strip()
             if len(name) > 3 and name not in potential_names:  # Avoid very short matches and duplicates
                 potential_names.append(name)
-    
+
     return potential_names
 
 
 def load_json(filepath: str, default: Dict) -> Dict:
     """Load JSON file or return default"""
     if os.path.exists(filepath):
-        with open(filepath, 'r') as f:
+        with open(filepath) as f:
             return json.load(f)
     return default
 
