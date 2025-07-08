@@ -2,8 +2,10 @@
   "games": {
     "https://juanggz.itch.io/spartan-survivors": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://juanggz.itch.io/spartan-survivors",
       "name": "Spartan Survivors",
+      "is_free": true,
+      "header_image": "https://img.itch.zone/aW1nLzIxMzY0MTc4LnBuZw==/original/MlZx%2Fl.png",
       "tags": [
         "2D",
         "Bullet Hell",
@@ -12,28 +14,28 @@
       ],
       "positive_review_percentage": 94,
       "review_count": 9,
-      "header_image": "https://img.itch.zone/aW1nLzIxMzY0MTc4LnBuZw==/original/MlZx%2Fl.png",
-      "last_updated": "2025-07-07T17:13:42.655475",
-      "url": "https://juanggz.itch.io/spartan-survivors"
+      "last_updated": "2025-07-07T17:13:42.655475"
     },
     "https://koreanois.itch.io/mercedes": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://koreanois.itch.io/mercedes",
       "name": "Mercedes",
+      "is_free": true,
+      "header_image": "https://img.itch.zone/aW1nLzIxOTA5MzY4LnBuZw==/original/6M2Ohh.png",
       "tags": [
         "2D",
         "Idle",
         "Incremental",
         "Pixel Art"
       ],
-      "header_image": "https://img.itch.zone/aW1nLzIxOTA5MzY4LnBuZw==/original/6M2Ohh.png",
-      "last_updated": "2025-07-07T17:13:43.442675",
-      "url": "https://koreanois.itch.io/mercedes"
+      "last_updated": "2025-07-07T17:13:43.442675"
     },
     "https://www.crazygames.com/game/mini-crushers": {
       "platform": "crazygames",
-      "is_free": true,
+      "url": "https://www.crazygames.com/game/mini-crushers",
       "name": "Mini Crushers",
+      "is_free": true,
+      "header_image": "https://imgs.crazygames.com/mini-crushers_16x9/20240408085816/mini-crushers_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "tags": [
         "Casual",
         "Destroy",
@@ -43,14 +45,14 @@
       ],
       "positive_review_percentage": 93,
       "review_count": 6278,
-      "header_image": "https://imgs.crazygames.com/mini-crushers_16x9/20240408085816/mini-crushers_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:43.906775",
-      "url": "https://www.crazygames.com/game/mini-crushers"
+      "last_updated": "2025-07-07T17:13:43.906775"
     },
     "https://www.crazygames.com/game/stone-grass-mowing-simulator": {
       "platform": "crazygames",
-      "is_free": true,
+      "url": "https://www.crazygames.com/game/stone-grass-mowing-simulator",
       "name": "Stone Grass: Mowing Simulator",
+      "is_free": true,
+      "header_image": "https://imgs.crazygames.com/stone-grass-mowing-simulator_16x9/20250410062107/stone-grass-mowing-simulator_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "tags": [
         "Casual",
         "Top-Down",
@@ -62,14 +64,14 @@
       ],
       "positive_review_percentage": 89,
       "review_count": 301284,
-      "header_image": "https://imgs.crazygames.com/stone-grass-mowing-simulator_16x9/20250410062107/stone-grass-mowing-simulator_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:44.015407",
-      "url": "https://www.crazygames.com/game/stone-grass-mowing-simulator"
+      "last_updated": "2025-07-07T17:13:44.015407"
     },
     "https://www.crazygames.com/game/block-wall-destroyer": {
       "platform": "crazygames",
-      "is_free": true,
+      "url": "https://www.crazygames.com/game/block-wall-destroyer",
       "name": "Block Wall Destroyer",
+      "is_free": true,
+      "header_image": "https://imgs.crazygames.com/block-wall-destroyer_16x9/20250602093150/block-wall-destroyer_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "tags": [
         "Clicker",
         "Mobile",
@@ -82,14 +84,14 @@
       ],
       "positive_review_percentage": 89,
       "review_count": 84542,
-      "header_image": "https://imgs.crazygames.com/block-wall-destroyer_16x9/20250602093150/block-wall-destroyer_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:44.120068",
-      "url": "https://www.crazygames.com/game/block-wall-destroyer"
+      "last_updated": "2025-07-07T17:13:44.120068"
     },
     "https://aboxwithinabox.itch.io/plinko-idle": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://aboxwithinabox.itch.io/plinko-idle",
       "name": "Plinko Idle",
+      "is_free": true,
+      "header_image": "https://img.itch.zone/aW1nLzIxNDA0NTUxLnBuZw==/original/o4ytL%2B.png",
       "tags": [
         "2D",
         "Godot",
@@ -101,14 +103,14 @@
       ],
       "positive_review_percentage": 80,
       "review_count": 19,
-      "header_image": "https://img.itch.zone/aW1nLzIxNDA0NTUxLnBuZw==/original/o4ytL%2B.png",
-      "last_updated": "2025-07-07T17:13:45.163363",
-      "url": "https://aboxwithinabox.itch.io/plinko-idle"
+      "last_updated": "2025-07-07T17:13:45.163363"
     },
     "https://www.crazygames.com/game/corn-tycoon": {
       "platform": "crazygames",
-      "is_free": true,
+      "url": "https://www.crazygames.com/game/corn-tycoon",
       "name": "Corn Tycoon",
+      "is_free": true,
+      "header_image": "https://imgs.crazygames.com/corn-tycoon_16x9/20250303071102/corn-tycoon_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "tags": [
         "Clicker",
         "Mobile",
@@ -121,14 +123,13 @@
       ],
       "positive_review_percentage": 91,
       "review_count": 36557,
-      "header_image": "https://imgs.crazygames.com/corn-tycoon_16x9/20250303071102/corn-tycoon_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:45.279397",
-      "url": "https://www.crazygames.com/game/corn-tycoon"
+      "last_updated": "2025-07-07T17:13:45.279397"
     },
     "https://timberwolfgames.itch.io/arcaneearth": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://timberwolfgames.itch.io/arcaneearth",
       "name": "Arcane Earth - Increment Clicker",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIxMjc1MDEzLnBuZw==/original/X12Mhz.png",
       "tags": [
         "2D",
@@ -143,13 +144,13 @@
       ],
       "positive_review_percentage": 86,
       "review_count": 46,
-      "last_updated": "2025-07-07T17:57:09.618438",
-      "url": "https://timberwolfgames.itch.io/arcaneearth"
+      "last_updated": "2025-07-07T17:57:09.618438"
     },
     "https://annekatran.itch.io/dig-and-delve": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://annekatran.itch.io/dig-and-delve",
       "name": "Dig and Delve",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIwNjM3MjEwLnBuZw==/original/GBJwnu.png",
       "tags": [
         "3D",
@@ -159,13 +160,13 @@
       ],
       "positive_review_percentage": 94,
       "review_count": 63,
-      "last_updated": "2025-07-07T17:57:20.760996",
-      "url": "https://annekatran.itch.io/dig-and-delve"
+      "last_updated": "2025-07-07T17:57:20.760996"
     },
     "https://bicken-bones.itch.io/little-dig-game": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://bicken-bones.itch.io/little-dig-game",
       "name": "Little Dig Game",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIxMTYyMDMyLnBuZw==/original/xKtea3.png",
       "tags": [
         "2D",
@@ -177,13 +178,13 @@
       ],
       "positive_review_percentage": 92,
       "review_count": 46,
-      "last_updated": "2025-07-07T18:20:16.932553",
-      "url": "https://bicken-bones.itch.io/little-dig-game"
+      "last_updated": "2025-07-07T18:20:16.932553"
     },
     "https://black-heart-games-studio.itch.io/plinkidle": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://black-heart-games-studio.itch.io/plinkidle",
       "name": "PlinkIdle",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIxNDQ4NzgxLnBuZw==/original/yvlO4z.png",
       "tags": [
         "Casual",
@@ -194,13 +195,13 @@
       ],
       "positive_review_percentage": 88,
       "review_count": 95,
-      "last_updated": "2025-07-07T18:20:29.030016",
-      "url": "https://black-heart-games-studio.itch.io/plinkidle"
+      "last_updated": "2025-07-07T18:20:29.030016"
     },
     "https://bippinbits.itch.io/shleep": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://bippinbits.itch.io/shleep",
       "name": "Shleep",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIwNjM4MTM3LnBuZw==/original/uY1Isw.png",
       "tags": [
         "Clicker",
@@ -210,13 +211,14 @@
       ],
       "positive_review_percentage": 96,
       "review_count": 515,
-      "last_updated": "2025-07-07T18:21:16.886452",
-      "url": "https://bippinbits.itch.io/shleep"
+      "last_updated": "2025-07-07T18:21:16.886452"
     },
     "https://www.crazygames.com/game/crusher-block-jwd": {
       "platform": "crazygames",
-      "is_free": true,
+      "url": "https://www.crazygames.com/game/crusher-block-jwd",
       "name": "Crusher Block",
+      "is_free": true,
+      "header_image": "https://imgs.crazygames.com/crusher-block-jwd_16x9/20250403023523/crusher-block-jwd_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "tags": [
         "Clicker",
         "Mobile",
@@ -228,14 +230,13 @@
       ],
       "positive_review_percentage": 90,
       "review_count": 8327,
-      "header_image": "https://imgs.crazygames.com/crusher-block-jwd_16x9/20250403023523/crusher-block-jwd_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T18:22:37.524896",
-      "url": "https://www.crazygames.com/game/crusher-block-jwd"
+      "last_updated": "2025-07-07T18:22:37.524896"
     },
     "https://duocar.itch.io/the-great-hatch": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://duocar.itch.io/the-great-hatch",
       "name": "The great hatch",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIwMTM1NDQ5LnBuZw==/original/5zngVe.png",
       "tags": [
         "Casual",
@@ -248,13 +249,13 @@
       ],
       "positive_review_percentage": 86,
       "review_count": 46,
-      "last_updated": "2025-07-07T18:22:45.433294",
-      "url": "https://duocar.itch.io/the-great-hatch"
+      "last_updated": "2025-07-07T18:22:45.433294"
     },
     "https://mezzaninesoftware.itch.io/landsword": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://mezzaninesoftware.itch.io/landsword",
       "name": "Project Landsword",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzE2ODExOTk2LnBuZw==/original/Qk8FVz.png",
       "tags": [
         "Destruction",
@@ -269,13 +270,13 @@
       ],
       "positive_review_percentage": 98,
       "review_count": 344,
-      "last_updated": "2025-07-07T18:22:57.982912",
-      "url": "https://mezzaninesoftware.itch.io/landsword"
+      "last_updated": "2025-07-07T18:22:57.982912"
     },
     "https://luis0413.itch.io/mine-your-way-out-2": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://luis0413.itch.io/mine-your-way-out-2",
       "name": "Mine Your Way Out 2",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIxMDAzMTI2LnBuZw==/original/qbvA3q.png",
       "tags": [
         "Boss battle",
@@ -289,13 +290,13 @@
       ],
       "positive_review_percentage": 90,
       "review_count": 53,
-      "last_updated": "2025-07-07T18:23:33.112486",
-      "url": "https://luis0413.itch.io/mine-your-way-out-2"
+      "last_updated": "2025-07-07T18:23:33.112486"
     },
     "https://fortynina.itch.io/when-civilians-dig-holes": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://fortynina.itch.io/when-civilians-dig-holes",
       "name": "When Civilians Dig Holes",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzIwMzMxMTg0LnBuZw==/original/%2Bhukrx.png",
       "tags": [
         "Clicker",
@@ -305,13 +306,13 @@
       ],
       "positive_review_percentage": 88,
       "review_count": 48,
-      "last_updated": "2025-07-07T18:24:38.944501",
-      "url": "https://fortynina.itch.io/when-civilians-dig-holes"
+      "last_updated": "2025-07-07T18:24:38.944501"
     },
     "https://squidcor.itch.io/second-earth": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://squidcor.itch.io/second-earth",
       "name": "Second Earth",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzE4ODg2MTIuZ2lm/original/ku6j0v.gif",
       "tags": [
         "3D",
@@ -325,13 +326,13 @@
       ],
       "positive_review_percentage": 90,
       "review_count": 134,
-      "last_updated": "2025-07-07T23:02:24.448071",
-      "url": "https://squidcor.itch.io/second-earth"
+      "last_updated": "2025-07-07T23:02:24.448071"
     },
     "https://korbohned.itch.io/you-found-a-hole-in-the-ground": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://korbohned.itch.io/you-found-a-hole-in-the-ground",
       "name": "YOU FOUND A HOLE IN THE GROUND",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzEzMjM3NTQxLnBuZw==/original/OuWLsz.png",
       "tags": [
         "2D",
@@ -346,13 +347,13 @@
       ],
       "positive_review_percentage": 94,
       "review_count": 67,
-      "last_updated": "2025-07-07T23:02:58.981304",
-      "url": "https://korbohned.itch.io/you-found-a-hole-in-the-ground"
+      "last_updated": "2025-07-07T23:02:58.981304"
     },
     "https://barribob.itch.io/apex-machina": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://barribob.itch.io/apex-machina",
       "name": "Apex Machina",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzE2NDc2OTM0LnBuZw==/original/PaL%2BI4.png",
       "tags": [
         "2D",
@@ -364,13 +365,13 @@
       ],
       "positive_review_percentage": 90,
       "review_count": 87,
-      "last_updated": "2025-07-07T23:04:10.528737",
-      "url": "https://barribob.itch.io/apex-machina"
+      "last_updated": "2025-07-07T23:04:10.528737"
     },
     "https://barribob.itch.io/slamwall": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://barribob.itch.io/slamwall",
       "name": "Slamwall",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzE2NzUzNjkxLnBuZw==/original/u54CRx.png",
       "tags": [
         "dwarf",
@@ -381,13 +382,13 @@
       ],
       "positive_review_percentage": 88,
       "review_count": 138,
-      "last_updated": "2025-07-07T23:04:29.407412",
-      "url": "https://barribob.itch.io/slamwall"
+      "last_updated": "2025-07-07T23:04:29.407412"
     },
     "https://playcebo.itch.io/12-word-searches": {
       "platform": "itch",
-      "is_free": true,
+      "url": "https://playcebo.itch.io/12-word-searches",
       "name": "12 Word Searches",
+      "is_free": true,
       "header_image": "https://img.itch.zone/aW1nLzEzNjQ4NTM3LnBuZw==/original/Ujxv5s.png",
       "tags": [
         "Difficult",
@@ -401,9 +402,25 @@
       ],
       "positive_review_percentage": 100,
       "review_count": 107,
-      "last_updated": "2025-07-08T00:15:58.529815",
-      "url": "https://playcebo.itch.io/12-word-searches"
+      "last_updated": "2025-07-08T00:15:58.529815"
+    },
+    "https://www.crazygames.com/game/weapons-journey": {
+      "platform": "crazygames",
+      "url": "https://www.crazygames.com/game/weapons-journey",
+      "name": "Weapons Journey",
+      "is_free": true,
+      "header_image": "https://imgs.crazygames.com/weapons-journey/20220319083235/weapons-journey-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
+      "tags": [
+        "Clicker",
+        "Pixel",
+        "Monster",
+        "Incremental",
+        "Idle"
+      ],
+      "positive_review_percentage": 92,
+      "review_count": 10900,
+      "last_updated": "2025-07-08T23:59:45.384890"
     }
   },
-  "last_updated": "2025-07-08T00:15:58.529837"
+  "last_updated": "2025-07-08T23:59:45.385048"
 }
