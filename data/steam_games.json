@@ -17373,7 +17373,457 @@
       "recent_review_count": 55,
       "recent_review_summary": "Mostly Positive",
       "last_updated": "2025-07-08T15:29:59.600174"
+    },
+    "3007500": {
+      "steam_app_id": "3007500",
+      "steam_url": "https://store.steampowered.com/app/3007500",
+      "name": "Dark Hunting Ground Demo",
+      "is_free": true,
+      "release_date": "10 Oct, 2024",
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "BingX"
+      ],
+      "publishers": [
+        "The Bueno Interactive"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3007500/header.jpg?t=1730721248",
+      "tags": [
+        "Loot",
+        "Indie",
+        "RPG",
+        "Action RPG",
+        "Action",
+        "Hack and Slash",
+        "Looter Shooter",
+        "2D",
+        "Third-Person Shooter",
+        "Singleplayer"
+      ],
+      "is_demo": true,
+      "full_game_app_id": "2494810",
+      "positive_review_percentage": 82,
+      "review_count": 39,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-08T15:53:43.059226"
+    },
+    "2494810": {
+      "steam_app_id": "2494810",
+      "steam_url": "https://store.steampowered.com/app/2494810",
+      "name": "Dark Hunting Ground",
+      "release_date": "7 Nov, 2024",
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "BingX"
+      ],
+      "publishers": [
+        "The Bueno Interactive"
+      ],
+      "price": "7,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2494810/header.jpg?t=1751602041",
+      "tags": [
+        "Loot",
+        "Action RPG",
+        "Hack and Slash",
+        "Looter Shooter",
+        "Idler",
+        "RPG",
+        "Pixel Graphics",
+        "2D",
+        "Stylized",
+        "Dark"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3007500",
+      "is_early_access": true,
+      "positive_review_percentage": 94,
+      "review_count": 375,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 88,
+      "recent_review_count": 17,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-08T15:53:43.991399"
+    },
+    "3074110": {
+      "steam_app_id": "3074110",
+      "steam_url": "https://store.steampowered.com/app/3074110",
+      "name": "The Rangers In The South",
+      "release_date": "9 Jan, 2025",
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Stats",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "DPA Studios"
+      ],
+      "publishers": [
+        "DPA Studios"
+      ],
+      "price": "3,19\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3074110/header.jpg?t=1745848006",
+      "tags": [
+        "Action Roguelike",
+        "Pixel Graphics",
+        "2.5D",
+        "Fantasy",
+        "Roguelike",
+        "Hack and Slash",
+        "Open World",
+        "Character Customization",
+        "JRPG",
+        "Indie"
+      ],
+      "positive_review_percentage": 83,
+      "review_count": 685,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 46,
+      "recent_review_count": 15,
+      "recent_review_summary": "Mixed",
+      "last_updated": "2025-07-08T15:53:44.694057"
+    },
+    "2453360": {
+      "steam_app_id": "2453360",
+      "steam_url": "https://store.steampowered.com/app/2453360",
+      "name": "Cluckmech Oasis",
+      "release_date": "9 May, 2024",
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "BlackLight"
+      ],
+      "publishers": [
+        "Mammorize",
+        "Flawless Gaming",
+        "Erabit"
+      ],
+      "price": "7,31\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2453360/5ac81df370edc2497db28bcecdd03170445b121d/header.jpg?t=1741930837",
+      "tags": [
+        "Strategy",
+        "Roguelike",
+        "Tower Defense",
+        "Pixel Graphics",
+        "Top-Down Shooter",
+        "Cute",
+        "Roguelite",
+        "Building",
+        "Action",
+        "Shooter"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2654380",
+      "positive_review_percentage": 87,
+      "review_count": 2770,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 76,
+      "recent_review_count": 26,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-08T15:53:45.479478"
+    },
+    "2654380": {
+      "steam_app_id": "2654380",
+      "steam_url": "https://store.steampowered.com/app/2654380",
+      "name": "Cluckmech Oasis Demo",
+      "is_free": true,
+      "release_date": "8 Nov, 2023",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "BlackLight"
+      ],
+      "publishers": [
+        "Mammorize"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2654380/header.jpg?t=1721187365",
+      "tags": [
+        "Strategy",
+        "Roguelike",
+        "Tower Defense",
+        "Pixel Graphics",
+        "Top-Down Shooter",
+        "Cute",
+        "Roguelite",
+        "Building",
+        "Action",
+        "Shooter"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2654380",
+      "is_demo": true,
+      "full_game_app_id": "2453360",
+      "positive_review_percentage": 87,
+      "review_count": 2770,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 76,
+      "recent_review_count": 26,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-08T15:53:46.331145"
+    },
+    "3317780": {
+      "steam_app_id": "3317780",
+      "steam_url": "https://store.steampowered.com/app/3317780",
+      "name": "Dungeon Vending Machines",
+      "release_date": "12 Jan, 2025",
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Oz33 Lab"
+      ],
+      "publishers": [
+        "Oz33 Lab"
+      ],
+      "price": "5,--\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3317780/header.jpg?t=1745415166",
+      "tags": [
+        "Idler",
+        "Relaxing",
+        "Casual",
+        "Pixel Graphics",
+        "Clicker",
+        "Time Management",
+        "Inventory Management",
+        "Resource Management",
+        "Collectathon",
+        "Indie"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3317840",
+      "positive_review_percentage": 61,
+      "review_count": 21,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-08T15:53:47.782324"
+    },
+    "3317840": {
+      "steam_app_id": "3317840",
+      "steam_url": "https://store.steampowered.com/app/3317840",
+      "name": "Dungeon Vending Machines Demo",
+      "is_free": true,
+      "release_date": "7 Nov, 2024",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Oz33 Lab"
+      ],
+      "publishers": [
+        "Oz33 Lab"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3317840/header.jpg?t=1745415396",
+      "tags": [
+        "Idler",
+        "Relaxing",
+        "Casual",
+        "Pixel Graphics",
+        "Clicker",
+        "Time Management",
+        "Inventory Management",
+        "Resource Management",
+        "Collectathon",
+        "Indie"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3317840",
+      "is_demo": true,
+      "full_game_app_id": "3317780",
+      "positive_review_percentage": 61,
+      "review_count": 21,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-08T15:53:48.607108"
+    },
+    "2202590": {
+      "steam_app_id": "2202590",
+      "steam_url": "https://store.steampowered.com/app/2202590",
+      "name": "Shape Shifter: Formations",
+      "release_date": "27 May, 2025",
+      "genres": [
+        "Action",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Shared/Split Screen Co-op",
+        "Shared/Split Screen",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Remote Play Together",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Castec Studios"
+      ],
+      "publishers": [
+        "Castec Studios"
+      ],
+      "price": "11,83\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2202590/header.jpg?t=1748343547",
+      "tags": [
+        "Action Roguelike",
+        "Arena Shooter",
+        "Bullet Hell",
+        "Local Co-Op",
+        "Roguelite",
+        "Twin Stick Shooter",
+        "Co-op",
+        "Roguelike",
+        "Top-Down Shooter",
+        "RPG"
+      ],
+      "positive_review_percentage": 91,
+      "review_count": 230,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 100,
+      "recent_review_count": 12,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-08T15:53:49.308147"
+    },
+    "3116120": {
+      "steam_app_id": "3116120",
+      "steam_url": "https://store.steampowered.com/app/3116120",
+      "name": "Orcdom",
+      "release_date": "Coming soon",
+      "coming_soon": true,
+      "genres": [
+        "Casual",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "GAGA"
+      ],
+      "publishers": [
+        "OKJOY"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3116120/6f80301096efe767dd6805f86190c2cc4fd4d774/header.jpg?t=1751336045",
+      "tags": [
+        "Tower Defense",
+        "Strategy",
+        "Real Time Tactics",
+        "Resource Management",
+        "Pixel Graphics",
+        "Top-Down",
+        "2D",
+        "Base Building",
+        "Magic",
+        "Building"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3380540",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "planned_release_date": "Coming soon",
+      "last_updated": "2025-07-08T15:54:41.149944"
+    },
+    "3380540": {
+      "steam_app_id": "3380540",
+      "steam_url": "https://store.steampowered.com/app/3380540",
+      "name": "Orcdom Demo",
+      "is_free": true,
+      "release_date": "30 May, 2025",
+      "genres": [
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "GAGA"
+      ],
+      "publishers": [
+        "OKJOY"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3380540/f19bdd4f7f26b96f17d7350c5eaca04d82dbffdd/header.jpg?t=1749524572",
+      "tags": [
+        "Tower Defense",
+        "Strategy",
+        "RTS",
+        "Pixel Graphics",
+        "Top-Down",
+        "Real Time Tactics",
+        "2D",
+        "Cartoon",
+        "Medieval",
+        "Indie"
+      ],
+      "is_demo": true,
+      "full_game_app_id": "3116120",
+      "review_count": 5,
+      "review_summary": "Need more reviews for score",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-08T15:54:41.930757"
     }
   },
-  "last_updated": "2025-07-08T15:45:42.389901"
+  "last_updated": "2025-07-08T15:54:42.415718"
 }

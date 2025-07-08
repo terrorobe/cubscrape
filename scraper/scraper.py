@@ -221,7 +221,7 @@ class YouTubeSteamScraper:
         """Fetch game data from Steam using the modular fetcher"""
         return self.steam_fetcher.fetch_data(steam_url)
     
-    def process_videos(self, channel_url: str, max_new_videos: Optional[int] = None):
+    def process_videos(self, channel_url: str, max_new_videos: Optional[int] = None, fetch_newest_first: bool = False):
         """Process YouTube videos only"""
         logging.info(f"Processing videos from channel: {channel_url}")
         
@@ -234,11 +234,16 @@ class YouTubeSteamScraper:
         videos_fetched_total = 0
         consecutive_known_batches = 0
         
-        # Smart starting position: if we have videos, start from a reasonable offset
-        smart_start_offset = max(0, len(known_video_ids) - 10) if known_video_ids else 0
-        if smart_start_offset > 0:
-            logging.info(f"Smart start: skipping to position {smart_start_offset + 1} (have {len(known_video_ids)} videos)")
-            videos_fetched_total = smart_start_offset
+        # Smart starting position: if we have videos and not fetching newest first, start from a reasonable offset
+        if fetch_newest_first:
+            smart_start_offset = 0  # Start from beginning (newest videos)
+            logging.info("Fetching newest videos first (cron mode)")
+        else:
+            smart_start_offset = max(0, len(known_video_ids) - 10) if known_video_ids else 0
+            if smart_start_offset > 0:
+                logging.info(f"Smart start: skipping to position {smart_start_offset + 1} (have {len(known_video_ids)} videos)")
+        
+        videos_fetched_total = smart_start_offset
         
         while new_videos_processed < max_new_videos:
             # Calculate how many videos to skip (based on total fetched so far)
@@ -315,11 +320,6 @@ class YouTubeSteamScraper:
         
         self.save_videos()
         logging.info(f"Video processing complete. Processed {new_videos_processed} new videos.")
-        
-        # Show progress summary
-        logging.info("Fetching channel progress summary...")
-        self._show_channel_progress(channel_url)
-        logging.info("Channel progress summary complete")
     
     def _process_video_game_links(self, video) -> VideoData:
         """Extract and process game links from a video"""
@@ -1002,54 +1002,6 @@ class YouTubeSteamScraper:
             logging.error(f"Error finding Steam match for '{game_name}': {e}")
             return None
     
-    def _show_channel_progress(self, channel_url: str):
-        """Show channel scraping progress summary"""
-        try:
-            # Get total video count from channel
-            ydl_opts = {
-                'quiet': True,
-                'no_warnings': True,
-                'extract_flat': True,
-                # Don't limit playlist, we need the count
-            }
-            
-            logging.info("Starting yt-dlp channel metadata fetch...")
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(channel_url, download=False)
-            logging.info("yt-dlp channel metadata fetch complete")
-            
-            total_videos = info.get('playlist_count', 0)
-            channel_name = info.get('channel', self.channel_id)
-            
-            # Get scraped video count
-            scraped_videos = len(self.videos_data.get('videos', {}))
-            
-            # Calculate coverage
-            if total_videos > 0:
-                coverage = (scraped_videos / total_videos) * 100
-                summary = f"\n{'='*60}\n"
-                summary += f"CHANNEL PROGRESS SUMMARY: {channel_name}\n"
-                summary += f"{'='*60}\n"
-                summary += f"Total videos on channel: {total_videos:,}\n"
-                summary += f"Videos in database: {scraped_videos:,}\n"
-                summary += f"Coverage: {coverage:.1f}%\n"
-                
-                # Show game data coverage
-                videos_with_games = sum(1 for v in self.videos_data['videos'].values() 
-                                      if any([v.get('steam_app_id'), v.get('itch_url'), v.get('crazygames_url')]))
-                game_coverage = (videos_with_games / scraped_videos * 100) if scraped_videos > 0 else 0
-                summary += f"Videos with game data: {videos_with_games:,} ({game_coverage:.1f}% of scraped)\n"
-                summary += f"{'='*60}"
-                
-                # Log and print for visibility
-                logging.info(summary)
-                print(summary)
-            else:
-                logging.info(f"Could not get total video count for {channel_name}")
-                
-        except Exception as e:
-            logging.debug(f"Error showing channel progress: {e}")
-    
     
     def _should_process_video_for_inference(self, video: Dict) -> Optional[str]:
         """Determine if video needs processing for game inference"""
@@ -1305,8 +1257,8 @@ if __name__ == "__main__":
             logging.info(f"Cron mode: processing channel {channel_id}")
             scraper = YouTubeSteamScraper(channel_id)
             
-            # Process recent videos only (smaller batch for cron)
-            scraper.process_videos(channel_config['url'], max_new_videos=10)
+            # Process recent videos only (smaller batch for cron) - fetch newest first
+            scraper.process_videos(channel_config['url'], max_new_videos=10, fetch_newest_first=True)
             
             # Keep one scraper for Steam updates
             if steam_scraper is None:
