@@ -105,6 +105,9 @@ function processGames() {
                 if (gameData.has_demo && gameData.demo_app_id && steamData[gameData.demo_app_id]) {
                     gameData.demo = steamData[gameData.demo_app_id];
                 }
+            } else if (video.steam_app_id) {
+                // Steam app ID exists but data is missing - skip this game
+                return null;
             } else if (video.itch_url) {
                 // For itch-only games, use metadata if available, otherwise extract from URL
                 gameData.platform = 'itch';
@@ -134,7 +137,8 @@ function processGames() {
             }
             
             return gameData;
-        });
+        })
+        .filter(game => game !== null && game.name); // Remove games with missing Steam data or no name
     
     // Group by game_key and consolidate
     const gameGroups = {};
@@ -402,7 +406,7 @@ function renderFilteredGames(games) {
             <div class="game-card" onclick="window.open('${game.steam_url}', '_blank')">
                 ${game.header_image ? `<img class="game-image" src="${game.header_image}" alt="${game.name}" loading="lazy">` : ''}
                 <div class="game-info">
-                    <h3 class="game-title">${game.name}</h3>
+                    <h3 class="game-title">${game.name || 'Unknown Game'}</h3>
                     <div class="game-meta">
                         ${game.positive_review_percentage ? `
                             <span class="game-rating rating-${ratingClass}">
