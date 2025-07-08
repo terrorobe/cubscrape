@@ -1,7 +1,6 @@
 {
   "games": {
     "https://juanggz.itch.io/spartan-survivors": {
-      "itch_url": "https://juanggz.itch.io/spartan-survivors",
       "platform": "itch",
       "is_free": true,
       "name": "Spartan Survivors",
@@ -14,10 +13,10 @@
       "positive_review_percentage": 94,
       "review_count": 9,
       "header_image": "https://img.itch.zone/aW1nLzIxMzY0MTc4LnBuZw==/original/MlZx%2Fl.png",
-      "last_updated": "2025-07-07T17:13:42.655475"
+      "last_updated": "2025-07-07T17:13:42.655475",
+      "url": "https://juanggz.itch.io/spartan-survivors"
     },
     "https://koreanois.itch.io/mercedes": {
-      "itch_url": "https://koreanois.itch.io/mercedes",
       "platform": "itch",
       "is_free": true,
       "name": "Mercedes",
@@ -28,10 +27,10 @@
         "Pixel Art"
       ],
       "header_image": "https://img.itch.zone/aW1nLzIxOTA5MzY4LnBuZw==/original/6M2Ohh.png",
-      "last_updated": "2025-07-07T17:13:43.442675"
+      "last_updated": "2025-07-07T17:13:43.442675",
+      "url": "https://koreanois.itch.io/mercedes"
     },
     "https://www.crazygames.com/game/mini-crushers": {
-      "crazygames_url": "https://www.crazygames.com/game/mini-crushers",
       "platform": "crazygames",
       "is_free": true,
       "name": "Mini Crushers",
@@ -45,10 +44,10 @@
       "positive_review_percentage": 93,
       "review_count": 6278,
       "header_image": "https://imgs.crazygames.com/mini-crushers_16x9/20240408085816/mini-crushers_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:43.906775"
+      "last_updated": "2025-07-07T17:13:43.906775",
+      "url": "https://www.crazygames.com/game/mini-crushers"
     },
     "https://www.crazygames.com/game/stone-grass-mowing-simulator": {
-      "crazygames_url": "https://www.crazygames.com/game/stone-grass-mowing-simulator",
       "platform": "crazygames",
       "is_free": true,
       "name": "Stone Grass: Mowing Simulator",
@@ -64,10 +63,10 @@
       "positive_review_percentage": 89,
       "review_count": 301284,
       "header_image": "https://imgs.crazygames.com/stone-grass-mowing-simulator_16x9/20250410062107/stone-grass-mowing-simulator_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:44.015407"
+      "last_updated": "2025-07-07T17:13:44.015407",
+      "url": "https://www.crazygames.com/game/stone-grass-mowing-simulator"
     },
     "https://www.crazygames.com/game/block-wall-destroyer": {
-      "crazygames_url": "https://www.crazygames.com/game/block-wall-destroyer",
       "platform": "crazygames",
       "is_free": true,
       "name": "Block Wall Destroyer",
@@ -84,10 +83,10 @@
       "positive_review_percentage": 89,
       "review_count": 84542,
       "header_image": "https://imgs.crazygames.com/block-wall-destroyer_16x9/20250602093150/block-wall-destroyer_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:44.120068"
+      "last_updated": "2025-07-07T17:13:44.120068",
+      "url": "https://www.crazygames.com/game/block-wall-destroyer"
     },
     "https://aboxwithinabox.itch.io/plinko-idle": {
-      "itch_url": "https://aboxwithinabox.itch.io/plinko-idle",
       "platform": "itch",
       "is_free": true,
       "name": "Plinko Idle",
@@ -103,10 +102,10 @@
       "positive_review_percentage": 80,
       "review_count": 19,
       "header_image": "https://img.itch.zone/aW1nLzIxNDA0NTUxLnBuZw==/original/o4ytL%2B.png",
-      "last_updated": "2025-07-07T17:13:45.163363"
+      "last_updated": "2025-07-07T17:13:45.163363",
+      "url": "https://aboxwithinabox.itch.io/plinko-idle"
     },
     "https://www.crazygames.com/game/corn-tycoon": {
-      "crazygames_url": "https://www.crazygames.com/game/corn-tycoon",
       "platform": "crazygames",
       "is_free": true,
       "name": "Corn Tycoon",
@@ -123,10 +122,10 @@
       "positive_review_percentage": 91,
       "review_count": 36557,
       "header_image": "https://imgs.crazygames.com/corn-tycoon_16x9/20250303071102/corn-tycoon_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T17:13:45.279397"
+      "last_updated": "2025-07-07T17:13:45.279397",
+      "url": "https://www.crazygames.com/game/corn-tycoon"
     },
     "https://timberwolfgames.itch.io/arcaneearth": {
-      "itch_url": "https://timberwolfgames.itch.io/arcaneearth",
       "platform": "itch",
       "is_free": true,
       "name": "Arcane Earth - Increment Clicker",
@@ -144,10 +143,10 @@
       ],
       "positive_review_percentage": 86,
       "review_count": 46,
-      "last_updated": "2025-07-07T17:57:09.618438"
+      "last_updated": "2025-07-07T17:57:09.618438",
+      "url": "https://timberwolfgames.itch.io/arcaneearth"
     },
     "https://annekatran.itch.io/dig-and-delve": {
-      "itch_url": "https://annekatran.itch.io/dig-and-delve",
       "platform": "itch",
       "is_free": true,
       "name": "Dig and Delve",
@@ -160,10 +159,10 @@
       ],
       "positive_review_percentage": 94,
       "review_count": 63,
-      "last_updated": "2025-07-07T17:57:20.760996"
+      "last_updated": "2025-07-07T17:57:20.760996",
+      "url": "https://annekatran.itch.io/dig-and-delve"
     },
     "https://bicken-bones.itch.io/little-dig-game": {
-      "itch_url": "https://bicken-bones.itch.io/little-dig-game",
       "platform": "itch",
       "is_free": true,
       "name": "Little Dig Game",
@@ -178,10 +177,10 @@
       ],
       "positive_review_percentage": 92,
       "review_count": 46,
-      "last_updated": "2025-07-07T18:20:16.932553"
+      "last_updated": "2025-07-07T18:20:16.932553",
+      "url": "https://bicken-bones.itch.io/little-dig-game"
     },
     "https://black-heart-games-studio.itch.io/plinkidle": {
-      "itch_url": "https://black-heart-games-studio.itch.io/plinkidle",
       "platform": "itch",
       "is_free": true,
       "name": "PlinkIdle",
@@ -195,10 +194,10 @@
       ],
       "positive_review_percentage": 88,
       "review_count": 95,
-      "last_updated": "2025-07-07T18:20:29.030016"
+      "last_updated": "2025-07-07T18:20:29.030016",
+      "url": "https://black-heart-games-studio.itch.io/plinkidle"
     },
     "https://bippinbits.itch.io/shleep": {
-      "itch_url": "https://bippinbits.itch.io/shleep",
       "platform": "itch",
       "is_free": true,
       "name": "Shleep",
@@ -211,10 +210,10 @@
       ],
       "positive_review_percentage": 96,
       "review_count": 515,
-      "last_updated": "2025-07-07T18:21:16.886452"
+      "last_updated": "2025-07-07T18:21:16.886452",
+      "url": "https://bippinbits.itch.io/shleep"
     },
     "https://www.crazygames.com/game/crusher-block-jwd": {
-      "crazygames_url": "https://www.crazygames.com/game/crusher-block-jwd",
       "platform": "crazygames",
       "is_free": true,
       "name": "Crusher Block",
@@ -230,10 +229,10 @@
       "positive_review_percentage": 90,
       "review_count": 8327,
       "header_image": "https://imgs.crazygames.com/crusher-block-jwd_16x9/20250403023523/crusher-block-jwd_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
-      "last_updated": "2025-07-07T18:22:37.524896"
+      "last_updated": "2025-07-07T18:22:37.524896",
+      "url": "https://www.crazygames.com/game/crusher-block-jwd"
     },
     "https://duocar.itch.io/the-great-hatch": {
-      "itch_url": "https://duocar.itch.io/the-great-hatch",
       "platform": "itch",
       "is_free": true,
       "name": "The great hatch",
@@ -249,10 +248,10 @@
       ],
       "positive_review_percentage": 86,
       "review_count": 46,
-      "last_updated": "2025-07-07T18:22:45.433294"
+      "last_updated": "2025-07-07T18:22:45.433294",
+      "url": "https://duocar.itch.io/the-great-hatch"
     },
     "https://mezzaninesoftware.itch.io/landsword": {
-      "itch_url": "https://mezzaninesoftware.itch.io/landsword",
       "platform": "itch",
       "is_free": true,
       "name": "Project Landsword",
@@ -270,10 +269,10 @@
       ],
       "positive_review_percentage": 98,
       "review_count": 344,
-      "last_updated": "2025-07-07T18:22:57.982912"
+      "last_updated": "2025-07-07T18:22:57.982912",
+      "url": "https://mezzaninesoftware.itch.io/landsword"
     },
     "https://luis0413.itch.io/mine-your-way-out-2": {
-      "itch_url": "https://luis0413.itch.io/mine-your-way-out-2",
       "platform": "itch",
       "is_free": true,
       "name": "Mine Your Way Out 2",
@@ -290,10 +289,10 @@
       ],
       "positive_review_percentage": 90,
       "review_count": 53,
-      "last_updated": "2025-07-07T18:23:33.112486"
+      "last_updated": "2025-07-07T18:23:33.112486",
+      "url": "https://luis0413.itch.io/mine-your-way-out-2"
     },
     "https://fortynina.itch.io/when-civilians-dig-holes": {
-      "itch_url": "https://fortynina.itch.io/when-civilians-dig-holes",
       "platform": "itch",
       "is_free": true,
       "name": "When Civilians Dig Holes",
@@ -306,10 +305,10 @@
       ],
       "positive_review_percentage": 88,
       "review_count": 48,
-      "last_updated": "2025-07-07T18:24:38.944501"
+      "last_updated": "2025-07-07T18:24:38.944501",
+      "url": "https://fortynina.itch.io/when-civilians-dig-holes"
     },
     "https://squidcor.itch.io/second-earth": {
-      "itch_url": "https://squidcor.itch.io/second-earth",
       "platform": "itch",
       "is_free": true,
       "name": "Second Earth",
@@ -326,10 +325,10 @@
       ],
       "positive_review_percentage": 90,
       "review_count": 134,
-      "last_updated": "2025-07-07T23:02:24.448071"
+      "last_updated": "2025-07-07T23:02:24.448071",
+      "url": "https://squidcor.itch.io/second-earth"
     },
     "https://korbohned.itch.io/you-found-a-hole-in-the-ground": {
-      "itch_url": "https://korbohned.itch.io/you-found-a-hole-in-the-ground",
       "platform": "itch",
       "is_free": true,
       "name": "YOU FOUND A HOLE IN THE GROUND",
@@ -347,10 +346,10 @@
       ],
       "positive_review_percentage": 94,
       "review_count": 67,
-      "last_updated": "2025-07-07T23:02:58.981304"
+      "last_updated": "2025-07-07T23:02:58.981304",
+      "url": "https://korbohned.itch.io/you-found-a-hole-in-the-ground"
     },
     "https://barribob.itch.io/apex-machina": {
-      "itch_url": "https://barribob.itch.io/apex-machina",
       "platform": "itch",
       "is_free": true,
       "name": "Apex Machina",
@@ -365,10 +364,10 @@
       ],
       "positive_review_percentage": 90,
       "review_count": 87,
-      "last_updated": "2025-07-07T23:04:10.528737"
+      "last_updated": "2025-07-07T23:04:10.528737",
+      "url": "https://barribob.itch.io/apex-machina"
     },
     "https://barribob.itch.io/slamwall": {
-      "itch_url": "https://barribob.itch.io/slamwall",
       "platform": "itch",
       "is_free": true,
       "name": "Slamwall",
@@ -382,10 +381,10 @@
       ],
       "positive_review_percentage": 88,
       "review_count": 138,
-      "last_updated": "2025-07-07T23:04:29.407412"
+      "last_updated": "2025-07-07T23:04:29.407412",
+      "url": "https://barribob.itch.io/slamwall"
     },
     "https://playcebo.itch.io/12-word-searches": {
-      "itch_url": "https://playcebo.itch.io/12-word-searches",
       "platform": "itch",
       "is_free": true,
       "name": "12 Word Searches",
@@ -402,7 +401,8 @@
       ],
       "positive_review_percentage": 100,
       "review_count": 107,
-      "last_updated": "2025-07-08T00:15:58.529815"
+      "last_updated": "2025-07-08T00:15:58.529815",
+      "url": "https://playcebo.itch.io/12-word-searches"
     }
   },
   "last_updated": "2025-07-08T00:15:58.529837"

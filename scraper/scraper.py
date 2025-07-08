@@ -98,15 +98,7 @@ class YouTubeSteamScraper:
     
     def _dict_to_other_game_data(self, game_dict: Dict) -> OtherGameData:
         """Convert dictionary to OtherGameData object"""
-        # Handle legacy field names: itch_url/crazygames_url -> url
-        converted_dict = game_dict.copy()
-        
-        if 'itch_url' in converted_dict:
-            converted_dict['url'] = converted_dict.pop('itch_url')
-        elif 'crazygames_url' in converted_dict:
-            converted_dict['url'] = converted_dict.pop('crazygames_url')
-        
-        return OtherGameData(**converted_dict)
+        return OtherGameData(**game_dict)
     
     def _clean_dict_for_json(self, data_dict: Dict) -> Dict:
         """Remove None values and False boolean values to keep JSON clean"""

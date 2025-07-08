@@ -22,6 +22,7 @@ class VideoData:
     youtube_detected_game: Optional[str] = None
     youtube_detected_matched: bool = False
     inferred_game: bool = False
+    inference_reason: Optional[str] = None
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
