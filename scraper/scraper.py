@@ -789,19 +789,20 @@ class YouTubeSteamScraper:
             missing_optional = []
 
             for field in required_other_fields:
-                if not game.get(field) or (field == 'tags' and len(game.get(field, [])) == 0):
+                value = getattr(game, field, None)
+                if not value or (field == 'tags' and len(value) == 0):
                     missing_required.append(field)
 
             for field in optional_other_fields:
-                if not game.get(field):
+                if not getattr(game, field, None):
                     missing_optional.append(field)
 
             if missing_required:
-                print(f"❌ {game.get('platform', 'Unknown')} game '{game.get('name', 'Unknown')}' missing required: {', '.join(missing_required)}")
+                print(f"❌ {game.platform} game '{game.name}' missing required: {', '.join(missing_required)}")
                 other_issues += 1
                 total_issues += 1
             elif missing_optional:
-                print(f"⚠️  {game.get('platform', 'Unknown')} game '{game.get('name', 'Unknown')}' missing optional: {', '.join(missing_optional)}")
+                print(f"⚠️  {game.platform} game '{game.name}' missing optional: {', '.join(missing_optional)}")
 
         print(f"\nOther games checked: {len(self.other_games_data.get('games', {}))}")
         if other_issues == 0:
@@ -830,16 +831,16 @@ class YouTubeSteamScraper:
                     total_issues += 1
 
         for _url, game in self.other_games_data.get('games', {}).items():
-            last_updated = game.get('last_updated')
+            last_updated = game.last_updated
             if last_updated:
                 try:
                     last_updated_date = datetime.fromisoformat(last_updated)
                     if last_updated_date < stale_threshold:
                         days_old = (datetime.now() - last_updated_date).days
-                        print(f"🕐 {game.get('platform', 'Unknown')} game '{game.get('name', 'Unknown')}' is {days_old} days old")
+                        print(f"🕐 {game.platform} game '{game.name}' is {days_old} days old")
                         stale_other += 1
                 except ValueError:
-                    print(f"❌ {game.get('platform', 'Unknown')} game has invalid last_updated format: {last_updated}")
+                    print(f"❌ {game.platform} game has invalid last_updated format: {last_updated}")
                     total_issues += 1
 
         if stale_steam == 0 and stale_other == 0:
