@@ -1,5 +1,12 @@
 # Claude Development Notes
 
+## Documentation Overview
+
+- **README.md** - Project overview, setup instructions, and usage
+- **ARCHITECTURE.md** - System architecture, data flow, and component design  
+- **IMPLEMENTATION_NOTES.md** - Detailed implementation notes and technical decisions
+- **CLAUDE.md** - This file: Development environment and workflow notes
+
 ## Python Environment Setup
 
 This project uses **uv** for Python dependency management and virtual environment handling.

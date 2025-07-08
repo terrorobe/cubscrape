@@ -65,6 +65,8 @@ uv run python scraper/scraper.py data-quality
 **Game Inference Mode** - Find games from video titles and resolve missing Steam games:
 ```bash
 uv run python scraper/scraper.py infer-games
+# Uses YouTube's game detection when available (more reliable)
+# Falls back to title parsing for game name extraction  
 # Interactive prompts for low confidence matches
 # Resolves missing/depublished Steam games
 ```
