@@ -31,7 +31,7 @@ class SteamGameData:
     steam_app_id: str
     steam_url: str
     name: str
-    is_free: bool
+    is_free: bool = False
     release_date: str = ""
     coming_soon: bool = False
     genres: List[str] = field(default_factory=list)

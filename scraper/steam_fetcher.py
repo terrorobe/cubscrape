@@ -11,8 +11,8 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from .models import SteamGameData
-from .utils import is_valid_date_string, extract_steam_app_id
+from models import SteamGameData
+from utils import is_valid_date_string, extract_steam_app_id
 
 
 class SteamDataFetcher:

@@ -7,7 +7,7 @@ import json
 import os
 from datetime import datetime
 from typing import Dict, List, Optional
-from .models import GameLinks
+from models import GameLinks
 
 
 def extract_game_links(description: str) -> GameLinks:

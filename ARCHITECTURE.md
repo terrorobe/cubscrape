@@ -19,12 +19,18 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
 
 ```
 /scraper/
-  scraper.py          # Main scraper with separated video/steam processing
+  scraper.py          # Main scraper using modular components
+  steam_fetcher.py    # Steam-specific data fetching and parsing
+  itch_fetcher.py     # Itch.io data fetching and parsing
+  crazygames_fetcher.py # CrazyGames data fetching and parsing
+  models.py           # Structured dataclasses for type safety
+  utils.py            # Shared utility functions
   requirements.txt    # Python dependencies (yt-dlp, requests, beautifulsoup4)
   
 /data/
-  videos.json         # YouTube video metadata with game links
+  videos-{channel}.json # Per-channel YouTube video metadata with game links
   steam_games.json    # Steam game data with review scores
+  other_games.json    # Itch.io and CrazyGames metadata
   
 /web/
   index.html          # Main web interface
@@ -33,7 +39,6 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
   
 /.github/workflows/
   scrape.yml          # Automated scraping workflow
-  deploy.yml          # GitHub Pages deployment
 ```
 
 ## Key Components

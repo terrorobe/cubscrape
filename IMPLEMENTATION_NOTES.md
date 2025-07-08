@@ -27,11 +27,11 @@
 - Filters out system requirements to avoid false date matches
 
 ### Modular Code Structure
-- **Main Scraper**: `scraper/scraper.py` - Original monolithic implementation
-- **Refactored Version**: `scraper/scraper_refactored.py` - Modular components
+- **Main Scraper**: `scraper/scraper.py` - Fully modularized implementation using structured components
 - **Fetchers**: `steam_fetcher.py`, `itch_fetcher.py`, `crazygames_fetcher.py` - Platform-specific data fetching
-- **Models**: `models.py` - Data structures and type definitions  
-- **Utils**: `utils.py` - Shared utility functions
+- **Models**: `models.py` - Structured dataclasses (VideoData, SteamGameData, OtherGameData, GameLinks)
+- **Utils**: `utils.py` - Shared utility functions (game link extraction, similarity matching, etc.)
+- **Type Safety**: Full migration from dictionaries to dataclasses for better maintainability
 
 ### Interactive Game Resolution
 - Prompts for low confidence matches instead of algorithmic guessing

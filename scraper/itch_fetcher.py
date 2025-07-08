@@ -9,8 +9,8 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-from .models import OtherGameData
-from .utils import clean_tag_text
+from models import OtherGameData
+from utils import clean_tag_text
 
 
 class ItchDataFetcher:
