@@ -420,7 +420,24 @@
       "positive_review_percentage": 92,
       "review_count": 10900,
       "last_updated": "2025-07-08T23:59:45.384890"
+    },
+    "https://olexa.itch.io/roguelike-bingo": {
+      "platform": "itch",
+      "url": "https://olexa.itch.io/roguelike-bingo",
+      "name": "Roguelike Bingo",
+      "is_free": true,
+      "header_image": "https://img.itch.zone/aW1nLzIwMjcxNjAzLnBuZw==/original/hPw3cA.png",
+      "tags": [
+        "bingo",
+        "challenge",
+        "Indie",
+        "Roguelike",
+        "Roguelite"
+      ],
+      "positive_review_percentage": null,
+      "review_count": null,
+      "last_updated": "2025-07-09T01:35:05.055455"
     }
   },
-  "last_updated": "2025-07-08T23:59:45.385048"
+  "last_updated": "2025-07-09T01:35:05.055674"
 }
