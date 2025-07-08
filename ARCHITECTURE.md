@@ -25,7 +25,7 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
   crazygames_fetcher.py # CrazyGames data fetching and parsing
   models.py           # Structured dataclasses for type safety
   utils.py            # Shared utility functions
-  requirements.txt    # Python dependencies (yt-dlp, requests, beautifulsoup4)
+  # Python dependencies managed by uv (see pyproject.toml)
   
 /data/
   videos-{channel}.json # Per-channel YouTube video metadata with game links

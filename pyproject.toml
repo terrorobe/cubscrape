@@ -2,7 +2,7 @@
 name = "cubscrape"
 version = "0.1.0"
 description = "YouTube to Steam game data scraper"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
     "yt-dlp>=2024.12.23",
     "requests>=2.31.0",

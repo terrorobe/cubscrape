@@ -6,11 +6,11 @@ YouTube Channel Video Scraper with Steam Game Data Integration
 import argparse
 import json
 import logging
-import os
 import re
 import sys
 from dataclasses import asdict, replace
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Dict, List, Optional
 
 import requests
@@ -26,16 +26,16 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 class YouTubeSteamScraper:
     def __init__(self, channel_id: str):
         # Get the directory of this script, then build paths relative to project root
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
 
         # Load config
         self.config = self.load_config()
 
         # Set up file paths
-        self.videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
-        self.steam_file = os.path.join(project_root, 'data', 'steam_games.json')
-        self.other_games_file = os.path.join(project_root, 'data', 'other_games.json')
+        self.videos_file = project_root / 'data' / f'videos-{channel_id}.json'
+        self.steam_file = project_root / 'data' / 'steam_games.json'
+        self.other_games_file = project_root / 'data' / 'other_games.json'
 
         videos_raw = load_json(self.videos_file, {'videos': {}, 'last_updated': None})
         # Convert loaded dictionaries to VideoData objects
@@ -77,11 +77,11 @@ class YouTubeSteamScraper:
 
     def load_config(self) -> Dict:
         """Load configuration from config.json"""
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
-        config_path = os.path.join(project_root, 'config.json')
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+        config_path = project_root / 'config.json'
 
-        if os.path.exists(config_path):
+        if config_path.exists():
             with open(config_path) as f:
                 return json.load(f)
         return {'channels': {}}
@@ -642,12 +642,12 @@ class YouTubeSteamScraper:
         videos_with_games = 0
 
         # Load all channel video files
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
 
         for channel_id in channels_config:
-            videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
-            if not os.path.exists(videos_file):
+            videos_file = project_root / 'data' / f'videos-{channel_id}.json'
+            if not videos_file.exists():
                 print(f"⚠️  Missing video file for channel {channel_id}: {videos_file}")
                 total_issues += 1
                 continue
@@ -688,12 +688,12 @@ class YouTubeSteamScraper:
         # Collect all Steam app IDs referenced in videos
         referenced_steam_apps = set()
         for channel_id in channels_config:
-            videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
-            if os.path.exists(videos_file):
+            videos_file = project_root / 'data' / f'videos-{channel_id}.json'
+            if videos_file.exists():
                 with open(videos_file) as f:
                     channel_data = json.load(f)
 
-                for video_id, video in channel_data.get('videos', {}).items():
+                for _video_id, video in channel_data.get('videos', {}).items():
                     steam_app_id = video.get('steam_app_id')
                     if steam_app_id:
                         referenced_steam_apps.add(steam_app_id)
@@ -706,7 +706,7 @@ class YouTubeSteamScraper:
 
         if missing_steam_games:
             print(f"❌ Found {len(missing_steam_games)} Steam games referenced in videos but missing from database:")
-            for i, app_id in enumerate(missing_steam_games[:10]):  # Show first 10
+            for _i, app_id in enumerate(missing_steam_games[:10]):  # Show first 10
                 print(f"   🎮 Steam App ID: {app_id} (https://store.steampowered.com/app/{app_id})")
 
             if len(missing_steam_games) > 10:
@@ -784,7 +784,7 @@ class YouTubeSteamScraper:
         required_other_fields = ['name', 'platform', 'tags']
         optional_other_fields = ['header_image', 'positive_review_percentage', 'review_count']
 
-        for url, game in self.other_games_data.get('games', {}).items():
+        for _url, game in self.other_games_data.get('games', {}).items():
             missing_required = []
             missing_optional = []
 
@@ -829,7 +829,7 @@ class YouTubeSteamScraper:
                     print(f"❌ Steam game {app_id} has invalid last_updated format: {game.last_updated}")
                     total_issues += 1
 
-        for url, game in self.other_games_data.get('games', {}).items():
+        for _url, game in self.other_games_data.get('games', {}).items():
             last_updated = game.get('last_updated')
             if last_updated:
                 try:
@@ -1025,7 +1025,7 @@ class YouTubeSteamScraper:
                 return "available"
             else:
                 return "unknown"
-        except:
+        except Exception:
             return "unknown"
 
     def infer_games_from_titles(self, channels_config: Dict):
@@ -1039,12 +1039,12 @@ class YouTubeSteamScraper:
         missing_resolved = 0
 
         # Load all channel video files
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
 
         for channel_id in channels_config:
-            videos_file = os.path.join(project_root, 'data', f'videos-{channel_id}.json')
-            if not os.path.exists(videos_file):
+            videos_file = project_root / 'data' / f'videos-{channel_id}.json'
+            if not videos_file.exists():
                 print(f"⚠️  Missing video file for channel {channel_id}: {videos_file}")
                 continue
 
@@ -1075,7 +1075,7 @@ class YouTubeSteamScraper:
             channel_missing_resolved = 0
 
             # Process all videos that need inference
-            for video_id, video, reason in videos_to_process:
+            for _video_id, video, reason in videos_to_process:
                 total_videos_processed += 1
                 title = video.get('title', '')
 
@@ -1126,9 +1126,7 @@ class YouTubeSteamScraper:
 
                 for name in potential_names:
                     steam_match = self.find_steam_match_interactive(name, confidence_threshold=0.5)
-                    if steam_match:
-                        # Keep the best match across all potential names
-                        if not best_match or steam_match['confidence'] > best_match['confidence']:
+                    if steam_match and (not best_match or steam_match['confidence'] > best_match['confidence']):
                             best_match = steam_match
 
                 if best_match:
@@ -1238,9 +1236,9 @@ if __name__ == "__main__":
 
     elif args.mode == 'cron':
         # Load config directly
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
-        config_path = os.path.join(project_root, 'config.json')
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+        config_path = project_root / 'config.json'
 
         with open(config_path) as f:
             config = json.load(f)
@@ -1275,9 +1273,9 @@ if __name__ == "__main__":
             sys.exit(1)
 
         # Use any channel for single-app mode (just need Steam data access)
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
-        config_path = os.path.join(project_root, 'config.json')
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+        config_path = project_root / 'config.json'
 
         with open(config_path) as f:
             config = json.load(f)
@@ -1303,9 +1301,9 @@ if __name__ == "__main__":
 
     elif args.mode == 'data-quality':
         # Load config directly
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
-        config_path = os.path.join(project_root, 'config.json')
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+        config_path = project_root / 'config.json'
 
         with open(config_path) as f:
             config = json.load(f)
@@ -1319,9 +1317,9 @@ if __name__ == "__main__":
 
     elif args.mode == 'infer-games':
         # Load config directly
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
-        config_path = os.path.join(project_root, 'config.json')
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+        config_path = project_root / 'config.json'
 
         with open(config_path) as f:
             config = json.load(f)

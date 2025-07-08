@@ -3,10 +3,10 @@ Utility functions for the YouTube Steam scraper
 """
 
 import json
-import os
 import re
 from datetime import datetime
-from typing import Dict, List
+from pathlib import Path
+from typing import Dict, List, Union
 
 from models import GameLinks
 
@@ -88,11 +88,7 @@ def is_valid_date_string(date_str: str) -> bool:
         r'^to be announced$',
     ]
 
-    for pattern in valid_patterns:
-        if re.search(pattern, date_str, re.IGNORECASE):
-            return True
-
-    return False
+    return any(re.search(pattern, date_str, re.IGNORECASE) for pattern in valid_patterns)
 
 
 def calculate_name_similarity(name1: str, name2: str) -> float:
@@ -130,19 +126,21 @@ def extract_potential_game_names(title: str) -> List[str]:
     return potential_names
 
 
-def load_json(filepath: str, default: Dict) -> Dict:
+def load_json(filepath: Union[str, Path], default: Dict) -> Dict:
     """Load JSON file or return default"""
-    if os.path.exists(filepath):
-        with open(filepath) as f:
+    path = Path(filepath)
+    if path.exists():
+        with open(path) as f:
             return json.load(f)
     return default
 
 
-def save_data(data_dict: Dict, file_path: str):
+def save_data(data_dict: Dict, file_path: Union[str, Path]):
     """Save data to JSON file with timestamp"""
     data_dict['last_updated'] = datetime.now().isoformat()
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    with open(file_path, 'w') as f:
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, 'w') as f:
         json.dump(data_dict, f, indent=2)
 
 

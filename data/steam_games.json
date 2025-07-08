@@ -17823,7 +17823,92 @@
       "review_summary": "Need more reviews for score",
       "insufficient_reviews": true,
       "last_updated": "2025-07-08T15:54:41.930757"
+    },
+    "3361470": {
+      "steam_app_id": "3361470",
+      "steam_url": "https://store.steampowered.com/app/3361470",
+      "name": "Digseum",
+      "release_date": "9 Dec, 2024",
+      "genres": [
+        "Casual",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Rat Monthly"
+      ],
+      "publishers": [
+        "Rat Monthly"
+      ],
+      "price": "2,24\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3361470/header.jpg?t=1746551330",
+      "tags": [
+        "Casual",
+        "Clicker",
+        "Idler",
+        "Management",
+        "Simulation",
+        "Relaxing",
+        "Minimalist",
+        "Pixel Graphics",
+        "Mining",
+        "Colorful"
+      ],
+      "positive_review_percentage": 98,
+      "review_count": 5832,
+      "review_summary": "Overwhelmingly Positive",
+      "recent_review_percentage": 96,
+      "recent_review_count": 347,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "last_updated": "2025-07-08T16:26:42.913982"
+    },
+    "1988550": {
+      "steam_app_id": "1988550",
+      "steam_url": "https://store.steampowered.com/app/1988550",
+      "name": "To The Core",
+      "release_date": "10 Aug, 2023",
+      "genres": [
+        "Adventure",
+        "Casual",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "SomethingExtra"
+      ],
+      "publishers": [
+        "SomethingExtra"
+      ],
+      "price": "7,79\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1988550/header.jpg?t=1740771959",
+      "tags": [
+        "Casual",
+        "Clicker",
+        "2D",
+        "Arcade",
+        "Procedural Generation",
+        "Adventure",
+        "Indie",
+        "Mining",
+        "Singleplayer",
+        "Retro"
+      ],
+      "positive_review_percentage": 92,
+      "review_count": 4640,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 90,
+      "recent_review_count": 54,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-08T16:26:44.235512"
     }
   },
-  "last_updated": "2025-07-08T16:11:58.643803"
+  "last_updated": "2025-07-08T16:26:44.242180"
 }

@@ -12,22 +12,18 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 ## Setup
 
 ### Prerequisites
-- Python 3.8+
+- Python 3.12+
+- uv (Python package manager)
 - direnv (recommended for automatic environment loading)
 
 ### Installation
 
 1. Clone the repository
-2. Set up virtual environment:
+2. Install dependencies:
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate  # Or use direnv with the included .envrc
+   uv sync --extra dev
    ```
-
-3. Install Python dependencies:
-   ```bash
-   pip install -r scraper/requirements.txt
-   ```
+   This creates a virtual environment and installs all dependencies including development tools.
 
 4. Configure channels:
    ```bash
@@ -40,35 +36,35 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 
 **Backfill Mode** - Process a specific channel with full options:
 ```bash
-python scraper/scraper.py backfill --channel idlecub --max-new 20
-python scraper/scraper.py backfill --channel dextag --max-steam-updates 10
-python scraper/scraper.py backfill --channel olexa --max-new 50
+uv run python scraper/scraper.py backfill --channel idlecub --max-new 20
+uv run python scraper/scraper.py backfill --channel dextag --max-steam-updates 10
+uv run python scraper/scraper.py backfill --channel olexa --max-new 50
 ```
 
 **Cron Mode** - Process recent videos from all enabled channels:
 ```bash
-python scraper/scraper.py cron
+uv run python scraper/scraper.py cron
 ```
 
 **Reprocess Mode** - Reprocess existing videos to extract new game links:
 ```bash
-python scraper/scraper.py reprocess --channel idlecub
+uv run python scraper/scraper.py reprocess --channel idlecub
 ```
 
 **Single App Mode** - Fetch specific Steam game data:
 ```bash
-python scraper/scraper.py single-app --app-id 123456
+uv run python scraper/scraper.py single-app --app-id 123456
 ```
 
 **Data Quality Mode** - Check data integrity and completeness:
 ```bash
-python scraper/scraper.py data-quality
+uv run python scraper/scraper.py data-quality
 # Identifies missing Steam games referenced in videos
 ```
 
 **Game Inference Mode** - Find games from video titles and resolve missing Steam games:
 ```bash
-python scraper/scraper.py infer-games
+uv run python scraper/scraper.py infer-games
 # Interactive prompts for low confidence matches
 # Resolves missing/depublished Steam games
 ```
@@ -83,7 +79,7 @@ Data is saved to:
 1. Open `index.html` in a web browser
 2. Or serve it with a local web server:
    ```bash
-   python -m http.server 8000
+   uv run python -m http.server 8000
    # Visit http://localhost:8000/
    ```
 
