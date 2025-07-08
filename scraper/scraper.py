@@ -1081,7 +1081,9 @@ class YouTubeSteamScraper:
                 title = video.get('title', '')
 
                 if reason == "missing_steam_game":
+                    youtube_url = f"https://www.youtube.com/watch?v={video.get('video_id')}"
                     print(f"\n   📹 {title} [MISSING STEAM: {video.get('steam_app_id')}]")
+                    print(f"      🔗 {youtube_url}")
 
                     # First, try to fetch the missing Steam game directly
                     missing_app_id = video.get('steam_app_id')
@@ -1112,15 +1114,32 @@ class YouTubeSteamScraper:
                         print(f"      ❓ Steam app {missing_app_id} status unknown, searching for alternatives...")
 
                 else:
+                    youtube_url = f"https://www.youtube.com/watch?v={video.get('video_id')}"
                     print(f"\n   📹 {title}")
+                    print(f"      🔗 {youtube_url}")
 
-                # Extract potential game names (for both no_game_data and failed missing_steam_game cases)
-                potential_names = extract_potential_game_names(title)
+                # First try YouTube detection as it's more reliable than title parsing
+                potential_names = []
+
+                print("      🔍 Trying YouTube game detection...")
+                detected_game = self.extract_youtube_detected_game(video.get('video_id'))
+                if detected_game:
+                    print(f"      🎮 YouTube detected: {detected_game}")
+                    potential_names.append(detected_game)
+                else:
+                    print("      ❌ No YouTube game detection found")
+
+                # Fallback to extracting game names from title
+                title_names = extract_potential_game_names(title)
+                if title_names:
+                    print(f"      📝 Title extracted: {title_names}")
+                    potential_names.extend(title_names)
+
                 if not potential_names:
-                    print("      ❌ No potential game names found in title")
+                    print("      ❌ No potential game names found from YouTube or title")
                     continue
 
-                print(f"      🎯 Potential names: {potential_names}")
+                print(f"      🎯 All potential names: {potential_names}")
 
                 # Search Steam for each potential name
                 best_match = None
@@ -1140,6 +1159,12 @@ class YouTubeSteamScraper:
                     video['inferred_game'] = True  # Mark as inferred for review
                     video['inference_reason'] = reason
                     video['last_updated'] = datetime.now().isoformat()
+
+                    # Store YouTube detection info if it was used
+                    if detected_game:
+                        video['youtube_detected_game'] = detected_game
+                        if detected_game == best_match['name']:
+                            video['youtube_detected_matched'] = True
 
                     # Fetch full game data
                     try:

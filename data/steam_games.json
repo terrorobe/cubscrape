@@ -4388,12 +4388,12 @@
         "Arcade"
       ],
       "positive_review_percentage": 74,
-      "review_count": 433,
+      "review_count": 434,
       "review_summary": "Mostly Positive",
-      "recent_review_percentage": 70,
-      "recent_review_count": 40,
-      "recent_review_summary": "Mostly Positive",
-      "last_updated": "2025-07-07T17:57:41.513739"
+      "recent_review_percentage": 68,
+      "recent_review_count": 38,
+      "recent_review_summary": "Mixed",
+      "last_updated": "2025-07-09T01:15:40.216063"
     },
     "3669370": {
       "steam_app_id": "3669370",
@@ -5807,8 +5807,8 @@
         "Action",
         "Action RPG",
         "Action Roguelike",
-        "RPG",
         "Roguelite",
+        "RPG",
         "Roguelike",
         "Bullet Hell",
         "Isometric",
@@ -5817,12 +5817,12 @@
       ],
       "is_early_access": true,
       "positive_review_percentage": 91,
-      "review_count": 1752,
+      "review_count": 1759,
       "review_summary": "Very Positive",
       "recent_review_percentage": 87,
-      "recent_review_count": 203,
+      "recent_review_count": 195,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-07T23:58:51.183987"
+      "last_updated": "2025-07-09T01:04:51.972953"
     },
     "2086680": {
       "steam_app_id": "2086680",
@@ -21139,7 +21139,98 @@
       "recent_review_count": 318,
       "recent_review_summary": "Very Positive",
       "last_updated": "2025-07-09T01:01:41.050849"
+    },
+    "2492330": {
+      "steam_app_id": "2492330",
+      "steam_url": "https://store.steampowered.com/app/2492330",
+      "name": "Bronana",
+      "release_date": "11 Dec, 2024",
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Family Sharing"
+      ],
+      "developers": [
+        "busy bear"
+      ],
+      "publishers": [
+        "busy bear"
+      ],
+      "price": "4,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2492330/header.jpg?t=1737784984",
+      "tags": [
+        "Singleplayer",
+        "Action Roguelike",
+        "Arcade",
+        "Survival",
+        "Bullet Hell",
+        "Perma Death",
+        "Roguelite",
+        "Roguelike",
+        "Cartoony",
+        "Action RPG"
+      ],
+      "positive_review_percentage": 70,
+      "review_count": 124,
+      "review_summary": "Mostly Positive",
+      "last_updated": "2025-07-09T01:04:53.676311"
+    },
+    "2276980": {
+      "steam_app_id": "2276980",
+      "steam_url": "https://store.steampowered.com/app/2276980",
+      "name": "FACEMINER",
+      "release_date": "27 Feb, 2025",
+      "genres": [
+        "Action",
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Adjustable Text Size",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Save Anytime",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Wristwork"
+      ],
+      "publishers": [
+        "Wristwork Ltd"
+      ],
+      "price": "5,84\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2276980/header.jpg?t=1751300504",
+      "tags": [
+        "Clicker",
+        "Simulation",
+        "1990's",
+        "Retro",
+        "Point & Click",
+        "Dystopian",
+        "Idler",
+        "Story Rich",
+        "Atmospheric",
+        "Pixel Graphics"
+      ],
+      "positive_review_percentage": 91,
+      "review_count": 623,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 87,
+      "recent_review_count": 55,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:15:42.127794"
     }
   },
-  "last_updated": "2025-07-09T01:01:41.057098"
+  "last_updated": "2025-07-09T01:15:44.532593"
 }
