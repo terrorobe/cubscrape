@@ -485,10 +485,10 @@
         "Pixel Graphics",
         "Automation"
       ],
-      "positive_review_percentage": 72,
-      "review_count": 37,
+      "positive_review_percentage": 73,
+      "review_count": 61,
       "review_summary": "Mostly Positive",
-      "last_updated": "2025-07-07T14:39:58.166992"
+      "last_updated": "2025-07-09T04:33:34.024501"
     },
     "3586420": {
       "steam_app_id": "3586420",
@@ -623,9 +623,9 @@
         "Minimalist"
       ],
       "positive_review_percentage": 98,
-      "review_count": 60,
+      "review_count": 64,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-07T14:39:57.568729"
+      "last_updated": "2025-07-09T04:33:31.826444"
     },
     "3552820": {
       "steam_app_id": "3552820",
@@ -1234,12 +1234,12 @@
       "has_demo": true,
       "demo_app_id": "2083070",
       "positive_review_percentage": 91,
-      "review_count": 22062,
+      "review_count": 22100,
       "review_summary": "Very Positive",
       "recent_review_percentage": 88,
-      "recent_review_count": 1045,
+      "recent_review_count": 1070,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-07T15:57:19.178170"
+      "last_updated": "2025-07-09T04:33:36.143933"
     },
     "2083070": {
       "steam_app_id": "2083070",
@@ -1478,7 +1478,7 @@
       "steam_app_id": "2224120",
       "steam_url": "https://store.steampowered.com/app/2224120",
       "name": "Zombie Rollerz: The Last Ship",
-      "release_date": "Jun 24, 2025",
+      "release_date": "24 Jun, 2025",
       "genres": [
         "Action",
         "Adventure",
@@ -1499,7 +1499,7 @@
       "publishers": [
         "Wandering Wizard"
       ],
-      "price": "$8.99",
+      "price": "9,75\u20ac",
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2224120/header.jpg?t=1750820855",
       "tags": [
         "Action Roguelike",
@@ -1516,9 +1516,9 @@
       "has_demo": true,
       "demo_app_id": "2338110",
       "positive_review_percentage": 68,
-      "review_count": 72,
+      "review_count": 73,
       "review_summary": "Mixed",
-      "last_updated": "2025-07-07T15:57:25.663166"
+      "last_updated": "2025-07-09T04:33:35.501393"
     },
     "2338110": {
       "steam_app_id": "2338110",
@@ -1774,9 +1774,9 @@
         "Pixel Graphics"
       ],
       "positive_review_percentage": 97,
-      "review_count": 3398,
+      "review_count": 3539,
       "review_summary": "Overwhelmingly Positive",
-      "last_updated": "2025-07-07T15:57:31.582361"
+      "last_updated": "2025-07-09T04:33:30.951228"
     },
     "3690720": {
       "steam_app_id": "3690720",
@@ -1817,7 +1817,7 @@
       "positive_review_percentage": 92,
       "review_count": 14,
       "review_summary": "Positive",
-      "last_updated": "2025-07-07T15:57:32.419826"
+      "last_updated": "2025-07-09T04:33:33.323726"
     },
     "3339780": {
       "steam_app_id": "3339780",
@@ -2510,10 +2510,10 @@
       ],
       "has_demo": true,
       "demo_app_id": "3725820",
-      "positive_review_percentage": 81,
-      "review_count": 59,
+      "positive_review_percentage": 80,
+      "review_count": 61,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-07T16:03:42.750352"
+      "last_updated": "2025-07-09T04:33:32.498889"
     },
     "3725820": {
       "steam_app_id": "3725820",
@@ -2688,10 +2688,10 @@
         "Casual",
         "Simulation"
       ],
-      "positive_review_percentage": 92,
-      "review_count": 2089,
+      "positive_review_percentage": 93,
+      "review_count": 2130,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-07T16:03:45.877109"
+      "last_updated": "2025-07-09T04:33:34.808144"
     },
     "3716650": {
       "steam_app_id": "3716650",
@@ -2985,7 +2985,7 @@
       "publishers": [
         "Mastodonte"
       ],
-      "price": "4,12\u20ac",
+      "price": "\u00a5 490",
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498680/304acc4b3575cfdad1d89490966a81e104edf4ae/header.jpg?t=1750952363",
       "tags": [
         "Casual",
@@ -3003,7 +3003,7 @@
       "review_count": 7,
       "review_summary": "Need more reviews for score",
       "insufficient_reviews": true,
-      "last_updated": "2025-07-07T17:45:54.743681"
+      "last_updated": "2025-07-09T04:33:36.870656"
     },
     "2393160": {
       "steam_app_id": "2393160",
@@ -10180,9 +10180,9 @@
         "Card Game"
       ],
       "positive_review_percentage": 74,
-      "review_count": 229,
+      "review_count": 233,
       "review_summary": "Mostly Positive",
-      "last_updated": "2025-07-07T23:06:04.877718"
+      "last_updated": "2025-07-09T04:33:37.645223"
     },
     "3310000": {
       "steam_app_id": "3310000",
@@ -24902,5 +24902,5 @@
       "last_updated": "2025-07-09T03:08:51.729450"
     }
   },
-  "last_updated": "2025-07-09T03:08:51.739289"
+  "last_updated": "2025-07-09T04:33:37.656884"
 }
