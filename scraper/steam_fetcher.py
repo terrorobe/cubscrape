@@ -123,20 +123,7 @@ class SteamDataFetcher:
         """Extract demo-related information"""
         result = {}
 
-        # Check for demo - look for multiple indicators
-        demo_button = soup.find('a', class_='game_area_demo_above_purchase')
-        demo_text_found = 'download' in page_text.lower() and 'demo' in page_text.lower()
-        demo_link_found = 'store.steampowered.com/app/' in page_text and 'demo' in page_text.lower()
-
-        result['has_demo'] = demo_button is not None or demo_text_found or demo_link_found
-
-        # If this main game has a demo, try to find the demo app ID
-        if result['has_demo']:
-            demo_app_id = self._find_demo_app_id(soup, page_text, html_content)
-            if demo_app_id:
-                result['demo_app_id'] = demo_app_id
-
-        # Check if this IS a demo
+        # Check if this IS a demo first
         name_from_api = app_data.get('name', '') if app_data else ''
         categories_from_api = [c.get('description', '') for c in app_data.get('categories', [])] if app_data else []
 
@@ -151,6 +138,14 @@ class SteamDataFetcher:
             full_game_id = self._find_full_game_id(soup, page_text)
             if full_game_id:
                 result['full_game_app_id'] = full_game_id
+        else:
+            # For non-demo apps, try to find demo app ID - only set has_demo if we find one
+            demo_app_id = self._find_demo_app_id(soup, page_text, html_content)
+            if demo_app_id:
+                result['has_demo'] = True
+                result['demo_app_id'] = demo_app_id
+            else:
+                result['has_demo'] = False
 
         return result
 
@@ -333,26 +328,36 @@ class SteamDataFetcher:
 
     def _search_html_for_demo(self, html_content: str, current_id: Optional[str]) -> Optional[str]:
         """Search HTML content for demo app IDs"""
-        # Steam protocol install links
+        # Steam protocol install links - look for any steam://install/ patterns
         steam_protocol_pattern = r'steam://install/(\d+)'
         matches = re.findall(steam_protocol_pattern, html_content)
         for demo_id in matches:
             if demo_id != current_id:
                 return demo_id
 
-        # JavaScript modal patterns
-        js_modal_pattern = r'ShowGotSteamModal.*?[\'"]steam://install/(\d+)[\'"]'
-        matches = re.findall(js_modal_pattern, html_content)
-        for demo_id in matches:
-            if demo_id != current_id:
-                return demo_id
+        # JavaScript modal patterns - handle mixed quotes
+        js_modal_patterns = [
+            r'ShowGotSteamModal.*?[\'"]steam://install/(\d+)[\'"]',
+            r'ShowGotSteamModal\s*\(\s*[\'"]steam://install/(\d+)[\'"]',
+            r'steam://install/(\d+).*?ShowGotSteamModal',
+        ]
+        for pattern in js_modal_patterns:
+            matches = re.findall(pattern, html_content)
+            for demo_id in matches:
+                if demo_id != current_id:
+                    return demo_id
 
         # Demo URL patterns
-        demo_url_pattern = r'store\.steampowered\.com/app/(\d+)/[^"\']*[Dd]emo[^"\'/]*/?'
-        matches = re.findall(demo_url_pattern, html_content)
-        for demo_id in matches:
-            if demo_id != current_id:
-                return demo_id
+        demo_url_patterns = [
+            r'store\.steampowered\.com/app/(\d+)/[^"\']*[Dd]emo[^"\'/]*/?',
+            r'/app/(\d+)/.*?[Dd]emo',
+            r'[Dd]emo.*?/app/(\d+)',
+        ]
+        for pattern in demo_url_patterns:
+            matches = re.findall(pattern, html_content)
+            for demo_id in matches:
+                if demo_id != current_id:
+                    return demo_id
 
         return None
 

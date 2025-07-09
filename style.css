@@ -157,6 +157,11 @@ h1 {
     color: white;
 }
 
+.rating-insufficient {
+    background-color: #666;
+    color: white;
+}
+
 .recent-reviews {
     font-size: 0.75rem;
     color: var(--text-secondary);

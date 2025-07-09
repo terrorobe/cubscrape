@@ -2260,11 +2260,11 @@
       "published_at": "2025-03-02T18:00:49",
       "thumbnail": "https://i.ytimg.com/vi/m6EyRo73DX4/maxresdefault.jpg",
       "steam_app_id": "3036010",
-      "last_updated": "2025-07-09T01:15:39.514574",
+      "youtube_detected_game": "Coin Push RPG",
+      "youtube_detected_matched": true,
       "inferred_game": true,
       "inference_reason": "missing_steam_game",
-      "youtube_detected_game": "Coin Push RPG",
-      "youtube_detected_matched": true
+      "last_updated": "2025-07-09T01:15:39.514574"
     },
     "PcpqdZpZWKA": {
       "video_id": "PcpqdZpZWKA",
@@ -2356,11 +2356,11 @@
       "published_at": "2025-02-25T18:00:05",
       "thumbnail": "https://i.ytimg.com/vi/3M_d_4guOjA/maxresdefault.jpg",
       "steam_app_id": "2276980",
-      "last_updated": "2025-07-09T01:15:41.425136",
+      "youtube_detected_game": "FACEMINER",
+      "youtube_detected_matched": true,
       "inferred_game": true,
       "inference_reason": "missing_steam_game",
-      "youtube_detected_game": "FACEMINER",
-      "youtube_detected_matched": true
+      "last_updated": "2025-07-09T01:15:41.425136"
     },
     "Kw10O9aTyJc": {
       "video_id": "Kw10O9aTyJc",
@@ -3661,9 +3661,9 @@
       "published_at": "2024-12-08T16:45:03",
       "thumbnail": "https://i.ytimg.com/vi/onvaSLPslaE/maxresdefault.jpg",
       "steam_app_id": "3238670",
-      "last_updated": "2025-07-09T01:04:49.634581",
       "inferred_game": true,
-      "inference_reason": "missing_steam_game"
+      "inference_reason": "missing_steam_game",
+      "last_updated": "2025-07-09T01:04:49.634581"
     },
     "XgUhuMH7fd0": {
       "video_id": "XgUhuMH7fd0",
@@ -3690,9 +3690,9 @@
       "published_at": "2024-12-06T19:45:01",
       "thumbnail": "https://i.ytimg.com/vi/exOs0QPpCoI/maxresdefault.jpg",
       "steam_app_id": "3238670",
-      "last_updated": "2025-07-09T01:04:51.134989",
       "inferred_game": true,
-      "inference_reason": "missing_steam_game"
+      "inference_reason": "missing_steam_game",
+      "last_updated": "2025-07-09T01:04:51.134989"
     },
     "kmI4EuT87-c": {
       "video_id": "kmI4EuT87-c",
@@ -3878,9 +3878,9 @@
       "published_at": "2024-11-23T19:45:01",
       "thumbnail": "https://i.ytimg.com/vi/jLr5DVPfOk8/maxresdefault.jpg",
       "steam_app_id": "2492330",
-      "last_updated": "2025-07-09T01:04:52.771677",
       "inferred_game": true,
-      "inference_reason": "missing_steam_game"
+      "inference_reason": "missing_steam_game",
+      "last_updated": "2025-07-09T01:04:52.771677"
     },
     "NuGtRBvao64": {
       "video_id": "NuGtRBvao64",
@@ -4262,5 +4262,5 @@
       "last_updated": "2025-07-09T01:00:52.202739"
     }
   },
-  "last_updated": "2025-07-09T01:00:52.204657"
+  "last_updated": "2025-07-09T02:47:00.299849"
 }

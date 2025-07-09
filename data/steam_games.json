@@ -35,13 +35,14 @@
         "Early Access"
       ],
       "has_demo": true,
+      "demo_app_id": "2119150",
       "positive_review_percentage": 94,
-      "review_count": 762,
+      "review_count": 763,
       "review_summary": "Very Positive",
-      "recent_review_percentage": 89,
-      "recent_review_count": 37,
+      "recent_review_percentage": 91,
+      "recent_review_count": 35,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-07T14:40:01.275687"
+      "last_updated": "2025-07-09T02:51:29.118065"
     },
     "3359200": {
       "steam_app_id": "3359200",
@@ -89,13 +90,14 @@
         "Relaxing"
       ],
       "has_demo": true,
-      "positive_review_percentage": 90,
-      "review_count": 180,
+      "demo_app_id": "3436850",
+      "positive_review_percentage": 89,
+      "review_count": 187,
       "review_summary": "Very Positive",
-      "recent_review_percentage": 83,
-      "recent_review_count": 31,
+      "recent_review_percentage": 81,
+      "recent_review_count": 37,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-07T14:40:00.654462"
+      "last_updated": "2025-07-09T02:51:37.162931"
     },
     "3226210": {
       "steam_app_id": "3226210",
@@ -271,9 +273,9 @@
         "Clicker"
       ],
       "positive_review_percentage": 97,
-      "review_count": 76,
+      "review_count": 78,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-07T15:26:39.448656"
+      "last_updated": "2025-07-09T02:47:08.235837"
     },
     "3352240": {
       "steam_app_id": "3352240",
@@ -533,8 +535,10 @@
       ],
       "has_demo": true,
       "demo_app_id": "3707160",
+      "review_count": 0,
+      "review_summary": "No user reviews",
       "planned_release_date": "August 2025",
-      "last_updated": "2025-07-07T15:29:40.892543"
+      "last_updated": "2025-07-09T03:07:07.079698"
     },
     "3267900": {
       "steam_app_id": "3267900",
@@ -663,8 +667,11 @@
         "Action"
       ],
       "has_demo": true,
+      "demo_app_id": "3715300",
+      "review_count": 0,
+      "review_summary": "No user reviews",
       "planned_release_date": "Q3 2025",
-      "last_updated": "2025-07-07T14:40:03.918290"
+      "last_updated": "2025-07-09T02:46:21.753366"
     },
     "3811840": {
       "steam_app_id": "3811840",
@@ -1051,13 +1058,11 @@
         "Realistic",
         "Top-Down"
       ],
-      "has_demo": true,
-      "demo_app_id": "3707160",
       "is_demo": true,
       "full_game_app_id": "3586420",
       "review_count": 0,
       "review_summary": "No user reviews",
-      "last_updated": "2025-07-07T17:45:17.795853"
+      "last_updated": "2025-07-09T03:07:06.435334"
     },
     "3703420": {
       "steam_app_id": "3703420",
@@ -1185,7 +1190,7 @@
       "positive_review_percentage": 64,
       "review_count": 106,
       "review_summary": "Mixed",
-      "last_updated": "2025-07-07T15:57:18.289936"
+      "last_updated": "2025-07-09T02:46:40.208716"
     },
     "2066020": {
       "steam_app_id": "2066020",
@@ -1678,7 +1683,7 @@
       "positive_review_percentage": 69,
       "review_count": 85,
       "review_summary": "Mixed",
-      "last_updated": "2025-07-07T15:57:29.630453"
+      "last_updated": "2025-07-09T02:47:09.147816"
     },
     "3710150": {
       "steam_app_id": "3710150",
@@ -1856,12 +1861,12 @@
       "has_demo": true,
       "demo_app_id": "3353360",
       "positive_review_percentage": 95,
-      "review_count": 769,
+      "review_count": 779,
       "review_summary": "Overwhelmingly Positive",
       "recent_review_percentage": 96,
-      "recent_review_count": 201,
+      "recent_review_count": 204,
       "recent_review_summary": "Overwhelmingly Positive",
-      "last_updated": "2025-07-07T15:57:33.342905"
+      "last_updated": "2025-07-09T02:46:49.236653"
     },
     "3353360": {
       "steam_app_id": "3353360",
@@ -1900,12 +1905,12 @@
       "is_demo": true,
       "full_game_app_id": "3339780",
       "positive_review_percentage": 95,
-      "review_count": 769,
+      "review_count": 779,
       "review_summary": "Overwhelmingly Positive",
       "recent_review_percentage": 96,
-      "recent_review_count": 201,
+      "recent_review_count": 204,
       "recent_review_summary": "Overwhelmingly Positive",
-      "last_updated": "2025-07-07T15:57:34.245186"
+      "last_updated": "2025-07-09T02:46:50.122327"
     },
     "2062430": {
       "steam_app_id": "2062430",
@@ -3446,10 +3451,10 @@
       "has_demo": true,
       "demo_app_id": "3676860",
       "is_early_access": true,
-      "positive_review_percentage": 76,
-      "review_count": 529,
+      "positive_review_percentage": 77,
+      "review_count": 544,
       "review_summary": "Mostly Positive",
-      "last_updated": "2025-07-07T17:34:22.320610"
+      "last_updated": "2025-07-09T02:43:26.329232"
     },
     "3676860": {
       "steam_app_id": "3676860",
@@ -4927,11 +4932,10 @@
         "Indie",
         "Casual"
       ],
-      "has_demo": true,
-      "positive_review_percentage": 53,
-      "review_count": 96,
+      "positive_review_percentage": 52,
+      "review_count": 97,
       "review_summary": "Mixed",
-      "last_updated": "2025-07-07T18:03:45.872852"
+      "last_updated": "2025-07-09T03:03:20.504275"
     },
     "1794680": {
       "steam_app_id": "1794680",
@@ -9641,12 +9645,12 @@
       "demo_app_id": "3002370",
       "is_early_access": true,
       "positive_review_percentage": 84,
-      "review_count": 8061,
+      "review_count": 8087,
       "review_summary": "Very Positive",
-      "recent_review_percentage": 75,
-      "recent_review_count": 724,
+      "recent_review_percentage": 76,
+      "recent_review_count": 702,
       "recent_review_summary": "Mostly Positive",
-      "last_updated": "2025-07-07T18:57:05.454065"
+      "last_updated": "2025-07-09T03:08:21.033714"
     },
     "1823390": {
       "steam_app_id": "1823390",
@@ -9690,10 +9694,10 @@
       "positive_review_percentage": 88,
       "review_count": 234,
       "review_summary": "Very Positive",
-      "recent_review_percentage": 91,
-      "recent_review_count": 23,
+      "recent_review_percentage": 90,
+      "recent_review_count": 22,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-07T18:59:42.552418"
+      "last_updated": "2025-07-09T03:08:30.678030"
     },
     "2369520": {
       "steam_app_id": "2369520",
@@ -18136,12 +18140,12 @@
       "has_demo": true,
       "demo_app_id": "2673520",
       "positive_review_percentage": 85,
-      "review_count": 1772,
+      "review_count": 1773,
       "review_summary": "Very Positive",
-      "recent_review_percentage": 82,
-      "recent_review_count": 67,
+      "recent_review_percentage": 84,
+      "recent_review_count": 63,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-09T00:42:34.624745"
+      "last_updated": "2025-07-09T03:08:39.892715"
     },
     "3362040": {
       "steam_app_id": "3362040",
@@ -18193,7 +18197,7 @@
       "positive_review_percentage": 100,
       "review_count": 62,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-09T00:42:35.880213"
+      "last_updated": "2025-07-09T03:08:50.862194"
     },
     "3338950": {
       "steam_app_id": "3338950",
@@ -18252,7 +18256,7 @@
       "is_early_access": true,
       "review_count": 0,
       "review_summary": "No user reviews",
-      "last_updated": "2025-07-09T00:48:07.802187"
+      "last_updated": "2025-07-09T03:05:53.809074"
     },
     "3354780": {
       "steam_app_id": "3354780",
@@ -18292,16 +18296,15 @@
         "Wargame",
         "3D"
       ],
-      "has_demo": true,
       "is_demo": true,
       "full_game_app_id": "3338950",
       "positive_review_percentage": 86,
       "review_count": 1060,
       "review_summary": "Very Positive",
-      "recent_review_percentage": 86,
-      "recent_review_count": 95,
+      "recent_review_percentage": 88,
+      "recent_review_count": 93,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-09T00:48:08.428930"
+      "last_updated": "2025-07-09T03:05:53.062925"
     },
     "3054090": {
       "steam_app_id": "3054090",
@@ -23048,7 +23051,7 @@
       "steam_app_id": "585420",
       "steam_url": "https://store.steampowered.com/app/585420",
       "name": "Trailmakers",
-      "release_date": "18 Sep, 2019",
+      "release_date": "Sep 18, 2019",
       "genres": [
         "Action",
         "Adventure",
@@ -23077,7 +23080,7 @@
       "publishers": [
         "Flashbulb"
       ],
-      "price": "6,24\u20ac",
+      "price": "$6.24",
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/585420/007e3884b218b63a0fdcd10a278bd07e179b4db1/header.jpg?t=1750164940",
       "tags": [
         "Space",
@@ -23091,14 +23094,13 @@
         "Colorful",
         "Physics"
       ],
-      "has_demo": true,
       "positive_review_percentage": 92,
-      "review_count": 24190,
+      "review_count": 24194,
       "review_summary": "Very Positive",
       "recent_review_percentage": 85,
-      "recent_review_count": 534,
+      "recent_review_count": 528,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-09T01:38:07.303344"
+      "last_updated": "2025-07-09T03:04:38.529079"
     },
     "3291300": {
       "steam_app_id": "3291300",
@@ -24548,7 +24550,357 @@
       "recent_review_count": 224,
       "recent_review_summary": "Very Positive",
       "last_updated": "2025-07-09T01:54:55.222667"
+    },
+    "3715300": {
+      "steam_app_id": "3715300",
+      "steam_url": "https://store.steampowered.com/app/3715300",
+      "name": "The Horde Wants You Dead Demo",
+      "is_free": true,
+      "release_date": "14 May, 2025",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Game demo",
+        "Partial Controller Support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Bellyflop Games"
+      ],
+      "publishers": [
+        "Bellyflop Games"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3715300/f679ba0e8040cef057725458b27bbc40ca0212b6/header.jpg?t=1747354486",
+      "tags": [
+        "Shoot 'Em Up",
+        "Online Co-Op",
+        "PvE",
+        "Top-Down Shooter",
+        "Twin Stick Shooter",
+        "Survival",
+        "Shooter",
+        "Co-op",
+        "Top-Down",
+        "Action"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3715300",
+      "is_demo": true,
+      "full_game_app_id": "3552820",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "last_updated": "2025-07-09T02:46:22.617270"
+    },
+    "558990": {
+      "steam_app_id": "558990",
+      "steam_url": "https://store.steampowered.com/app/558990",
+      "name": "Opus Magnum",
+      "release_date": "7 Dec, 2017",
+      "genres": [
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Workshop",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Includes level editor",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Zachtronics"
+      ],
+      "publishers": [
+        "Zachtronics"
+      ],
+      "price": "9,75\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/558990/header.jpg?t=1667070364",
+      "tags": [
+        "Puzzle",
+        "Programming",
+        "Automation",
+        "Indie",
+        "Simulation",
+        "Logic",
+        "Singleplayer",
+        "Great Soundtrack",
+        "Steampunk",
+        "Building"
+      ],
+      "positive_review_percentage": 97,
+      "review_count": 4884,
+      "review_summary": "Overwhelmingly Positive",
+      "recent_review_percentage": 97,
+      "recent_review_count": 45,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T02:50:24.556044"
+    },
+    "2119150": {
+      "steam_app_id": "2119150",
+      "steam_url": "https://store.steampowered.com/app/2119150",
+      "name": "Lootun Demo",
+      "is_free": true,
+      "release_date": "17 Aug, 2022",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "ArrowSoftGames"
+      ],
+      "publishers": [
+        "ArrowSoftGames"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2119150/header.jpg?t=1660746328",
+      "tags": [
+        "Loot",
+        "Auto Battler",
+        "RPG",
+        "Automation",
+        "Crafting",
+        "Inventory Management",
+        "Idler",
+        "Singleplayer",
+        "2D",
+        "Early Access"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2119150",
+      "is_demo": true,
+      "full_game_app_id": "1960270",
+      "positive_review_percentage": 94,
+      "review_count": 763,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 91,
+      "recent_review_count": 35,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T02:51:29.931745"
+    },
+    "3436850": {
+      "steam_app_id": "3436850",
+      "steam_url": "https://store.steampowered.com/app/3436850",
+      "name": "All Aboard! The Train Defense Express (Demo)",
+      "is_free": true,
+      "release_date": "12 Jan, 2025",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Likadev"
+      ],
+      "publishers": [
+        "Likadev"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3436850/header.jpg?t=1736695138",
+      "tags": [
+        "Auto Battler",
+        "Survival",
+        "Tower Defense",
+        "Strategy",
+        "Clicker",
+        "Idler",
+        "2D",
+        "Top-Down",
+        "Time Management",
+        "Relaxing"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3436850",
+      "is_demo": true,
+      "full_game_app_id": "3359200",
+      "positive_review_percentage": 89,
+      "review_count": 187,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 81,
+      "recent_review_count": 37,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T02:51:38.296007"
+    },
+    "3002370": {
+      "steam_app_id": "3002370",
+      "steam_url": "https://store.steampowered.com/app/3002370",
+      "name": "The Spell Brigade Demo",
+      "is_free": true,
+      "release_date": "30 May, 2024",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Game demo",
+        "Partial Controller Support"
+      ],
+      "developers": [
+        "Bolt Blaster Games"
+      ],
+      "publishers": [
+        "Bolt Blaster Games"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3002370/header.jpg?t=1726642953",
+      "tags": [
+        "Action Roguelike",
+        "Online Co-Op",
+        "Bullet Hell",
+        "Roguelite",
+        "Co-op",
+        "Magic",
+        "Action",
+        "Roguelike",
+        "Multiplayer",
+        "3D"
+      ],
+      "is_demo": true,
+      "full_game_app_id": "2904000",
+      "is_early_access": true,
+      "positive_review_percentage": 84,
+      "review_count": 8088,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 76,
+      "recent_review_count": 702,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-09T03:08:21.868505"
+    },
+    "2779630": {
+      "steam_app_id": "2779630",
+      "steam_url": "https://store.steampowered.com/app/2779630",
+      "name": "Escape The Mad Empire Demo",
+      "is_free": true,
+      "release_date": "13 Feb, 2024",
+      "genres": [
+        "Action",
+        "Adventure",
+        "RPG",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "XperimentalZ Games"
+      ],
+      "publishers": [
+        "Paradox Arc"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2779630/header.jpg?t=1740453104",
+      "tags": [
+        "CRPG",
+        "Exploration",
+        "Tactical RPG",
+        "Dungeon Crawler",
+        "Real Time Tactics",
+        "Roguelite",
+        "Perma Death",
+        "Party-Based RPG",
+        "Strategy RPG",
+        "Action RPG"
+      ],
+      "is_demo": true,
+      "full_game_app_id": "1823390",
+      "positive_review_percentage": 86,
+      "review_count": 52,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-09T03:08:31.361314"
+    },
+    "2673520": {
+      "steam_app_id": "2673520",
+      "steam_url": "https://store.steampowered.com/app/2673520",
+      "name": "Ballionaire Demo",
+      "is_free": true,
+      "release_date": "14 Oct, 2024",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "newobject"
+      ],
+      "publishers": [
+        "Raw Fury"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2673520/header.jpg?t=1748021474",
+      "tags": [
+        "Singleplayer",
+        "2D",
+        "Casual",
+        "Roguelike",
+        "Deckbuilding",
+        "Strategy",
+        "Roguelite",
+        "Pinball",
+        "Physics",
+        "Cute"
+      ],
+      "is_demo": true,
+      "full_game_app_id": "2667120",
+      "positive_review_percentage": 85,
+      "review_count": 1773,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 84,
+      "recent_review_count": 63,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T03:08:40.809041"
+    },
+    "3364450": {
+      "steam_app_id": "3364450",
+      "steam_url": "https://store.steampowered.com/app/3364450",
+      "name": "Cell Command Demo",
+      "is_free": true,
+      "release_date": "13 Feb, 2025",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Alpherior"
+      ],
+      "publishers": [
+        "Alpherior"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3364450/header.jpg?t=1749015342",
+      "tags": [
+        "Singleplayer",
+        "Grid-Based Movement",
+        "Turn-Based Tactics",
+        "Turn-Based Combat",
+        "Roguelike",
+        "Roguelite",
+        "Tactical RPG",
+        "Science",
+        "RPG",
+        "Turn-Based Strategy"
+      ],
+      "is_demo": true,
+      "full_game_app_id": "3362040",
+      "positive_review_percentage": 100,
+      "review_count": 62,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-09T03:08:51.729450"
     }
   },
-  "last_updated": "2025-07-09T01:54:57.378902"
+  "last_updated": "2025-07-09T03:08:51.739289"
 }

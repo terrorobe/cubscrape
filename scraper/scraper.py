@@ -369,6 +369,106 @@ class YouTubeSteamScraper:
             logging.debug(f"Error parsing release date '{game_data.release_date}': {e}, using weekly refresh")
             return 7  # Weekly as fallback
 
+    def _should_update_related_app(self, app_id: str, force_update: bool) -> bool:
+        """Check if a related app should be updated based on staleness."""
+        if force_update:
+            return True
+
+        if app_id not in self.steam_data['games']:
+            return True
+
+        existing_data = self.steam_data['games'][app_id]
+        if not existing_data.last_updated:
+            return True
+
+        last_updated_date = datetime.fromisoformat(existing_data.last_updated)
+        refresh_interval = self._get_refresh_interval_days(existing_data)
+        stale_date = datetime.now() - timedelta(days=refresh_interval)
+
+        if last_updated_date > stale_date:
+            days_ago = (datetime.now() - last_updated_date).days
+            interval_name = "daily" if refresh_interval == 1 else "weekly" if refresh_interval == 7 else "monthly"
+            logging.info(f"  Skipping {app_id} ({existing_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
+            return False
+
+        return True
+
+    def _fetch_related_app(self, app_id: str, app_type: str) -> bool:
+        """
+        Fetch data for a related app (demo or full game).
+        
+        Args:
+            app_id: Steam app ID to fetch
+            app_type: Type description for logging ("demo" or "full game")
+            
+        Returns:
+            True if app was successfully fetched, False otherwise
+        """
+        try:
+            app_url = f"https://store.steampowered.com/app/{app_id}"
+            app_data = self.fetch_steam_data(app_url)
+            if app_data:
+                app_data = replace(app_data, last_updated=datetime.now().isoformat())
+                self.steam_data['games'][app_id] = app_data
+                logging.info(f"  Updated {app_type}: {app_data.name}")
+                return True
+            return False
+        except Exception as e:
+            logging.error(f"  Error fetching {app_type} data: {e}")
+            return False
+
+    def _fetch_steam_app_with_related(self, app_id: str, force_update: bool = False) -> bool:
+        """
+        Fetch Steam app data and automatically fetch related demo/full game data.
+        
+        Args:
+            app_id: Steam app ID to fetch
+            force_update: If True, skip staleness checks and always fetch
+            
+        Returns:
+            True if any data was updated, False otherwise
+        """
+        steam_url = f"https://store.steampowered.com/app/{app_id}"
+        if force_update:
+            logging.info(f"Fetching single app: {app_id}")
+        else:
+            logging.info(f"Updating Steam data for app {app_id}")
+
+        try:
+            # Fetch the main app
+            steam_data = self.fetch_steam_data(steam_url)
+            if not steam_data:
+                logging.warning(f"  Failed to fetch data for app {app_id}")
+                return False
+
+            # Update the main app data
+            steam_data = replace(steam_data, last_updated=datetime.now().isoformat())
+            self.steam_data['games'][app_id] = steam_data
+            logging.info(f"  Updated: {steam_data.name}")
+            updated = True
+
+            # Handle demo -> full game relationship
+            if steam_data.is_demo and steam_data.full_game_app_id:
+                full_game_id = steam_data.full_game_app_id
+                logging.info(f"  Found full game {full_game_id}, fetching data")
+
+                if self._should_update_related_app(full_game_id, force_update):
+                    self._fetch_related_app(full_game_id, "full game")
+
+            # Handle main game -> demo relationship
+            if steam_data.has_demo and steam_data.demo_app_id:
+                demo_id = steam_data.demo_app_id
+                logging.info(f"  Found demo {demo_id}, fetching data")
+
+                if self._should_update_related_app(demo_id, force_update):
+                    self._fetch_related_app(demo_id, "demo")
+
+            return updated
+
+        except Exception as e:
+            logging.error(f"  Error fetching Steam data for {app_id}: {e}")
+            return False
+
     def update_steam_data(self, max_updates: Optional[int] = None):
         """Update Steam data using age-based refresh intervals"""
         logging.info("Updating Steam data using age-based refresh intervals")
@@ -403,82 +503,9 @@ class YouTubeSteamScraper:
                         logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
                         continue
 
-            # Fetch/update Steam data
-            steam_url = f"https://store.steampowered.com/app/{app_id}"
-            logging.info(f"Updating Steam data for app {app_id}")
-
-            try:
-                steam_data = self.fetch_steam_data(steam_url)
-                if steam_data:
-                    # Update the last_updated timestamp
-                    steam_data = replace(steam_data, last_updated=datetime.now().isoformat())
-                    self.steam_data['games'][app_id] = steam_data
-                    logging.info(f"  Updated: {steam_data.name}")
-                    updates_done += 1
-
-                    # If this is a demo and we found a full game, fetch that too
-                    if steam_data.is_demo and steam_data.full_game_app_id:
-                        full_game_id = steam_data.full_game_app_id
-                        logging.info(f"  Found full game {full_game_id}, fetching data")
-
-                        # Check if we need to update the full game (same age-based staleness logic)
-                        should_update_full = True
-                        if full_game_id in self.steam_data['games']:
-                            existing_data = self.steam_data['games'][full_game_id]
-                            if existing_data.last_updated:
-                                last_updated_date = datetime.fromisoformat(existing_data.last_updated)
-                                full_game_refresh_interval = self._get_refresh_interval_days(existing_data)
-                                full_game_stale_date = datetime.now() - timedelta(days=full_game_refresh_interval)
-                                if last_updated_date > full_game_stale_date:
-                                    should_update_full = False
-                                    days_ago = (datetime.now() - last_updated_date).days
-                                    interval_name = "daily" if full_game_refresh_interval == 1 else "weekly" if full_game_refresh_interval == 7 else "monthly"
-                                    logging.info(f"  Skipping full game {full_game_id} ({existing_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
-
-                        if should_update_full:
-                            try:
-                                full_game_url = f"https://store.steampowered.com/app/{full_game_id}"
-                                full_game_data = self.fetch_steam_data(full_game_url)
-                                if full_game_data:
-                                    full_game_data = replace(full_game_data, last_updated=datetime.now().isoformat())
-                                    self.steam_data['games'][full_game_id] = full_game_data
-                                    logging.info(f"  Updated full game: {full_game_data.name}")
-                            except Exception as e:
-                                logging.error(f"  Error fetching full game data: {e}")
-
-                    # If this is a main game and we found a demo, fetch that too
-                    if steam_data.has_demo and steam_data.demo_app_id:
-                        demo_id = steam_data.demo_app_id
-                        logging.info(f"  Found demo {demo_id}, fetching data")
-
-                        # Check if we need to update the demo (same age-based staleness logic)
-                        should_update_demo = True
-                        if demo_id in self.steam_data['games']:
-                            existing_demo = self.steam_data['games'][demo_id]
-                            if existing_demo.last_updated:
-                                last_updated_date = datetime.fromisoformat(existing_demo.last_updated)
-                                demo_refresh_interval = self._get_refresh_interval_days(existing_demo)
-                                demo_stale_date = datetime.now() - timedelta(days=demo_refresh_interval)
-                                if last_updated_date > demo_stale_date:
-                                    should_update_demo = False
-                                    days_ago = (datetime.now() - last_updated_date).days
-                                    interval_name = "daily" if demo_refresh_interval == 1 else "weekly" if demo_refresh_interval == 7 else "monthly"
-                                    logging.info(f"  Skipping demo {demo_id} ({existing_demo.name}) - updated {days_ago} days ago, {interval_name} refresh")
-
-                        if should_update_demo:
-                            try:
-                                demo_url = f"https://store.steampowered.com/app/{demo_id}"
-                                demo_data = self.fetch_steam_data(demo_url)
-                                if demo_data:
-                                    demo_data = replace(demo_data, last_updated=datetime.now().isoformat())
-                                    self.steam_data['games'][demo_id] = demo_data
-                                    logging.info(f"  Updated demo: {demo_data.name}")
-                            except Exception as e:
-                                logging.error(f"  Error fetching demo data: {e}")
-                else:
-                    logging.warning(f"  Failed to fetch data for app {app_id}")
-            except Exception as e:
-                logging.error(f"  Error fetching Steam data: {e}")
+            # Use the consolidated fetch method (force_update=False for staleness checking)
+            if self._fetch_steam_app_with_related(app_id, force_update=False):
+                updates_done += 1
 
         self.save_steam()
         logging.info(f"Steam data update complete. Updated {updates_done} games.")
@@ -796,20 +823,11 @@ if __name__ == "__main__":
         first_channel = next(iter(channels.keys()))
         scraper = YouTubeSteamScraper(first_channel)
 
-        steam_url = f"https://store.steampowered.com/app/{args.app_id}"
-        logging.info(f"Fetching single app: {args.app_id}")
-
-        try:
-            steam_data = scraper.fetch_steam_data(steam_url)
-            if steam_data:
-                steam_data = replace(steam_data, last_updated=datetime.now().isoformat())
-                scraper.steam_data['games'][args.app_id] = steam_data
-                scraper.save_steam()
-                logging.info(f"Updated: {steam_data.name}")
-            else:
-                logging.warning(f"Failed to fetch data for app {args.app_id}")
-        except Exception as e:
-            logging.error(f"Error fetching app {args.app_id}: {e}")
+        # Use the consolidated fetch method with force_update=True for single-app mode
+        if scraper._fetch_steam_app_with_related(args.app_id, force_update=True):
+            scraper.save_steam()
+        else:
+            logging.warning(f"Failed to fetch data for app {args.app_id}")
 
     elif args.mode == 'data-quality':
         # Load config directly

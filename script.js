@@ -497,6 +497,16 @@ function generateGameMetaHTML(game, statusText, statusClass, ratingClass) {
 }
 
 function generateReviewHTML(game, ratingClass) {
+    // Show "Too few reviews" block when there are reviews but insufficient for percentage
+    if (game.insufficient_reviews || (game.review_count !== undefined && !game.positive_review_percentage)) {
+        return `
+            <span class="game-rating rating-insufficient">
+                Too few reviews (${game.review_count || 0})
+            </span>
+        `;
+    }
+    
+    // Show normal review percentage when available
     if (!game.positive_review_percentage) return '';
     
     const recentReviewHTML = game.recent_review_percentage && game.recent_review_count ? `
