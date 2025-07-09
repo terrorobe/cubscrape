@@ -318,9 +318,60 @@ class YouTubeSteamScraper:
         """Fetch full metadata for a specific video"""
         return self.youtube_extractor.get_full_video_metadata(video_id)
 
-    def update_steam_data(self, days_stale: int = 7, max_updates: Optional[int] = None):
-        """Update Steam data for games that haven't been updated recently"""
-        logging.info(f"Updating Steam data (stale after {days_stale} days)")
+    def _get_refresh_interval_days(self, game_data: SteamGameData) -> int:
+        """Determine refresh interval based on game release age"""
+        # Default to weekly if no release date available
+        if not game_data.release_date or game_data.coming_soon:
+            return 7  # Weekly for upcoming/unknown games
+
+        try:
+            # Parse the release date - Steam uses various formats
+            release_date_str = game_data.release_date.strip()
+
+            # Try to parse different date formats Steam uses
+            release_date = None
+            date_formats = [
+                "%b %d, %Y",      # "Jan 1, 2023"
+                "%B %d, %Y",      # "January 1, 2023"
+                "%d %b, %Y",      # "1 Jan, 2023"
+                "%d %B, %Y",      # "1 January, 2023"
+                "%b %Y",          # "Jan 2023"
+                "%B %Y",          # "January 2023"
+                "%Y",             # "2023"
+            ]
+
+            for date_format in date_formats:
+                try:
+                    release_date = datetime.strptime(release_date_str, date_format)
+                    break
+                except ValueError:
+                    continue
+
+            if not release_date:
+                logging.debug(f"Could not parse release date '{release_date_str}', using weekly refresh")
+                return 7  # Weekly as fallback
+
+            # Calculate age in days since release
+            days_since_release = (datetime.now() - release_date).days
+
+            # Apply refresh intervals based on age:
+            # Less than a month old (30 days): daily
+            # Less than a year old (365 days): weekly
+            # Otherwise: monthly
+            if days_since_release < 30:
+                return 1  # Daily
+            elif days_since_release < 365:
+                return 7  # Weekly
+            else:
+                return 30  # Monthly
+
+        except Exception as e:
+            logging.debug(f"Error parsing release date '{game_data.release_date}': {e}, using weekly refresh")
+            return 7  # Weekly as fallback
+
+    def update_steam_data(self, max_updates: Optional[int] = None):
+        """Update Steam data using age-based refresh intervals"""
+        logging.info("Updating Steam data using age-based refresh intervals")
 
         # Collect all Steam app IDs from videos
         steam_app_ids = set()
@@ -331,7 +382,6 @@ class YouTubeSteamScraper:
         logging.info(f"Found {len(steam_app_ids)} unique Steam games")
 
         updates_done = 0
-        stale_date = datetime.now() - timedelta(days=days_stale)
 
         for app_id in steam_app_ids:
             # Check if we've hit the max updates limit
@@ -339,14 +389,18 @@ class YouTubeSteamScraper:
                 logging.info(f"Reached max_updates limit ({max_updates})")
                 break
 
-            # Check if data is stale
+            # Check if data needs updating based on age-based refresh intervals
             if app_id in self.steam_data['games']:
                 game_data = self.steam_data['games'][app_id]
                 if game_data.last_updated:
                     last_updated_date = datetime.fromisoformat(game_data.last_updated)
+                    refresh_interval_days = self._get_refresh_interval_days(game_data)
+                    stale_date = datetime.now() - timedelta(days=refresh_interval_days)
+
                     if last_updated_date > stale_date:
                         days_ago = (datetime.now() - last_updated_date).days
-                        logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago")
+                        interval_name = "daily" if refresh_interval_days == 1 else "weekly" if refresh_interval_days == 7 else "monthly"
+                        logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
                         continue
 
             # Fetch/update Steam data
@@ -367,16 +421,19 @@ class YouTubeSteamScraper:
                         full_game_id = steam_data.full_game_app_id
                         logging.info(f"  Found full game {full_game_id}, fetching data")
 
-                        # Check if we need to update the full game (same staleness logic)
+                        # Check if we need to update the full game (same age-based staleness logic)
                         should_update_full = True
                         if full_game_id in self.steam_data['games']:
                             existing_data = self.steam_data['games'][full_game_id]
                             if existing_data.last_updated:
                                 last_updated_date = datetime.fromisoformat(existing_data.last_updated)
-                                if last_updated_date > stale_date:
+                                full_game_refresh_interval = self._get_refresh_interval_days(existing_data)
+                                full_game_stale_date = datetime.now() - timedelta(days=full_game_refresh_interval)
+                                if last_updated_date > full_game_stale_date:
                                     should_update_full = False
                                     days_ago = (datetime.now() - last_updated_date).days
-                                    logging.info(f"  Skipping full game {full_game_id} ({existing_data.name}) - updated {days_ago} days ago")
+                                    interval_name = "daily" if full_game_refresh_interval == 1 else "weekly" if full_game_refresh_interval == 7 else "monthly"
+                                    logging.info(f"  Skipping full game {full_game_id} ({existing_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
 
                         if should_update_full:
                             try:
@@ -394,16 +451,19 @@ class YouTubeSteamScraper:
                         demo_id = steam_data.demo_app_id
                         logging.info(f"  Found demo {demo_id}, fetching data")
 
-                        # Check if we need to update the demo (same staleness logic)
+                        # Check if we need to update the demo (same age-based staleness logic)
                         should_update_demo = True
                         if demo_id in self.steam_data['games']:
                             existing_demo = self.steam_data['games'][demo_id]
                             if existing_demo.last_updated:
                                 last_updated_date = datetime.fromisoformat(existing_demo.last_updated)
-                                if last_updated_date > stale_date:
+                                demo_refresh_interval = self._get_refresh_interval_days(existing_demo)
+                                demo_stale_date = datetime.now() - timedelta(days=demo_refresh_interval)
+                                if last_updated_date > demo_stale_date:
                                     should_update_demo = False
                                     days_ago = (datetime.now() - last_updated_date).days
-                                    logging.info(f"  Skipping demo {demo_id} ({existing_demo.name}) - updated {days_ago} days ago")
+                                    interval_name = "daily" if demo_refresh_interval == 1 else "weekly" if demo_refresh_interval == 7 else "monthly"
+                                    logging.info(f"  Skipping demo {demo_id} ({existing_demo.name}) - updated {days_ago} days ago, {interval_name} refresh")
 
                         if should_update_demo:
                             try:
@@ -654,8 +714,6 @@ if __name__ == "__main__":
     parser.add_argument('--channel', type=str, help='Channel ID for backfill mode')
     parser.add_argument('--max-new', type=int, help='Maximum number of new videos to process')
     parser.add_argument('--max-steam-updates', type=int, help='Maximum number of Steam games to update')
-    parser.add_argument('--steam-stale-days', type=int, default=7,
-                        help='Consider Steam data stale after this many days (default: 7)')
     parser.add_argument('--app-id', type=str, help='Steam app ID to fetch (required for single-app mode)')
     args = parser.parse_args()
 
@@ -689,7 +747,6 @@ if __name__ == "__main__":
 
         scraper.process_videos(channel_url, max_new_videos=args.max_new)
         scraper.update_steam_data(
-            days_stale=args.steam_stale_days,
             max_updates=args.max_steam_updates
         )
 
@@ -721,7 +778,6 @@ if __name__ == "__main__":
         # Update Steam data once for all channels
         if steam_scraper:
             steam_scraper.update_steam_data(
-                days_stale=args.steam_stale_days,
                 max_updates=args.max_steam_updates
             )
 

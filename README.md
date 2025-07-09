@@ -41,6 +41,11 @@ uv run python scraper/scraper.py backfill --channel dextag --max-steam-updates 1
 uv run python scraper/scraper.py backfill --channel olexa --max-new 50
 ```
 
+Note: Steam games now use age-based refresh intervals automatically:
+- Games < 30 days old: Daily refresh
+- Games < 365 days old: Weekly refresh  
+- Games ≥ 365 days old: Monthly refresh
+
 **Cron Mode** - Process recent videos from all enabled channels:
 ```bash
 uv run python scraper/scraper.py cron
