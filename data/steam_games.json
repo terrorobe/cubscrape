@@ -574,10 +574,10 @@
       ],
       "has_demo": true,
       "demo_app_id": "3701240",
-      "positive_review_percentage": 93,
-      "review_count": 518,
+      "positive_review_percentage": 94,
+      "review_count": 576,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-07T14:39:55.412056"
+      "last_updated": "2025-07-09T01:54:55.863895"
     },
     "3723470": {
       "steam_app_id": "3723470",
@@ -14506,9 +14506,9 @@
       "has_demo": true,
       "demo_app_id": "3284230",
       "positive_review_percentage": 95,
-      "review_count": 89,
+      "review_count": 91,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-08T00:11:04.327910"
+      "last_updated": "2025-07-09T01:54:57.371409"
     },
     "3284230": {
       "steam_app_id": "3284230",
@@ -16201,10 +16201,10 @@
         "Card Battler",
         "Roguelite"
       ],
-      "positive_review_percentage": 73,
-      "review_count": 113,
+      "positive_review_percentage": 74,
+      "review_count": 117,
       "review_summary": "Mostly Positive",
-      "last_updated": "2025-07-08T00:18:45.621610"
+      "last_updated": "2025-07-09T01:54:52.537506"
     },
     "1054490": {
       "steam_app_id": "1054490",
@@ -17019,10 +17019,10 @@
       ],
       "has_demo": true,
       "demo_app_id": "3478820",
-      "positive_review_percentage": 83,
-      "review_count": 181,
+      "positive_review_percentage": 84,
+      "review_count": 184,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-08T00:19:02.467394"
+      "last_updated": "2025-07-09T01:54:56.642450"
     },
     "3478820": {
       "steam_app_id": "3478820",
@@ -24072,7 +24072,483 @@
       "review_count": 0,
       "review_summary": "No user reviews",
       "last_updated": "2025-07-09T01:38:25.696446"
+    },
+    "2657850": {
+      "steam_app_id": "2657850",
+      "steam_url": "https://store.steampowered.com/app/2657850",
+      "name": "Cozy Space Survivors",
+      "release_date": "3 May, 2024",
+      "genres": [
+        "Action",
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Partial Controller Support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "simonschreibt"
+      ],
+      "publishers": [
+        "simonschreibt"
+      ],
+      "price": "2,09\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2657850/103a4b1e1fd02d8441109e53a1409a10f9abb1b0/header.jpg?t=1746215072",
+      "tags": [
+        "Action Roguelike",
+        "Exploration",
+        "Bullet Hell",
+        "Top-Down Shooter",
+        "Roguelite",
+        "Space Sim",
+        "Arcade",
+        "Roguelike",
+        "RPG",
+        "2D"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2694400",
+      "positive_review_percentage": 96,
+      "review_count": 297,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:46:42.385096"
+    },
+    "2694400": {
+      "steam_app_id": "2694400",
+      "steam_url": "https://store.steampowered.com/app/2694400",
+      "name": "Cozy Space Survivors Demo",
+      "is_free": true,
+      "release_date": "16 Nov, 2023",
+      "genres": [],
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements",
+        "Partial Controller Support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "simonschreibt"
+      ],
+      "publishers": [
+        "simonschreibt"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694400/103a4b1e1fd02d8441109e53a1409a10f9abb1b0/header.jpg?t=1746215077",
+      "tags": [
+        "Action Roguelike",
+        "Exploration",
+        "Bullet Hell",
+        "Top-Down Shooter",
+        "Roguelite",
+        "Space Sim",
+        "Arcade",
+        "Roguelike",
+        "RPG",
+        "2D"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2694400",
+      "is_demo": true,
+      "full_game_app_id": "2657850",
+      "positive_review_percentage": 96,
+      "review_count": 297,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:46:43.556565"
+    },
+    "2615010": {
+      "steam_app_id": "2615010",
+      "steam_url": "https://store.steampowered.com/app/2615010",
+      "name": "Necromantic",
+      "release_date": "22 May, 2024",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Indie",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Partial Controller Support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Blinkmoon Games"
+      ],
+      "publishers": [
+        "Blinkmoon Games"
+      ],
+      "price": "6,89\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2615010/header.jpg?t=1718041757",
+      "tags": [
+        "Early Access",
+        "Bullet Hell",
+        "Hack and Slash",
+        "Action Roguelike",
+        "Gothic",
+        "Dark Fantasy",
+        "Horror",
+        "Singleplayer",
+        "Roguelike",
+        "Online Co-Op"
+      ],
+      "is_early_access": true,
+      "positive_review_percentage": 60,
+      "review_count": 105,
+      "review_summary": "Mixed",
+      "last_updated": "2025-07-09T01:46:44.468296"
+    },
+    "2694420": {
+      "steam_app_id": "2694420",
+      "steam_url": "https://store.steampowered.com/app/2694420",
+      "name": "KILL KNIGHT",
+      "release_date": "2 Oct, 2024",
+      "genres": [
+        "Action"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Stats",
+        "Family Sharing"
+      ],
+      "developers": [
+        "PlaySide"
+      ],
+      "publishers": [
+        "PlaySide"
+      ],
+      "price": "7,39\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694420/header.jpg?t=1738043483",
+      "tags": [
+        "Stylized",
+        "Bullet Hell",
+        "Top-Down Shooter",
+        "Arcade",
+        "Hack and Slash",
+        "Difficult",
+        "Score Attack",
+        "Indie",
+        "Twin Stick Shooter",
+        "Shooter"
+      ],
+      "positive_review_percentage": 93,
+      "review_count": 1431,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 93,
+      "recent_review_count": 33,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:46:45.298208"
+    },
+    "343780": {
+      "steam_app_id": "343780",
+      "steam_url": "https://store.steampowered.com/app/343780",
+      "name": "Cat Goes Fishing",
+      "release_date": "19 Jan, 2015",
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Cat5Games"
+      ],
+      "publishers": [],
+      "price": "4,68\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/343780/header.jpg?t=1722198432",
+      "tags": [
+        "Fishing",
+        "Cats",
+        "Casual",
+        "Cute",
+        "Singleplayer",
+        "Relaxing",
+        "Indie",
+        "2D",
+        "Simulation",
+        "Underwater"
+      ],
+      "positive_review_percentage": 94,
+      "review_count": 13368,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 93,
+      "recent_review_count": 228,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:46:45.976373"
+    },
+    "2975040": {
+      "steam_app_id": "2975040",
+      "steam_url": "https://store.steampowered.com/app/2975040",
+      "name": "Gate Guardian",
+      "release_date": "30 Sep, 2024",
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie",
+        "RPG",
+        "Strategy",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Dmitriy Zakharov",
+        "Andrey Zakharov"
+      ],
+      "publishers": [
+        "Andrey Zakharov"
+      ],
+      "price": "3,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2975040/header.jpg?t=1736764412",
+      "tags": [
+        "Early Access",
+        "Action",
+        "Roguelite",
+        "Bullet Hell",
+        "Roguelike",
+        "Top-Down",
+        "Strategy",
+        "Tower Defense",
+        "Magic",
+        "Tactical"
+      ],
+      "is_early_access": true,
+      "review_count": 6,
+      "review_summary": "Need more reviews for score",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-09T01:46:46.640795"
+    },
+    "2827780": {
+      "steam_app_id": "2827780",
+      "steam_url": "https://store.steampowered.com/app/2827780",
+      "name": "Summonsters",
+      "release_date": "29 Feb, 2024",
+      "genres": [
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "SFCO Games"
+      ],
+      "publishers": [
+        "SFCO Games"
+      ],
+      "price": "1,94\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2827780/header.jpg?t=1709727326",
+      "tags": [
+        "Strategy",
+        "Auto Battler",
+        "Deckbuilding",
+        "Roguelike",
+        "Indie",
+        "Survival",
+        "Singleplayer",
+        "PvE",
+        "Pixel Graphics",
+        "2D"
+      ],
+      "positive_review_percentage": 75,
+      "review_count": 173,
+      "review_summary": "Mostly Positive",
+      "last_updated": "2025-07-09T01:46:47.738745"
+    },
+    "2811200": {
+      "steam_app_id": "2811200",
+      "steam_url": "https://store.steampowered.com/app/2811200",
+      "name": "Machick",
+      "release_date": "22 Mar, 2024",
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Stats",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Deadpixel"
+      ],
+      "publishers": [
+        "Deadpixel"
+      ],
+      "price": "4,13\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2811200/header.jpg?t=1742410485",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Survival",
+        "Action",
+        "Roguelite",
+        "2D",
+        "Pixel Graphics",
+        "Roguelike",
+        "Top-Down",
+        "Crafting"
+      ],
+      "positive_review_percentage": 87,
+      "review_count": 165,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:46:48.551252"
+    },
+    "2551440": {
+      "steam_app_id": "2551440",
+      "steam_url": "https://store.steampowered.com/app/2551440",
+      "name": "Kill A Million Rats",
+      "release_date": "15 Jan, 2025",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Nerdook Productions"
+      ],
+      "publishers": [
+        "Surefire.Games"
+      ],
+      "price": "8,09\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2551440/header.jpg?t=1737976361",
+      "tags": [
+        "Strategy",
+        "Roguelite",
+        "Base Building",
+        "Roguelike",
+        "Top-Down Shooter",
+        "Combat",
+        "Action",
+        "Adventure",
+        "Cats",
+        "2D"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2808330",
+      "positive_review_percentage": 90,
+      "review_count": 53,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:54:53.430511"
+    },
+    "2808330": {
+      "steam_app_id": "2808330",
+      "steam_url": "https://store.steampowered.com/app/2808330",
+      "name": "Kill A Million Rats Demo",
+      "is_free": true,
+      "release_date": "1 Feb, 2024",
+      "genres": [],
+      "categories": [
+        "Game demo"
+      ],
+      "developers": [
+        "Nerdook Productions"
+      ],
+      "publishers": [
+        "Surefire.Games"
+      ],
+      "price": "Free",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2808330/header.jpg?t=1715346692",
+      "tags": [
+        "Strategy",
+        "Roguelite",
+        "Base Building",
+        "Roguelike",
+        "Top-Down Shooter",
+        "Combat",
+        "Action",
+        "Adventure",
+        "Cats",
+        "2D"
+      ],
+      "has_demo": true,
+      "demo_app_id": "2808330",
+      "is_demo": true,
+      "full_game_app_id": "2551440",
+      "positive_review_percentage": 90,
+      "review_count": 53,
+      "review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:54:54.371979"
+    },
+    "2525310": {
+      "steam_app_id": "2525310",
+      "steam_url": "https://store.steampowered.com/app/2525310",
+      "name": "Drop Duchy",
+      "release_date": "5 May, 2025",
+      "genres": [
+        "Adventure",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Sleepy Mill Studio"
+      ],
+      "publishers": [
+        "The Arcade Crew"
+      ],
+      "price": "12,74\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2525310/31d94b7861f47e10afdba4be98abc58f42f9c12e/header.jpg?t=1750777479",
+      "tags": [
+        "Puzzle",
+        "Strategy",
+        "Roguelike",
+        "Singleplayer",
+        "Indie",
+        "Roguelite",
+        "Card Battler",
+        "Medieval",
+        "Board Game",
+        "Historical"
+      ],
+      "positive_review_percentage": 89,
+      "review_count": 1578,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 87,
+      "recent_review_count": 224,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-09T01:54:55.222667"
     }
   },
-  "last_updated": "2025-07-09T01:38:25.703711"
+  "last_updated": "2025-07-09T01:54:57.378902"
 }
