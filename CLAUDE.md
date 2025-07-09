@@ -86,3 +86,45 @@ Steam games are updated using age-based intervals:
 - **New games** (< 30 days): Daily refresh
 - **Recent games** (< 365 days): Weekly refresh  
 - **Older games** (≥ 365 days): Monthly refresh
+
+## JavaScript Environment Setup
+
+This project uses **npm** for JavaScript dependency management and ESLint for code linting.
+
+### Key Files
+- `package.json` - JavaScript project configuration and dependencies
+- `eslint.config.js` - ESLint configuration for code quality
+- `script.js` - Main JavaScript file for the web interface
+
+### JavaScript Commands
+
+```bash
+# Install JavaScript dependencies
+npm install
+
+# Run ESLint to check code quality
+npx eslint script.js
+
+# Fix auto-fixable ESLint issues
+npx eslint script.js --fix
+
+# Add npm scripts to package.json for common tasks
+npm run lint    # (after adding lint script)
+```
+
+### JavaScript Development Workflow
+
+1. **Linting**: Run `npx eslint script.js` to check for issues
+2. **Auto-fix**: Use `npx eslint script.js --fix` to automatically fix many issues
+3. **Manual fixes**: Address remaining issues like missing braces, const usage, etc.
+
+### JavaScript Dependencies
+
+**Development dependencies**:
+- eslint - JavaScript linter for code quality and consistency
+
+### ESLint Configuration
+The project uses a custom ESLint configuration that enforces:
+- **Code quality**: No console statements (warnings), no debugger, consistent variable declarations
+- **Best practices**: Prefer const over let, require curly braces for conditionals
+- **Code style**: 4-space indentation, single quotes, semicolons required

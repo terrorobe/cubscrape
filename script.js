@@ -28,25 +28,57 @@ function formatDate(dateString) {
 }
 
 function getStatusText(game) {
-    if (game.platform === PLATFORMS.ITCH) return 'Itch.io';
-    if (game.platform === PLATFORMS.CRAZYGAMES) return 'CrazyGames';
-    if (game.is_demo) return 'Demo';
-    if (game.coming_soon) return game.planned_release_date || 'Coming Soon';
-    if (game.is_early_access) return 'Early Access';
+    // Use unified display status if available, otherwise fallback to original logic
+    if (game.display_status) {
+        return game.display_status;
+    }
+    
+    if (game.platform === PLATFORMS.ITCH) {
+        return 'Itch.io';
+    }
+    if (game.platform === PLATFORMS.CRAZYGAMES) {
+        return 'CrazyGames';
+    }
+    if (game.is_demo) {
+        return 'Demo';
+    }
+    if (game.coming_soon) {
+        return game.planned_release_date || 'Coming Soon';
+    }
+    if (game.is_early_access) {
+        return 'Early Access';
+    }
     return game.release_date ? `Released ${game.release_date}` : 'Released';
 }
 
 function getStatusClass(game) {
-    if (game.coming_soon) return 'coming-soon';
-    if (game.is_early_access) return 'early-access';
-    if (game.is_demo) return 'demo';
+    // Use unified display status class if available, otherwise fallback to original logic
+    if (game.display_status_class !== undefined) {
+        return game.display_status_class;
+    }
+    
+    if (game.is_demo) {
+        return 'demo';
+    }
+    if (game.coming_soon) {
+        return 'coming-soon';
+    }
+    if (game.is_early_access) {
+        return 'early-access';
+    }
     return '';
 }
 
 function getRatingClass(percentage) {
-    if (!percentage) return '';
-    if (percentage >= 80) return 'positive';
-    if (percentage >= 50) return 'mixed';
+    if (!percentage) {
+        return '';
+    }
+    if (percentage >= 80) {
+        return 'positive';
+    }
+    if (percentage >= 50) {
+        return 'mixed';
+    }
     return 'negative';
 }
 
@@ -117,8 +149,11 @@ function processGames() {
     const videosWithGames = collectVideosWithGames();
     const gameGroups = groupVideosByGame(videosWithGames);
     
+    // Create unified game data for cleaner display
+    const unifiedGames = createUnifiedGameData(gameGroups);
+    
     // Convert back to array and sort
-    filteredGames = Object.values(gameGroups)
+    filteredGames = unifiedGames
         .sort((a, b) => (b.positive_review_percentage || 0) - (a.positive_review_percentage || 0));
 }
 
@@ -130,7 +165,7 @@ function collectVideosWithGames() {
 }
 
 function addGameMetadata(video) {
-    let gameData = {
+    const gameData = {
         video_title: video.title,
         video_date: video.published_at,
         video_thumbnail: video.thumbnail,
@@ -222,7 +257,7 @@ function groupVideosByGame(videosWithGames) {
     const gameGroups = {};
     
     videosWithGames.forEach(video => {
-        let displayKey = getDisplayKey(video);
+        const displayKey = getDisplayKey(video);
         
         if (!gameGroups[displayKey]) {
             gameGroups[displayKey] = createGameGroup(video, displayKey);
@@ -234,29 +269,221 @@ function groupVideosByGame(videosWithGames) {
     return gameGroups;
 }
 
+// Helper functions for unified game data creation
+function getDemoReviewData(game) {
+    // Get review data from the appropriate source
+    const source = game.original_demo_data || game;
+    return {
+        positive_review_percentage: source.positive_review_percentage,
+        review_count: source.review_count,
+        review_summary: source.review_summary,
+        recent_review_percentage: source.recent_review_percentage,
+        recent_review_count: source.recent_review_count,
+        insufficient_reviews: source.insufficient_reviews
+    };
+}
+
+function getUnifiedDisplayProperties(game, isReleased) {
+    const baseProperties = {
+        card_type: 'unified',
+        display_name: game.name
+    };
+    
+    if (isReleased) {
+        return {
+            ...baseProperties,
+            display_status: game.full_game.release_date ? 
+                `Released ${game.full_game.release_date}` : 'Released',
+            display_status_class: '',
+            display_image: game.original_demo_data?.header_image || game.header_image,
+            display_price: game.full_game.price,
+            is_demo: false
+        };
+    }
+    
+    // Unreleased game - show demo content
+    const fullGame = game.full_game || game;
+    let status, statusClass;
+    
+    if (fullGame.coming_soon) {
+        status = fullGame.planned_release_date || 'Coming Soon';
+        statusClass = 'coming-soon';
+    } else if (fullGame.is_early_access) {
+        status = 'Early Access';
+        statusClass = 'early-access';
+    } else {
+        status = 'Coming Soon';
+        statusClass = 'coming-soon';
+    }
+    
+    return {
+        ...baseProperties,
+        display_status: status,
+        display_status_class: statusClass,
+        display_image: game.original_demo_data?.header_image || game.header_image,
+        header_image: game.original_demo_data?.header_image || game.header_image,
+        display_price: null,
+        is_demo: true
+    };
+}
+
+function createUnifiedDisplayLinks(game) {
+    const demoId = game.original_demo_data?.steam_app_id || 
+                   game.demo?.steam_app_id || 
+                   game.steam_app_id;
+    const fullGameId = game.full_game?.steam_app_id || 
+                       game.steam_app_id;
+    
+    return {
+        main: fullGameId ? `https://store.steampowered.com/app/${fullGameId}` : game.steam_url,
+        demo: demoId ? `https://store.steampowered.com/app/${demoId}` : null
+    };
+}
+
+function createUnifiedGameData(gameGroups) {
+    return Object.values(gameGroups).map(game => {
+        // Determine card type and unified display properties
+        // Use shallow copy - deep copy was losing review data
+        const unifiedGame = { ...game };
+        
+        // Check if this should be a unified card
+        const isUnifiedCard = (game.is_demo && game.full_game && game.full_game.steam_app_id) || 
+                            (game.has_demo && game.demo && game.original_demo_data);
+        
+        if (isUnifiedCard) {
+            // Demo+Full game unified card
+            const fullGame = game.full_game || game;
+            const isReleased = fullGame.release_date && 
+                             !fullGame.coming_soon && 
+                             !fullGame.is_early_access;
+            
+            // Get display properties based on release status
+            const displayProps = getUnifiedDisplayProperties(game, isReleased);
+            Object.assign(unifiedGame, displayProps);
+            
+            // Always use demo review data for unified cards
+            const reviewData = getDemoReviewData(game);
+            Object.assign(unifiedGame, reviewData);
+            
+            // Set up unified links
+            unifiedGame.display_links = createUnifiedDisplayLinks(game);
+            
+            // Set main card link - demos link to demo page, released games to full game
+            unifiedGame.steam_url = unifiedGame.is_demo ? 
+                unifiedGame.display_links.demo : 
+                unifiedGame.display_links.main;
+            
+            // Clean up to avoid confusion
+            delete unifiedGame.full_game;
+            delete unifiedGame.demo;
+            delete unifiedGame.original_demo_data;
+            
+        } else if (game.has_demo && game.demo_app_id) {
+            // Full game with demo available
+            unifiedGame.card_type = 'full_with_demo';
+            unifiedGame.display_name = game.name;
+            unifiedGame.display_status = game.coming_soon ? (game.planned_release_date || 'Coming Soon') : 
+                game.is_early_access ? 'Early Access' :
+                    game.release_date ? `Released ${game.release_date}` : 'Released';
+            unifiedGame.display_status_class = game.coming_soon ? 'coming-soon' : 
+                game.is_early_access ? 'early-access' : '';
+            unifiedGame.display_image = game.header_image;
+            unifiedGame.display_price = game.price;
+            unifiedGame.display_links = {
+                main: game.steam_url,
+                demo: game.demo_app_id ? `https://store.steampowered.com/app/${game.demo_app_id}` : null
+            };
+        } else {
+            // Regular single game (demo-only, full-only, or other platforms)
+            unifiedGame.card_type = 'single';
+            unifiedGame.display_name = game.name;
+            unifiedGame.display_status = game.platform === PLATFORMS.ITCH ? 'Itch.io' :
+                game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' :
+                    game.is_demo ? 'Demo' :
+                        game.coming_soon ? (game.planned_release_date || 'Coming Soon') :
+                            game.is_early_access ? 'Early Access' :
+                                game.release_date ? `Released ${game.release_date}` : 'Released';
+            unifiedGame.display_status_class = game.coming_soon ? 'coming-soon' :
+                game.is_early_access ? 'early-access' :
+                    game.is_demo ? 'demo' : '';
+            unifiedGame.display_image = game.header_image;
+            unifiedGame.display_price = game.price;
+            unifiedGame.display_links = {
+                main: game.steam_url,
+                demo: null
+            };
+        }
+        
+        return unifiedGame;
+    });
+}
+
 function getDisplayKey(video) {
-    // Smart card selection: prefer demo for unreleased main games
+    // Smart card selection: prefer full game for released games, demo for unreleased
     if (video.has_demo && video.demo_app_id && video.coming_soon) {
         return video.demo_app_id;
     }
+    
+    // If this is a demo video, check if full game exists and prefer full game
+    if (video.is_demo && video.full_game_app_id && steamData[video.full_game_app_id]) {
+        return video.full_game_app_id;
+    }
+    
     return video.game_key;
 }
 
 function createGameGroup(video, displayKey) {
     let cardGameData = video;
     
-    // If we're showing a demo card for an unreleased main game, use demo data
+    // If we're using a different display key, get the appropriate game data
     if (displayKey !== video.game_key && steamData[displayKey]) {
         cardGameData = {
             ...video,
             ...steamData[displayKey],
             platform: PLATFORMS.STEAM,
-            game_key: displayKey,
-            full_game: video.has_demo ? {
+            game_key: displayKey
+        };
+        
+        // Handle demo/full game relationships
+        if (video.has_demo && video.demo_app_id) {
+            // Showing demo card for unreleased main game - use demo data for visuals
+            const demoData = steamData[video.demo_app_id];
+            if (demoData && video.coming_soon) {
+                // Use demo image and data for unreleased games
+                cardGameData = {
+                    ...cardGameData,
+                    header_image: demoData.header_image,
+                    screenshots: demoData.screenshots,
+                    is_demo: demoData.is_demo
+                };
+            }
+            cardGameData.full_game = {
                 ...video,
                 steam_app_id: video.game_key
-            } : undefined
-        };
+            };
+        } else if (video.is_demo && video.full_game_app_id) {
+            // Showing full game card but this video is from demo
+            // Store the original demo data before it gets overwritten
+            const originalDemoData = {
+                ...steamData[video.game_key]
+            };
+            
+            cardGameData.demo = {
+                ...originalDemoData,
+                steam_app_id: video.game_key
+            };
+            
+            // For unreleased full games, we need to preserve demo info
+            const fullGameData = steamData[video.full_game_app_id];
+            if (fullGameData && fullGameData.coming_soon) {
+                // Preserve demo's essential data for unified card creation
+                cardGameData.demo_review_count = originalDemoData.review_count;
+                cardGameData.demo_positive_review_percentage = originalDemoData.positive_review_percentage;
+                cardGameData.demo_review_summary = originalDemoData.review_summary;
+                cardGameData.demo_header_image = originalDemoData.header_image;
+                cardGameData.original_demo_data = originalDemoData;
+            }
+        }
     }
     
     return {
@@ -378,7 +605,7 @@ function applyReleaseFilter(games, releaseFilter) {
             game.platform === PLATFORMS.CRAZYGAMES || 
             (game.platform === PLATFORMS.STEAM && !game.coming_soon && !game.is_early_access && !game.is_demo),
         [RELEASE_FILTERS.EARLY_ACCESS]: (game) => 
-            game.platform === PLATFORMS.STEAM && game.is_early_access,
+            game.platform === PLATFORMS.STEAM && game.is_early_access && !game.coming_soon,
         [RELEASE_FILTERS.COMING_SOON]: (game) => 
             game.platform === PLATFORMS.STEAM && game.coming_soon
     };
@@ -497,8 +724,17 @@ function generateGameMetaHTML(game, statusText, statusClass, ratingClass) {
 }
 
 function generateReviewHTML(game, ratingClass) {
+    // Handle "No user reviews" case explicitly
+    if (game.review_summary === 'No user reviews' || game.review_count === 0) {
+        return `
+            <span class="game-rating rating-insufficient">
+                No user reviews
+            </span>
+        `;
+    }
+    
     // Show "Too few reviews" block when there are reviews but insufficient for percentage
-    if (game.insufficient_reviews || (game.review_count !== undefined && !game.positive_review_percentage)) {
+    if (game.insufficient_reviews || (game.review_count !== undefined && game.review_count > 0 && !game.positive_review_percentage)) {
         return `
             <span class="game-rating rating-insufficient">
                 Too few reviews (${game.review_count || 0})
@@ -507,7 +743,9 @@ function generateReviewHTML(game, ratingClass) {
     }
     
     // Show normal review percentage when available
-    if (!game.positive_review_percentage) return '';
+    if (!game.positive_review_percentage) {
+        return '';
+    }
     
     const recentReviewHTML = game.recent_review_percentage && game.recent_review_count ? `
         <div class="recent-reviews">
@@ -534,7 +772,14 @@ function generateStatusHTML(statusText, statusClass, game) {
 }
 
 function generateFullGameHTML(game) {
-    if (!game.full_game) return '';
+    // Unified games handle this in their main status - no need for separate full game info
+    if (game.card_type === 'unified') {
+        return '';
+    }
+    
+    if (!game.full_game) {
+        return '';
+    }
     
     const fullGameStatus = getStatusText(game.full_game);
     const priceInfo = game.full_game.price && !game.full_game.coming_soon ? ` - ${game.full_game.price}` : '';
@@ -547,11 +792,14 @@ function generateFullGameHTML(game) {
 }
 
 function generateGamePriceHTML(game) {
-    return game.price ? `<div class="game-price">${game.price}</div>` : '';
+    const price = game.display_price !== undefined ? game.display_price : game.price;
+    return price ? `<div class="game-price">${price}</div>` : '';
 }
 
 function generateGameTagsHTML(topTags) {
-    if (topTags.length === 0) return '';
+    if (topTags.length === 0) {
+        return '';
+    }
     
     return `
         <div class="game-tags">
@@ -584,7 +832,9 @@ function generateChannelInfoHTML(game) {
 }
 
 function generateMultiVideoHTML(game) {
-    if (game.video_count <= 1) return '';
+    if (game.video_count <= 1) {
+        return '';
+    }
     
     return `
         <div class="video-count">Featured in ${game.video_count} videos</div>
@@ -598,12 +848,48 @@ function generateMultiVideoHTML(game) {
 }
 
 function generateGameLinksHTML(game) {
+    // Use unified display links if available
+    if (game.display_links) {
+        const mainLinkText = game.platform === PLATFORMS.ITCH ? 'Itch.io' : 
+            game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' : 'Steam';
+        
+        const demoLink = game.display_links.demo ? `
+            <a href="${game.display_links.demo}" target="_blank" onclick="event.stopPropagation()">
+                Steam Demo
+            </a>
+        ` : '';
+        
+        const crazyGamesLink = game.crazygames_url && game.platform !== PLATFORMS.CRAZYGAMES ? `
+            <a href="${game.crazygames_url}" target="_blank" onclick="event.stopPropagation()">
+                CrazyGames
+            </a>
+        ` : '';
+        
+        return `
+            <div class="game-links">
+                <a href="${game.display_links.main}" target="_blank" onclick="event.stopPropagation()">
+                    ${mainLinkText}
+                </a>
+                ${demoLink}
+                ${crazyGamesLink}
+                <a href="https://youtube.com/watch?v=${game.video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>
+            </div>
+        `;
+    }
+    
+    // Fallback to original logic for non-unified games
     const platformName = game.platform === PLATFORMS.ITCH ? 'Itch.io' : 
-                        game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' : 'Steam';
+        game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' : 'Steam';
     
     const itchDemoLink = game.itch_demo_url ? `
         <a href="${game.itch_demo_url}" target="_blank" onclick="event.stopPropagation()">
             Itch.io Demo
+        </a>
+    ` : '';
+    
+    const steamDemoLink = game.demo && game.demo.steam_app_id ? `
+        <a href="https://store.steampowered.com/app/${game.demo.steam_app_id}" target="_blank" onclick="event.stopPropagation()">
+            Steam Demo
         </a>
     ` : '';
     
@@ -618,6 +904,7 @@ function generateGameLinksHTML(game) {
             <a href="${game.steam_url}" target="_blank" onclick="event.stopPropagation()">
                 ${platformName}
             </a>
+            ${steamDemoLink}
             ${itchDemoLink}
             ${crazyGamesLink}
             <a href="https://youtube.com/watch?v=${game.video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>
@@ -626,7 +913,9 @@ function generateGameLinksHTML(game) {
 }
 
 function generateUpdateInfoHTML(game) {
-    if (!game.last_updated) return '';
+    if (!game.last_updated) {
+        return '';
+    }
     
     const platformName = game.platform === PLATFORMS.STEAM ? 'Steam' : game.platform;
     return `<div class="update-info">${platformName} data: ${formatDate(game.last_updated)}</div>`;
