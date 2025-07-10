@@ -31909,7 +31909,93 @@
       "review_count": 10,
       "review_summary": "Mixed",
       "last_updated": "2025-07-11T01:10:30.555243"
+    },
+    "3704940": {
+      "steam_app_id": "3704940",
+      "steam_url": "https://store.steampowered.com/app/3704940",
+      "name": "Fish 'n Ships",
+      "release_date": "12 Jun, 2025",
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Squid Snooze Studio"
+      ],
+      "publishers": [
+        "Squid Snooze Studio"
+      ],
+      "price": "4,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3704940/880910c1e2b0a7e1f74d1f2e0870e28b39606fc9/header.jpg?t=1749746625",
+      "tags": [
+        "Simulation",
+        "Fishing",
+        "2D",
+        "Cozy",
+        "Singleplayer",
+        "Underwater",
+        "Atmospheric",
+        "Puzzle",
+        "Stylized",
+        "Pixel Graphics"
+      ],
+      "positive_review_percentage": 100,
+      "review_count": 22,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-11T01:13:33.216677"
+    },
+    "3077090": {
+      "steam_app_id": "3077090",
+      "steam_url": "https://store.steampowered.com/app/3077090",
+      "name": "Ant Guardians",
+      "release_date": "26 Jun, 2025",
+      "genres": [
+        "Action",
+        "Indie",
+        "Strategy",
+        "Early Access"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "NotThisTime"
+      ],
+      "publishers": [
+        "NotThisTime"
+      ],
+      "price": "3,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3077090/header.jpg?t=1750923212",
+      "tags": [
+        "Early Access",
+        "Tower Defense",
+        "RTS",
+        "Strategy",
+        "Action RTS",
+        "Real Time Tactics",
+        "Fantasy",
+        "Casual",
+        "Wargame",
+        "Action"
+      ],
+      "is_early_access": true,
+      "review_count": 9,
+      "review_summary": "Need more reviews for score",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-11T01:13:34.133528"
     }
   },
-  "last_updated": "2025-07-11T01:10:30.632114"
+  "last_updated": "2025-07-11T01:13:34.146578"
 }
