@@ -91,13 +91,13 @@
       ],
       "has_demo": true,
       "demo_app_id": "3436850",
-      "positive_review_percentage": 89,
-      "review_count": 187,
+      "positive_review_percentage": 88,
+      "review_count": 189,
       "review_summary": "Very Positive",
-      "recent_review_percentage": 81,
-      "recent_review_count": 37,
-      "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-09T02:51:37.162931"
+      "recent_review_percentage": 79,
+      "recent_review_count": 39,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-10T04:34:16.113427"
     },
     "3226210": {
       "steam_app_id": "3226210",
@@ -273,9 +273,9 @@
         "Clicker"
       ],
       "positive_review_percentage": 97,
-      "review_count": 78,
+      "review_count": 79,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-09T02:47:08.235837"
+      "last_updated": "2025-07-10T04:34:12.662488"
     },
     "3352240": {
       "steam_app_id": "3352240",
@@ -485,10 +485,10 @@
         "Pixel Graphics",
         "Automation"
       ],
-      "positive_review_percentage": 73,
-      "review_count": 61,
+      "positive_review_percentage": 71,
+      "review_count": 67,
       "review_summary": "Mostly Positive",
-      "last_updated": "2025-07-09T04:33:34.024501"
+      "last_updated": "2025-07-10T04:34:09.041767"
     },
     "3586420": {
       "steam_app_id": "3586420",
@@ -562,8 +562,8 @@
       "publishers": [
         "SOCKHOUSE STUDIOS"
       ],
-      "price": "3,24\u20ac",
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3267900/7adb8dfa4a64a758322146ca3eb24da141eaaa6f/header.jpg?t=1751598989",
+      "price": "3,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3267900/7adb8dfa4a64a758322146ca3eb24da141eaaa6f/header.jpg?t=1752094346",
       "tags": [
         "Casual",
         "Strategy",
@@ -579,9 +579,9 @@
       "has_demo": true,
       "demo_app_id": "3701240",
       "positive_review_percentage": 94,
-      "review_count": 576,
+      "review_count": 601,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-09T01:54:55.863895"
+      "last_updated": "2025-07-10T04:34:14.805216"
     },
     "3723470": {
       "steam_app_id": "3723470",
@@ -623,9 +623,9 @@
         "Minimalist"
       ],
       "positive_review_percentage": 98,
-      "review_count": 64,
+      "review_count": 67,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-09T04:33:31.826444"
+      "last_updated": "2025-07-10T04:34:15.453510"
     },
     "3552820": {
       "steam_app_id": "3552820",
@@ -1190,7 +1190,7 @@
       "positive_review_percentage": 64,
       "review_count": 106,
       "review_summary": "Mixed",
-      "last_updated": "2025-07-09T02:46:40.208716"
+      "last_updated": "2025-07-10T04:34:07.806969"
     },
     "2066020": {
       "steam_app_id": "2066020",
@@ -1234,12 +1234,12 @@
       "has_demo": true,
       "demo_app_id": "2083070",
       "positive_review_percentage": 91,
-      "review_count": 22100,
+      "review_count": 22111,
       "review_summary": "Very Positive",
       "recent_review_percentage": 88,
-      "recent_review_count": 1070,
+      "recent_review_count": 1073,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-09T04:33:36.143933"
+      "last_updated": "2025-07-10T04:34:06.371775"
     },
     "2083070": {
       "steam_app_id": "2083070",
@@ -1478,7 +1478,7 @@
       "steam_app_id": "2224120",
       "steam_url": "https://store.steampowered.com/app/2224120",
       "name": "Zombie Rollerz: The Last Ship",
-      "release_date": "24 Jun, 2025",
+      "release_date": "Jun 24, 2025",
       "genres": [
         "Action",
         "Adventure",
@@ -1499,7 +1499,7 @@
       "publishers": [
         "Wandering Wizard"
       ],
-      "price": "9,75\u20ac",
+      "price": "$9.99",
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2224120/header.jpg?t=1750820855",
       "tags": [
         "Action Roguelike",
@@ -1518,7 +1518,7 @@
       "positive_review_percentage": 68,
       "review_count": 73,
       "review_summary": "Mixed",
-      "last_updated": "2025-07-09T04:33:35.501393"
+      "last_updated": "2025-07-10T04:34:10.384610"
     },
     "2338110": {
       "steam_app_id": "2338110",
@@ -1683,7 +1683,7 @@
       "positive_review_percentage": 69,
       "review_count": 85,
       "review_summary": "Mixed",
-      "last_updated": "2025-07-09T02:47:09.147816"
+      "last_updated": "2025-07-10T04:34:16.765859"
     },
     "3710150": {
       "steam_app_id": "3710150",
@@ -1762,10 +1762,10 @@
       "price": "2,99\u20ac",
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372980/header.jpg?t=1750465489",
       "tags": [
-        "Strategy",
         "Clicker",
-        "Fantasy",
+        "Strategy",
         "Resource Management",
+        "Fantasy",
         "Idler",
         "2D",
         "Colorful",
@@ -1774,9 +1774,9 @@
         "Pixel Graphics"
       ],
       "positive_review_percentage": 97,
-      "review_count": 3539,
+      "review_count": 3626,
       "review_summary": "Overwhelmingly Positive",
-      "last_updated": "2025-07-09T04:33:30.951228"
+      "last_updated": "2025-07-10T04:34:17.499713"
     },
     "3690720": {
       "steam_app_id": "3690720",
@@ -1817,7 +1817,7 @@
       "positive_review_percentage": 92,
       "review_count": 14,
       "review_summary": "Positive",
-      "last_updated": "2025-07-09T04:33:33.323726"
+      "last_updated": "2025-07-10T04:34:07.152621"
     },
     "3339780": {
       "steam_app_id": "3339780",
@@ -2510,10 +2510,10 @@
       ],
       "has_demo": true,
       "demo_app_id": "3725820",
-      "positive_review_percentage": 80,
-      "review_count": 61,
-      "review_summary": "Very Positive",
-      "last_updated": "2025-07-09T04:33:32.498889"
+      "positive_review_percentage": 79,
+      "review_count": 63,
+      "review_summary": "Mostly Positive",
+      "last_updated": "2025-07-10T04:34:11.021569"
     },
     "3725820": {
       "steam_app_id": "3725820",
@@ -2689,9 +2689,9 @@
         "Simulation"
       ],
       "positive_review_percentage": 93,
-      "review_count": 2130,
+      "review_count": 2147,
       "review_summary": "Very Positive",
-      "last_updated": "2025-07-09T04:33:34.808144"
+      "last_updated": "2025-07-10T04:34:13.273948"
     },
     "3716650": {
       "steam_app_id": "3716650",
@@ -2985,7 +2985,7 @@
       "publishers": [
         "Mastodonte"
       ],
-      "price": "\u00a5 490",
+      "price": "4,12\u20ac",
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498680/304acc4b3575cfdad1d89490966a81e104edf4ae/header.jpg?t=1750952363",
       "tags": [
         "Casual",
@@ -3003,7 +3003,7 @@
       "review_count": 7,
       "review_summary": "Need more reviews for score",
       "insufficient_reviews": true,
-      "last_updated": "2025-07-09T04:33:36.870656"
+      "last_updated": "2025-07-10T04:34:14.145530"
     },
     "2393160": {
       "steam_app_id": "2393160",
@@ -3452,9 +3452,9 @@
       "demo_app_id": "3676860",
       "is_early_access": true,
       "positive_review_percentage": 77,
-      "review_count": 544,
+      "review_count": 549,
       "review_summary": "Mostly Positive",
-      "last_updated": "2025-07-09T02:43:26.329232"
+      "last_updated": "2025-07-10T04:34:09.740614"
     },
     "3676860": {
       "steam_app_id": "3676860",
@@ -10180,9 +10180,9 @@
         "Card Game"
       ],
       "positive_review_percentage": 74,
-      "review_count": 233,
+      "review_count": 234,
       "review_summary": "Mostly Positive",
-      "last_updated": "2025-07-09T04:33:37.645223"
+      "last_updated": "2025-07-10T04:34:11.899263"
     },
     "3310000": {
       "steam_app_id": "3310000",
@@ -24900,7 +24900,48 @@
       "review_count": 62,
       "review_summary": "Very Positive",
       "last_updated": "2025-07-09T03:08:51.729450"
+    },
+    "2857000": {
+      "steam_app_id": "2857000",
+      "steam_url": "https://store.steampowered.com/app/2857000",
+      "name": "refarm",
+      "release_date": "1 Nov, 2024",
+      "genres": [
+        "Simulation"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Family Sharing"
+      ],
+      "developers": [
+        "otterhands"
+      ],
+      "publishers": [
+        "otterhands"
+      ],
+      "price": "3,19\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2857000/header.jpg?t=1751904891",
+      "tags": [
+        "Management",
+        "Idler",
+        "Farming Sim",
+        "Simulation",
+        "Nature",
+        "Automation",
+        "Agriculture",
+        "Pixel Graphics",
+        "Colony Sim",
+        "Resource Management"
+      ],
+      "positive_review_percentage": 89,
+      "review_count": 191,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 92,
+      "recent_review_count": 82,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-10T04:34:08.426347"
     }
   },
-  "last_updated": "2025-07-09T04:33:37.656884"
+  "last_updated": "2025-07-10T04:34:17.508552"
 }
