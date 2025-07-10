@@ -2,8 +2,7 @@ name: Scrape YouTube and Steam Data
 
 on:
   schedule:
-    # Run daily at 2 AM UTC
-    - cron: '0 2 * * *'
+    - cron: '42 */6 * * *'
   workflow_dispatch:
     inputs:
       mode:
