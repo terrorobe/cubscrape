@@ -434,10 +434,27 @@
         "Roguelike",
         "Roguelite"
       ],
-      "positive_review_percentage": null,
-      "review_count": null,
       "last_updated": "2025-07-09T01:35:05.055455"
+    },
+    "https://bippinbits.itch.io/tristram": {
+      "platform": "itch",
+      "url": "https://bippinbits.itch.io/tristram",
+      "name": "Tristram",
+      "is_free": true,
+      "header_image": "https://img.itch.zone/aW1nLzE1Nzg4NTAzLnBuZw==/original/ad%2BSA7.png",
+      "tags": [
+        "Dark",
+        "Dungeon Crawler",
+        "Fantasy",
+        "Godot",
+        "Idle",
+        "Ludum Dare 55",
+        "Retro"
+      ],
+      "positive_review_percentage": 94,
+      "review_count": 488,
+      "last_updated": "2025-07-11T01:06:41.157455"
     }
   },
-  "last_updated": "2025-07-09T01:35:05.055674"
+  "last_updated": "2025-07-11T01:06:41.157639"
 }
