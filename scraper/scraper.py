@@ -537,7 +537,7 @@ class YouTubeSteamScraper:
             # Save updated video data
             if channel_games_found > 0 or channel_missing_resolved > 0:
                 with open(videos_file, 'w') as f:
-                    json.dump(channel_data, f, indent=2)
+                    json.dump(channel_data, f, indent=2, sort_keys=True)
                 print(f"   💾 Saved {channel_games_found} game inferences and {channel_missing_resolved} resolved missing games for {channel_id}")
 
         # Save updated Steam data

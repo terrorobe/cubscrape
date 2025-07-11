@@ -141,7 +141,7 @@ def save_data(data_dict: Dict, file_path: Union[str, Path]):
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, 'w') as f:
-        json.dump(data_dict, f, indent=2)
+        json.dump(data_dict, f, indent=2, sort_keys=True)
 
 
 def clean_tag_text(tag_text: str) -> str:

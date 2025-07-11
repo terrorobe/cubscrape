@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict
 
+from config_manager import ConfigManager
+
 
 class DataQualityChecker:
     """Handles data quality analysis and reporting"""
@@ -15,6 +17,8 @@ class DataQualityChecker:
         self.project_root = project_root
         self.steam_data = steam_data
         self.other_games_data = other_games_data
+        self.config_manager = ConfigManager(project_root)
+        self.skip_steam_matching_games = self.config_manager.get_skip_steam_matching_games()
 
     def check_data_quality(self, channels_config: Dict) -> int:
         """Check data quality across all channels and games"""
@@ -69,7 +73,12 @@ class DataQualityChecker:
             for video_id, video in channel_data.get('videos', {}).items():
                 has_game = bool(video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url'))
 
-                if has_game:
+                # Check if this video has a detected game that's intentionally skipped
+                youtube_detected_game = video.get('youtube_detected_game', '')
+                is_intentionally_skipped = any(skip_game.lower() in youtube_detected_game.lower()
+                                             for skip_game in self.skip_steam_matching_games)
+
+                if has_game or is_intentionally_skipped:
                     videos_with_games += 1
                     channel_videos_with_games += 1
                 else:
@@ -283,7 +292,14 @@ class DataQualityChecker:
                     channel_data = json.load(f)
                 for _video_id, video in channel_data.get('videos', {}).items():
                     total_videos += 1
-                    if video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url'):
+                    has_game = bool(video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url'))
+
+                    # Check if this video has a detected game that's intentionally skipped
+                    youtube_detected_game = video.get('youtube_detected_game', '')
+                    is_intentionally_skipped = any(skip_game.lower() in youtube_detected_game.lower()
+                                                 for skip_game in self.skip_steam_matching_games)
+
+                    if has_game or is_intentionally_skipped:
                         videos_with_games += 1
                     else:
                         videos_missing_games += 1
