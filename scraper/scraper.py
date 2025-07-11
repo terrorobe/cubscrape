@@ -159,11 +159,10 @@ class YouTubeSteamScraper:
                     logging.info("Hit 3 consecutive batches with no new videos, stopping search")
                     break
                 continue
-            else:
-                consecutive_known_batches = 0
 
             # Second pass: fetch full metadata only for new videos
             logging.info(f"Found {len(new_videos_in_batch)} new videos, fetching full metadata")
+            batch_new_count = 0
             for video in new_videos_in_batch:
                 video_id = video['video_id']
 
@@ -202,6 +201,16 @@ class YouTubeSteamScraper:
                     continue
 
             logging.info(f"Processed {batch_new_count} new videos in this batch")
+
+            # Treat batches with no successfully processed videos the same as empty batches
+            if batch_new_count == 0:
+                consecutive_known_batches += 1
+                logging.info("No videos successfully processed in this batch, treating as empty batch")
+                if consecutive_known_batches >= 3:
+                    logging.info("Hit 3 consecutive unproductive batches, stopping search")
+                    break
+            else:
+                consecutive_known_batches = 0
 
         self.save_videos()
         logging.info(f"Video processing complete. Processed {new_videos_processed} new videos.")
