@@ -14,6 +14,26 @@
       "name": "OlexaYT",
       "url": "https://www.youtube.com/@OlexaYT/videos",
       "enabled": true
+    },
+    "aliensrock": {
+      "name": "Aliensrock",
+      "url": "https://www.youtube.com/@Aliensrock/videos",
+      "enabled": true
+    },
+    "splattercatgaming": {
+      "name": "SplatterCatGaming",
+      "url": "https://www.youtube.com/@SplatterCatGaming/videos",
+      "enabled": true
+    },
+    "wanderbots": {
+      "name": "Wanderbots",
+      "url": "https://www.youtube.com/@wanderbots/videos",
+      "enabled": true
+    },
+    "nookrium": {
+      "name": "Nookrium",
+      "url": "https://www.youtube.com/@Nookrium/videos",
+      "enabled": true
     }
   },
   "skip_steam_matching": [
