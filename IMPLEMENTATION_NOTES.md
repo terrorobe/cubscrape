@@ -29,6 +29,7 @@
 ### Modular Code Structure
 - **Main Scraper**: `scraper/scraper.py` - Fully modularized implementation using structured components
 - **Fetchers**: `steam_fetcher.py`, `itch_fetcher.py`, `crazygames_fetcher.py` - Platform-specific data fetching
+- **Steam Updater**: `steam_updater.py` - Steam data orchestration and multi-channel updates
 - **Models**: `models.py` - Structured dataclasses (VideoData, SteamGameData, OtherGameData, GameLinks)
 - **Utils**: `utils.py` - Shared utility functions (game link extraction, similarity matching, etc.)
 - **Type Safety**: Full migration from dictionaries to dataclasses for better maintainability

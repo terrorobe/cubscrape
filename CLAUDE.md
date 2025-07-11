@@ -74,6 +74,7 @@ The scraper has been refactored into modular components:
 - **`config_manager.py`** - Configuration loading and management
 - **`models.py`** - Data structures (VideoData, SteamGameData, etc.)
 - **`utils.py`** - Utility functions
+- **`steam_updater.py`** - Steam data orchestration and multi-channel updates
 - **Platform fetchers**: `steam_fetcher.py`, `itch_fetcher.py`, `crazygames_fetcher.py`
 
 ### Web Interface:

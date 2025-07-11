@@ -25,11 +25,14 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
    ```
    This creates a virtual environment and installs all dependencies including development tools.
 
-4. Configure channels:
+4. Configure channels and options:
    ```bash
-   # Edit config.json to add/remove YouTube channels
-   # Channels are configured with their URLs and enabled status
+   # Edit config.json to configure YouTube channels and scraper options
    ```
+   
+   **Configuration Options**:
+   - **channels**: YouTube channels to scrape with URLs and enabled status
+   - **skip_steam_matching**: List of game names to exclude from Steam matching (e.g., "League of Legends")
 
 
 ### Processing Modes

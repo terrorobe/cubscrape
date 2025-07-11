@@ -15,5 +15,8 @@
       "url": "https://www.youtube.com/@OlexaYT/videos",
       "enabled": true
     }
-  }
+  },
+  "skip_steam_matching": [
+    "League of Legends"
+  ]
 }

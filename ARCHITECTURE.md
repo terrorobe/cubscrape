@@ -21,6 +21,7 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
 /scraper/
   scraper.py          # Main scraper using modular components
   steam_fetcher.py    # Steam-specific data fetching and parsing
+  steam_updater.py    # Steam data orchestration and multi-channel updates
   itch_fetcher.py     # Itch.io data fetching and parsing
   crazygames_fetcher.py # CrazyGames data fetching and parsing
   models.py           # Structured dataclasses for type safety

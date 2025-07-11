@@ -8,7 +8,7 @@ import json
 import logging
 import sys
 from dataclasses import asdict, replace
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -20,6 +20,7 @@ from game_inference import GameInferenceEngine
 from itch_fetcher import ItchDataFetcher
 from models import OtherGameData, SteamGameData, VideoData
 from steam_fetcher import SteamDataFetcher
+from steam_updater import SteamDataUpdater
 from utils import extract_game_links, extract_steam_app_id
 from youtube_extractor import YouTubeExtractor
 
@@ -262,13 +263,20 @@ class YouTubeSteamScraper:
                 logging.info(f"  YouTube detected game: {detected_game}")
                 video_data = replace(video_data, youtube_detected_game=detected_game)
 
-                # Try to find this game on Steam
-                steam_match = self.find_steam_match(detected_game, confidence_threshold=0.6)
-                if steam_match:
-                    video_data = replace(video_data, steam_app_id=steam_match['app_id'], youtube_detected_matched=True)
-                    logging.info(f"  Matched to Steam: {steam_match['name']} (App ID: {steam_match['app_id']}, confidence: {steam_match['confidence']:.2f})")
+                # Check if this game should skip Steam matching
+                skip_games = self.config_manager.get_skip_steam_matching_games()
+                should_skip = any(skip_game.lower() in detected_game.lower() for skip_game in skip_games)
+
+                # Try to find this game on Steam (unless matching is disabled)
+                if not should_skip:
+                    steam_match = self.find_steam_match(detected_game, confidence_threshold=0.6)
+                    if steam_match:
+                        video_data = replace(video_data, steam_app_id=steam_match['app_id'], youtube_detected_matched=True)
+                        logging.info(f"  Matched to Steam: {steam_match['name']} (App ID: {steam_match['app_id']}, confidence: {steam_match['confidence']:.2f})")
+                    else:
+                        logging.info("  No confident Steam matches found for YouTube detected game")
                 else:
-                    logging.info("  No confident Steam matches found for YouTube detected game")
+                    logging.info(f"  Steam matching skipped for '{detected_game}' (in config skip list)")
             else:
                 logging.info("  No YouTube detected game found")
 
@@ -317,198 +325,6 @@ class YouTubeSteamScraper:
     def get_full_video_metadata(self, video_id: str) -> Optional[Dict]:
         """Fetch full metadata for a specific video"""
         return self.youtube_extractor.get_full_video_metadata(video_id)
-
-    def _get_refresh_interval_days(self, game_data: SteamGameData) -> int:
-        """Determine refresh interval based on game release age"""
-        # Default to weekly if no release date available
-        if not game_data.release_date or game_data.coming_soon:
-            return 7  # Weekly for upcoming/unknown games
-
-        try:
-            # Parse the release date - Steam uses various formats
-            release_date_str = game_data.release_date.strip()
-
-            # Try to parse different date formats Steam uses
-            release_date = None
-            date_formats = [
-                "%b %d, %Y",      # "Jan 1, 2023"
-                "%B %d, %Y",      # "January 1, 2023"
-                "%d %b, %Y",      # "1 Jan, 2023"
-                "%d %B, %Y",      # "1 January, 2023"
-                "%b %Y",          # "Jan 2023"
-                "%B %Y",          # "January 2023"
-                "%Y",             # "2023"
-            ]
-
-            for date_format in date_formats:
-                try:
-                    release_date = datetime.strptime(release_date_str, date_format)
-                    break
-                except ValueError:
-                    continue
-
-            if not release_date:
-                logging.debug(f"Could not parse release date '{release_date_str}', using weekly refresh")
-                return 7  # Weekly as fallback
-
-            # Calculate age in days since release
-            days_since_release = (datetime.now() - release_date).days
-
-            # Apply refresh intervals based on age:
-            # Less than a month old (30 days): daily
-            # Less than a year old (365 days): weekly
-            # Otherwise: monthly
-            if days_since_release < 30:
-                return 1  # Daily
-            elif days_since_release < 365:
-                return 7  # Weekly
-            else:
-                return 30  # Monthly
-
-        except Exception as e:
-            logging.debug(f"Error parsing release date '{game_data.release_date}': {e}, using weekly refresh")
-            return 7  # Weekly as fallback
-
-    def _should_update_related_app(self, app_id: str, force_update: bool) -> bool:
-        """Check if a related app should be updated based on staleness."""
-        if force_update:
-            return True
-
-        if app_id not in self.steam_data['games']:
-            return True
-
-        existing_data = self.steam_data['games'][app_id]
-        if not existing_data.last_updated:
-            return True
-
-        last_updated_date = datetime.fromisoformat(existing_data.last_updated)
-        refresh_interval = self._get_refresh_interval_days(existing_data)
-        stale_date = datetime.now() - timedelta(days=refresh_interval)
-
-        if last_updated_date > stale_date:
-            days_ago = (datetime.now() - last_updated_date).days
-            interval_name = "daily" if refresh_interval == 1 else "weekly" if refresh_interval == 7 else "monthly"
-            logging.info(f"  Skipping {app_id} ({existing_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
-            return False
-
-        return True
-
-    def _fetch_related_app(self, app_id: str, app_type: str) -> bool:
-        """
-        Fetch data for a related app (demo or full game).
-        
-        Args:
-            app_id: Steam app ID to fetch
-            app_type: Type description for logging ("demo" or "full game")
-            
-        Returns:
-            True if app was successfully fetched, False otherwise
-        """
-        try:
-            app_url = f"https://store.steampowered.com/app/{app_id}"
-            app_data = self.fetch_steam_data(app_url)
-            if app_data:
-                app_data = replace(app_data, last_updated=datetime.now().isoformat())
-                self.steam_data['games'][app_id] = app_data
-                logging.info(f"  Updated {app_type}: {app_data.name}")
-                return True
-            return False
-        except Exception as e:
-            logging.error(f"  Error fetching {app_type} data: {e}")
-            return False
-
-    def _fetch_steam_app_with_related(self, app_id: str, force_update: bool = False) -> bool:
-        """
-        Fetch Steam app data and automatically fetch related demo/full game data.
-        
-        Args:
-            app_id: Steam app ID to fetch
-            force_update: If True, skip staleness checks and always fetch
-            
-        Returns:
-            True if any data was updated, False otherwise
-        """
-        steam_url = f"https://store.steampowered.com/app/{app_id}"
-        if force_update:
-            logging.info(f"Fetching single app: {app_id}")
-        else:
-            logging.info(f"Updating Steam data for app {app_id}")
-
-        try:
-            # Fetch the main app
-            steam_data = self.fetch_steam_data(steam_url)
-            if not steam_data:
-                logging.warning(f"  Failed to fetch data for app {app_id}")
-                return False
-
-            # Update the main app data
-            steam_data = replace(steam_data, last_updated=datetime.now().isoformat())
-            self.steam_data['games'][app_id] = steam_data
-            logging.info(f"  Updated: {steam_data.name}")
-            updated = True
-
-            # Handle demo -> full game relationship
-            if steam_data.is_demo and steam_data.full_game_app_id:
-                full_game_id = steam_data.full_game_app_id
-                logging.info(f"  Found full game {full_game_id}, fetching data")
-
-                if self._should_update_related_app(full_game_id, force_update):
-                    self._fetch_related_app(full_game_id, "full game")
-
-            # Handle main game -> demo relationship
-            if steam_data.has_demo and steam_data.demo_app_id:
-                demo_id = steam_data.demo_app_id
-                logging.info(f"  Found demo {demo_id}, fetching data")
-
-                if self._should_update_related_app(demo_id, force_update):
-                    self._fetch_related_app(demo_id, "demo")
-
-            return updated
-
-        except Exception as e:
-            logging.error(f"  Error fetching Steam data for {app_id}: {e}")
-            return False
-
-    def update_steam_data(self, max_updates: Optional[int] = None):
-        """Update Steam data using age-based refresh intervals"""
-        logging.info("Updating Steam data using age-based refresh intervals")
-
-        # Collect all Steam app IDs from videos
-        steam_app_ids = set()
-        for video in self.videos_data['videos'].values():
-            if video.steam_app_id:
-                steam_app_ids.add(video.steam_app_id)
-
-        logging.info(f"Found {len(steam_app_ids)} unique Steam games")
-
-        updates_done = 0
-
-        for app_id in steam_app_ids:
-            # Check if we've hit the max updates limit
-            if max_updates and updates_done >= max_updates:
-                logging.info(f"Reached max_updates limit ({max_updates})")
-                break
-
-            # Check if data needs updating based on age-based refresh intervals
-            if app_id in self.steam_data['games']:
-                game_data = self.steam_data['games'][app_id]
-                if game_data.last_updated:
-                    last_updated_date = datetime.fromisoformat(game_data.last_updated)
-                    refresh_interval_days = self._get_refresh_interval_days(game_data)
-                    stale_date = datetime.now() - timedelta(days=refresh_interval_days)
-
-                    if last_updated_date > stale_date:
-                        days_ago = (datetime.now() - last_updated_date).days
-                        interval_name = "daily" if refresh_interval_days == 1 else "weekly" if refresh_interval_days == 7 else "monthly"
-                        logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
-                        continue
-
-            # Use the consolidated fetch method (force_update=False for staleness checking)
-            if self._fetch_steam_app_with_related(app_id, force_update=False):
-                updates_done += 1
-
-        self.save_steam()
-        logging.info(f"Steam data update complete. Updated {updates_done} games.")
 
     def check_data_quality(self, channels_config: Dict):
         """Check data quality across all channels and games"""
@@ -661,6 +477,19 @@ class YouTubeSteamScraper:
 
                 print(f"      🎯 All potential names: {potential_names}")
 
+                # Check if any potential names should skip Steam matching
+                skip_games = self.config_manager.get_skip_steam_matching_games()
+                should_skip_any = any(
+                    any(skip_game.lower() in name.lower() for skip_game in skip_games)
+                    for name in potential_names
+                )
+
+                if should_skip_any:
+                    skipped_names = [name for name in potential_names
+                                   if any(skip_game.lower() in name.lower() for skip_game in skip_games)]
+                    print(f"      🚫 Steam matching skipped for {skipped_names} (in config skip list)")
+                    continue
+
                 # Search Steam for each potential name
                 best_match = None
 
@@ -773,7 +602,10 @@ if __name__ == "__main__":
         logging.info(f"Backfill mode: processing channel {args.channel}")
 
         scraper.process_videos(channel_url, max_new_videos=args.max_new)
-        scraper.update_steam_data(
+        # Update Steam data using SteamDataUpdater
+        steam_updater = SteamDataUpdater()
+        steam_updater.update_all_games_from_channels(
+            [args.channel],
             max_updates=args.max_steam_updates
         )
 
@@ -785,12 +617,13 @@ if __name__ == "__main__":
         channels = config_manager.get_channels()
 
         # Process each enabled channel
-        steam_scraper = None
+        enabled_channels = []
         for channel_id in channels:
             if not config_manager.is_channel_enabled(channel_id):
                 logging.info(f"Skipping disabled channel: {channel_id}")
                 continue
 
+            enabled_channels.append(channel_id)
             logging.info(f"Cron mode: processing channel {channel_id}")
             scraper = YouTubeSteamScraper(channel_id)
 
@@ -798,13 +631,11 @@ if __name__ == "__main__":
             channel_url = config_manager.get_channel_url(channel_id)
             scraper.process_videos(channel_url, max_new_videos=10, fetch_newest_first=True)
 
-            # Keep one scraper for Steam updates
-            if steam_scraper is None:
-                steam_scraper = scraper
-
-        # Update Steam data once for all channels
-        if steam_scraper:
-            steam_scraper.update_steam_data(
+        # Update Steam data once for all enabled channels
+        if enabled_channels:
+            steam_updater = SteamDataUpdater()
+            steam_updater.update_all_games_from_channels(
+                enabled_channels,
                 max_updates=args.max_steam_updates
             )
 
@@ -823,9 +654,10 @@ if __name__ == "__main__":
         first_channel = next(iter(channels.keys()))
         scraper = YouTubeSteamScraper(first_channel)
 
-        # Use the consolidated fetch method with force_update=True for single-app mode
-        if scraper._fetch_steam_app_with_related(args.app_id, force_update=True):
-            scraper.save_steam()
+        # Use SteamDataUpdater for single app fetching
+        steam_updater = SteamDataUpdater()
+        if steam_updater.fetch_single_app(args.app_id, force_update=True):
+            logging.info(f"Successfully fetched data for app {args.app_id}")
         else:
             logging.warning(f"Failed to fetch data for app {args.app_id}")
 

@@ -49,3 +49,8 @@ class ConfigManager:
         """Validate that a channel exists in config"""
         channels = self.get_channels()
         return channel_id in channels
+
+    def get_skip_steam_matching_games(self) -> list[str]:
+        """Get list of games to skip Steam matching for"""
+        config = self.load_config()
+        return config.get('skip_steam_matching', [])

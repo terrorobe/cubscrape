@@ -4066,7 +4066,7 @@
       "publishers": [
         "Ghost Ship Publishing"
       ],
-      "price": "9,09\u20ac",
+      "price": "12,99\u20ac",
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2321470/header.jpg?t=1750181139",
       "tags": [
         "Dwarf",
@@ -4082,12 +4082,12 @@
       ],
       "is_early_access": true,
       "positive_review_percentage": 86,
-      "review_count": 35660,
+      "review_count": 35719,
       "review_summary": "Very Positive",
       "recent_review_percentage": 82,
-      "recent_review_count": 622,
+      "recent_review_count": 638,
       "recent_review_summary": "Very Positive",
-      "last_updated": "2025-07-07T18:57:06.807798"
+      "last_updated": "2025-07-11T01:45:15.328513"
     },
     "2772700": {
       "steam_app_id": "2772700",
@@ -31995,7 +31995,193 @@
       "review_summary": "Need more reviews for score",
       "insufficient_reviews": true,
       "last_updated": "2025-07-11T01:13:34.133528"
+    },
+    "1660840": {
+      "steam_app_id": "1660840",
+      "steam_url": "https://store.steampowered.com/app/1660840",
+      "name": "Wild Bastards",
+      "release_date": "12 Sep, 2024",
+      "genres": [
+        "Action",
+        "Indie",
+        "Strategy"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Blue Manchu"
+      ],
+      "publishers": [
+        "Maximum Entertainment"
+      ],
+      "price": "34,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1660840/header.jpg?t=1728587422",
+      "tags": [
+        "Action Roguelike",
+        "Strategy",
+        "Shooter",
+        "Roguelite",
+        "First-Person",
+        "Western",
+        "Sci-fi",
+        "Roguelike",
+        "FPS",
+        "Action"
+      ],
+      "positive_review_percentage": 76,
+      "review_count": 454,
+      "review_summary": "Mostly Positive",
+      "recent_review_percentage": 70,
+      "recent_review_count": 10,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-11T01:45:11.727052"
+    },
+    "3054610": {
+      "steam_app_id": "3054610",
+      "steam_url": "https://store.steampowered.com/app/3054610",
+      "name": "Artifact Seeker: Resurrection",
+      "release_date": "26 Jul, 2024",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Stats",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Lynkpin Game"
+      ],
+      "publishers": [
+        "Lynkpin Game"
+      ],
+      "price": "8,79\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3054610/7aa457ce788408b44a2a993e67e949ab2d8e5d34/header.jpg?t=1747214762",
+      "tags": [
+        "Action Roguelike",
+        "Bullet Hell",
+        "Roguelite",
+        "Survival",
+        "Indie",
+        "Choices Matter",
+        "Top-Down",
+        "Hack and Slash",
+        "Singleplayer",
+        "Arcade"
+      ],
+      "has_demo": true,
+      "demo_app_id": "3114330",
+      "positive_review_percentage": 81,
+      "review_count": 617,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 76,
+      "recent_review_count": 17,
+      "recent_review_summary": "Mostly Positive",
+      "last_updated": "2025-07-11T01:47:18.801301"
+    },
+    "113200": {
+      "steam_app_id": "113200",
+      "steam_url": "https://store.steampowered.com/app/113200",
+      "name": "The Binding of Isaac",
+      "release_date": "28 Sep, 2011",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "RPG"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Trading Cards",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Edmund McMillen",
+        "Florian Himsl"
+      ],
+      "publishers": [
+        "Edmund McMillen"
+      ],
+      "price": "4,99\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/113200/header.jpg?t=1643480517",
+      "tags": [
+        "Action Roguelike",
+        "Roguelike",
+        "Indie",
+        "Replay Value",
+        "Difficult",
+        "Procedural Generation",
+        "Dark",
+        "Action",
+        "Top-Down",
+        "Great Soundtrack"
+      ],
+      "positive_review_percentage": 94,
+      "review_count": 47090,
+      "review_summary": "Very Positive",
+      "recent_review_percentage": 89,
+      "recent_review_count": 242,
+      "recent_review_summary": "Very Positive",
+      "last_updated": "2025-07-11T01:47:24.214614"
+    },
+    "3743220": {
+      "steam_app_id": "3743220",
+      "steam_url": "https://store.steampowered.com/app/3743220",
+      "name": "A Solitaire Mystery",
+      "release_date": "9 Jul, 2025",
+      "genres": [
+        "Indie"
+      ],
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Color Alternatives",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Hempuli Oy"
+      ],
+      "publishers": [
+        "Hempuli Oy"
+      ],
+      "price": "8,77\u20ac",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3743220/3cf251e8b91c53c1010fdc1cf33aba3f233a1c7f/header.jpg?t=1752086257",
+      "tags": [
+        "Puzzle",
+        "Card Game",
+        "Solitaire",
+        "Logic",
+        "Singleplayer",
+        "Tabletop",
+        "2D",
+        "Pixel Graphics",
+        "Indie",
+        "Minimalist"
+      ],
+      "positive_review_percentage": 100,
+      "review_count": 25,
+      "review_summary": "Positive",
+      "last_updated": "2025-07-11T01:47:25.206771"
     }
   },
-  "last_updated": "2025-07-11T01:13:34.146578"
+  "last_updated": "2025-07-11T01:47:25.223089"
 }

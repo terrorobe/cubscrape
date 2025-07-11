@@ -2985,7 +2985,11 @@
       "published_at": "2024-10-31T14:00:00",
       "thumbnail": "https://i.ytimg.com/vi_webp/-W5ELXYT_IM/maxresdefault.webp",
       "youtube_detected_game": "The Binding of Isaac",
-      "last_updated": "2025-07-11T00:46:09.892834"
+      "last_updated": "2025-07-11T01:47:23.557815",
+      "steam_app_id": "113200",
+      "inferred_game": true,
+      "inference_reason": "no_game_data",
+      "youtube_detected_matched": true
     },
     "NaoxXgiycAU": {
       "video_id": "NaoxXgiycAU",
