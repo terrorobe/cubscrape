@@ -3177,18 +3177,18 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2066020/6079b934d5f581fc5e1d8d748ea2ebed93a84a3f/header_alt_assets_0.jpg?t=1750941838",
-      "last_updated": "2025-07-10T04:34:06.371775",
+      "last_updated": "2025-07-11T16:30:07.007023",
       "name": "Soulstone Survivors",
       "positive_review_percentage": 91,
-      "price": "9,74\u20ac",
+      "price": "14,99\u20ac",
       "publishers": [
         "Game Smithing Limited"
       ],
-      "recent_review_count": 1073,
+      "recent_review_count": 1102,
       "recent_review_percentage": 88,
       "recent_review_summary": "Very Positive",
       "release_date": "17 Jun, 2025",
-      "review_count": 22111,
+      "review_count": 22149,
       "review_summary": "Very Positive",
       "steam_app_id": "2066020",
       "steam_url": "https://store.steampowered.com/app/2066020",
@@ -5406,7 +5406,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2225960/425f6fbdcab44710187348f88bf9a7ccf16ee193/header.jpg?t=1751019425",
       "is_early_access": true,
-      "last_updated": "2025-07-07T18:10:01.611047",
+      "last_updated": "2025-07-11T17:18:27.256428",
       "name": "Noobs Are Coming",
       "publishers": [
         "Overboy"
@@ -10528,6 +10528,46 @@
         "Old School"
       ]
     },
+    "2607870": {
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "2755220",
+      "developers": [
+        "Kato Games"
+      ],
+      "genres": [
+        "Action"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2607870/9c8364218258ebe6184a8420fb254309a4c336fd/header.jpg?t=1751375966",
+      "last_updated": "2025-07-11T16:30:12.530148",
+      "name": "Slyders",
+      "planned_release_date": "2025",
+      "publishers": [
+        "Kato Games"
+      ],
+      "release_date": "2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2607870",
+      "steam_url": "https://store.steampowered.com/app/2607870",
+      "tags": [
+        "Action Roguelike",
+        "Arena Shooter",
+        "Boomer Shooter",
+        "Bullet Hell",
+        "FPS",
+        "Roguelite",
+        "PvE",
+        "Shooter",
+        "Roguelike",
+        "3D"
+      ]
+    },
     "2615010": {
       "categories": [
         "Single-player",
@@ -10826,8 +10866,8 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1751874839",
-      "last_updated": "2025-07-08T00:18:57.713307",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1752224826",
+      "last_updated": "2025-07-11T17:18:28.609239",
       "name": "Becoming Saint",
       "publishers": [
         "Firesquid",
@@ -12005,6 +12045,42 @@
         "Medieval",
         "Tower Defense",
         "Tactical"
+      ]
+    },
+    "2755220": {
+      "categories": [
+        "Game demo"
+      ],
+      "developers": [
+        "Kato Games"
+      ],
+      "full_game_app_id": "2607870",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2755220/9c8364218258ebe6184a8420fb254309a4c336fd/header.jpg?t=1743471964",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-11T16:30:13.401529",
+      "name": "Slyders Demo",
+      "price": "Free",
+      "publishers": [
+        "Kato Games"
+      ],
+      "release_date": "30 Jan, 2024",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2755220",
+      "steam_url": "https://store.steampowered.com/app/2755220",
+      "tags": [
+        "Action Roguelike",
+        "Arena Shooter",
+        "Boomer Shooter",
+        "Bullet Hell",
+        "FPS",
+        "Roguelite",
+        "PvE",
+        "Shooter",
+        "Roguelike",
+        "3D"
       ]
     },
     "2756920": {
@@ -20505,7 +20581,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "developers": [
         "Moka Games"
       ],
@@ -20514,15 +20589,18 @@
         "Strategy",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3183220/d05bae7c51b2851d31a65a9082150c98ab5652e8/header.jpg?t=1751669294",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3183220/d05bae7c51b2851d31a65a9082150c98ab5652e8/header.jpg?t=1752209873",
       "is_early_access": true,
-      "last_updated": "2025-07-07T14:39:52.701167",
+      "last_updated": "2025-07-11T17:18:29.475903",
       "name": "Aurora Defense",
-      "planned_release_date": "10 Jul, 2025",
+      "positive_review_percentage": 75,
+      "price": "9,74\u20ac",
       "publishers": [
         "Moka Games"
       ],
       "release_date": "10 Jul, 2025",
+      "review_count": 16,
+      "review_summary": "Mostly Positive",
       "steam_app_id": "3183220",
       "steam_url": "https://store.steampowered.com/app/3183220",
       "tags": [
@@ -22571,7 +22649,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3267900/7adb8dfa4a64a758322146ca3eb24da141eaaa6f/header.jpg?t=1752094346",
-      "last_updated": "2025-07-10T04:34:14.805216",
+      "last_updated": "2025-07-11T16:30:04.849367",
       "name": "Click and Conquer",
       "positive_review_percentage": 94,
       "price": "3,99\u20ac",
@@ -22579,7 +22657,7 @@
         "SOCKHOUSE STUDIOS"
       ],
       "release_date": "25 Jun, 2025",
-      "review_count": 601,
+      "review_count": 626,
       "review_summary": "Very Positive",
       "steam_app_id": "3267900",
       "steam_url": "https://store.steampowered.com/app/3267900",
@@ -23612,7 +23690,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3337140/a1ca24de30bcfdefcfaf29b3f8d3b15a9a0f9f10/header.jpg?t=1750782777",
       "is_early_access": true,
-      "last_updated": "2025-07-10T04:34:09.740614",
+      "last_updated": "2025-07-11T16:30:14.082889",
       "name": "After Inc: Revival",
       "positive_review_percentage": 77,
       "price": "17,49\u20ac",
@@ -23620,7 +23698,7 @@
         "Ndemic Creations"
       ],
       "release_date": "17 Jun, 2025",
-      "review_count": 549,
+      "review_count": 557,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3337140",
       "steam_url": "https://store.steampowered.com/app/3337140",
@@ -23902,7 +23980,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3346820/header.jpg?t=1750803699",
-      "last_updated": "2025-07-10T04:34:12.662488",
+      "last_updated": "2025-07-11T16:30:10.271283",
       "name": "Progress Racer RPG",
       "positive_review_percentage": 97,
       "price": "6,89\u20ac",
@@ -23910,7 +23988,7 @@
         "David Elliot"
       ],
       "release_date": "17 Jun, 2025",
-      "review_count": 79,
+      "review_count": 80,
       "review_summary": "Very Positive",
       "steam_app_id": "3346820",
       "steam_url": "https://store.steampowered.com/app/3346820",
@@ -24172,18 +24250,18 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3359200/header.jpg?t=1750931166",
-      "last_updated": "2025-07-10T04:34:16.113427",
+      "last_updated": "2025-07-11T16:30:03.066606",
       "name": "All Aboard! The Train Defense Express",
       "positive_review_percentage": 88,
-      "price": "3,74\u20ac",
+      "price": "4,99\u20ac",
       "publishers": [
         "Likadev"
       ],
-      "recent_review_count": 39,
-      "recent_review_percentage": 79,
+      "recent_review_count": 41,
+      "recent_review_percentage": 75,
       "recent_review_summary": "Mostly Positive",
       "release_date": "26 Jun, 2025",
-      "review_count": 189,
+      "review_count": 192,
       "review_summary": "Very Positive",
       "steam_app_id": "3359200",
       "steam_url": "https://store.steampowered.com/app/3359200",
@@ -24574,7 +24652,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372980/header.jpg?t=1750465489",
-      "last_updated": "2025-07-10T04:34:17.499713",
+      "last_updated": "2025-07-11T16:30:15.510810",
       "name": "Tower Wizard",
       "positive_review_percentage": 97,
       "price": "2,99\u20ac",
@@ -24582,7 +24660,7 @@
         "Barribob"
       ],
       "release_date": "19 Jun, 2025",
-      "review_count": 3626,
+      "review_count": 3713,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "3372980",
       "steam_url": "https://store.steampowered.com/app/3372980",
@@ -24958,7 +25036,6 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "3630650",
       "developers": [
         "Ludiminal Games"
@@ -24969,15 +25046,17 @@
         "Indie"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3391190/5eb950f7f6cfda1dd507dc48d8db2b615951df49/header.jpg?t=1749488430",
-      "last_updated": "2025-07-08T00:18:52.728547",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3391190/5eb950f7f6cfda1dd507dc48d8db2b615951df49/header.jpg?t=1752234488",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-11T17:18:27.965630",
       "name": "OREBLAZE",
+      "price": "4,49\u20ac",
       "publishers": [
         "Ludiminal Games"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 1,
+      "review_summary": "Need more reviews for score",
       "steam_app_id": "3391190",
       "steam_url": "https://store.steampowered.com/app/3391190",
       "tags": [
@@ -27096,7 +27175,7 @@
         "Sports"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3483740/060225195a8432c90ea7339e86570f287c72795b/header.jpg?t=1750092358",
-      "last_updated": "2025-07-10T04:34:13.273948",
+      "last_updated": "2025-07-11T16:30:07.829541",
       "name": "Cast n Chill",
       "positive_review_percentage": 93,
       "price": "14,79\u20ac",
@@ -27104,7 +27183,7 @@
         "Wombat Brawler"
       ],
       "release_date": "16 Jun, 2025",
-      "review_count": 2147,
+      "review_count": 2176,
       "review_summary": "Very Positive",
       "steam_app_id": "3483740",
       "steam_url": "https://store.steampowered.com/app/3483740",
@@ -27479,9 +27558,9 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498680/304acc4b3575cfdad1d89490966a81e104edf4ae/header.jpg?t=1750952363",
       "insufficient_reviews": true,
       "is_early_access": true,
-      "last_updated": "2025-07-10T04:34:14.145530",
+      "last_updated": "2025-07-11T16:30:11.168405",
       "name": "The Mindvasion",
-      "price": "4,12\u20ac",
+      "price": "5,89\u20ac",
       "publishers": [
         "Mastodonte"
       ],
@@ -27661,8 +27740,8 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503440/96206c6bbccdf9e1db9427b776d6ba7f2a00a9a1/header.jpg?t=1751832411",
-      "last_updated": "2025-07-07T23:06:12.753359",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503440/96206c6bbccdf9e1db9427b776d6ba7f2a00a9a1/header.jpg?t=1752210115",
+      "last_updated": "2025-07-11T17:18:30.093655",
       "name": "Astro Prospector",
       "publishers": [
         "Incrementalist",
@@ -28123,6 +28202,52 @@
         "Colorful"
       ]
     },
+    "3527290": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Steam Achievements",
+        "Partial Controller Support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Team PEAK"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3527290/31bac6b2eccf09b368f5e95ce510bae2baf3cfcd/header.jpg?t=1752223900",
+      "last_updated": "2025-07-11T17:03:14.068764",
+      "name": "PEAK",
+      "positive_review_percentage": 93,
+      "price": "7,49\u20ac",
+      "publishers": [
+        "Aggro Crab",
+        "Landfall"
+      ],
+      "release_date": "16 Jun, 2025",
+      "review_count": 41734,
+      "review_summary": "Very Positive",
+      "steam_app_id": "3527290",
+      "steam_url": "https://store.steampowered.com/app/3527290",
+      "tags": [
+        "Physics",
+        "Multiplayer",
+        "Online Co-Op",
+        "Co-op",
+        "Exploration",
+        "First-Person",
+        "Adventure",
+        "Procedural Generation",
+        "Action Roguelike",
+        "Comedy"
+      ]
+    },
     "3530560": {
       "categories": [
         "Single-player",
@@ -28274,16 +28399,16 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3536380/header.jpg?t=1751558280",
-      "last_updated": "2025-07-10T04:34:09.041767",
+      "last_updated": "2025-07-11T16:30:02.384580",
       "name": "Gridkeeper",
-      "positive_review_percentage": 71,
+      "positive_review_percentage": 69,
       "price": "1,79\u20ac",
       "publishers": [
         "pixelwide"
       ],
       "release_date": "3 Jul, 2025",
-      "review_count": 67,
-      "review_summary": "Mostly Positive",
+      "review_count": 78,
+      "review_summary": "Mixed",
       "steam_app_id": "3536380",
       "steam_url": "https://store.steampowered.com/app/3536380",
       "tags": [
@@ -28491,15 +28616,15 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3546440/bb3a199d409ca1961f8362129ebf0488a2b0af05/header.jpg?t=1750960142",
-      "last_updated": "2025-07-10T04:34:11.899263",
+      "last_updated": "2025-07-11T16:30:04.135470",
       "name": "Rentlord",
-      "positive_review_percentage": 74,
+      "positive_review_percentage": 73,
       "price": "4,99\u20ac",
       "publishers": [
         "Rogue Duck Interactive"
       ],
       "release_date": "23 Jun, 2025",
-      "review_count": 234,
+      "review_count": 236,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3546440",
       "steam_url": "https://store.steampowered.com/app/3546440",
@@ -29212,7 +29337,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3612640/6ae6833867b49c958a9bea00e253df35b9bf1d45/header.jpg?t=1750413456",
-      "last_updated": "2025-07-10T04:34:16.765859",
+      "last_updated": "2025-07-11T16:30:11.930882",
       "name": "Infiniclick",
       "positive_review_percentage": 69,
       "price": "7,79\u20ac",
@@ -30076,7 +30201,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690720/1dd997d0bf666f6055310a39043128a50e5f9ed5/header.jpg?t=1750683693",
-      "last_updated": "2025-07-10T04:34:07.152621",
+      "last_updated": "2025-07-11T16:30:08.675827",
       "name": "Growmancer",
       "positive_review_percentage": 92,
       "price": "4,99\u20ac",
@@ -30261,7 +30386,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3697890/da32a5bd202016a9080e5825c2a3deaeaae40297/header.jpg?t=1750913231",
-      "last_updated": "2025-07-10T04:34:11.021569",
+      "last_updated": "2025-07-11T16:30:09.542150",
       "name": "Mango's Fisharium",
       "positive_review_percentage": 79,
       "price": "2,99\u20ac",
@@ -30301,7 +30426,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3697950/7143774fdd8a4422fd45572a820c1c521d41b860/header.jpg?t=1750347665",
-      "last_updated": "2025-07-10T04:34:07.806969",
+      "last_updated": "2025-07-11T16:30:14.808858",
       "name": "Scratchers",
       "positive_review_percentage": 64,
       "price": "2,99\u20ac",
@@ -30309,7 +30434,7 @@
         "muffler"
       ],
       "release_date": "16 Jun, 2025",
-      "review_count": 106,
+      "review_count": 118,
       "review_summary": "Mixed",
       "steam_app_id": "3697950",
       "steam_url": "https://store.steampowered.com/app/3697950",
@@ -30814,7 +30939,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3723470/61924109ee0faa6af8c2ff4e17eb93a13a323761/header.jpg?t=1750968074",
-      "last_updated": "2025-07-10T04:34:15.453510",
+      "last_updated": "2025-07-11T16:30:05.563770",
       "name": "Far Fishing",
       "positive_review_percentage": 98,
       "price": "2,99\u20ac",
@@ -30822,7 +30947,7 @@
         "LostVolBytes"
       ],
       "release_date": "26 Jun, 2025",
-      "review_count": 67,
+      "review_count": 70,
       "review_summary": "Very Positive",
       "steam_app_id": "3723470",
       "steam_url": "https://store.steampowered.com/app/3723470",
@@ -32588,6 +32713,5 @@
         "Stylized"
       ]
     }
-  },
-  "last_updated": "2025-07-11T15:00:00.594113"
+  }
 }
