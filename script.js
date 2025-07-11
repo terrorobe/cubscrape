@@ -137,6 +137,7 @@ async function loadData() {
         
         processGames();
         populateFilters();
+        loadFiltersFromURL();
         renderGames();
     } catch (error) {
         console.error('Error loading data:', error);
@@ -554,6 +555,16 @@ function applyFilters() {
     const channelFilter = document.getElementById('channelFilter').value;
     const sortBy = document.getElementById('sortBy').value;
     
+    // Update URL with current filter values
+    updateURLParams({
+        release: releaseFilter || null,
+        platform: platformFilter !== 'all' ? platformFilter : null,
+        rating: ratingFilter > 0 ? ratingFilter : null,
+        tag: tagFilter || null,
+        channel: channelFilter || null,
+        sort: sortBy !== 'rating' ? sortBy : null
+    });
+    
     let filtered = [...filteredGames];
     
     // Platform filter
@@ -933,6 +944,52 @@ function toggleVideos(gameKey, event) {
     } else {
         videosDiv.style.display = 'none';
         expandText.textContent = 'Show all videos';
+    }
+}
+
+// URL parameter handling
+function updateURLParams(params) {
+    const url = new URL(window.location);
+    
+    // Remove null/undefined values and update URL
+    Object.keys(params).forEach(key => {
+        if (params[key] === null || params[key] === undefined) {
+            url.searchParams.delete(key);
+        } else {
+            url.searchParams.set(key, params[key]);
+        }
+    });
+    
+    // Update URL without page reload
+    window.history.replaceState({}, '', url);
+}
+
+function loadFiltersFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Load each filter from URL if present
+    if (urlParams.has('release')) {
+        document.getElementById('releaseFilter').value = urlParams.get('release');
+    }
+    
+    if (urlParams.has('platform')) {
+        document.getElementById('platformFilter').value = urlParams.get('platform');
+    }
+    
+    if (urlParams.has('rating')) {
+        document.getElementById('ratingFilter').value = urlParams.get('rating');
+    }
+    
+    if (urlParams.has('tag')) {
+        document.getElementById('tagFilter').value = urlParams.get('tag');
+    }
+    
+    if (urlParams.has('channel')) {
+        document.getElementById('channelFilter').value = urlParams.get('channel');
+    }
+    
+    if (urlParams.has('sort')) {
+        document.getElementById('sortBy').value = urlParams.get('sort');
     }
 }
 
