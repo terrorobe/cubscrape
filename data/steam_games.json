@@ -433,6 +433,54 @@
         "Indie"
       ]
     },
+    "1334500": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Remote Play Together",
+        "Family Sharing"
+      ],
+      "demo_app_id": "1766480",
+      "developers": [
+        "Turtle Cream"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "RPG",
+        "Strategy",
+        "Early Access"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1334500/header.jpg?t=1742892038",
+      "is_early_access": true,
+      "last_updated": "2025-07-11T17:59:47.029835",
+      "name": "RP7: Spin Your Own Encounter",
+      "positive_review_percentage": 74,
+      "price": "14,79\u20ac",
+      "publishers": [
+        "IndieArk"
+      ],
+      "release_date": "12 Sep, 2024",
+      "review_count": 50,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "1334500",
+      "steam_url": "https://store.steampowered.com/app/1334500",
+      "tags": [
+        "Roguelike",
+        "Strategy",
+        "Dungeon Crawler",
+        "Casual",
+        "Co-op",
+        "Cute",
+        "Roguelite",
+        "RPG",
+        "Choices Matter",
+        "2D"
+      ]
+    },
     "1375900": {
       "categories": [
         "Single-player",
@@ -910,6 +958,48 @@
         "Perma Death"
       ]
     },
+    "1600910": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Be-Rad Entertainment"
+      ],
+      "full_game_app_id": "1600910",
+      "genres": [
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1600910/header.jpg?t=1726817438",
+      "is_demo": true,
+      "last_updated": "2025-07-11T18:01:57.129122",
+      "name": "Demon's Mirror",
+      "positive_review_percentage": 86,
+      "price": "19,99\u20ac",
+      "publishers": [
+        "Good Shepherd Entertainment"
+      ],
+      "release_date": "5 Sep, 2024",
+      "review_count": 79,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1600910",
+      "steam_url": "https://store.steampowered.com/app/1600910",
+      "tags": [
+        "Card Game",
+        "Card Battler",
+        "Roguelike",
+        "Deckbuilding",
+        "Roguelite",
+        "Strategy",
+        "Dungeon Crawler",
+        "RPG",
+        "Turn-Based",
+        "Turn-Based Combat"
+      ]
+    },
     "1637320": {
       "categories": [
         "Single-player",
@@ -1242,6 +1332,48 @@
         "Hand-drawn"
       ]
     },
+    "1708950": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Terrible Posture Games",
+        "Nerd Ninjas"
+      ],
+      "genres": [
+        "Indie",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1708950/d140996475cfca51c19378adfb4da32b9e919b2b/header.jpg?t=1751477967",
+      "last_updated": "2025-07-11T18:01:57.914397",
+      "name": "Battle Train",
+      "positive_review_percentage": 84,
+      "price": "19,99\u20ac",
+      "publishers": [
+        "Bandai Namco Entertainment America Inc."
+      ],
+      "release_date": "17 Jun, 2025",
+      "review_count": 58,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1708950",
+      "steam_url": "https://store.steampowered.com/app/1708950",
+      "tags": [
+        "Roguelike Deckbuilder",
+        "Card Battler",
+        "Deckbuilding",
+        "Card Game",
+        "Strategy",
+        "Trains",
+        "Roguelite",
+        "Tactical",
+        "Replay Value",
+        "Singleplayer"
+      ]
+    },
     "1709900": {
       "categories": [
         "Single-player",
@@ -1429,6 +1561,53 @@
         "RPG",
         "Roguelike",
         "Online Co-Op"
+      ]
+    },
+    "1766480": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Stats",
+        "Steam Leaderboards"
+      ],
+      "developers": [
+        "Turtle Cream"
+      ],
+      "full_game_app_id": "1334500",
+      "genres": [
+        "Indie",
+        "RPG"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1766480/header.jpg?t=1737440429",
+      "is_demo": true,
+      "is_early_access": true,
+      "is_free": true,
+      "last_updated": "2025-07-11T17:59:48.264680",
+      "name": "RP7 Demo",
+      "positive_review_percentage": 74,
+      "price": "Free",
+      "publishers": [
+        "Turtle Cream"
+      ],
+      "release_date": "1 Apr, 2024",
+      "review_count": 50,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "1766480",
+      "steam_url": "https://store.steampowered.com/app/1766480",
+      "tags": [
+        "Roguelike",
+        "Strategy",
+        "Dungeon Crawler",
+        "Casual",
+        "Co-op",
+        "Cute",
+        "Roguelite",
+        "RPG",
+        "Choices Matter",
+        "2D"
       ]
     },
     "1769200": {
@@ -3397,6 +3576,54 @@
         "Minimalist",
         "Pixel Graphics",
         "Roguelite"
+      ]
+    },
+    "2084000": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2429210",
+      "developers": [
+        "Roboatino"
+      ],
+      "genres": [
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2084000/header.jpg?t=1749233018",
+      "last_updated": "2025-07-11T18:02:04.696470",
+      "name": "Shogun Showdown",
+      "positive_review_percentage": 95,
+      "price": "14,99\u20ac",
+      "publishers": [
+        "Goblinz Publishing",
+        "Gamirror Games"
+      ],
+      "recent_review_count": 130,
+      "recent_review_percentage": 97,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "release_date": "5 Sep, 2024",
+      "review_count": 4776,
+      "review_summary": "Overwhelmingly Positive",
+      "steam_app_id": "2084000",
+      "steam_url": "https://store.steampowered.com/app/2084000",
+      "tags": [
+        "Replay Value",
+        "Strategy RPG",
+        "Roguelike",
+        "Turn-Based",
+        "Pixel Graphics",
+        "Turn-Based Strategy",
+        "Roguelike Deckbuilder",
+        "Strategy",
+        "Turn-Based Combat",
+        "Turn-Based Tactics"
       ]
     },
     "2086430": {
@@ -6379,6 +6606,46 @@
         "Roguelike"
       ]
     },
+    "2319730": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "2715010",
+      "developers": [
+        "Twice Different"
+      ],
+      "genres": [
+        "Indie",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2319730/75cad8ec2ea8d6ba7bf4b8f27f98171c3810a0ec/header.jpg?t=1750396040",
+      "last_updated": "2025-07-11T17:59:49.719470",
+      "name": "Winnie's Hole",
+      "planned_release_date": "2025",
+      "publishers": [
+        "Twice Different"
+      ],
+      "release_date": "2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2319730",
+      "steam_url": "https://store.steampowered.com/app/2319730",
+      "tags": [
+        "Roguelite",
+        "Dungeon Crawler",
+        "Turn-Based Strategy",
+        "Dark Humor",
+        "Deckbuilding",
+        "Roguelike",
+        "Funny",
+        "Exploration",
+        "Strategy RPG",
+        "Dark"
+      ]
+    },
     "2321470": {
       "categories": [
         "Single-player",
@@ -8011,6 +8278,47 @@
         "Indie",
         "Violent",
         "Open World"
+      ]
+    },
+    "2429210": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Roboatino"
+      ],
+      "full_game_app_id": "2084000",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2429210/header.jpg?t=1686590265",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-11T18:02:05.709117",
+      "name": "Shogun Showdown Demo",
+      "positive_review_percentage": 95,
+      "price": "Free",
+      "publishers": [
+        "Goblinz Publishing"
+      ],
+      "recent_review_count": 130,
+      "recent_review_percentage": 97,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "release_date": "10 May, 2023",
+      "review_count": 4776,
+      "review_summary": "Overwhelmingly Positive",
+      "steam_app_id": "2429210",
+      "steam_url": "https://store.steampowered.com/app/2429210",
+      "tags": [
+        "Replay Value",
+        "Strategy RPG",
+        "Roguelike",
+        "Turn-Based",
+        "Pixel Graphics",
+        "Turn-Based Strategy",
+        "Roguelike Deckbuilder",
+        "Strategy",
+        "Turn-Based Combat",
+        "Turn-Based Tactics"
       ]
     },
     "2432330": {
@@ -10568,6 +10876,47 @@
         "3D"
       ]
     },
+    "2611750": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Ideas Per Second"
+      ],
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2611750/header.jpg?t=1743531608",
+      "last_updated": "2025-07-11T18:02:03.159771",
+      "name": "Cosmic Cursor",
+      "positive_review_percentage": 92,
+      "price": "4,99\u20ac",
+      "publishers": [
+        "Ideas Per Second"
+      ],
+      "release_date": "24 Jun, 2024",
+      "review_count": 14,
+      "review_summary": "Positive",
+      "steam_app_id": "2611750",
+      "steam_url": "https://store.steampowered.com/app/2611750",
+      "tags": [
+        "Action Roguelike",
+        "Roguelite",
+        "Bullet Hell",
+        "Difficult",
+        "Replay Value",
+        "Top-Down",
+        "Mouse only",
+        "Action",
+        "2D",
+        "Space"
+      ]
+    },
     "2615010": {
       "categories": [
         "Single-player",
@@ -11510,6 +11859,48 @@
         "2D"
       ]
     },
+    "2691050": {
+      "categories": [
+        "Single-player",
+        "Full controller support"
+      ],
+      "developers": [
+        "Moonroof Studios"
+      ],
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy",
+        "Free To Play"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2691050/header.jpg?t=1729345841",
+      "is_free": true,
+      "last_updated": "2025-07-11T18:02:00.223701",
+      "name": "Neongarten - Prologue",
+      "positive_review_percentage": 79,
+      "price": "Free",
+      "publishers": [
+        "Moonroof Studios",
+        "Goblinz Publishing"
+      ],
+      "release_date": "25 Sep, 2024",
+      "review_count": 24,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "2691050",
+      "steam_url": "https://store.steampowered.com/app/2691050",
+      "tags": [
+        "Cyberpunk",
+        "City Builder",
+        "Minimalist",
+        "Cozy",
+        "Roguelite",
+        "Strategy",
+        "Dystopian",
+        "Capitalism",
+        "Futuristic",
+        "Sci-fi"
+      ]
+    },
     "2693530": {
       "categories": [
         "Single-player",
@@ -11770,6 +12161,52 @@
         "Dungeon Crawler"
       ]
     },
+    "2715010": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Twice Different"
+      ],
+      "full_game_app_id": "2319730",
+      "genres": [
+        "Adventure",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2715010/75cad8ec2ea8d6ba7bf4b8f27f98171c3810a0ec/header.jpg?t=1748585041",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-11T17:59:50.516776",
+      "name": "Winnie's Hole Demo",
+      "positive_review_percentage": 96,
+      "price": "Free",
+      "publishers": [
+        "Twice Different"
+      ],
+      "recent_review_count": 23,
+      "recent_review_percentage": 100,
+      "recent_review_summary": "Very Positive",
+      "release_date": "30 Sep, 2024",
+      "review_count": 61,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2715010",
+      "steam_url": "https://store.steampowered.com/app/2715010",
+      "tags": [
+        "Roguelike",
+        "Funny",
+        "Dungeon Crawler",
+        "Turn-Based Strategy",
+        "Roguelite",
+        "2D",
+        "Deckbuilding",
+        "Colorful",
+        "Stylized",
+        "Nature"
+      ]
+    },
     "2718240": {
       "categories": [
         "Single-player",
@@ -11811,6 +12248,50 @@
         "Singleplayer",
         "God Game",
         "Procedural Generation"
+      ]
+    },
+    "2719030": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Workshop",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Cr3 Studio"
+      ],
+      "genres": [
+        "Casual",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2719030/header.jpg?t=1741668612",
+      "last_updated": "2025-07-11T17:59:49.022020",
+      "name": "Meme Mayhem",
+      "positive_review_percentage": 79,
+      "price": "16,49\u20ac",
+      "publishers": [
+        "Cr3 Studio"
+      ],
+      "recent_review_count": 143,
+      "recent_review_percentage": 93,
+      "recent_review_summary": "Very Positive",
+      "release_date": "13 Sep, 2024",
+      "review_count": 5664,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "2719030",
+      "steam_url": "https://store.steampowered.com/app/2719030",
+      "tags": [
+        "Roguelike Deckbuilder",
+        "Card Game",
+        "Roguelike",
+        "Singleplayer",
+        "Memes",
+        "Auto Battler",
+        "Roguelite",
+        "Strategy",
+        "2D",
+        "Comic Book"
       ]
     },
     "2741390": {
@@ -14762,6 +15243,53 @@
         "Adventure"
       ]
     },
+    "2902440": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Adjustable Text Size",
+        "Custom Volume Controls",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "2969070",
+      "developers": [
+        "Definitely Named Steve"
+      ],
+      "genres": [
+        "Indie",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1752066282",
+      "last_updated": "2025-07-11T18:01:58.705091",
+      "name": "Steve's Warehouse: Physics. Roguelike. Chaos.",
+      "publishers": [
+        "Definitely Named Steve",
+        "Abiding Bridge"
+      ],
+      "release_date": "22 Jul, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2902440",
+      "steam_url": "https://store.steampowered.com/app/2902440",
+      "tags": [
+        "Physics",
+        "Roguelike Deckbuilder",
+        "Deckbuilding",
+        "Score Attack",
+        "Roguelike",
+        "Roguelite",
+        "Funny",
+        "Casual",
+        "Colorful",
+        "Cozy"
+      ]
+    },
     "2904000": {
       "categories": [
         "Single-player",
@@ -15866,6 +16394,49 @@
         "Economy",
         "Management",
         "Tactical"
+      ]
+    },
+    "2969070": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Definitely Named Steve"
+      ],
+      "full_game_app_id": "2902440",
+      "genres": [
+        "Indie",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2969070/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1752065934",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-11T18:01:59.423255",
+      "name": "Steve's Warehouse: Physics. Roguelike. Chaos. Demo",
+      "positive_review_percentage": 100,
+      "price": "Free",
+      "publishers": [
+        "Definitely Named Steve"
+      ],
+      "release_date": "5 Jun, 2024",
+      "review_count": 16,
+      "review_summary": "Positive",
+      "steam_app_id": "2969070",
+      "steam_url": "https://store.steampowered.com/app/2969070",
+      "tags": [
+        "Roguelike Deckbuilder",
+        "Physics",
+        "Colorful",
+        "Deckbuilding",
+        "Surreal",
+        "Auto Battler",
+        "Cute",
+        "Casual",
+        "Roguelite",
+        "Roguelike"
       ]
     },
     "2969200": {
@@ -18853,6 +19424,43 @@
         "Indie"
       ]
     },
+    "3074200": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Glyder Games"
+      ],
+      "genres": [
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3074200/header.jpg?t=1727505814",
+      "last_updated": "2025-07-11T18:02:03.990123",
+      "name": "The Rookery",
+      "positive_review_percentage": 95,
+      "price": "9,75\u20ac",
+      "publishers": [
+        "Glyder Games"
+      ],
+      "release_date": "12 Sep, 2024",
+      "review_count": 64,
+      "review_summary": "Very Positive",
+      "steam_app_id": "3074200",
+      "steam_url": "https://store.steampowered.com/app/3074200",
+      "tags": [
+        "Chess",
+        "Roguelite",
+        "Turn-Based Tactics",
+        "Turn-Based Strategy",
+        "Strategy",
+        "Tactical",
+        "Singleplayer",
+        "Roguelike",
+        "Puzzle",
+        "Board Game"
+      ]
+    },
     "3075410": {
       "categories": [
         "Single-player",
@@ -19029,6 +19637,47 @@
         "Turn-Based",
         "Turn-Based Strategy",
         "Base Building",
+        "Roguelike"
+      ]
+    },
+    "3087810": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Family Sharing"
+      ],
+      "demo_app_id": "3109300",
+      "developers": [
+        "Sanjuny"
+      ],
+      "genres": [
+        "Indie",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3087810/header.jpg?t=1749498641",
+      "last_updated": "2025-07-11T18:02:01.234592",
+      "name": "Recesses",
+      "positive_review_percentage": 98,
+      "price": "4,99\u20ac",
+      "publishers": [
+        "Sanjuny"
+      ],
+      "release_date": "23 Aug, 2024",
+      "review_count": 53,
+      "review_summary": "Very Positive",
+      "steam_app_id": "3087810",
+      "steam_url": "https://store.steampowered.com/app/3087810",
+      "tags": [
+        "Card Game",
+        "Strategy",
+        "Roguelite",
+        "Visual Novel",
+        "Story Rich",
+        "Funny",
+        "Philosophical",
+        "Card Battler",
+        "Indie",
         "Roguelike"
       ]
     },
@@ -19250,6 +19899,45 @@
         "2D",
         "Experimental",
         "Relaxing"
+      ]
+    },
+    "3109300": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements"
+      ],
+      "developers": [
+        "Sanjuny"
+      ],
+      "full_game_app_id": "3087810",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3109300/header.jpg?t=1724423253",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-11T18:02:02.174512",
+      "name": "Recesses Extended Demo",
+      "positive_review_percentage": 98,
+      "price": "Free",
+      "publishers": [
+        "Sanjuny"
+      ],
+      "release_date": "23 Aug, 2024",
+      "review_count": 53,
+      "review_summary": "Very Positive",
+      "steam_app_id": "3109300",
+      "steam_url": "https://store.steampowered.com/app/3109300",
+      "tags": [
+        "Card Game",
+        "Strategy",
+        "Roguelite",
+        "Visual Novel",
+        "Story Rich",
+        "Funny",
+        "Philosophical",
+        "Card Battler",
+        "Indie",
+        "Roguelike"
       ]
     },
     "3109580": {
@@ -20533,6 +21221,58 @@
         "Arcade",
         "Roguelike",
         "Dark Fantasy"
+      ]
+    },
+    "3179860": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Stereo Sound",
+        "Steam Cloud",
+        "Remote Play Together",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Little Horror Studios"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3179860/header.jpg?t=1750959668",
+      "last_updated": "2025-07-11T17:59:46.274024",
+      "name": "Pairs & Perils",
+      "positive_review_percentage": 78,
+      "price": "9,75\u20ac",
+      "publishers": [
+        "Rogue Duck Interactive"
+      ],
+      "release_date": "20 Jan, 2025",
+      "review_count": 116,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "3179860",
+      "steam_url": "https://store.steampowered.com/app/3179860",
+      "tags": [
+        "Card Battler",
+        "Roguelike Deckbuilder",
+        "Dungeon Crawler",
+        "Card Game",
+        "Roguelike",
+        "Strategy",
+        "Turn-Based Strategy",
+        "Casual",
+        "Roguelite",
+        "Turn-Based Combat"
       ]
     },
     "3180680": {
