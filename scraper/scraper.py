@@ -82,18 +82,30 @@ class YouTubeSteamScraper:
         """Fetch game data from Steam using the modular fetcher"""
         return self.steam_fetcher.fetch_data(steam_url)
 
-    def process_videos(self, channel_url: str, max_new_videos: Optional[int] = None, fetch_newest_first: bool = False):
+    def process_videos(self, channel_url: str, max_new_videos: Optional[int] = None, fetch_newest_first: bool = False, cutoff_date: Optional[str] = None):
         """Process YouTube videos only"""
         logging.info(f"Processing videos from channel: {channel_url}")
 
         if not max_new_videos:
             max_new_videos = 50
 
+        # Parse cutoff date if provided
+        cutoff_datetime = None
+        if cutoff_date:
+            try:
+                from datetime import datetime
+                cutoff_datetime = datetime.strptime(cutoff_date, '%Y-%m-%d')
+                logging.info(f"Using cutoff date: {cutoff_date}")
+            except ValueError:
+                logging.error(f"Invalid cutoff date format: {cutoff_date}. Use YYYY-MM-DD format.")
+                return
+
         known_video_ids = set(self.videos_data['videos'].keys())
         new_videos_processed = 0
         batch_size = min(max_new_videos * 2, 50)  # Fetch more IDs to account for known videos
         videos_fetched_total = 0
         consecutive_known_batches = 0
+        cutoff_reached = False
 
         # Smart starting position: if we have videos and not fetching newest first, start from a reasonable offset
         if fetch_newest_first:
@@ -106,7 +118,7 @@ class YouTubeSteamScraper:
 
         videos_fetched_total = smart_start_offset
 
-        while new_videos_processed < max_new_videos:
+        while new_videos_processed < max_new_videos and not cutoff_reached:
             # Calculate how many videos to skip (based on total fetched so far)
             skip_count = videos_fetched_total
 
@@ -163,6 +175,18 @@ class YouTubeSteamScraper:
                     full_video = self.get_full_video_metadata(video_id)
                     if full_video:
                         video_date = full_video.get('published_at', '')[:10] if full_video.get('published_at') else 'Unknown'
+
+                        # Check cutoff date if provided
+                        if cutoff_datetime and video_date != 'Unknown':
+                            try:
+                                video_datetime = datetime.strptime(video_date, '%Y-%m-%d')
+                                if video_datetime < cutoff_datetime:
+                                    logging.info(f"Reached cutoff date. Stopping processing at video: {full_video.get('title', 'Unknown Title')} ({video_date})")
+                                    cutoff_reached = True
+                                    break
+                            except ValueError:
+                                logging.warning(f"Could not parse video date: {video_date}")
+
                         logging.info(f"Processing: {full_video.get('title', 'Unknown Title')} ({video_date})")
                         # Process video with game link extraction
                         video_data = self._process_video_game_links(full_video)
@@ -567,10 +591,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
     parser.add_argument('mode', choices=['backfill', 'cron', 'reprocess', 'single-app', 'data-quality', 'infer-games'],
                         help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), single-app, data-quality, or infer-games')
-    parser.add_argument('--channel', type=str, help='Channel ID for backfill mode')
+    parser.add_argument('--channel', type=str, help='Channel ID for backfill/reprocess mode (optional for backfill - processes all channels if not specified)')
     parser.add_argument('--max-new', type=int, help='Maximum number of new videos to process')
     parser.add_argument('--max-steam-updates', type=int, help='Maximum number of Steam games to update')
     parser.add_argument('--app-id', type=str, help='Steam app ID to fetch (required for single-app mode)')
+    parser.add_argument('--cutoff-date', type=str, help='Date cutoff for backfill mode (YYYY-MM-DD format) - only process videos after this date')
     args = parser.parse_args()
 
     if args.mode == 'reprocess':
@@ -588,24 +613,41 @@ if __name__ == "__main__":
         scraper.reprocess_video_descriptions()
 
     elif args.mode == 'backfill':
-        if not args.channel:
-            print("Error: --channel is required for backfill mode")
-            sys.exit(1)
+        # Load config directly
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+        config_manager = ConfigManager(project_root)
+        channels = config_manager.get_channels()
 
-        scraper = YouTubeSteamScraper(args.channel)
+        if args.channel:
+            # Single channel mode
+            if not config_manager.validate_channel_exists(args.channel):
+                print(f"Error: Channel '{args.channel}' not found in config.json")
+                sys.exit(1)
 
-        if not scraper.config_manager.validate_channel_exists(args.channel):
-            print(f"Error: Channel '{args.channel}' not found in config.json")
-            sys.exit(1)
+            channels_to_process = [args.channel]
+            logging.info(f"Backfill mode: processing single channel {args.channel}")
+        else:
+            # All channels mode
+            channels_to_process = [ch for ch in channels if config_manager.is_channel_enabled(ch)]
+            logging.info(f"Backfill mode: processing all enabled channels ({len(channels_to_process)} channels)")
 
-        channel_url = scraper.config_manager.get_channel_url(args.channel)
-        logging.info(f"Backfill mode: processing channel {args.channel}")
+        # Process each channel
+        for channel_id in channels_to_process:
+            logging.info(f"Processing channel: {channel_id}")
+            scraper = YouTubeSteamScraper(channel_id)
+            channel_url = config_manager.get_channel_url(channel_id)
 
-        scraper.process_videos(channel_url, max_new_videos=args.max_new)
+            scraper.process_videos(
+                channel_url,
+                max_new_videos=args.max_new,
+                cutoff_date=args.cutoff_date
+            )
+
         # Update Steam data using SteamDataUpdater
         steam_updater = SteamDataUpdater()
         steam_updater.update_all_games_from_channels(
-            [args.channel],
+            channels_to_process,
             max_updates=args.max_steam_updates
         )
 
