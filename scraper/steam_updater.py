@@ -32,17 +32,78 @@ class SteamDataUpdater:
 
     def _get_refresh_interval_days(self, game_data: SteamGameData) -> int:
         """
-        Get refresh interval in days based on game age.
+        Get refresh interval in days based on game age or proximity to release.
 
+        For released games:
         - New games (< 30 days): Daily refresh
         - Recent games (< 365 days): Weekly refresh
         - Older games (≥ 365 days): Monthly refresh
+
+        For unreleased games:
+        - Within 3 days of release: Daily refresh
+        - Same quarter (Q1/Q2/Q3/Q4): Weekly refresh
+        - Same year (year-only format): Weekly refresh
+        - Different quarter or year: Monthly refresh
         """
+        if game_data.coming_soon:
+            # Use planned_release_date if available, otherwise fall back to release_date
+            release_info = game_data.planned_release_date or game_data.release_date
+
+            if not release_info:
+                return 30  # Monthly for unknown release dates
+
+            now = datetime.now()
+
+            # Try to parse specific date formats
+            try:
+                # Try "10 Jul, 2025" format
+                release_date = datetime.strptime(release_info, "%d %b, %Y")
+                days_until_release = (release_date - now).days
+
+                if days_until_release <= 3:
+                    return 1  # Daily when very close to release
+                elif days_until_release <= 90:  # Roughly a quarter
+                    return 7  # Weekly when in same quarter
+                else:
+                    return 30  # Monthly when further out
+
+            except ValueError:
+                pass
+
+            # Check for quarter format "Q3 2025"
+            if release_info.startswith('Q'):
+                try:
+                    quarter = int(release_info[1])
+                    year = int(release_info.split()[1])
+                    current_quarter = (now.month - 1) // 3 + 1
+
+                    if year == now.year and quarter == current_quarter:
+                        return 7  # Weekly for same quarter
+                    else:
+                        return 30  # Monthly for different quarter or year
+                except (ValueError, IndexError):
+                    pass
+
+            # Check for year-only format "2025"
+            try:
+                year = int(release_info)
+                if year == now.year:
+                    return 7  # Weekly for same year
+                else:
+                    return 30  # Monthly for future years
+            except ValueError:
+                pass
+
+            # Default to monthly for other formats
+            return 30
+
+        # Released games logic remains the same
         if not game_data.release_date:
             return 7  # Default to weekly if no release date
 
         try:
-            release_date = datetime.strptime(game_data.release_date, "%Y-%m-%d")
+            # Released games use format: "9 Jul, 2025"
+            release_date = datetime.strptime(game_data.release_date, "%d %b, %Y")
             age_days = (datetime.now() - release_date).days
 
             if age_days < 30:
@@ -96,11 +157,25 @@ class SteamDataUpdater:
                     if last_updated_date > stale_date:
                         days_ago = (datetime.now() - last_updated_date).days
                         interval_name = "daily" if refresh_interval_days == 1 else "weekly" if refresh_interval_days == 7 else "monthly"
-                        logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh")
+                        if game_data.coming_soon:
+                            release_timeframe = game_data.planned_release_date or game_data.release_date
+                            release_date_info = f", unreleased ({release_timeframe})" if release_timeframe else ", unreleased"
+                        elif game_data.release_date:
+                            release_date_info = f", released {game_data.release_date}"
+                        else:
+                            release_date_info = ""
+                        logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh{release_date_info}")
                         should_update = False
 
             if should_update:
-                logging.info(f"Updating Steam data for app {app_id}")
+                # Log update info including name and last update if known
+                if app_id in self.steam_data['games']:
+                    game_data = self.steam_data['games'][app_id]
+                    last_update_info = f", last updated {game_data.last_updated}" if game_data.last_updated else ""
+                    logging.info(f"Updating Steam data for app {app_id} ({game_data.name}){last_update_info}")
+                else:
+                    logging.info(f"Updating Steam data for app {app_id} (new game)")
+
                 if self._fetch_steam_app_with_related(app_id):
                     updates_done += 1
 

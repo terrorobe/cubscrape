@@ -4,7 +4,6 @@ Utility functions for the YouTube Steam scraper
 
 import json
 import re
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Union
 
@@ -136,8 +135,7 @@ def load_json(filepath: Union[str, Path], default: Dict) -> Dict:
 
 
 def save_data(data_dict: Dict, file_path: Union[str, Path]):
-    """Save data to JSON file with timestamp"""
-    data_dict['last_updated'] = datetime.now().isoformat()
+    """Save data to JSON file"""
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, 'w') as f:

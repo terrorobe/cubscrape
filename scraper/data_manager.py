@@ -81,8 +81,7 @@ class DataManager:
                 videos_dict[video_id] = video_data
 
         data_to_save = {
-            'videos': videos_dict,
-            'last_updated': videos_data.get('last_updated')
+            'videos': videos_dict
         }
         save_data(data_to_save, videos_file)
 
@@ -102,8 +101,7 @@ class DataManager:
                 games_dict[app_id] = game_data
 
         data_to_save = {
-            'games': games_dict,
-            'last_updated': steam_data.get('last_updated')
+            'games': games_dict
         }
         save_data(data_to_save, steam_file)
 
@@ -123,8 +121,7 @@ class DataManager:
                 games_dict[game_id] = game_data
 
         data_to_save = {
-            'games': games_dict,
-            'last_updated': other_games_data.get('last_updated')
+            'games': games_dict
         }
         save_data(data_to_save, other_games_file)
 
