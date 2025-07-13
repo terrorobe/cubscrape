@@ -10881,7 +10881,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1958340/header.jpg?t=1750223289",
-      "last_updated": "2025-07-12T03:08:13.750008",
+      "last_updated": "2025-07-13T03:08:36.723356",
       "name": "Cube Chaos",
       "positive_review_percentage": 95,
       "price": "11,79\u20ac",
@@ -21656,7 +21656,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377620/header.jpg?t=1750195384",
-      "last_updated": "2025-07-12T03:08:17.456885",
+      "last_updated": "2025-07-13T03:08:29.466261",
       "name": "Lord O' Pirates",
       "publishers": [
         "Treestyle Studios LLC"
@@ -22127,7 +22127,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1750690135",
-      "last_updated": "2025-07-11T18:43:12.688776",
+      "last_updated": "2025-07-13T03:08:31.029307",
       "name": "Dust Raiders",
       "publishers": [
         "Games Operators"
@@ -29937,7 +29937,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2651220/5263be8eeec9c7535cd3a4669c0aa91bf37c738f/header.jpg?t=1752241031",
-      "last_updated": "2025-07-11T21:34:57.324374",
+      "last_updated": "2025-07-13T03:08:33.891991",
       "name": "Blacksmith: Ignite the Forge",
       "publishers": [
         "Awaken Realms"
@@ -32074,7 +32074,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2734270/4842cfb0ee3a3aac92a1e484451e87c3635c8ef1/header.jpg?t=1752069935",
       "is_early_access": true,
-      "last_updated": "2025-07-11T20:59:37.560794",
+      "last_updated": "2025-07-13T03:08:34.580272",
       "name": "Sector Unknown",
       "publishers": [
         "Creative Storm Entertainment"
@@ -35048,9 +35048,9 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1751439680",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752274574",
       "is_early_access": true,
-      "last_updated": "2025-07-07T23:06:01.330526",
+      "last_updated": "2025-07-13T03:08:35.400351",
       "name": "He is Coming",
       "publishers": [
         "Hooded Horse"
@@ -36330,15 +36330,15 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2862890/header.jpg?t=1751024413",
-      "last_updated": "2025-07-12T03:08:14.531415",
+      "last_updated": "2025-07-13T03:08:25.841668",
       "name": "Become the Moon",
-      "positive_review_percentage": 74,
+      "positive_review_percentage": 75,
       "price": "16,49\u20ac",
       "publishers": [
         "Alibi Games"
       ],
       "release_date": "19 Jun, 2025",
-      "review_count": 122,
+      "review_count": 124,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2862890",
       "steam_url": "https://store.steampowered.com/app/2862890",
@@ -36594,7 +36594,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2870430/header.jpg?t=1750093172",
       "is_early_access": true,
-      "last_updated": "2025-07-12T03:08:16.607212",
+      "last_updated": "2025-07-13T03:08:24.387851",
       "name": "Godslayer Arena",
       "positive_review_percentage": 78,
       "price": "14,79\u20ac",
@@ -41518,15 +41518,15 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3011360/e9832f78129d617fde9c1705339bd133b13d041b/header.jpg?t=1751567633",
       "is_early_access": true,
-      "last_updated": "2025-07-11T23:02:16.297301",
+      "last_updated": "2025-07-13T03:08:31.717765",
       "name": "Primordialis",
-      "positive_review_percentage": 95,
+      "positive_review_percentage": 96,
       "price": "17,55\u20ac",
       "publishers": [
         "Kyler Natividad"
       ],
       "release_date": "2 Jul, 2025",
-      "review_count": 93,
+      "review_count": 102,
       "review_summary": "Very Positive",
       "steam_app_id": "3011360",
       "steam_url": "https://store.steampowered.com/app/3011360",
@@ -44558,17 +44558,17 @@
         "Early Access"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3077090/header.jpg?t=1750923212",
-      "insufficient_reviews": true,
       "is_early_access": true,
-      "last_updated": "2025-07-12T03:08:11.595351",
+      "last_updated": "2025-07-13T03:08:26.473414",
       "name": "Ant Guardians",
+      "positive_review_percentage": 100,
       "price": "3,99\u20ac",
       "publishers": [
         "NotThisTime"
       ],
       "release_date": "26 Jun, 2025",
-      "review_count": 9,
-      "review_summary": "Need more reviews for score",
+      "review_count": 10,
+      "review_summary": "Positive",
       "steam_app_id": "3077090",
       "steam_url": "https://store.steampowered.com/app/3077090",
       "tags": [
@@ -46702,7 +46702,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3140120/header.jpg?t=1750698699",
-      "last_updated": "2025-07-12T03:08:13.035550",
+      "last_updated": "2025-07-13T03:08:28.612427",
       "name": "Wordatro!",
       "positive_review_percentage": 84,
       "price": "9,99\u20ac",
@@ -46710,7 +46710,7 @@
         "Abiding Bridge"
       ],
       "release_date": "23 Jun, 2025",
-      "review_count": 189,
+      "review_count": 191,
       "review_summary": "Very Positive",
       "steam_app_id": "3140120",
       "steam_url": "https://store.steampowered.com/app/3140120",
@@ -50800,7 +50800,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3235170/44a45dbb30a567a10c0fd753d18a038bc4869ab3/header.jpg?t=1752075226",
-      "last_updated": "2025-07-12T03:08:15.921191",
+      "last_updated": "2025-07-13T03:08:37.416775",
       "name": "Islets Defense",
       "positive_review_percentage": 94,
       "price": "9,75\u20ac",
@@ -53818,6 +53818,51 @@
         "Surreal"
       ]
     },
+    "3314970": {
+      "categories": [
+        "Single-player"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "3687160",
+      "developers": [
+        "A Dark Forest Team",
+        "TinyTakinTeller",
+        "Abyssal_Novelist"
+      ],
+      "genres": [
+        "Casual",
+        "Simulation",
+        "Free To Play"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3314970/d6d5761329b3036a336ced749fed379628954dd4/header.jpg?t=1749838155",
+      "is_free": true,
+      "last_updated": "2025-07-13T03:08:27.085345",
+      "name": "A Dark Forest",
+      "planned_release_date": "Q3 2025",
+      "price": "Free",
+      "publishers": [
+        "Abyssal_Novelist",
+        "TinyTakinTeller"
+      ],
+      "release_date": "Q3 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3314970",
+      "steam_url": "https://store.steampowered.com/app/3314970",
+      "tags": [
+        "Idler",
+        "Casual",
+        "Clicker",
+        "Simulation",
+        "Horror",
+        "Noir",
+        "Text-Based",
+        "Dark",
+        "Free to Play",
+        "Bullet Hell"
+      ]
+    },
     "3315410": {
       "categories": [
         "Single-player",
@@ -54529,7 +54574,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3343160/1eeee54eab7d517b375080b0fef2b5023d19101f/header.jpg?t=1750273064",
-      "last_updated": "2025-07-07T18:25:36.628411",
+      "last_updated": "2025-07-13T03:08:30.427826",
       "name": "Fill Up The Hole",
       "publishers": [
         "Fluffy Lotus"
@@ -55070,7 +55115,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3362040/header.jpg?t=1752191124",
-      "last_updated": "2025-07-12T03:08:12.265871",
+      "last_updated": "2025-07-13T03:08:33.180502",
       "name": "Cell Command",
       "positive_review_percentage": 98,
       "price": "17,49\u20ac",
@@ -63768,7 +63813,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1750862384",
-      "last_updated": "2025-07-11T18:43:42.185097",
+      "last_updated": "2025-07-13T03:08:32.358646",
       "name": "Combo Overload",
       "publishers": [
         "AraragiAriel"
@@ -64998,6 +65043,47 @@
         "Atmospheric",
         "Post-apocalyptic",
         "Sci-fi"
+      ]
+    },
+    "3687160": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "A Dark Forest Team",
+        "Alex the Abyssal Novelist",
+        "TinyTakinTeller"
+      ],
+      "full_game_app_id": "3314970",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3687160/01b498f68bc798183f60ba1fa924f24ef5185c95/header.jpg?t=1749838099",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-13T03:08:27.906867",
+      "name": "A Dark Forest: Incremental Horror Demo",
+      "price": "Free",
+      "publishers": [
+        "TinyTakinTeller",
+        "Alex the Abyssal Novelist",
+        "A Dark Forest Team"
+      ],
+      "release_date": "6 Jun, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3687160",
+      "steam_url": "https://store.steampowered.com/app/3687160",
+      "tags": [
+        "Idler",
+        "Casual",
+        "Clicker",
+        "Simulation",
+        "Horror",
+        "Noir",
+        "Text-Based",
+        "Dark",
+        "Free to Play",
+        "Bullet Hell"
       ]
     },
     "3687410": {
@@ -66398,16 +66484,16 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3743220/3cf251e8b91c53c1010fdc1cf33aba3f233a1c7f/header.jpg?t=1752086257",
-      "last_updated": "2025-07-12T03:08:18.154445",
+      "last_updated": "2025-07-13T03:08:25.137877",
       "name": "A Solitaire Mystery",
-      "positive_review_percentage": 100,
-      "price": "8,77\u20ac",
+      "positive_review_percentage": 95,
+      "price": "$8.99",
       "publishers": [
         "Hempuli Oy"
       ],
-      "release_date": "9 Jul, 2025",
-      "review_count": 42,
-      "review_summary": "Positive",
+      "release_date": "Jul 9, 2025",
+      "review_count": 66,
+      "review_summary": "Very Positive",
       "steam_app_id": "3743220",
       "steam_url": "https://store.steampowered.com/app/3743220",
       "tags": [
@@ -68536,6 +68622,48 @@
         "RTS",
         "Multiplayer",
         "Action RTS"
+      ]
+    },
+    "674190": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "PvP",
+        "Shared/Split Screen PvP",
+        "Shared/Split Screen",
+        "Remote Play Together",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Quicksilver Software"
+      ],
+      "genres": [
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/674190/header.jpg?t=1667154309",
+      "last_updated": "2025-07-13T03:08:36.039140",
+      "name": "Conquest of the New World",
+      "positive_review_percentage": 95,
+      "price": "9,99\u20ac",
+      "publishers": [
+        "Interplay"
+      ],
+      "release_date": "21 Jul, 2017",
+      "review_count": 99,
+      "review_summary": "Very Positive",
+      "steam_app_id": "674190",
+      "steam_url": "https://store.steampowered.com/app/674190",
+      "tags": [
+        "Strategy",
+        "Turn-Based",
+        "Classic",
+        "Historical",
+        "Multiplayer",
+        "4X",
+        "Turn-Based Combat",
+        "Resource Management",
+        "Diplomacy",
+        "Turn-Based Strategy"
       ]
     },
     "681280": {
