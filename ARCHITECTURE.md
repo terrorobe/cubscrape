@@ -12,7 +12,7 @@
 ## Data Flow
 
 ```
-YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API + Web Scraping → Demo/Full Game Detection → JSON Storage → Smart Card Selection → Web View
+YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API + Web Scraping → Demo/Full Game Detection → JSON Storage → SQLite Database → Web Interface
 ```
 
 ## File Structure
@@ -24,14 +24,23 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
   steam_updater.py    # Steam data orchestration and multi-channel updates
   itch_fetcher.py     # Itch.io data fetching and parsing
   crazygames_fetcher.py # CrazyGames data fetching and parsing
+  youtube_extractor.py # YouTube video metadata extraction
+  game_inference.py   # Game name inference and Steam matching
+  data_manager.py     # Data loading, saving, and serialization
+  database_manager.py # SQLite database operations and schema management
+  config_manager.py   # Configuration loading and management
+  data_quality.py     # Data quality checking and reporting
   models.py           # Structured dataclasses for type safety
   utils.py            # Shared utility functions
+  __init__.py         # Python package initialization
   # Python dependencies managed by uv (see pyproject.toml)
   
 /data/
-  videos-{channel}.json # Per-channel YouTube video metadata with game links
-  steam_games.json    # Steam game data with review scores
-  other_games.json    # Itch.io and CrazyGames metadata
+  videos-{channel}.json # Per-channel YouTube video metadata (data source for database)
+  steam_games.json    # Steam game data with detailed review information (data source for database)
+  other_games.json    # Itch.io and CrazyGames metadata (data source for database)
+  games.db            # SQLite database - primary data source for web interface
+  schema.sql          # Database schema definition and indexes
   
 /web/
   index.html          # Main web interface
@@ -40,6 +49,7 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
   
 /.github/workflows/
   scrape.yml          # Automated scraping workflow
+  pages-with-db.yml   # GitHub Pages deployment with database generation
 ```
 
 ## Key Components
@@ -52,17 +62,28 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
 
 ### Steam Data Processing (`update_steam_data`)
 - Fetches comprehensive game data from Steam API and store pages
-- Extracts both overall and recent review metrics
+- Extracts detailed review metrics including summaries and recent reviews
+- Tracks both overall and recent review percentages, counts, and summaries
+- Handles insufficient review cases with appropriate flags
 - Implements staleness detection (default: 7 days)
 - Handles age-gated content and review parsing
 
+### Database Storage (`database_manager.py`)
+- SQLite database with normalized schema for games and videos
+- JSON files serve as data sources that populate the database
+- Web interface queries SQLite database directly for performance
+- Comprehensive game table with review metrics, pricing, and metadata
+- Separate game_videos table linking videos to games
+- Performance indexes on key filtering columns (platform, rating, price)
+- Schema versioning through `schema.sql` file
+
 ### Web Interface
-- Loads separate JSON files and combines client-side
+- Queries SQLite database directly for game and video data
 - Intelligent game consolidation (eliminates duplicates)
 - Smart card selection (demo cards for unreleased games)
 - Provides filtering by platform, rating, release status, tags
 - Displays comprehensive game information with review counts
-- Optimized for game discovery workflow
+- Optimized for game discovery workflow with database-powered performance
 
 ## Review Data Extraction
 
@@ -80,7 +101,13 @@ The scraper extracts both overall and recent reviews from Steam:
 
 ## GitHub Actions Integration
 
+### Automated Scraping (`scrape.yml`)
 - **Automated Scraping**: Runs on schedule or manual trigger
 - **Data Persistence**: Commits updated JSON files
-- **GitHub Pages**: Automatically deploys web interface
 - **Environment Management**: Uses repository secrets for configuration
+
+### GitHub Pages Deployment (`pages-with-db.yml`)
+- **Database Generation**: Creates SQLite database from JSON data sources during deployment
+- **Triggered On**: JSON data changes in data/ directory
+- **GitHub Pages**: Automatically deploys web interface with database
+- **Performance**: Web interface queries SQLite database directly for optimal performance

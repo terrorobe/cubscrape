@@ -33,4 +33,4 @@ secrets.json
 
 .envrc
 
-data/games.db
+data/*.db

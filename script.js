@@ -620,7 +620,7 @@ function generateStatusHTML(statusText, statusClass, game) {
     return `
         <span class="game-status ${statusClass ? 'status-' + statusClass : ''}">
             ${statusText}
-            ${game.itch_demo_url ? ' + Itch Demo' : ''}
+            ${game.demo_itch_url ? ' + Itch Demo' : ''}
         </span>
     `;
 }

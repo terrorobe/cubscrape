@@ -6,11 +6,18 @@
 - Uses yt-dlp with playlist pagination (`playliststart`/`playlistend`)
 
 ### Data Storage  
-- Per-channel video files, shared game metadata files
+- **SQLite-Centric**: Database serves as primary data source for web interface
+- **JSON Files**: Intermediate data sources that populate the SQLite database
+- **Database**: Normalized schema with games and game_videos tables
+- **Schema Management**: Versioned through `data/schema.sql` with comprehensive indexes
+- **Data Flow**: Scraper → JSON → Database → Web Interface
 - Independent update cycles for videos vs game data
 
 ### Steam Review Extraction
 - Text-based regex parsing for inconsistent page structures
+- Extracts comprehensive review data: overall and recent percentages, counts, and summaries
+- Handles insufficient review scenarios with dedicated flag
+- Database schema includes: `review_summary`, `recent_review_percentage`, `recent_review_count`, `recent_review_summary`, `insufficient_reviews`
 
 ### Smart Pagination
 - Two-phase: lightweight ID fetching → full metadata for new videos only
@@ -30,6 +37,12 @@
 - **Main Scraper**: `scraper/scraper.py` - Fully modularized implementation using structured components
 - **Fetchers**: `steam_fetcher.py`, `itch_fetcher.py`, `crazygames_fetcher.py` - Platform-specific data fetching
 - **Steam Updater**: `steam_updater.py` - Steam data orchestration and multi-channel updates
+- **YouTube Extractor**: `youtube_extractor.py` - YouTube video metadata extraction and processing
+- **Game Inference**: `game_inference.py` - Game name inference and Steam matching logic
+- **Data Management**: `data_manager.py` - Data loading, saving, and serialization operations
+- **Database Management**: `database_manager.py` - SQLite database operations and schema management
+- **Configuration**: `config_manager.py` - Configuration loading and management
+- **Data Quality**: `data_quality.py` - Data quality checking and reporting tools
 - **Models**: `models.py` - Structured dataclasses (VideoData, SteamGameData, OtherGameData, GameLinks)
 - **Utils**: `utils.py` - Shared utility functions (game link extraction, similarity matching, etc.)
 - **Type Safety**: Full migration from dictionaries to dataclasses for better maintainability

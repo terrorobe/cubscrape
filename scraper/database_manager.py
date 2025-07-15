@@ -39,12 +39,13 @@ class DatabaseManager:
                 INSERT INTO games (
                     game_key, steam_app_id, name, platform, coming_soon,
                     is_early_access, is_demo, is_free, price, price_final,
-                    positive_review_percentage, review_count, release_date,
-                    planned_release_date, header_image, steam_url, itch_url,
+                    positive_review_percentage, review_count, review_summary,
+                    recent_review_percentage, recent_review_count, recent_review_summary,
+                    insufficient_reviews, release_date, planned_release_date, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, categories, developers, publishers,
                     demo_steam_app_id, demo_steam_url, demo_itch_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -58,6 +59,11 @@ class DatabaseManager:
                 self._extract_price_final(game),
                 game.get('positive_review_percentage', 0),
                 game.get('review_count', 0),
+                game.get('review_summary'),
+                game.get('recent_review_percentage'),
+                game.get('recent_review_count'),
+                game.get('recent_review_summary'),
+                game.get('insufficient_reviews', False),
                 game.get('release_date'),
                 game.get('planned_release_date'),
                 game.get('header_image'),
