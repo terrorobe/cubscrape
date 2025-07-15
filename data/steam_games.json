@@ -16552,10 +16552,10 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2202590/header.jpg?t=1748343547",
-      "last_updated": "2025-07-08T15:53:49.308147",
+      "last_updated": "2025-07-15T20:06:04.402160",
       "name": "Shape Shifter: Formations",
       "positive_review_percentage": 91,
-      "price": "11,83\u20ac",
+      "price": "14,79\u20ac",
       "publishers": [
         "Castec Studios"
       ],
@@ -16563,7 +16563,7 @@
       "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "27 May, 2025",
-      "review_count": 230,
+      "review_count": 232,
       "review_summary": "Very Positive",
       "steam_app_id": "2202590",
       "steam_url": "https://store.steampowered.com/app/2202590",
@@ -21717,7 +21717,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2376610/header.jpg?t=1750219951",
-      "last_updated": "2025-07-07T23:06:45.482430",
+      "last_updated": "2025-07-15T20:06:14.458479",
       "name": "Underboard",
       "planned_release_date": "Q4 2025",
       "publishers": [
@@ -25870,20 +25870,20 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2494810/header.jpg?t=1751602041",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2494810/header.jpg?t=1752468401",
       "is_early_access": true,
-      "last_updated": "2025-07-08T15:53:43.991399",
+      "last_updated": "2025-07-15T20:06:03.550505",
       "name": "Dark Hunting Ground",
       "positive_review_percentage": 94,
-      "price": "7,99\u20ac",
+      "price": "9,99\u20ac",
       "publishers": [
         "The Bueno Interactive"
       ],
-      "recent_review_count": 17,
-      "recent_review_percentage": 88,
+      "recent_review_count": 19,
+      "recent_review_percentage": 89,
       "recent_review_summary": "Very Positive",
       "release_date": "7 Nov, 2024",
-      "review_count": 375,
+      "review_count": 380,
       "review_summary": "Very Positive",
       "steam_app_id": "2494810",
       "steam_url": "https://store.steampowered.com/app/2494810",
@@ -41441,7 +41441,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3007500/header.jpg?t=1730721248",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-08T15:53:43.059226",
+      "last_updated": "2025-07-15T20:06:02.853407",
       "name": "Dark Hunting Ground Demo",
       "positive_review_percentage": 82,
       "price": "Free",
@@ -43016,16 +43016,15 @@
         "Indie",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1750530370",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1752577212",
       "is_demo": true,
       "is_early_access": true,
-      "last_updated": "2025-07-07T23:06:33.868188",
+      "last_updated": "2025-07-15T20:06:09.876255",
       "name": "Demon Hunt",
-      "planned_release_date": "July 2025",
       "publishers": [
         "Massive Hug"
       ],
-      "release_date": "July 2025",
+      "release_date": "30 Jul, 2025",
       "review_count": 0,
       "review_summary": "No user reviews",
       "steam_app_id": "3039910",
@@ -44523,18 +44522,18 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3074110/header.jpg?t=1745848006",
-      "last_updated": "2025-07-08T15:53:44.694057",
+      "last_updated": "2025-07-15T20:06:10.522028",
       "name": "The Rangers In The South",
       "positive_review_percentage": 83,
-      "price": "3,19\u20ac",
+      "price": "3,99\u20ac",
       "publishers": [
         "DPA Studios"
       ],
-      "recent_review_count": 15,
-      "recent_review_percentage": 46,
+      "recent_review_count": 18,
+      "recent_review_percentage": 55,
       "recent_review_summary": "Mixed",
       "release_date": "9 Jan, 2025",
-      "review_count": 685,
+      "review_count": 688,
       "review_summary": "Very Positive",
       "steam_app_id": "3074110",
       "steam_url": "https://store.steampowered.com/app/3074110",
@@ -45731,6 +45730,50 @@
         "Economy",
         "Management",
         "Relaxing"
+      ]
+    },
+    "3115310": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "3314000",
+      "developers": [
+        "Nicholas Evelson"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3115310/1b3ec428038bc645cc719316867e5290d749bef6/header.jpg?t=1750272830",
+      "last_updated": "2025-07-15T20:06:11.204145",
+      "name": "Bloodmoon Survivors",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "Nicholas Evelson"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3115310",
+      "steam_url": "https://store.steampowered.com/app/3115310",
+      "tags": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Action Roguelike",
+        "Roguelike",
+        "Arcade",
+        "Bullet Hell",
+        "Roguelite",
+        "2D",
+        "Pixel Graphics"
       ]
     },
     "3116120": {
@@ -50440,7 +50483,7 @@
       "coming_soon": true,
       "demo_app_id": "3445480",
       "developers": [
-        "Xtonomous LLC"
+        "Xtonomous"
       ],
       "genres": [
         "Casual",
@@ -50449,22 +50492,24 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3226210/02c549ca522fda29f5d98dd186f188fdd0b00164/header.jpg?t=1751401613",
-      "last_updated": "2025-07-07T14:39:54.066957",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3226210/02c549ca522fda29f5d98dd186f188fdd0b00164/header.jpg?t=1752367050",
+      "last_updated": "2025-07-15T20:06:07.309199",
       "name": "Skeleseller",
       "planned_release_date": "Q4 2025",
       "publishers": [
-        "Xtonomous LLC"
+        "Xtonomous"
       ],
       "release_date": "Q4 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
       "steam_app_id": "3226210",
       "steam_url": "https://store.steampowered.com/app/3226210",
       "tags": [
         "Strategy",
         "Idler",
         "Casual",
-        "Simulation",
         "Auto Battler",
+        "Simulation",
         "2D",
         "Relaxing",
         "Linear",
@@ -53964,6 +54009,47 @@
         "Strategy"
       ]
     },
+    "3314000": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "Nicholas Evelson"
+      ],
+      "full_game_app_id": "3115310",
+      "genres": [
+        "Action"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3314000/f927dc4d36c83b43f010539e067695af929aa5d1/header.jpg?t=1750270921",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-15T20:06:11.926796",
+      "name": "Bloodmoon Survivors Demo",
+      "positive_review_percentage": 100,
+      "price": "Free",
+      "publishers": [
+        "Nicholas Evelson"
+      ],
+      "release_date": "12 May, 2025",
+      "review_count": 16,
+      "review_summary": "Positive",
+      "steam_app_id": "3314000",
+      "steam_url": "https://store.steampowered.com/app/3314000",
+      "tags": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Action Roguelike",
+        "Arcade",
+        "Roguelike",
+        "2D",
+        "Pixel Graphics",
+        "Dark",
+        "Dark Fantasy"
+      ]
+    },
     "3314150": {
       "categories": [
         "Game demo"
@@ -54189,10 +54275,10 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3317780/header.jpg?t=1745415166",
-      "last_updated": "2025-07-08T15:53:47.782324",
+      "last_updated": "2025-07-15T20:06:16.052597",
       "name": "Dungeon Vending Machines",
       "positive_review_percentage": 61,
-      "price": "5,--\u20ac",
+      "price": "5,89\u20ac",
       "publishers": [
         "Oz33 Lab"
       ],
@@ -54220,17 +54306,15 @@
         "Game demo",
         "Steam Cloud"
       ],
-      "demo_app_id": "3317840",
       "developers": [
         "Oz33 Lab"
       ],
       "full_game_app_id": "3317780",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3317840/header.jpg?t=1745415396",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-08T15:53:48.607108",
+      "last_updated": "2025-07-15T20:06:16.832596",
       "name": "Dungeon Vending Machines Demo",
       "positive_review_percentage": 61,
       "price": "Free",
@@ -54359,19 +54443,19 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3327170/header.jpg?t=1750091063",
-      "last_updated": "2025-07-08T15:29:59.600174",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3327170/header.jpg?t=1752145893",
+      "last_updated": "2025-07-15T20:06:13.842542",
       "name": "Minutescape",
       "positive_review_percentage": 76,
-      "price": "4,71\u20ac",
+      "price": "5,89\u20ac",
       "publishers": [
         "Poysky Productions"
       ],
-      "recent_review_count": 55,
-      "recent_review_percentage": 72,
+      "recent_review_count": 47,
+      "recent_review_percentage": 74,
       "recent_review_summary": "Mostly Positive",
       "release_date": "15 Apr, 2025",
-      "review_count": 300,
+      "review_count": 309,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3327170",
       "steam_url": "https://store.steampowered.com/app/3327170",
@@ -54974,13 +55058,15 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3352240/abbf15706de7ffff78b301121ffff9de424d7535/header.jpg?t=1750321527",
       "is_early_access": true,
-      "last_updated": "2025-07-07T14:39:50.122470",
+      "last_updated": "2025-07-15T20:06:12.555055",
       "name": "Raiders of Blackveil",
       "planned_release_date": "Q4 2025",
       "publishers": [
         "Wombo Games"
       ],
       "release_date": "Q4 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
       "steam_app_id": "3352240",
       "steam_url": "https://store.steampowered.com/app/3352240",
       "tags": [
@@ -55244,18 +55330,18 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3361470/header.jpg?t=1746551330",
-      "last_updated": "2025-07-08T16:26:42.913982",
+      "last_updated": "2025-07-15T20:06:04.996739",
       "name": "Digseum",
-      "positive_review_percentage": 98,
-      "price": "2,24\u20ac",
+      "positive_review_percentage": 97,
+      "price": "2,99\u20ac",
       "publishers": [
         "Rat Monthly"
       ],
-      "recent_review_count": 347,
-      "recent_review_percentage": 96,
-      "recent_review_summary": "Overwhelmingly Positive",
+      "recent_review_count": 396,
+      "recent_review_percentage": 94,
+      "recent_review_summary": "Very Positive",
       "release_date": "9 Dec, 2024",
-      "review_count": 5832,
+      "review_count": 5926,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "3361470",
       "steam_url": "https://store.steampowered.com/app/3361470",
@@ -58458,7 +58544,6 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "3442130",
       "developers": [
         "Headless"
       ],
@@ -58468,11 +58553,10 @@
         "RPG",
         "Strategy"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3442130/header.jpg?t=1744430643",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T23:06:46.580798",
+      "last_updated": "2025-07-15T20:06:15.216713",
       "name": "Underboard Demo",
       "price": "Free",
       "publishers": [
@@ -58670,7 +58754,7 @@
         "Game demo"
       ],
       "developers": [
-        "Xtonomous LLC"
+        "Xtonomous"
       ],
       "full_game_app_id": "3226210",
       "genres": [
@@ -58679,21 +58763,21 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3445480/header.jpg?t=1751401612",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3445480/header.jpg?t=1752367049",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T14:39:54.800646",
+      "last_updated": "2025-07-15T20:06:08.005913",
       "name": "Skeleseller Demo",
       "positive_review_percentage": 100,
       "price": "Free",
       "publishers": [
-        "Xtonomous LLC"
+        "Xtonomous"
       ],
       "recent_review_count": 33,
       "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "2 Feb, 2025",
-      "review_count": 43,
+      "review_count": 46,
       "review_summary": "Positive",
       "steam_app_id": "3445480",
       "steam_url": "https://store.steampowered.com/app/3445480",
@@ -67047,18 +67131,18 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3754930/603146d5ef869d74c8dec89365b98dbf9fa19322/header.jpg?t=1749254136",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T14:39:50.801311",
+      "last_updated": "2025-07-15T20:06:13.174581",
       "name": "Raiders of Blackveil Demo",
-      "positive_review_percentage": 90,
+      "positive_review_percentage": 91,
       "price": "Free",
       "publishers": [
         "Wombo Games"
       ],
-      "recent_review_count": 217,
-      "recent_review_percentage": 90,
+      "recent_review_count": 155,
+      "recent_review_percentage": 88,
       "recent_review_summary": "Very Positive",
       "release_date": "29 May, 2025",
-      "review_count": 228,
+      "review_count": 269,
       "review_summary": "Very Positive",
       "steam_app_id": "3754930",
       "steam_url": "https://store.steampowered.com/app/3754930",
@@ -67296,13 +67380,15 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3767740/6fd741c1bf8c6bb63b529fc54043a56ba445956a/header.jpg?t=1751442425",
-      "last_updated": "2025-07-07T17:34:31.808115",
+      "last_updated": "2025-07-15T20:06:08.638546",
       "name": "Outhold",
       "planned_release_date": "Q4 2025",
       "publishers": [
         "Tellus Games"
       ],
       "release_date": "Q4 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
       "steam_app_id": "3767740",
       "steam_url": "https://store.steampowered.com/app/3767740",
       "tags": [
@@ -67387,13 +67473,15 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3772240/755bc3f9bdf1616847964fabf0d3dc0ca847fbc2/header.jpg?t=1750560246",
-      "last_updated": "2025-07-07T17:34:16.126207",
+      "last_updated": "2025-07-15T20:06:05.650814",
       "name": "Void Miner \u2013 Incremental Asteroids Roguelite",
       "planned_release_date": "October 2025",
       "publishers": [
         "Ryan & Jakob"
       ],
       "release_date": "October 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
       "steam_app_id": "3772240",
       "steam_url": "https://store.steampowered.com/app/3772240",
       "tags": [
@@ -67470,18 +67558,18 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3781820/6fd741c1bf8c6bb63b529fc54043a56ba445956a/header.jpg?t=1748631551",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T17:34:32.614677",
+      "last_updated": "2025-07-15T20:06:09.270731",
       "name": "Outhold Demo",
-      "positive_review_percentage": 100,
+      "positive_review_percentage": 98,
       "price": "Free",
       "publishers": [
         "Tellus Games"
       ],
-      "recent_review_count": 26,
-      "recent_review_percentage": 100,
+      "recent_review_count": 32,
+      "recent_review_percentage": 96,
       "recent_review_summary": "Very Positive",
       "release_date": "30 May, 2025",
-      "review_count": 65,
+      "review_count": 78,
       "review_summary": "Very Positive",
       "steam_app_id": "3781820",
       "steam_url": "https://store.steampowered.com/app/3781820",
@@ -67518,15 +67606,15 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3785330/755bc3f9bdf1616847964fabf0d3dc0ca847fbc2/header.jpg?t=1750215315",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T17:34:16.829374",
+      "last_updated": "2025-07-15T20:06:06.241763",
       "name": "Void Miner Prologue \u2013 Incremental Asteroids Roguelite ",
-      "positive_review_percentage": 89,
+      "positive_review_percentage": 90,
       "price": "Free",
       "publishers": [
         "Ryan & Jakob"
       ],
       "release_date": "2 Jun, 2025",
-      "review_count": 19,
+      "review_count": 20,
       "review_summary": "Positive",
       "steam_app_id": "3785330",
       "steam_url": "https://store.steampowered.com/app/3785330",
