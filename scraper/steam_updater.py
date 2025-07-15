@@ -139,7 +139,7 @@ class SteamDataUpdater:
 
     def _interval_for_age(self, age_days: int) -> int:
         """Convert game age to refresh interval in days."""
-        if age_days < 30:
+        if age_days < 14:
             return 1  # Daily for new games
         elif age_days < 365:
             return 7  # Weekly for recent games
