@@ -61,7 +61,7 @@ class SteamDataUpdater:
 
         if game_data.coming_soon:
             days_until_release = self._get_days_until_release(release_info)
-            return self._interval_for_days_until_release(days_until_release)
+            return self._interval_for_days_until_release(days_until_release, release_info)
         else:
             try:
                 release_date = datetime.strptime(release_info, "%d %b, %Y")
@@ -114,16 +114,30 @@ class SteamDataUpdater:
 
         return 365  # Default to distant future for unparseable formats
 
-    def _interval_for_days_until_release(self, days_until: int) -> int:
-        """Convert days until release to refresh interval."""
+    def _interval_for_days_until_release(self, days_until: int, release_info: str) -> int:
+        """Convert days until release to refresh interval with precision-aware minimums."""
+        # Detect precision from format
+        is_imprecise = (
+            release_info.startswith('Q') or          # Q1 2025
+            release_info.isdigit() or                # 2025
+            len(release_info.split()) == 2           # "August 2025"
+        )
+
+        # Calculate base interval
         if days_until <= 3:
-            return 1  # Daily when very close
+            base_interval = 1  # Daily when very close
         elif days_until <= 30:
-            return 7  # Weekly within a month
+            base_interval = 7  # Weekly within a month
         elif days_until <= 90:
-            return 7  # Weekly within a quarter
+            base_interval = 7  # Weekly within a quarter
         else:
-            return 30  # Monthly for distant releases
+            base_interval = 30  # Monthly for distant releases
+
+        # Apply weekly minimum for imprecise dates
+        if is_imprecise:
+            return max(base_interval, 7)
+        else:
+            return base_interval
 
     def _interval_for_age(self, age_days: int) -> int:
         """Convert game age to refresh interval in days."""
