@@ -4,7 +4,6 @@ Steam data fetching and parsing functionality
 
 import logging
 import re
-from typing import Dict, Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,7 +20,7 @@ class SteamDataFetcher:
         }
         self.cookies = {'birthtime': '0', 'mature_content': '1'}
 
-    def fetch_data(self, steam_url: str) -> Optional[SteamGameData]:
+    def fetch_data(self, steam_url: str) -> SteamGameData | None:
         """Fetch complete game data from Steam"""
         try:
             app_id = extract_steam_app_id(steam_url)
@@ -46,7 +45,7 @@ class SteamDataFetcher:
             logging.error(f"Error fetching Steam data for {steam_url}: {e}")
             return None
 
-    def _fetch_api_data(self, app_id: str) -> Optional[Dict]:
+    def _fetch_api_data(self, app_id: str) -> dict | None:
         """Fetch basic data from Steam API"""
         api_url = f"https://store.steampowered.com/api/appdetails?appids={app_id}"
         response = requests.get(api_url)
@@ -60,7 +59,7 @@ class SteamDataFetcher:
 
         return data[app_id]['data']
 
-    def _parse_api_data(self, app_data: Dict, app_id: str, steam_url: str) -> SteamGameData:
+    def _parse_api_data(self, app_data: dict, app_id: str, steam_url: str) -> SteamGameData:
         """Parse API data into SteamGameData object"""
         return SteamGameData(
             steam_app_id=app_id,
@@ -77,7 +76,7 @@ class SteamDataFetcher:
             header_image=app_data.get('header_image', '')
         )
 
-    def _get_price(self, app_data: Dict) -> Optional[str]:
+    def _get_price(self, app_data: dict) -> str | None:
         """Extract price information"""
         if app_data.get('is_free'):
             return "Free"
@@ -88,7 +87,7 @@ class SteamDataFetcher:
 
         return None
 
-    def _fetch_store_page_data(self, steam_url: str, app_data: Dict = None) -> Dict:
+    def _fetch_store_page_data(self, steam_url: str, app_data: dict = None) -> dict:
         """Scrape additional data from Steam store page"""
         response = requests.get(steam_url, headers=self.headers, cookies=self.cookies)
         if response.status_code != 200:
@@ -109,7 +108,7 @@ class SteamDataFetcher:
 
         return result
 
-    def _extract_tags(self, soup: BeautifulSoup) -> Dict:
+    def _extract_tags(self, soup: BeautifulSoup) -> dict:
         """Extract Steam tags"""
         tags = []
         tag_elements = soup.select('a.app_tag')
@@ -119,7 +118,7 @@ class SteamDataFetcher:
                 tags.append(tag_text)
         return {'tags': tags}
 
-    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: Dict = None) -> Dict:
+    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict = None) -> dict:
         """Extract demo-related information"""
         result = {}
 
@@ -149,12 +148,12 @@ class SteamDataFetcher:
 
         return result
 
-    def _extract_early_access(self, soup: BeautifulSoup) -> Dict:
+    def _extract_early_access(self, soup: BeautifulSoup) -> dict:
         """Extract early access information"""
         early_access = soup.find('div', class_='early_access_header')
         return {'is_early_access': early_access is not None}
 
-    def _extract_review_data(self, page_text: str) -> Dict:
+    def _extract_review_data(self, page_text: str) -> dict:
         """Extract review data from page text"""
         result = {}
 
@@ -206,7 +205,7 @@ class SteamDataFetcher:
 
         return result
 
-    def _extract_insufficient_reviews(self, page_text: str, result: Dict):
+    def _extract_insufficient_reviews(self, page_text: str, result: dict):
         """Extract information about insufficient or missing reviews"""
         insufficient_review_patterns = [
             r'Need more user reviews to generate a score.*?(\d+)\s*user review',
@@ -232,7 +231,7 @@ class SteamDataFetcher:
                 'review_summary': 'No user reviews'
             })
 
-    def _extract_release_info(self, soup: BeautifulSoup, page_text: str, app_data: Dict = None) -> Dict:
+    def _extract_release_info(self, soup: BeautifulSoup, page_text: str, app_data: dict = None) -> dict:
         """Extract release date information for coming soon games"""
         result = {}
 
@@ -243,7 +242,7 @@ class SteamDataFetcher:
 
         return result
 
-    def _extract_planned_release_date(self, soup: BeautifulSoup, page_text: str) -> Optional[str]:
+    def _extract_planned_release_date(self, soup: BeautifulSoup, page_text: str) -> str | None:
         """Extract more specific planned release date for coming soon games"""
         # Coming soon date patterns
         coming_soon_patterns = [
@@ -275,7 +274,7 @@ class SteamDataFetcher:
 
         return None
 
-    def _find_demo_app_id(self, soup: BeautifulSoup, page_text: str, html_content: str) -> Optional[str]:
+    def _find_demo_app_id(self, soup: BeautifulSoup, page_text: str, html_content: str) -> str | None:
         """Try to find the demo app ID from a main game page"""
         current_app_id = self._get_current_app_id(soup)
 
@@ -293,7 +292,7 @@ class SteamDataFetcher:
         # Search HTML elements for demo links
         return self._search_elements_for_demo(soup, current_app_id)
 
-    def _find_full_game_id(self, soup: BeautifulSoup, page_text: str) -> Optional[str]:
+    def _find_full_game_id(self, soup: BeautifulSoup, page_text: str) -> str | None:
         """Try to find the full game app ID from a demo page"""
         # Look for Community Hub link
         community_links = soup.find_all('a', href=re.compile(r'steamcommunity\.com/app/(\d+)'))
@@ -317,7 +316,7 @@ class SteamDataFetcher:
 
         return None
 
-    def _get_current_app_id(self, soup: BeautifulSoup) -> Optional[str]:
+    def _get_current_app_id(self, soup: BeautifulSoup) -> str | None:
         """Get the current app ID from the page"""
         canonical_link = soup.find('link', {'rel': 'canonical'})
         if canonical_link:
@@ -326,7 +325,7 @@ class SteamDataFetcher:
                 return match.group(1)
         return None
 
-    def _search_html_for_demo(self, html_content: str, current_id: Optional[str]) -> Optional[str]:
+    def _search_html_for_demo(self, html_content: str, current_id: str | None) -> str | None:
         """Search HTML content for demo app IDs"""
         # Steam protocol install links - look for any steam://install/ patterns
         steam_protocol_pattern = r'steam://install/(\d+)'
@@ -361,7 +360,7 @@ class SteamDataFetcher:
 
         return None
 
-    def _search_text_for_demo(self, page_text: str, current_id: Optional[str]) -> Optional[str]:
+    def _search_text_for_demo(self, page_text: str, current_id: str | None) -> str | None:
         """Search page text for demo patterns"""
         demo_patterns = [
             r'store\.steampowered\.com/app/(\d+).*demo',
@@ -379,7 +378,7 @@ class SteamDataFetcher:
 
         return None
 
-    def _search_elements_for_demo(self, soup: BeautifulSoup, current_id: Optional[str]) -> Optional[str]:
+    def _search_elements_for_demo(self, soup: BeautifulSoup, current_id: str | None) -> str | None:
         """Search HTML elements for demo links"""
         # Look for demo links
         demo_links = soup.find_all('a', href=re.compile(r'store\.steampowered\.com/app/(\d+)'))
@@ -404,7 +403,7 @@ class SteamDataFetcher:
 
         return None
 
-    def _merge_store_data(self, game_data: SteamGameData, store_data: Dict):
+    def _merge_store_data(self, game_data: SteamGameData, store_data: dict):
         """Merge store page data into game data object"""
         for key, value in store_data.items():
             if hasattr(game_data, key):

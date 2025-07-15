@@ -4,7 +4,6 @@ Itch.io data fetching and parsing functionality
 
 import logging
 import re
-from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,7 +18,7 @@ class ItchDataFetcher:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
 
-    def fetch_data(self, itch_url: str) -> Optional[OtherGameData]:
+    def fetch_data(self, itch_url: str) -> OtherGameData | None:
         """Fetch game data from Itch.io"""
         try:
             response = requests.get(itch_url, headers=self.headers)
@@ -103,7 +102,7 @@ class ItchDataFetcher:
 
         return tags[:10]  # Limit to 10 tags total
 
-    def _extract_rating(self, soup: BeautifulSoup) -> Optional[dict]:
+    def _extract_rating(self, soup: BeautifulSoup) -> dict | None:
         """Extract rating information from Itch.io page"""
         # Get rating (itch uses 5-star system, convert to 0-100)
         rating_elem = soup.select_one('.aggregate_rating') or soup.select_one('.star_value')

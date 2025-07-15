@@ -49,8 +49,8 @@ exclude = [
 # Set the maximum line length
 line-length = 120
 
-# Assume Python 3.8+
-target-version = "py38"
+# Match project's Python 3.12+ requirement
+target-version = "py312"
 
 [tool.ruff.lint]
 # Enable these rule categories
@@ -65,6 +65,8 @@ select = [
     "N",   # pep8-naming
     "C4",  # flake8-comprehensions
     "PTH", # flake8-use-pathlib
+    "RUF", # Ruff-specific rules
+    "A",   # flake8-builtins (avoid shadowing built-ins)
 ]
 
 # Disable these specific rules

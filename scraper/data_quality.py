@@ -5,7 +5,6 @@ Data quality checking and reporting utilities
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict
 
 from config_manager import ConfigManager
 
@@ -13,14 +12,14 @@ from config_manager import ConfigManager
 class DataQualityChecker:
     """Handles data quality analysis and reporting"""
 
-    def __init__(self, project_root: Path, steam_data: Dict, other_games_data: Dict):
+    def __init__(self, project_root: Path, steam_data: dict, other_games_data: dict):
         self.project_root = project_root
         self.steam_data = steam_data
         self.other_games_data = other_games_data
         self.config_manager = ConfigManager(project_root)
         self.skip_steam_matching_games = self.config_manager.get_skip_steam_matching_games()
 
-    def check_data_quality(self, channels_config: Dict) -> int:
+    def check_data_quality(self, channels_config: dict) -> int:
         """Check data quality across all channels and games"""
         print("\n" + "="*80)
         print("DATA QUALITY REPORT")
@@ -48,7 +47,7 @@ class DataQualityChecker:
 
         return total_issues
 
-    def _check_videos_missing_games(self, channels_config: Dict) -> int:
+    def _check_videos_missing_games(self, channels_config: dict) -> int:
         """Check for videos with missing game data"""
         print("\n1. CHECKING VIDEOS WITH MISSING GAME DATA")
         print("-" * 50)
@@ -100,7 +99,7 @@ class DataQualityChecker:
 
         return total_issues
 
-    def _check_missing_steam_games(self, channels_config: Dict) -> int:
+    def _check_missing_steam_games(self, channels_config: dict) -> int:
         """Check for missing Steam games referenced in videos"""
         print("\n\n2. CHECKING FOR MISSING STEAM GAMES")
         print("-" * 50)
@@ -274,7 +273,7 @@ class DataQualityChecker:
         else:
             print(f"📊 {stale_steam} Steam games and {stale_other} other games are older than 30 days")
 
-    def _print_summary(self, total_issues: int, channels_config: Dict):
+    def _print_summary(self, total_issues: int, channels_config: dict):
         """Print summary report"""
         print("\n\n" + "="*80)
         print("SUMMARY")

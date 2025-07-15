@@ -5,7 +5,6 @@ Utility functions for the YouTube Steam scraper
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Union
 
 from models import GameLinks
 
@@ -98,7 +97,7 @@ def calculate_name_similarity(name1: str, name2: str) -> float:
     return overlap / max(len(words1), len(words2))
 
 
-def extract_potential_game_names(title: str) -> List[str]:
+def extract_potential_game_names(title: str) -> list[str]:
     """Extract potential game names from video titles"""
     # Common patterns in gaming videos
     patterns = [
@@ -125,7 +124,7 @@ def extract_potential_game_names(title: str) -> List[str]:
     return potential_names
 
 
-def load_json(filepath: Union[str, Path], default: Dict) -> Dict:
+def load_json(filepath: str | Path, default: dict) -> dict:
     """Load JSON file or return default"""
     path = Path(filepath)
     if path.exists():
@@ -134,7 +133,7 @@ def load_json(filepath: Union[str, Path], default: Dict) -> Dict:
     return default
 
 
-def save_data(data_dict: Dict, file_path: Union[str, Path]):
+def save_data(data_dict: dict, file_path: str | Path):
     """Save data to JSON file"""
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)

@@ -6,7 +6,6 @@ import json
 import logging
 import re
 from datetime import datetime
-from typing import Dict, List, Optional
 
 import requests
 import yt_dlp
@@ -24,7 +23,7 @@ class YouTubeExtractor:
             'force_generic_extractor': False,
         }
 
-    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> List[Dict]:
+    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict]:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
         videos = []
 
@@ -71,7 +70,7 @@ class YouTubeExtractor:
 
         return videos
 
-    def get_full_video_metadata(self, video_id: str) -> Optional[Dict]:
+    def get_full_video_metadata(self, video_id: str) -> dict | None:
         """Fetch full metadata for a specific video"""
         try:
             video_url = f"https://www.youtube.com/watch?v={video_id}"
@@ -97,7 +96,7 @@ class YouTubeExtractor:
                 logging.error(f"Error fetching full metadata for video {video_id}: {e}")
             return None
 
-    def extract_youtube_detected_game(self, video_id: str) -> Optional[str]:
+    def extract_youtube_detected_game(self, video_id: str) -> str | None:
         """Extract YouTube's detected game from JSON data as last resort"""
         try:
             url = f"https://www.youtube.com/watch?v={video_id}"

@@ -4,7 +4,6 @@ Data management utilities for the YouTube Steam scraper
 
 from dataclasses import asdict
 from pathlib import Path
-from typing import Dict
 
 from models import OtherGameData, SteamGameData, VideoData
 from utils import load_json, save_data
@@ -29,7 +28,7 @@ class DataManager:
         """Get path to other games data file"""
         return self.data_dir / 'other_games.json'
 
-    def load_videos_data(self, channel_id: str) -> Dict:
+    def load_videos_data(self, channel_id: str) -> dict:
         """Load and convert video data for a channel"""
         videos_file = self.get_videos_file_path(channel_id)
         videos_raw = load_json(videos_file, {'videos': {}, 'last_updated': None})
@@ -41,7 +40,7 @@ class DataManager:
             'last_updated': videos_raw.get('last_updated')
         }
 
-    def load_steam_data(self) -> Dict:
+    def load_steam_data(self) -> dict:
         """Load and convert Steam games data"""
         steam_file = self.get_steam_file_path()
         steam_raw = load_json(steam_file, {'games': {}, 'last_updated': None})
@@ -53,7 +52,7 @@ class DataManager:
             'last_updated': steam_raw.get('last_updated')
         }
 
-    def load_other_games_data(self) -> Dict:
+    def load_other_games_data(self) -> dict:
         """Load and convert other games data"""
         other_games_file = self.get_other_games_file_path()
         other_games_raw = load_json(other_games_file, {'games': {}, 'last_updated': None})
@@ -65,7 +64,7 @@ class DataManager:
             'last_updated': other_games_raw.get('last_updated')
         }
 
-    def save_videos_data(self, videos_data: Dict, channel_id: str):
+    def save_videos_data(self, videos_data: dict, channel_id: str):
         """Save video data to JSON file"""
         videos_file = self.get_videos_file_path(channel_id)
 
@@ -85,7 +84,7 @@ class DataManager:
         }
         save_data(data_to_save, videos_file)
 
-    def save_steam_data(self, steam_data: Dict):
+    def save_steam_data(self, steam_data: dict):
         """Save Steam data to JSON file"""
         steam_file = self.get_steam_file_path()
 
@@ -105,7 +104,7 @@ class DataManager:
         }
         save_data(data_to_save, steam_file)
 
-    def save_other_games_data(self, other_games_data: Dict):
+    def save_other_games_data(self, other_games_data: dict):
         """Save other games data to JSON file"""
         other_games_file = self.get_other_games_file_path()
 
@@ -125,18 +124,18 @@ class DataManager:
         }
         save_data(data_to_save, other_games_file)
 
-    def _dict_to_video_data(self, video_dict: Dict) -> VideoData:
+    def _dict_to_video_data(self, video_dict: dict) -> VideoData:
         """Convert dictionary to VideoData object"""
         return VideoData(**video_dict)
 
-    def _dict_to_steam_data(self, steam_dict: Dict) -> SteamGameData:
+    def _dict_to_steam_data(self, steam_dict: dict) -> SteamGameData:
         """Convert dictionary to SteamGameData object"""
         return SteamGameData(**steam_dict)
 
-    def _dict_to_other_game_data(self, game_dict: Dict) -> OtherGameData:
+    def _dict_to_other_game_data(self, game_dict: dict) -> OtherGameData:
         """Convert dictionary to OtherGameData object"""
         return OtherGameData(**game_dict)
 
-    def _clean_dict_for_json(self, data_dict: Dict) -> Dict:
+    def _clean_dict_for_json(self, data_dict: dict) -> dict:
         """Remove None values and False boolean values to keep JSON clean"""
         return {k: v for k, v in data_dict.items() if v is not None and v is not False}

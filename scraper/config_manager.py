@@ -4,7 +4,6 @@ Configuration management utilities
 
 import json
 from pathlib import Path
-from typing import Dict
 
 
 class ConfigManager:
@@ -15,7 +14,7 @@ class ConfigManager:
         self.config_path = project_root / 'config.json'
         self._config = None
 
-    def load_config(self) -> Dict:
+    def load_config(self) -> dict:
         """Load configuration from config.json"""
         if self._config is None:
             if self.config_path.exists():
@@ -25,12 +24,12 @@ class ConfigManager:
                 self._config = {'channels': {}}
         return self._config
 
-    def get_channels(self) -> Dict:
+    def get_channels(self) -> dict:
         """Get channels configuration"""
         config = self.load_config()
         return config.get('channels', {})
 
-    def get_channel_config(self, channel_id: str) -> Dict:
+    def get_channel_config(self, channel_id: str) -> dict:
         """Get configuration for a specific channel"""
         channels = self.get_channels()
         return channels.get(channel_id, {})

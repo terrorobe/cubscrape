@@ -5,7 +5,6 @@ CrazyGames data fetching and parsing functionality
 import json
 import logging
 import re
-from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,7 +20,7 @@ class CrazyGamesDataFetcher:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
 
-    def fetch_data(self, crazygames_url: str) -> Optional[OtherGameData]:
+    def fetch_data(self, crazygames_url: str) -> OtherGameData | None:
         """Fetch game data from CrazyGames"""
         try:
             response = requests.get(crazygames_url, headers=self.headers)
@@ -86,7 +85,7 @@ class CrazyGamesDataFetcher:
 
         return tags
 
-    def _extract_rating(self, soup: BeautifulSoup, page_text: str) -> Optional[dict]:
+    def _extract_rating(self, soup: BeautifulSoup, page_text: str) -> dict | None:
         """Extract rating information from CrazyGames page"""
         # Look for rating in structured data (JSON-LD)
         rating_data = self._extract_rating_from_json_ld(soup)
@@ -96,7 +95,7 @@ class CrazyGamesDataFetcher:
         # Fallback: Look for rating in page text using regex patterns
         return self._extract_rating_from_text(page_text)
 
-    def _extract_rating_from_json_ld(self, soup: BeautifulSoup) -> Optional[dict]:
+    def _extract_rating_from_json_ld(self, soup: BeautifulSoup) -> dict | None:
         """Extract rating from JSON-LD structured data"""
         script_tags = soup.find_all('script', type='application/ld+json')
         for script in script_tags:
@@ -140,7 +139,7 @@ class CrazyGamesDataFetcher:
         logging.info(f"Found rating in JSON-LD: {rating_value}/{best_rating} = {percentage}%")
         return result
 
-    def _extract_rating_from_text(self, page_text: str) -> Optional[dict]:
+    def _extract_rating_from_text(self, page_text: str) -> dict | None:
         """Extract rating from page text using regex patterns"""
         # Pattern for "X.X / 10" or "X.X out of 10" ratings
         rating_patterns = [
@@ -171,7 +170,7 @@ class CrazyGamesDataFetcher:
 
         return None
 
-    def _extract_review_count_from_text(self, page_text: str) -> Optional[int]:
+    def _extract_review_count_from_text(self, page_text: str) -> int | None:
         """Extract review count from page text"""
         count_patterns = [
             r'(\d{1,3}(?:,\d{3})*)\s*(?:votes?|ratings?)',

@@ -4,7 +4,6 @@ Data models for the YouTube Steam scraper
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Optional
 
 
 @dataclass
@@ -15,14 +14,14 @@ class VideoData:
     description: str
     published_at: str
     thumbnail: str = ""
-    steam_app_id: Optional[str] = None
-    itch_url: Optional[str] = None
+    steam_app_id: str | None = None
+    itch_url: str | None = None
     itch_is_demo: bool = False
-    crazygames_url: Optional[str] = None
-    youtube_detected_game: Optional[str] = None
+    crazygames_url: str | None = None
+    youtube_detected_game: str | None = None
     youtube_detected_matched: bool = False
     inferred_game: bool = False
-    inference_reason: Optional[str] = None
+    inference_reason: str | None = None
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
@@ -35,26 +34,26 @@ class SteamGameData:
     is_free: bool = False
     release_date: str = ""
     coming_soon: bool = False
-    genres: List[str] = field(default_factory=list)
-    categories: List[str] = field(default_factory=list)
-    developers: List[str] = field(default_factory=list)
-    publishers: List[str] = field(default_factory=list)
-    price: Optional[str] = None
+    genres: list[str] = field(default_factory=list)
+    categories: list[str] = field(default_factory=list)
+    developers: list[str] = field(default_factory=list)
+    publishers: list[str] = field(default_factory=list)
+    price: str | None = None
     header_image: str = ""
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     has_demo: bool = False
-    demo_app_id: Optional[str] = None
+    demo_app_id: str | None = None
     is_demo: bool = False
-    full_game_app_id: Optional[str] = None
+    full_game_app_id: str | None = None
     is_early_access: bool = False
-    positive_review_percentage: Optional[int] = None
-    review_count: Optional[int] = None
-    review_summary: Optional[str] = None
-    recent_review_percentage: Optional[int] = None
-    recent_review_count: Optional[int] = None
-    recent_review_summary: Optional[str] = None
+    positive_review_percentage: int | None = None
+    review_count: int | None = None
+    review_summary: str | None = None
+    recent_review_percentage: int | None = None
+    recent_review_count: int | None = None
+    recent_review_summary: str | None = None
     insufficient_reviews: bool = False
-    planned_release_date: Optional[str] = None
+    planned_release_date: str | None = None
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
@@ -66,18 +65,18 @@ class OtherGameData:
     name: str
     is_free: bool = True
     header_image: str = ""
-    tags: List[str] = field(default_factory=list)
-    positive_review_percentage: Optional[int] = None
-    review_count: Optional[int] = None
+    tags: list[str] = field(default_factory=list)
+    positive_review_percentage: int | None = None
+    review_count: int | None = None
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
 @dataclass
 class GameLinks:
     """Represents extracted game store links"""
-    steam: Optional[str] = None
-    itch: Optional[str] = None
-    crazygames: Optional[str] = None
+    steam: str | None = None
+    itch: str | None = None
+    crazygames: str | None = None
 
 
 @dataclass

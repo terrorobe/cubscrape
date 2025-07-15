@@ -10,7 +10,6 @@ import sys
 from dataclasses import asdict, replace
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from config_manager import ConfigManager
 from crazygames_fetcher import CrazyGamesDataFetcher
@@ -66,23 +65,23 @@ class YouTubeSteamScraper:
         self.data_manager.save_other_games_data(self.other_games_data)
 
 
-    def extract_youtube_detected_game(self, video_id: str) -> Optional[str]:
+    def extract_youtube_detected_game(self, video_id: str) -> str | None:
         """Extract YouTube's detected game from JSON data as last resort"""
         return self.youtube_extractor.extract_youtube_detected_game(video_id)
 
-    def fetch_itch_data(self, itch_url: str) -> Optional[OtherGameData]:
+    def fetch_itch_data(self, itch_url: str) -> OtherGameData | None:
         """Fetch game data from Itch.io using the modular fetcher"""
         return self.itch_fetcher.fetch_data(itch_url)
 
-    def fetch_crazygames_data(self, crazygames_url: str) -> Optional[OtherGameData]:
+    def fetch_crazygames_data(self, crazygames_url: str) -> OtherGameData | None:
         """Fetch game data from CrazyGames using the modular fetcher"""
         return self.crazygames_fetcher.fetch_data(crazygames_url)
 
-    def fetch_steam_data(self, steam_url: str) -> Optional[SteamGameData]:
+    def fetch_steam_data(self, steam_url: str) -> SteamGameData | None:
         """Fetch game data from Steam using the modular fetcher"""
         return self.steam_fetcher.fetch_data(steam_url)
 
-    def process_videos(self, channel_url: str, max_new_videos: Optional[int] = None, fetch_newest_first: bool = False, cutoff_date: Optional[str] = None):
+    def process_videos(self, channel_url: str, max_new_videos: int | None = None, fetch_newest_first: bool = False, cutoff_date: str | None = None):
         """Process YouTube videos only"""
         logging.info(f"Processing videos from channel: {channel_url}")
 
@@ -351,15 +350,15 @@ class YouTubeSteamScraper:
         self.save_videos()
         logging.info(f"Reprocessing complete. Processed {videos_processed} videos, updated {updated_count} videos.")
 
-    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> List[Dict]:
+    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict]:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
         return self.youtube_extractor.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
 
-    def get_full_video_metadata(self, video_id: str) -> Optional[Dict]:
+    def get_full_video_metadata(self, video_id: str) -> dict | None:
         """Fetch full metadata for a specific video"""
         return self.youtube_extractor.get_full_video_metadata(video_id)
 
-    def check_data_quality(self, channels_config: Dict):
+    def check_data_quality(self, channels_config: dict):
         """Check data quality across all channels and games"""
         # Get the directory of this script, then build paths relative to project root
         script_dir = Path(__file__).resolve().parent
@@ -368,20 +367,20 @@ class YouTubeSteamScraper:
         quality_checker = DataQualityChecker(project_root, self.steam_data, self.other_games_data)
         return quality_checker.check_data_quality(channels_config)
 
-    def search_steam_games(self, query: str) -> List[Dict]:
+    def search_steam_games(self, query: str) -> list[dict]:
         """Search Steam for games by name"""
         return self.game_inference.search_steam_games(query)
 
-    def find_steam_match(self, game_name: str, confidence_threshold: float = 0.5) -> Optional[Dict]:
+    def find_steam_match(self, game_name: str, confidence_threshold: float = 0.5) -> dict | None:
         """Find best Steam match for a game name with confidence scoring"""
         return self.game_inference.find_steam_match(game_name, confidence_threshold)
 
-    def find_steam_match_interactive(self, game_name: str, confidence_threshold: float = 0.5) -> Optional[Dict]:
+    def find_steam_match_interactive(self, game_name: str, confidence_threshold: float = 0.5) -> dict | None:
         """Find Steam match with interactive prompting for low confidence results"""
         return self.game_inference.find_steam_match_interactive(game_name, confidence_threshold)
 
 
-    def _should_process_video_for_inference(self, video: Dict) -> Optional[str]:
+    def _should_process_video_for_inference(self, video: dict) -> str | None:
         """Determine if video needs processing for game inference"""
         # Case 1: No game data at all
         if not video.get('steam_app_id') and not video.get('itch_url') and not video.get('crazygames_url'):
@@ -398,7 +397,7 @@ class YouTubeSteamScraper:
         """Check if Steam app is still available"""
         return self.game_inference.check_steam_availability(app_id)
 
-    def infer_games_from_titles(self, channels_config: Dict):
+    def infer_games_from_titles(self, channels_config: dict):
         """Infer games from video titles and resolve missing Steam games"""
         print("\n" + "="*80)
         print("GAME INFERENCE AND MISSING STEAM GAMES RESOLUTION")

@@ -3,7 +3,6 @@ Game inference and Steam matching utilities
 """
 
 import logging
-from typing import Dict, List, Optional
 
 import requests
 from utils import extract_potential_game_names
@@ -12,7 +11,7 @@ from utils import extract_potential_game_names
 class GameInferenceEngine:
     """Handles game name inference and Steam matching"""
 
-    def search_steam_games(self, query: str) -> List[Dict]:
+    def search_steam_games(self, query: str) -> list[dict]:
         """Search Steam for games by name"""
         url = "https://store.steampowered.com/api/storesearch/"
         params = {
@@ -31,7 +30,7 @@ class GameInferenceEngine:
 
         return []
 
-    def find_steam_match(self, game_name: str, confidence_threshold: float = 0.5) -> Optional[Dict]:
+    def find_steam_match(self, game_name: str, confidence_threshold: float = 0.5) -> dict | None:
         """Find best Steam match for a game name with confidence scoring"""
         try:
             results = self.search_steam_games(game_name)
@@ -68,7 +67,7 @@ class GameInferenceEngine:
             logging.error(f"Error finding Steam match for '{game_name}': {e}")
             return None
 
-    def find_steam_match_interactive(self, game_name: str, confidence_threshold: float = 0.5) -> Optional[Dict]:
+    def find_steam_match_interactive(self, game_name: str, confidence_threshold: float = 0.5) -> dict | None:
         """Find Steam match with interactive prompting for low confidence results"""
         try:
             results = self.search_steam_games(game_name)
@@ -140,7 +139,7 @@ class GameInferenceEngine:
             logging.error(f"Error finding Steam match for '{game_name}': {e}")
             return None
 
-    def extract_potential_game_names_from_title(self, title: str) -> List[str]:
+    def extract_potential_game_names_from_title(self, title: str) -> list[str]:
         """Extract potential game names from video titles"""
         return extract_potential_game_names(title)
 
