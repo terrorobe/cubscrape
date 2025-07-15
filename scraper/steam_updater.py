@@ -288,13 +288,13 @@ class SteamDataUpdater:
             logging.error(f"  Error fetching {app_type} data: {e}")
             return False
 
-    def fetch_single_app(self, app_id: str, force_update: bool = False) -> bool:
+    def fetch_single_app(self, app_id: str) -> bool:
         """
         Fetch a single Steam app (useful for single-app mode).
+        Always fetches regardless of staleness.
 
         Args:
             app_id: Steam app ID to fetch
-            force_update: If True, always fetch regardless of staleness
 
         Returns:
             True if successfully fetched, False otherwise

@@ -417,7 +417,7 @@ class YouTubeSteamScraper:
                 print(f"⚠️  Missing video file for channel {channel_id}: {videos_file}")
                 continue
 
-            with open(videos_file) as f:
+            with videos_file.open() as f:
                 channel_data = json.load(f)
 
             print(f"\n📺 Processing channel: {channel_id}")
@@ -568,7 +568,7 @@ class YouTubeSteamScraper:
 
             # Save updated video data
             if channel_games_found > 0 or channel_missing_resolved > 0:
-                with open(videos_file, 'w') as f:
+                with videos_file.open('w') as f:
                     json.dump(channel_data, f, indent=2, sort_keys=True)
                 print(f"   💾 Saved {channel_games_found} game inferences and {channel_missing_resolved} resolved missing games for {channel_id}")
 
@@ -706,7 +706,7 @@ if __name__ == "__main__":
 
         # Use SteamDataUpdater for single app fetching
         steam_updater = SteamDataUpdater()
-        if steam_updater.fetch_single_app(args.app_id, force_update=True):
+        if steam_updater.fetch_single_app(args.app_id):
             logging.info(f"Successfully fetched data for app {args.app_id}")
         else:
             logging.warning(f"Failed to fetch data for app {args.app_id}")

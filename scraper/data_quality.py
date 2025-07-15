@@ -63,7 +63,7 @@ class DataQualityChecker:
                 total_issues += 1
                 continue
 
-            with open(videos_file) as f:
+            with videos_file.open() as f:
                 channel_data = json.load(f)
 
             channel_videos_missing = 0
@@ -109,19 +109,19 @@ class DataQualityChecker:
         for channel_id in channels_config:
             videos_file = self.project_root / 'data' / f'videos-{channel_id}.json'
             if videos_file.exists():
-                with open(videos_file) as f:
+                with videos_file.open() as f:
                     channel_data = json.load(f)
 
-                for _video_id, video in channel_data.get('videos', {}).items():
+                for video in channel_data.get('videos', {}).values():
                     steam_app_id = video.get('steam_app_id')
                     if steam_app_id:
                         referenced_steam_apps.add(steam_app_id)
 
         # Check which referenced Steam games are missing from our database
-        missing_steam_games = []
-        for app_id in referenced_steam_apps:
-            if app_id not in self.steam_data.get('games', {}):
-                missing_steam_games.append(app_id)
+        missing_steam_games = [
+            app_id for app_id in referenced_steam_apps
+            if app_id not in self.steam_data.get('games', {})
+        ]
 
         total_issues = 0
         if missing_steam_games:
@@ -209,7 +209,7 @@ class DataQualityChecker:
         required_other_fields = ['name', 'platform', 'tags']
         optional_other_fields = ['header_image', 'positive_review_percentage', 'review_count']
 
-        for _url, game in self.other_games_data.get('games', {}).items():
+        for game in self.other_games_data.get('games', {}).values():
             missing_required = []
             missing_optional = []
 
@@ -218,9 +218,10 @@ class DataQualityChecker:
                 if not value or (field == 'tags' and len(value) == 0):
                     missing_required.append(field)
 
-            for field in optional_other_fields:
-                if not getattr(game, field, None):
-                    missing_optional.append(field)
+            missing_optional = [
+                field for field in optional_other_fields
+                if not getattr(game, field, None)
+            ]
 
             if missing_required:
                 print(f"❌ {game.platform} game '{game.name}' missing required: {', '.join(missing_required)}")
@@ -256,7 +257,7 @@ class DataQualityChecker:
                 except ValueError:
                     print(f"❌ Steam game {app_id} has invalid last_updated format: {game.last_updated}")
 
-        for _url, game in self.other_games_data.get('games', {}).items():
+        for game in self.other_games_data.get('games', {}).values():
             last_updated = game.last_updated
             if last_updated:
                 try:
@@ -287,9 +288,9 @@ class DataQualityChecker:
         for channel_id in channels_config:
             videos_file = self.project_root / 'data' / f'videos-{channel_id}.json'
             if videos_file.exists():
-                with open(videos_file) as f:
+                with videos_file.open() as f:
                     channel_data = json.load(f)
-                for _video_id, video in channel_data.get('videos', {}).items():
+                for video in channel_data.get('videos', {}).values():
                     total_videos += 1
                     has_game = bool(video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url'))
 

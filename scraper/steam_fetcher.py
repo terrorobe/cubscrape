@@ -87,7 +87,7 @@ class SteamDataFetcher:
 
         return None
 
-    def _fetch_store_page_data(self, steam_url: str, app_data: dict = None) -> dict:
+    def _fetch_store_page_data(self, steam_url: str, app_data: dict | None = None) -> dict:
         """Scrape additional data from Steam store page"""
         response = requests.get(steam_url, headers=self.headers, cookies=self.cookies)
         if response.status_code != 200:
@@ -118,7 +118,7 @@ class SteamDataFetcher:
                 tags.append(tag_text)
         return {'tags': tags}
 
-    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict = None) -> dict:
+    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict | None = None) -> dict:
         """Extract demo-related information"""
         result = {}
 
@@ -231,7 +231,7 @@ class SteamDataFetcher:
                 'review_summary': 'No user reviews'
             })
 
-    def _extract_release_info(self, soup: BeautifulSoup, page_text: str, app_data: dict = None) -> dict:
+    def _extract_release_info(self, soup: BeautifulSoup, page_text: str, app_data: dict | None = None) -> dict:
         """Extract release date information for coming soon games"""
         result = {}
 

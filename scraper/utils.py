@@ -128,7 +128,7 @@ def load_json(filepath: str | Path, default: dict) -> dict:
     """Load JSON file or return default"""
     path = Path(filepath)
     if path.exists():
-        with open(path) as f:
+        with path.open() as f:
             return json.load(f)
     return default
 
@@ -137,7 +137,7 @@ def save_data(data_dict: dict, file_path: str | Path):
     """Save data to JSON file"""
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, 'w') as f:
+    with path.open('w') as f:
         json.dump(data_dict, f, indent=2, sort_keys=True)
 
 

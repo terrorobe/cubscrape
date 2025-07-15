@@ -18,7 +18,7 @@ class ConfigManager:
         """Load configuration from config.json"""
         if self._config is None:
             if self.config_path.exists():
-                with open(self.config_path) as f:
+                with self.config_path.open() as f:
                     self._config = json.load(f)
             else:
                 self._config = {'channels': {}}
