@@ -9579,6 +9579,51 @@
         "2D"
       ]
     },
+    "1866300": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Custom Volume Controls",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Industrial Technology and Witchcraft"
+      ],
+      "genres": [
+        "Simulation",
+        "Strategy",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1866300/9569bf5c864c4cefe1ab4461eff461b89d042a30/header.jpg?t=1752509241",
+      "is_early_access": true,
+      "last_updated": "2025-07-15T15:02:28.764082",
+      "name": "Dawn Apart",
+      "positive_review_percentage": 79,
+      "price": "17,99\u20ac",
+      "publishers": [
+        "Astra Logical"
+      ],
+      "release_date": "14 Jul, 2025",
+      "review_count": 24,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "1866300",
+      "steam_url": "https://store.steampowered.com/app/1866300",
+      "tags": [
+        "Colony Sim",
+        "Base Building",
+        "Automation",
+        "Strategy",
+        "Crafting",
+        "Voxel",
+        "Space",
+        "Simulation",
+        "Resource Management",
+        "Physics"
+      ]
+    },
     "1866980": {
       "categories": [
         "Single-player",
@@ -29982,8 +30027,6 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "coming_soon": true,
-      "demo_app_id": "3209890",
       "developers": [
         "Floodgate Crew"
       ],
@@ -29992,16 +30035,17 @@
         "Indie",
         "Simulation"
       ],
-      "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2651220/5263be8eeec9c7535cd3a4669c0aa91bf37c738f/header.jpg?t=1752241031",
-      "last_updated": "2025-07-14T08:53:19.730479",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2651220/5263be8eeec9c7535cd3a4669c0aa91bf37c738f/header.jpg?t=1752579820",
+      "last_updated": "2025-07-15T15:02:24.607514",
       "name": "Blacksmith: Ignite the Forge",
+      "positive_review_percentage": 61,
+      "price": "8,77\u20ac",
       "publishers": [
         "Awaken Realms"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 13,
+      "review_summary": "Mixed",
       "steam_app_id": "2651220",
       "steam_url": "https://store.steampowered.com/app/2651220",
       "tags": [
@@ -32175,7 +32219,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2734270/4842cfb0ee3a3aac92a1e484451e87c3635c8ef1/header.jpg?t=1752430426",
       "is_early_access": true,
-      "last_updated": "2025-07-14T08:53:24.209467",
+      "last_updated": "2025-07-15T15:02:26.482788",
       "name": "Sector Unknown",
       "publishers": [
         "Creative Storm Entertainment"
@@ -35145,7 +35189,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752274574",
       "is_early_access": true,
-      "last_updated": "2025-07-14T08:53:21.788148",
+      "last_updated": "2025-07-15T15:02:29.570800",
       "name": "He is Coming",
       "publishers": [
         "Hooded Horse"
@@ -35156,16 +35200,16 @@
       "steam_app_id": "2824490",
       "steam_url": "https://store.steampowered.com/app/2824490",
       "tags": [
-        "Early Access",
         "Strategy",
         "RPG",
         "Roguelike",
         "Fantasy",
         "Roguelite",
-        "Turn-Based Strategy",
-        "Tactical",
-        "Turn-Based Tactics",
-        "Auto Battler"
+        "Roguelike Deckbuilder",
+        "Deckbuilding",
+        "Card Game",
+        "Replay Value",
+        "Turn-Based Strategy"
       ]
     },
     "2825840": {
@@ -36687,7 +36731,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2870430/header.jpg?t=1750093172",
       "is_early_access": true,
-      "last_updated": "2025-07-14T08:53:22.546085",
+      "last_updated": "2025-07-15T15:02:25.398180",
       "name": "Godslayer Arena",
       "positive_review_percentage": 79,
       "price": "14,79\u20ac",
@@ -36695,7 +36739,7 @@
         "Hippo Rider Games"
       ],
       "release_date": "16 Jun, 2025",
-      "review_count": 149,
+      "review_count": 151,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2870430",
       "steam_url": "https://store.steampowered.com/app/2870430",
@@ -40479,21 +40523,21 @@
         "RPG",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2984660/33215909613984876e866b157f47722c6f372975/header.jpg?t=1751419320",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2984660/33215909613984876e866b157f47722c6f372975/header.jpg?t=1752274607",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T23:06:02.047612",
+      "last_updated": "2025-07-15T15:02:30.290487",
       "name": "He is Coming Demo",
-      "positive_review_percentage": 95,
+      "positive_review_percentage": 96,
       "price": "Free",
       "publishers": [
         "Hooded Horse"
       ],
-      "recent_review_count": 45,
+      "recent_review_count": 47,
       "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "10 May, 2024",
-      "review_count": 69,
+      "review_count": 84,
       "review_summary": "Very Positive",
       "steam_app_id": "2984660",
       "steam_url": "https://store.steampowered.com/app/2984660",
@@ -50942,7 +50986,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3235170/44a45dbb30a567a10c0fd753d18a038bc4869ab3/header.jpg?t=1752075226",
-      "last_updated": "2025-07-14T08:53:23.356508",
+      "last_updated": "2025-07-15T15:02:27.364939",
       "name": "Islets Defense",
       "positive_review_percentage": 94,
       "price": "9,75\u20ac",
@@ -53201,10 +53245,10 @@
       "genres": [
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284230/44a45dbb30a567a10c0fd753d18a038bc4869ab3/header.jpg?t=1750897470",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284230/44a45dbb30a567a10c0fd753d18a038bc4869ab3/header.jpg?t=1752161020",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-08T00:11:05.105839",
+      "last_updated": "2025-07-15T15:02:28.086265",
       "name": "Islets Defense Demo",
       "positive_review_percentage": 97,
       "price": "Free",
@@ -53214,7 +53258,7 @@
         "Vsoo Games"
       ],
       "release_date": "21 Nov, 2024",
-      "review_count": 81,
+      "review_count": 82,
       "review_summary": "Very Positive",
       "steam_app_id": "3284230",
       "steam_url": "https://store.steampowered.com/app/3284230",
@@ -64095,7 +64139,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1750862384",
-      "last_updated": "2025-07-14T08:53:20.573286",
+      "last_updated": "2025-07-15T15:02:30.969233",
       "name": "Combo Overload",
       "publishers": [
         "AraragiAriel"
