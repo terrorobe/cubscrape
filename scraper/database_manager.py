@@ -1,0 +1,134 @@
+import json
+import logging
+import re
+import sqlite3
+from pathlib import Path
+
+
+class DatabaseManager:
+    def __init__(self, schema_file='data/schema.sql', db_file='data/games.db'):
+        self.schema_file = schema_file
+        self.db_file = db_file
+
+    def create_database(self, games_data):
+        """Create fresh database from schema and populate with data"""
+        # Remove existing database
+        db_path = Path(self.db_file)
+        if db_path.exists():
+            db_path.unlink()
+
+        # Create new database from schema
+        conn = sqlite3.connect(self.db_file)
+        with Path(self.schema_file).open() as f:
+            conn.executescript(f.read())
+
+        # Populate with data
+        self._populate_games(conn, games_data)
+
+        conn.commit()
+        conn.close()
+
+        logging.info(f"Created SQLite database: {self.db_file}")
+
+    def _populate_games(self, conn, games_data):
+        cursor = conn.cursor()
+
+        for game_key, game in games_data.items():
+            # Insert game record
+            cursor.execute('''
+                INSERT INTO games (
+                    game_key, steam_app_id, name, platform, coming_soon,
+                    is_early_access, is_demo, is_free, price, price_final,
+                    positive_review_percentage, review_count, release_date,
+                    planned_release_date, header_image, steam_url, itch_url,
+                    crazygames_url, last_updated, video_count, latest_video_date,
+                    unique_channels, genres, tags, categories, developers, publishers
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                game_key,
+                game.get('steam_app_id'),
+                game.get('name'),
+                game.get('platform'),
+                game.get('coming_soon', False),
+                game.get('is_early_access', False),
+                game.get('is_demo', False),
+                game.get('is_free', False),
+                game.get('price'),
+                self._extract_price_final(game),
+                game.get('positive_review_percentage', 0),
+                game.get('review_count', 0),
+                game.get('release_date'),
+                game.get('planned_release_date'),
+                game.get('header_image'),
+                game.get('steam_url'),
+                game.get('itch_url'),
+                game.get('crazygames_url'),
+                game.get('last_updated'),
+                game.get('video_count', 0),
+                self._get_latest_video_date(game),
+                json.dumps(self._get_unique_channels(game)),
+                json.dumps(game.get('genres', [])),
+                json.dumps(game.get('tags', [])),
+                json.dumps(game.get('categories', [])),
+                json.dumps(game.get('developers', [])),
+                json.dumps(game.get('publishers', []))
+            ))
+
+            game_id = cursor.lastrowid
+
+            # Insert video records
+            for video in game.get('videos', []):
+                cursor.execute('''
+                    INSERT INTO game_videos (
+                        game_id, video_id, video_title, video_date,
+                        video_url, channel_name, published_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    game_id,
+                    video.get('video_id'),
+                    video.get('video_title'),
+                    video.get('video_date'),
+                    video.get('video_url'),
+                    video.get('channel_name'),
+                    video.get('published_at')
+                ))
+
+    def _extract_price_final(self, game):
+        """Extract numeric price for filtering"""
+        if game.get('is_free'):
+            return 0.0
+
+        price = game.get('price', '')
+        if not price:
+            return 0.0
+
+        # Extract numeric value from price string like "16,79€" or "$19.99"
+        match = re.search(r'(\d+)[,.](\d+)', price)
+        if match:
+            return float(f"{match.group(1)}.{match.group(2)}")
+
+        match = re.search(r'(\d+)', price)
+        if match:
+            return float(match.group(1))
+
+        return 0.0
+
+    def _get_latest_video_date(self, game):
+        """Get the most recent video date for this game"""
+        videos = game.get('videos', [])
+        if not videos:
+            return None
+
+        dates = [v.get('video_date') for v in videos if v.get('video_date')]
+        return max(dates) if dates else None
+
+    def _get_unique_channels(self, game):
+        """Get unique channel names that featured this game"""
+        videos = game.get('videos', [])
+        channels = set()
+
+        for video in videos:
+            if video.get('channel_name'):
+                channels.add(video['channel_name'])
+
+        return list(channels)

@@ -15,6 +15,7 @@ from config_manager import ConfigManager
 from crazygames_fetcher import CrazyGamesDataFetcher
 from data_manager import DataManager
 from data_quality import DataQualityChecker
+from database_manager import DatabaseManager
 from game_inference import GameInferenceEngine
 from itch_fetcher import ItchDataFetcher
 from models import OtherGameData, SteamGameData, VideoData
@@ -595,10 +596,118 @@ class YouTubeSteamScraper:
         return games_found + missing_resolved
 
 
+def build_database():
+    """Generate SQLite database from existing JSON files"""
+    try:
+        # Get project root
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+
+        # Load existing JSON data
+        all_games = load_all_unified_games(project_root)
+
+        # Generate SQLite database
+        db_manager = DatabaseManager()
+        db_manager.create_database(all_games)
+
+        logging.info("SQLite database generation completed")
+
+    except Exception as e:
+        logging.error(f"Database generation failed: {e}")
+        raise
+
+
+def load_all_unified_games(project_root):
+    """Load and process all game data from JSON files"""
+
+    # Load JSON files
+    try:
+        with (project_root / 'data' / 'steam_games.json').open() as f:
+            steam_data = json.load(f).get('games', {})
+    except FileNotFoundError:
+        logging.warning("steam_games.json not found, using empty data")
+        steam_data = {}
+
+    try:
+        with (project_root / 'data' / 'other_games.json').open() as f:
+            other_games = json.load(f).get('games', {})
+    except FileNotFoundError:
+        logging.warning("other_games.json not found, using empty data")
+        other_games = {}
+
+    # Load all video files
+    video_files = list(project_root.glob('data/videos-*.json'))
+    all_videos = {}
+
+    for file in video_files:
+        try:
+            with file.open() as f:
+                channel_data = json.load(f)
+                all_videos.update(channel_data.get('videos', {}))
+        except Exception as e:
+            logging.warning(f"Failed to load {file}: {e}")
+
+    # Process and unify games
+    return process_and_unify_games(steam_data, other_games, all_videos)
+
+
+def process_and_unify_games(steam_data, other_games, all_videos):
+    """Process games using existing logic adapted from JavaScript processGames()"""
+    unified_games = {}
+
+    # Process each video and create game entries
+    for video_id, video in all_videos.items():
+        # Skip videos without game references
+        if not (video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url')):
+            continue
+
+        # Determine game key and platform
+        if video.get('steam_app_id'):
+            game_key = video['steam_app_id']
+            platform = 'steam'
+            game_data = steam_data.get(game_key, {})
+        elif video.get('itch_url'):
+            game_key = video['itch_url']
+            platform = 'itch'
+            game_data = other_games.get(game_key, {})
+        elif video.get('crazygames_url'):
+            game_key = video['crazygames_url']
+            platform = 'crazygames'
+            game_data = other_games.get(game_key, {})
+        else:
+            continue
+
+        # Initialize game entry if not exists
+        if game_key not in unified_games:
+            unified_games[game_key] = {
+                'game_key': game_key,
+                'platform': platform,
+                'name': game_data.get('name', 'Unknown Game'),
+                'videos': [],
+                'video_count': 0,
+                **game_data  # Include all game data from JSON
+            }
+
+        # Add video to game
+        unified_games[game_key]['videos'].append({
+            'video_id': video_id,
+            'video_title': video.get('title', ''),
+            'video_date': video.get('published_at', ''),
+            'video_url': f"https://www.youtube.com/watch?v={video_id}",
+            'channel_name': video.get('channel_name', ''),
+            'published_at': video.get('published_at', '')
+        })
+
+        unified_games[game_key]['video_count'] += 1
+
+    logging.info(f"Processed {len(unified_games)} games from {len(all_videos)} videos")
+    return unified_games
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
-    parser.add_argument('mode', choices=['backfill', 'cron', 'reprocess', 'single-app', 'data-quality', 'infer-games'],
-                        help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), single-app, data-quality, or infer-games')
+    parser.add_argument('mode', choices=['backfill', 'cron', 'reprocess', 'single-app', 'data-quality', 'infer-games', 'build-db'],
+                        help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), single-app, data-quality, infer-games, or build-db')
     parser.add_argument('--channel', type=str, help='Channel ID for backfill/reprocess mode (optional for backfill - processes all channels if not specified)')
     parser.add_argument('--max-new', type=int, help='Maximum number of new videos to process')
     parser.add_argument('--max-steam-updates', type=int, help='Maximum number of Steam games to update')
@@ -738,3 +847,7 @@ if __name__ == "__main__":
 
         logging.info("Game inference: searching for games in video titles")
         scraper.infer_games_from_titles(channels)
+
+    elif args.mode == 'build-db':
+        logging.info("Building SQLite database from existing JSON data")
+        build_database()

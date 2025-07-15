@@ -32,3 +32,5 @@ Thumbs.db
 secrets.json
 
 .envrc
+
+data/games.db

@@ -1,21 +1,24 @@
-let videosData = {};
-let steamData = {};
-let otherGamesData = {};
-let filteredGames = [];
 let channels = {};
+
+// SQLite database support
+let db = null;
 
 // Performance tracking (disable for production)
 const PERFORMANCE_TRACKING = window.location.hostname === 'localhost' || window.location.search.includes('debug=true');
 
 const performanceTracker = {
     startTimer(name) {
-        if (!PERFORMANCE_TRACKING) return;
+        if (!PERFORMANCE_TRACKING) {
+            return;
+        }
         performance.mark(`${name}-start`);
         console.time(name);
     },
     
     endTimer(name) {
-        if (!PERFORMANCE_TRACKING) return;
+        if (!PERFORMANCE_TRACKING) {
+            return;
+        }
         performance.mark(`${name}-end`);
         performance.measure(name, `${name}-start`, `${name}-end`);
         console.timeEnd(name);
@@ -25,7 +28,9 @@ const performanceTracker = {
     },
     
     measureImageLoading() {
-        if (!PERFORMANCE_TRACKING) return;
+        if (!PERFORMANCE_TRACKING) {
+            return;
+        }
         const images = document.querySelectorAll('img');
         let loadedCount = 0;
         const totalImages = images.length;
@@ -53,7 +58,9 @@ const performanceTracker = {
     },
     
     measureMemoryUsage() {
-        if (!PERFORMANCE_TRACKING) return;
+        if (!PERFORMANCE_TRACKING) {
+            return;
+        }
         if (performance.memory) {
             const used = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
             const total = Math.round(performance.memory.totalJSHeapSize / 1024 / 1024);
@@ -159,57 +166,15 @@ function getRatingClass(percentage) {
 async function loadData() {
     performanceTracker.startTimer('loadData');
     try {
-        // Load config first
+        // Load SQLite database
+        db = await loadSQLiteDatabase();
+        
+        // Load config for channel info
         const configResponse = await fetch('config.json');
         const config = await configResponse.json();
         channels = config.channels || {};
         
-        // Load Steam data
-        const steamResponse = await fetch('data/steam_games.json');
-        const steam = await steamResponse.json();
-        steamData = steam.games || {};
-        
-        // Load other games data (itch.io, crazygames)
-        try {
-            const otherGamesResponse = await fetch('data/other_games.json');
-            const otherGames = await otherGamesResponse.json();
-            otherGamesData = otherGames.games || {};
-        } catch (error) {
-            console.warn('No other games data found:', error);
-            otherGamesData = {};
-        }
-        
-        // Load all channel video files
-        const channelKeys = Object.keys(channels);
-        const videoPromises = channelKeys.map(channelId => 
-            fetch(`data/videos-${channelId}.json`).then(response => {
-                if (!response.ok) {
-                    console.warn(`No video data found for channel ${channelId}`);
-                    return { videos: {} };
-                }
-                return response.json();
-            }).catch(error => {
-                console.warn(`Error loading videos for channel ${channelId}:`, error);
-                return { videos: {} };
-            })
-        );
-        
-        const videoResults = await Promise.all(videoPromises);
-        
-        // Combine all video data with channel attribution
-        videosData = {};
-        channelKeys.forEach((channelId, index) => {
-            const channelVideos = videoResults[index].videos || {};
-            Object.keys(channelVideos).forEach(videoId => {
-                videosData[videoId] = {
-                    ...channelVideos[videoId],
-                    channel_id: channelId,
-                    channel_name: channels[channelId].name
-                };
-            });
-        });
-        
-        processGames();
+        // Populate filters from SQLite
         populateFilters();
         loadFiltersFromURL();
         renderGames();
@@ -219,390 +184,44 @@ async function loadData() {
         
         // Images now load progressively with lazy loading
     } catch (error) {
-        console.error('Error loading data:', error);
-        document.getElementById('gameGrid').innerHTML = '<div class="loading">Error loading game data. Please check back later.</div>';
+        console.error('Error loading database:', error);
+        document.getElementById('gameGrid').innerHTML = '<div class="loading">Database failed to load. Please refresh the page.</div>';
         performanceTracker.endTimer('loadData');
     }
 }
 
-// Process and combine video and steam data
-function processGames() {
-    const videosWithGames = collectVideosWithGames();
-    const gameGroups = groupVideosByGame(videosWithGames);
-    
-    // Create unified game data for cleaner display
-    const unifiedGames = createUnifiedGameData(gameGroups);
-    
-    // Convert back to array and sort
-    filteredGames = unifiedGames
-        .sort((a, b) => (b.positive_review_percentage || 0) - (a.positive_review_percentage || 0));
-}
-
-function collectVideosWithGames() {
-    return Object.values(videosData)
-        .filter(video => video.steam_app_id || video.itch_url || video.crazygames_url)
-        .map(video => addGameMetadata(video))
-        .filter(game => game !== null && game.name);
-}
-
-function addGameMetadata(video) {
-    const gameData = {
-        video_title: video.title,
-        video_date: video.published_at,
-        video_thumbnail: video.thumbnail,
-        video_id: video.video_id,
-        ...video
-    };
-    
-    const platformHandler = {
-        [PLATFORMS.STEAM]: () => handleSteamGame(video, gameData),
-        [PLATFORMS.ITCH]: () => handleItchGame(video, gameData),
-        [PLATFORMS.CRAZYGAMES]: () => handleCrazyGamesGame(video, gameData)
-    };
-    
-    if (video.steam_app_id) {
-        return platformHandler[PLATFORMS.STEAM]();
-    } else if (video.itch_url) {
-        return platformHandler[PLATFORMS.ITCH]();
-    } else if (video.crazygames_url) {
-        return platformHandler[PLATFORMS.CRAZYGAMES]();
-    }
-    
-    return null;
-}
-
-function handleSteamGame(video, gameData) {
-    if (!steamData[video.steam_app_id]) {
-        return null; // Steam app ID exists but data is missing
-    }
-    
-    gameData = { ...gameData, ...steamData[video.steam_app_id] };
-    gameData.platform = PLATFORMS.STEAM;
-    gameData.game_key = video.steam_app_id;
-    
-    // Add additional platform links
-    if (video.itch_is_demo && video.itch_url) {
-        gameData.itch_demo_url = video.itch_url;
-    }
-    if (video.crazygames_url) {
-        gameData.crazygames_url = video.crazygames_url;
-    }
-    
-    // Handle demo/full game relationships
-    if (gameData.is_demo && gameData.full_game_app_id && steamData[gameData.full_game_app_id]) {
-        gameData.full_game = steamData[gameData.full_game_app_id];
-    }
-    if (gameData.has_demo && gameData.demo_app_id && steamData[gameData.demo_app_id]) {
-        gameData.demo = steamData[gameData.demo_app_id];
-    }
-    
-    return gameData;
-}
-
-function handleItchGame(video, gameData) {
-    gameData.platform = PLATFORMS.ITCH;
-    
-    if (otherGamesData[video.itch_url]) {
-        gameData = { ...gameData, ...otherGamesData[video.itch_url] };
-    } else {
-        gameData.name = video.itch_url.split('/').pop() || 'Unknown Game';
-    }
-    
-    gameData.steam_url = video.itch_url;
-    gameData.game_key = video.itch_url;
-    
-    if (video.crazygames_url) {
-        gameData.crazygames_url = video.crazygames_url;
-    }
-    
-    return gameData;
-}
-
-function handleCrazyGamesGame(video, gameData) {
-    gameData.platform = PLATFORMS.CRAZYGAMES;
-    
-    if (otherGamesData[video.crazygames_url]) {
-        gameData = { ...gameData, ...otherGamesData[video.crazygames_url] };
-    } else {
-        const gameName = video.crazygames_url.split('/').pop() || 'Unknown Game';
-        gameData.name = gameName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    }
-    
-    gameData.steam_url = video.crazygames_url;
-    gameData.game_key = video.crazygames_url;
-    
-    return gameData;
-}
-
-function groupVideosByGame(videosWithGames) {
-    const gameGroups = {};
-    
-    videosWithGames.forEach(video => {
-        const displayKey = getDisplayKey(video);
-        
-        if (!gameGroups[displayKey]) {
-            gameGroups[displayKey] = createGameGroup(video, displayKey);
-        }
-        
-        addVideoToGroup(gameGroups[displayKey], video);
+async function loadSQLiteDatabase() {
+    const SQL = await initSqlJs({
+        locateFile: file => `https://sql.js.org/dist/${file}`
     });
     
-    return gameGroups;
-}
-
-// Helper functions for unified game data creation
-function getDemoReviewData(game) {
-    // Get review data from the appropriate source
-    const source = game.original_demo_data || game;
-    return {
-        positive_review_percentage: source.positive_review_percentage,
-        review_count: source.review_count,
-        review_summary: source.review_summary,
-        recent_review_percentage: source.recent_review_percentage,
-        recent_review_count: source.recent_review_count,
-        insufficient_reviews: source.insufficient_reviews
-    };
-}
-
-function getUnifiedDisplayProperties(game, isReleased) {
-    const baseProperties = {
-        card_type: 'unified',
-        display_name: game.name
-    };
-    
-    if (isReleased) {
-        return {
-            ...baseProperties,
-            display_status: game.full_game.release_date ? 
-                `Released ${game.full_game.release_date}` : 'Released',
-            display_status_class: '',
-            display_image: game.original_demo_data?.header_image || game.header_image,
-            display_price: game.full_game.price,
-            is_demo: false
-        };
+    const response = await fetch('/data/games.db');
+    if (!response.ok) {
+        throw new Error(`Failed to load database: ${response.status}`);
     }
     
-    // Unreleased game - show demo content
-    const fullGame = game.full_game || game;
-    let status, statusClass;
-    
-    if (fullGame.coming_soon) {
-        status = fullGame.planned_release_date || 'Coming Soon';
-        statusClass = 'coming-soon';
-    } else if (fullGame.is_early_access) {
-        status = 'Early Access';
-        statusClass = 'early-access';
-    } else {
-        status = 'Coming Soon';
-        statusClass = 'coming-soon';
-    }
-    
-    return {
-        ...baseProperties,
-        display_status: status,
-        display_status_class: statusClass,
-        display_image: game.original_demo_data?.header_image || game.header_image,
-        header_image: game.original_demo_data?.header_image || game.header_image,
-        display_price: null,
-        is_demo: true
-    };
+    const dbBuffer = await response.arrayBuffer();
+    return new SQL.Database(new Uint8Array(dbBuffer));
 }
 
-function createUnifiedDisplayLinks(game) {
-    const demoId = game.original_demo_data?.steam_app_id || 
-                   game.demo?.steam_app_id || 
-                   game.steam_app_id;
-    const fullGameId = game.full_game?.steam_app_id || 
-                       game.steam_app_id;
-    
-    return {
-        main: fullGameId ? `https://store.steampowered.com/app/${fullGameId}` : game.steam_url,
-        demo: demoId ? `https://store.steampowered.com/app/${demoId}` : null
-    };
-}
 
-function createUnifiedGameData(gameGroups) {
-    return Object.values(gameGroups).map(game => {
-        // Determine card type and unified display properties
-        // Use shallow copy - deep copy was losing review data
-        const unifiedGame = { ...game };
-        
-        // Check if this should be a unified card
-        const isUnifiedCard = (game.is_demo && game.full_game && game.full_game.steam_app_id) || 
-                            (game.has_demo && game.demo && game.original_demo_data);
-        
-        if (isUnifiedCard) {
-            // Demo+Full game unified card
-            const fullGame = game.full_game || game;
-            const isReleased = fullGame.release_date && 
-                             !fullGame.coming_soon && 
-                             !fullGame.is_early_access;
-            
-            // Get display properties based on release status
-            const displayProps = getUnifiedDisplayProperties(game, isReleased);
-            Object.assign(unifiedGame, displayProps);
-            
-            // Always use demo review data for unified cards
-            const reviewData = getDemoReviewData(game);
-            Object.assign(unifiedGame, reviewData);
-            
-            // Set up unified links
-            unifiedGame.display_links = createUnifiedDisplayLinks(game);
-            
-            // Set main card link - demos link to demo page, released games to full game
-            unifiedGame.steam_url = unifiedGame.is_demo ? 
-                unifiedGame.display_links.demo : 
-                unifiedGame.display_links.main;
-            
-            // Clean up to avoid confusion
-            delete unifiedGame.full_game;
-            delete unifiedGame.demo;
-            delete unifiedGame.original_demo_data;
-            
-        } else if (game.has_demo && game.demo_app_id) {
-            // Full game with demo available
-            unifiedGame.card_type = 'full_with_demo';
-            unifiedGame.display_name = game.name;
-            unifiedGame.display_status = game.coming_soon ? (game.planned_release_date || 'Coming Soon') : 
-                game.is_early_access ? 'Early Access' :
-                    game.release_date ? `Released ${game.release_date}` : 'Released';
-            unifiedGame.display_status_class = game.coming_soon ? 'coming-soon' : 
-                game.is_early_access ? 'early-access' : '';
-            unifiedGame.display_image = game.header_image;
-            unifiedGame.display_price = game.price;
-            unifiedGame.display_links = {
-                main: game.steam_url,
-                demo: game.demo_app_id ? `https://store.steampowered.com/app/${game.demo_app_id}` : null
-            };
-        } else {
-            // Regular single game (demo-only, full-only, or other platforms)
-            unifiedGame.card_type = 'single';
-            unifiedGame.display_name = game.name;
-            unifiedGame.display_status = game.platform === PLATFORMS.ITCH ? 'Itch.io' :
-                game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' :
-                    game.is_demo ? 'Demo' :
-                        game.coming_soon ? (game.planned_release_date || 'Coming Soon') :
-                            game.is_early_access ? 'Early Access' :
-                                game.release_date ? `Released ${game.release_date}` : 'Released';
-            unifiedGame.display_status_class = game.coming_soon ? 'coming-soon' :
-                game.is_early_access ? 'early-access' :
-                    game.is_demo ? 'demo' : '';
-            unifiedGame.display_image = game.header_image;
-            unifiedGame.display_price = game.price;
-            unifiedGame.display_links = {
-                main: game.steam_url,
-                demo: null
-            };
-        }
-        
-        return unifiedGame;
-    });
-}
-
-function getDisplayKey(video) {
-    // Smart card selection: prefer full game for released games, demo for unreleased
-    if (video.has_demo && video.demo_app_id && video.coming_soon) {
-        return video.demo_app_id;
-    }
-    
-    // If this is a demo video, check if full game exists and prefer full game
-    if (video.is_demo && video.full_game_app_id && steamData[video.full_game_app_id]) {
-        return video.full_game_app_id;
-    }
-    
-    return video.game_key;
-}
-
-function createGameGroup(video, displayKey) {
-    let cardGameData = video;
-    
-    // If we're using a different display key, get the appropriate game data
-    if (displayKey !== video.game_key && steamData[displayKey]) {
-        cardGameData = {
-            ...video,
-            ...steamData[displayKey],
-            platform: PLATFORMS.STEAM,
-            game_key: displayKey
-        };
-        
-        // Handle demo/full game relationships
-        if (video.has_demo && video.demo_app_id) {
-            // Showing demo card for unreleased main game - use demo data for visuals
-            const demoData = steamData[video.demo_app_id];
-            if (demoData && video.coming_soon) {
-                // Use demo image and data for unreleased games
-                cardGameData = {
-                    ...cardGameData,
-                    header_image: demoData.header_image,
-                    screenshots: demoData.screenshots,
-                    is_demo: demoData.is_demo
-                };
-            }
-            cardGameData.full_game = {
-                ...video,
-                steam_app_id: video.game_key
-            };
-        } else if (video.is_demo && video.full_game_app_id) {
-            // Showing full game card but this video is from demo
-            // Store the original demo data before it gets overwritten
-            const originalDemoData = {
-                ...steamData[video.game_key]
-            };
-            
-            cardGameData.demo = {
-                ...originalDemoData,
-                steam_app_id: video.game_key
-            };
-            
-            // For unreleased full games, we need to preserve demo info
-            const fullGameData = steamData[video.full_game_app_id];
-            if (fullGameData && fullGameData.coming_soon) {
-                // Preserve demo's essential data for unified card creation
-                cardGameData.demo_review_count = originalDemoData.review_count;
-                cardGameData.demo_positive_review_percentage = originalDemoData.positive_review_percentage;
-                cardGameData.demo_review_summary = originalDemoData.review_summary;
-                cardGameData.demo_header_image = originalDemoData.header_image;
-                cardGameData.original_demo_data = originalDemoData;
-            }
-        }
-    }
-    
-    return {
-        ...cardGameData,
-        videos: [],
-        video_count: 0
-    };
-}
-
-function addVideoToGroup(gameGroup, video) {
-    gameGroup.videos.push({
-        video_id: video.video_id,
-        video_title: video.video_title,
-        video_date: video.video_date,
-        video_thumbnail: video.video_thumbnail,
-        channel_id: video.channel_id,
-        channel_name: video.channel_name
-    });
-    gameGroup.video_count++;
-    
-    // Use the most recent video's info for display
-    if (new Date(video.video_date) > new Date(gameGroup.video_date)) {
-        gameGroup.video_title = video.video_title;
-        gameGroup.video_date = video.video_date;
-        gameGroup.video_thumbnail = video.video_thumbnail;
-        gameGroup.video_id = video.video_id;
-    }
-}
 
 // Populate filter dropdowns
 function populateFilters() {
+    // Get all unique tags from SQLite
+    const tagResults = db.exec('SELECT DISTINCT tags FROM games WHERE tags IS NOT NULL AND tags != \'[]\'');
     const allTags = new Set();
     
-    filteredGames.forEach(game => {
-        if (game.tags) {
-            game.tags.forEach(tag => allTags.add(tag));
-        }
-    });
+    if (tagResults.length > 0) {
+        tagResults[0].values.forEach(row => {
+            try {
+                const tags = JSON.parse(row[0] || '[]');
+                tags.forEach(tag => allTags.add(tag));
+            } catch (e) {
+                console.warn('Failed to parse tags:', row[0]);
+            }
+        });
+    }
     
     const tagFilter = document.getElementById('tagFilter');
     tagFilter.innerHTML = '<option value="">All Tags</option>';
@@ -645,43 +264,115 @@ function applyFilters() {
         sort: sortBy !== 'rating' ? sortBy : null
     });
     
-    let filtered = [...filteredGames];
+    // Use SQLite for filtering
+    const filtered = applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter, channelFilter, sortBy);
+    renderFilteredGames(filtered);
+}
+
+function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter, channelFilter, sortBy) {
+    // Build SQL query with filters
+    let query = 'SELECT * FROM games WHERE 1=1';
+    const params = [];
     
     // Platform filter
     if (platformFilter !== 'all') {
-        filtered = filtered.filter(game => game.platform === platformFilter);
+        query += ' AND platform = ?';
+        params.push(platformFilter);
     }
     
     // Release status filter
-    filtered = applyReleaseFilter(filtered, releaseFilter);
+    if (releaseFilter !== 'all') {
+        if (releaseFilter === 'released') {
+            query += ' AND (platform IN (\'itch\', \'crazygames\') OR (platform = \'steam\' AND coming_soon = 0 AND is_early_access = 0 AND is_demo = 0))';
+        } else if (releaseFilter === 'early-access') {
+            query += ' AND platform = \'steam\' AND is_early_access = 1 AND coming_soon = 0';
+        } else if (releaseFilter === 'coming-soon') {
+            query += ' AND platform = \'steam\' AND coming_soon = 1';
+        }
+    }
     
     // Rating filter
     if (ratingFilter > 0) {
-        filtered = filtered.filter(game => (game.positive_review_percentage || 0) >= ratingFilter);
+        query += ' AND positive_review_percentage >= ?';
+        params.push(ratingFilter);
     }
     
     // Tag filter
     if (tagFilter) {
-        filtered = filtered.filter(game => game.tags && game.tags.includes(tagFilter));
+        query += ' AND tags LIKE ?';
+        params.push(`%"${tagFilter}"%`);
     }
     
     // Channel filter
     if (channelFilter) {
-        filtered = filtered.filter(game => game.channel_id === channelFilter);
+        query += ' AND unique_channels LIKE ?';
+        params.push(`%"${channelFilter}"%`);
     }
     
     // Sorting
-    const sortFunctions = {
-        rating: (a, b) => (b.positive_review_percentage || 0) - (a.positive_review_percentage || 0),
-        date: (a, b) => new Date(b.video_date) - new Date(a.video_date),
-        name: (a, b) => a.name.localeCompare(b.name)
+    const sortMappings = {
+        rating: 'positive_review_percentage DESC',
+        date: 'latest_video_date DESC',
+        name: 'name ASC'
     };
     
-    if (sortFunctions[sortBy]) {
-        filtered.sort(sortFunctions[sortBy]);
+    if (sortMappings[sortBy]) {
+        query += ` ORDER BY ${sortMappings[sortBy]}`;
+    } else {
+        query += ' ORDER BY positive_review_percentage DESC';
     }
     
-    renderFilteredGames(filtered);
+    // Execute query
+    const results = db.exec(query, params);
+    
+    if (results.length === 0) {
+        return [];
+    }
+    
+    const columns = results[0].columns;
+    const rows = results[0].values;
+    
+    // Convert SQLite results to game objects and add video details
+    return rows.map(row => {
+        const game = {};
+        columns.forEach((col, index) => {
+            game[col] = row[index];
+        });
+        
+        // Parse JSON columns
+        try {
+            game.genres = JSON.parse(game.genres || '[]');
+            game.tags = JSON.parse(game.tags || '[]');
+            game.categories = JSON.parse(game.categories || '[]');
+            game.developers = JSON.parse(game.developers || '[]');
+            game.publishers = JSON.parse(game.publishers || '[]');
+            game.unique_channels = JSON.parse(game.unique_channels || '[]');
+        } catch (e) {
+            console.warn('Failed to parse JSON columns for game:', game.name);
+        }
+        
+        return game;
+    });
+}
+
+function getGameVideos(gameId) {
+    const videoQuery = 'SELECT * FROM game_videos WHERE game_id = ? ORDER BY video_date DESC';
+    const videoResults = db.exec(videoQuery, [gameId]);
+    
+    if (videoResults.length === 0) {
+        return [];
+    }
+    
+    const videoColumns = videoResults[0].columns;
+    const videoRows = videoResults[0].values;
+    
+    return videoRows.map(row => {
+        const video = {};
+        videoColumns.forEach((col, index) => {
+            video[col] = row[index];
+        });
+        return video;
+    });
 }
 
 // Render games to grid
@@ -691,21 +382,6 @@ function renderGames() {
     performanceTracker.endTimer('renderGames');
 }
 
-function applyReleaseFilter(games, releaseFilter) {
-    const filterMap = {
-        [RELEASE_FILTERS.RELEASED]: (game) => 
-            game.platform === PLATFORMS.ITCH || 
-            game.platform === PLATFORMS.CRAZYGAMES || 
-            (game.platform === PLATFORMS.STEAM && !game.coming_soon && !game.is_early_access && !game.is_demo),
-        [RELEASE_FILTERS.EARLY_ACCESS]: (game) => 
-            game.platform === PLATFORMS.STEAM && game.is_early_access && !game.coming_soon,
-        [RELEASE_FILTERS.COMING_SOON]: (game) => 
-            game.platform === PLATFORMS.STEAM && game.coming_soon
-    };
-    
-    const filter = filterMap[releaseFilter];
-    return filter ? games.filter(filter) : games;
-}
 
 function generateChannelGroupedVideos(videos) {
     const videosByChannel = groupVideosByChannel(videos);
@@ -953,10 +629,10 @@ function generateVideoInfoHTML(game) {
 }
 
 function generateChannelInfoHTML(game) {
-    const uniqueChannels = [...new Set(game.videos.map(v => v.channel_name))];
+    const uniqueChannels = game.unique_channels || [];
     const channelText = uniqueChannels.length > 1 ? 
         `Channels: ${uniqueChannels.join(', ')}` : 
-        `Channel: ${game.channel_name}`;
+        `Channel: ${uniqueChannels[0] || 'Unknown'}`;
     
     return `<div class="channel-info">${channelText}</div>`;
 }
@@ -968,11 +644,11 @@ function generateMultiVideoHTML(game) {
     
     return `
         <div class="video-count">Featured in ${game.video_count} videos</div>
-        <div class="video-expand" onclick="toggleVideos('${game.game_key}', event)">
+        <div class="video-expand" onclick="toggleVideos('${game.game_key}', ${game.id}, event)">
             <span class="expand-text">Show all videos</span>
         </div>
         <div class="all-videos" id="videos-${game.game_key}" style="display: none;">
-            ${generateChannelGroupedVideos(game.videos)}
+            <div class="loading">Loading videos...</div>
         </div>
     `;
 }
@@ -1052,12 +728,18 @@ function generateUpdateInfoHTML(game) {
 }
 
 // Toggle videos display
-function toggleVideos(gameKey, event) {
+function toggleVideos(gameKey, gameId, event) {
     event.stopPropagation(); // Prevent card click
     const videosDiv = document.getElementById(`videos-${gameKey}`);
     const expandText = event.target.querySelector('.expand-text') || event.target;
     
     if (videosDiv.style.display === 'none') {
+        // Check if videos are already loaded
+        if (videosDiv.innerHTML.trim() === '<div class="loading">Loading videos...</div>') {
+            // Fetch and display videos
+            const videos = getGameVideos(gameId);
+            videosDiv.innerHTML = generateChannelGroupedVideos(videos);
+        }
         videosDiv.style.display = 'block';
         expandText.textContent = 'Hide videos';
     } else {
