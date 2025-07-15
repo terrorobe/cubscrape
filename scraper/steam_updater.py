@@ -126,10 +126,8 @@ class SteamDataUpdater:
         # Calculate base interval
         if days_until <= 3:
             base_interval = 1  # Daily when very close
-        elif days_until <= 30:
-            base_interval = 7  # Weekly within a month
-        elif days_until <= 90:
-            base_interval = 7  # Weekly within a quarter
+        elif days_until <= 33:
+            base_interval = 7  # Weekly within a month and a bit
         else:
             base_interval = 30  # Monthly for distant releases
 
