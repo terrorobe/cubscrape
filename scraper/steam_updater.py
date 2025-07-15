@@ -146,6 +146,24 @@ class SteamDataUpdater:
         else:
             return 30  # Monthly for older games
 
+    def _is_overdue_release(self, game_data: SteamGameData) -> bool:
+        """Check if game has passed its exact release date but is still marked as coming soon."""
+        if not game_data.coming_soon:
+            return False
+
+        release_info = game_data.planned_release_date or game_data.release_date
+        if not release_info:
+            return False
+
+        try:
+            # Only check exact dates like "15 Jan, 2025"
+            release_date = datetime.strptime(release_info, "%d %b, %Y")
+            return datetime.now() >= release_date
+        except ValueError:
+            # Ignore imprecise dates like "August 2025" or "Q1 2025"
+            return False
+
+
     def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None):
         """
         Update Steam data for all games referenced in the specified channels.
@@ -156,14 +174,25 @@ class SteamDataUpdater:
         """
         logging.info("Updating Steam data using age-based refresh intervals")
 
-        # Collect all Steam app IDs from all channels
+        # Collect all Steam app IDs from all channels and build latest video date cache
         steam_app_ids = set()
+        latest_video_dates = {}  # app_id -> latest datetime
+
         for channel in channels:
             videos_data = self.data_manager.load_videos_data(channel)
             if videos_data and 'videos' in videos_data:
                 for video in videos_data['videos'].values():
                     if video.steam_app_id:
                         steam_app_ids.add(video.steam_app_id)
+
+                        # Track latest video date for this game
+                        if video.published_at:
+                            try:
+                                video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
+                                if video.steam_app_id not in latest_video_dates or video_date > latest_video_dates[video.steam_app_id]:
+                                    latest_video_dates[video.steam_app_id] = video_date
+                            except ValueError:
+                                continue
 
         logging.info(f"Found {len(steam_app_ids)} unique Steam games")
 
@@ -175,22 +204,40 @@ class SteamDataUpdater:
                 logging.info(f"Reached max_updates limit ({max_updates})")
                 break
 
-            # Check if data needs updating based on age-based refresh intervals
+            # Check if data needs updating based on various triggers
             should_update = True
+            update_reason = "new game"
+
             if app_id in self.steam_data['games']:
                 game_data = self.steam_data['games'][app_id]
 
-                if game_data.last_updated:
-                    last_updated_date = datetime.fromisoformat(game_data.last_updated)
-                    refresh_interval_days = self._get_refresh_interval_days(game_data)
-                    stale_date = datetime.now() - timedelta(days=refresh_interval_days)
+                # Check for overdue release trigger
+                if self._is_overdue_release(game_data):
+                    should_update = True
+                    update_reason = "overdue release"
 
-                    if last_updated_date > stale_date:
-                        days_ago = (datetime.now() - last_updated_date).days
-                        interval_name = self._get_interval_name(refresh_interval_days)
-                        release_date_info = self._get_release_date_info(game_data)
-                        logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh{release_date_info}")
-                        should_update = False
+                # Check for recent video reference trigger
+                elif game_data.last_updated:
+                    last_updated_date = datetime.fromisoformat(game_data.last_updated)
+                    latest_video_date = latest_video_dates.get(app_id)
+
+                    if latest_video_date and latest_video_date > last_updated_date:
+                        should_update = True
+                        update_reason = "recent video reference"
+
+                    # Check normal age-based refresh intervals
+                    else:
+                        refresh_interval_days = self._get_refresh_interval_days(game_data)
+                        stale_date = datetime.now() - timedelta(days=refresh_interval_days)
+
+                        if last_updated_date > stale_date:
+                            days_ago = (datetime.now() - last_updated_date).days
+                            interval_name = self._get_interval_name(refresh_interval_days)
+                            release_date_info = self._get_release_date_info(game_data)
+                            logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh{release_date_info}")
+                            should_update = False
+                        else:
+                            update_reason = "scheduled refresh"
 
             if should_update:
                 # Log update info including name and last update if known
@@ -210,9 +257,9 @@ class SteamDataUpdater:
                     interval_name = self._get_interval_name(refresh_interval_days)
                     release_date_info = self._get_release_date_info(game_data)
 
-                    logging.info(f"Updating app {app_id} ({game_data.name}) - {update_info}, {interval_name} refresh{release_date_info}")
+                    logging.info(f"Updating app {app_id} ({game_data.name}) - {update_info}, {interval_name} refresh{release_date_info} ({update_reason})")
                 else:
-                    logging.info(f"Updating app {app_id} (new game)")
+                    logging.info(f"Updating app {app_id} ({update_reason})")
 
                 if self._fetch_steam_app_with_related(app_id):
                     updates_done += 1
