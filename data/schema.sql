@@ -29,7 +29,10 @@ CREATE TABLE games (
     tags TEXT,             -- JSON array
     categories TEXT,       -- JSON array
     developers TEXT,       -- JSON array
-    publishers TEXT        -- JSON array
+    publishers TEXT,       -- JSON array
+    demo_steam_app_id TEXT,
+    demo_steam_url TEXT,
+    demo_itch_url TEXT
 );
 
 CREATE TABLE game_videos (

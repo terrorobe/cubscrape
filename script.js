@@ -100,7 +100,23 @@ const RELEASE_FILTERS = {
 
 // Utility Functions
 function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    if (!dateString) return '';
+    
+    // Handle different date formats
+    let date;
+    if (dateString.includes('T')) {
+        // ISO format: "2025-06-11T22:30:08"
+        date = new Date(dateString);
+    } else {
+        // Human readable format: "13 Sep, 2024"
+        date = new Date(dateString);
+    }
+    
+    if (isNaN(date.getTime())) {
+        return dateString; // Return original if parsing fails
+    }
+    
+    return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
@@ -120,9 +136,17 @@ function getStatusText(game) {
         return 'CrazyGames';
     }
     if (game.is_demo) {
+        // Check if this is a unified card (demo data + full game coming soon)
+        if (game.coming_soon) {
+            return game.planned_release_date || 'Coming Soon';
+        }
         return 'Demo';
     }
     if (game.coming_soon) {
+        // If main game is coming soon but has a demo, show demo info
+        if (game.demo_steam_app_id) {
+            return 'Demo Available';
+        }
         return game.planned_release_date || 'Coming Soon';
     }
     if (game.is_early_access) {
@@ -138,9 +162,17 @@ function getStatusClass(game) {
     }
     
     if (game.is_demo) {
+        // Check if this is a unified card (demo data + full game coming soon)
+        if (game.coming_soon) {
+            return 'coming-soon';
+        }
         return 'demo';
     }
     if (game.coming_soon) {
+        // If main game is coming soon but has a demo, use demo styling
+        if (game.demo_steam_app_id) {
+            return 'demo';
+        }
         return 'coming-soon';
     }
     if (game.is_early_access) {
@@ -270,8 +302,16 @@ function applyFilters() {
 }
 
 function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter, channelFilter, sortBy) {
-    // Build SQL query with filters
-    let query = 'SELECT * FROM games WHERE 1=1';
+    // Build SQL query with filters, including latest video title
+    let query = `
+        SELECT g.*, 
+               gv.video_title as latest_video_title,
+               gv.video_id as latest_video_id
+        FROM games g
+        LEFT JOIN game_videos gv ON g.id = gv.game_id 
+        AND gv.video_date = g.latest_video_date
+        WHERE 1=1
+    `;
     const params = [];
     
     // Platform filter
@@ -392,7 +432,7 @@ function groupVideosByChannel(videos) {
     const videosByChannel = {};
     
     videos.forEach(video => {
-        const channelKey = video.channel_id || 'unknown';
+        const channelKey = video.channel_name || 'Unknown Channel';
         if (!videosByChannel[channelKey]) {
             videosByChannel[channelKey] = {
                 name: video.channel_name || 'Unknown Channel',
@@ -490,17 +530,25 @@ function generateGameCardHTML(game) {
     const ratingClass = getRatingClass(game.positive_review_percentage);
     const topTags = (game.tags || []).slice(0, MAX_TAGS_DISPLAY);
     
+    // Get the correct platform URL for card click
+    const cardClickUrl = game.platform === PLATFORMS.ITCH ? game.itch_url : 
+        game.platform === PLATFORMS.CRAZYGAMES ? game.crazygames_url : game.steam_url;
+    
     return `
-        <div class="game-card" onclick="window.open('${game.steam_url}', '_blank')">
+        <div class="game-card" onclick="window.open('${cardClickUrl}', '_blank')">
             ${generateGameImageHTML(game)}
             <div class="game-info">
-                ${generateGameTitleHTML(game)}
-                ${generateGameMetaHTML(game, statusText, statusClass, ratingClass)}
-                ${generateGamePriceHTML(game)}
-                ${generateGameTagsHTML(topTags)}
-                ${generateVideoInfoHTML(game)}
-                ${generateGameLinksHTML(game)}
-                ${generateUpdateInfoHTML(game)}
+                <div class="game-content">
+                    ${generateGameTitleHTML(game)}
+                    ${generateGameMetaHTML(game, statusText, statusClass, ratingClass)}
+                    ${generateGamePriceHTML(game)}
+                    ${generateGameTagsHTML(topTags)}
+                    ${generateVideoInfoHTML(game)}
+                </div>
+                <div class="game-footer">
+                    ${generateGameLinksHTML(game)}
+                    ${generateUpdateInfoHTML(game)}
+                </div>
             </div>
         </div>
     `;
@@ -618,10 +666,19 @@ function generateVideoInfoHTML(game) {
     const channelInfo = generateChannelInfoHTML(game);
     const multiVideoHTML = generateMultiVideoHTML(game);
     
+    // Get latest video info for display
+    const latestVideoDate = game.latest_video_date ? formatDate(game.latest_video_date) : '';
+    const latestVideoTitle = game.latest_video_title || '';
+    const latestVideoId = game.latest_video_id || '';
+    
     return `
         <div class="video-info">
-            <div class="video-title">${game.video_title}</div>
-            <div class="video-date">Video: ${formatDate(game.video_date)}</div>
+            ${latestVideoTitle ? `<div class="video-title">
+                <a href="https://youtube.com/watch?v=${latestVideoId}" target="_blank" onclick="event.stopPropagation()">
+                    ${latestVideoTitle}
+                </a>
+            </div>` : ''}
+            ${latestVideoDate ? `<div class="video-date">Latest video: ${latestVideoDate}</div>` : ''}
             ${channelInfo}
             ${multiVideoHTML}
         </div>
@@ -643,9 +700,9 @@ function generateMultiVideoHTML(game) {
     }
     
     return `
-        <div class="video-count">Featured in ${game.video_count} videos</div>
-        <div class="video-expand" onclick="toggleVideos('${game.game_key}', ${game.id}, event)">
-            <span class="expand-text">Show all videos</span>
+        <div class="video-count video-expand-toggle" onclick="toggleVideos('${game.game_key}', ${game.id}, event)" style="cursor: pointer;">
+            <span class="expand-icon">▶</span>
+            <span class="expand-text" data-game-key="${game.game_key}">Featured in ${game.video_count} videos</span>
         </div>
         <div class="all-videos" id="videos-${game.game_key}" style="display: none;">
             <div class="loading">Loading videos...</div>
@@ -661,7 +718,7 @@ function generateGameLinksHTML(game) {
         
         const demoLink = game.display_links.demo ? `
             <a href="${game.display_links.demo}" target="_blank" onclick="event.stopPropagation()">
-                Steam Demo
+                Demo
             </a>
         ` : '';
         
@@ -678,7 +735,7 @@ function generateGameLinksHTML(game) {
                 </a>
                 ${demoLink}
                 ${crazyGamesLink}
-                <a href="https://youtube.com/watch?v=${game.video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>
+                ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>` : ''}
             </div>
         `;
     }
@@ -687,15 +744,15 @@ function generateGameLinksHTML(game) {
     const platformName = game.platform === PLATFORMS.ITCH ? 'Itch.io' : 
         game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' : 'Steam';
     
-    const itchDemoLink = game.itch_demo_url ? `
-        <a href="${game.itch_demo_url}" target="_blank" onclick="event.stopPropagation()">
+    const itchDemoLink = game.demo_itch_url ? `
+        <a href="${game.demo_itch_url}" target="_blank" onclick="event.stopPropagation()">
             Itch.io Demo
         </a>
     ` : '';
     
-    const steamDemoLink = game.demo && game.demo.steam_app_id ? `
-        <a href="https://store.steampowered.com/app/${game.demo.steam_app_id}" target="_blank" onclick="event.stopPropagation()">
-            Steam Demo
+    const steamDemoLink = game.demo_steam_app_id ? `
+        <a href="${game.demo_steam_url}" target="_blank" onclick="event.stopPropagation()">
+            Demo
         </a>
     ` : '';
     
@@ -705,15 +762,19 @@ function generateGameLinksHTML(game) {
         </a>
     ` : '';
     
+    // Get the correct platform URL
+    const platformUrl = game.platform === PLATFORMS.ITCH ? game.itch_url : 
+        game.platform === PLATFORMS.CRAZYGAMES ? game.crazygames_url : game.steam_url;
+    
     return `
         <div class="game-links">
-            <a href="${game.steam_url}" target="_blank" onclick="event.stopPropagation()">
+            <a href="${platformUrl}" target="_blank" onclick="event.stopPropagation()">
                 ${platformName}
             </a>
             ${steamDemoLink}
             ${itchDemoLink}
             ${crazyGamesLink}
-            <a href="https://youtube.com/watch?v=${game.video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>
+            ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>` : ''}
         </div>
     `;
 }
@@ -731,7 +792,15 @@ function generateUpdateInfoHTML(game) {
 function toggleVideos(gameKey, gameId, event) {
     event.stopPropagation(); // Prevent card click
     const videosDiv = document.getElementById(`videos-${gameKey}`);
-    const expandText = event.target.querySelector('.expand-text') || event.target;
+    const expandText = document.querySelector(`.expand-text[data-game-key="${gameKey}"]`);
+    const expandIcon = expandText.previousElementSibling;
+    
+    // Store video count in a data attribute for reliable retrieval
+    if (!expandText.dataset.videoCount) {
+        const match = expandText.textContent.match(/\d+/);
+        expandText.dataset.videoCount = match ? match[0] : '0';
+    }
+    const videoCount = expandText.dataset.videoCount;
     
     if (videosDiv.style.display === 'none') {
         // Check if videos are already loaded
@@ -742,9 +811,11 @@ function toggleVideos(gameKey, gameId, event) {
         }
         videosDiv.style.display = 'block';
         expandText.textContent = 'Hide videos';
+        expandIcon.textContent = '▼';
     } else {
         videosDiv.style.display = 'none';
-        expandText.textContent = 'Show all videos';
+        expandText.textContent = `Featured in ${videoCount} videos`;
+        expandIcon.textContent = '▶';
     }
 }
 

@@ -42,8 +42,9 @@ class DatabaseManager:
                     positive_review_percentage, review_count, release_date,
                     planned_release_date, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
-                    unique_channels, genres, tags, categories, developers, publishers
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    unique_channels, genres, tags, categories, developers, publishers,
+                    demo_steam_app_id, demo_steam_url, demo_itch_url
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -61,8 +62,8 @@ class DatabaseManager:
                 game.get('planned_release_date'),
                 game.get('header_image'),
                 game.get('steam_url'),
-                game.get('itch_url'),
-                game.get('crazygames_url'),
+                self._get_platform_url(game),
+                self._get_crazygames_url(game),
                 game.get('last_updated'),
                 game.get('video_count', 0),
                 self._get_latest_video_date(game),
@@ -71,7 +72,10 @@ class DatabaseManager:
                 json.dumps(game.get('tags', [])),
                 json.dumps(game.get('categories', [])),
                 json.dumps(game.get('developers', [])),
-                json.dumps(game.get('publishers', []))
+                json.dumps(game.get('publishers', [])),
+                self._get_demo_steam_app_id(game),
+                self._get_demo_steam_url(game),
+                game.get('demo_itch_url')
             ))
 
             game_id = cursor.lastrowid
@@ -132,3 +136,34 @@ class DatabaseManager:
                 channels.add(video['channel_name'])
 
         return list(channels)
+
+    def _get_demo_steam_app_id(self, game):
+        """Get demo Steam app ID if available"""
+        if game.get('has_demo') and game.get('demo_app_id'):
+            return game['demo_app_id']
+        return None
+
+    def _get_demo_steam_url(self, game):
+        """Get demo Steam URL if available"""
+        demo_app_id = self._get_demo_steam_app_id(game)
+        if demo_app_id:
+            return f"https://store.steampowered.com/app/{demo_app_id}"
+        return None
+
+    def _get_platform_url(self, game):
+        """Get the correct platform URL based on the game's platform"""
+        platform = game.get('platform', 'steam')
+        
+        if platform == 'itch':
+            return game.get('url')  # Itch games use 'url' field
+        else:
+            return game.get('itch_url')  # Steam games might have itch_url field
+
+    def _get_crazygames_url(self, game):
+        """Get the correct CrazyGames URL"""
+        platform = game.get('platform', 'steam')
+        
+        if platform == 'crazygames':
+            return game.get('url')  # CrazyGames use 'url' field
+        else:
+            return game.get('crazygames_url')  # Other platforms might have crazygames_url field

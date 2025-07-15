@@ -669,11 +669,152 @@ def load_all_unified_games(project_root):
     return process_and_unify_games(steam_data, other_games, all_videos)
 
 
+def create_unified_steam_games(steam_data):
+    """Create unified Steam games by merging demo and full game pairs"""
+    unified_games = {}
+    processed_games = set()
+    
+    for game_key, game_data in steam_data.items():
+        if game_key in processed_games:
+            continue
+            
+        # Check if this is a demo with a full game
+        if game_data.get('is_demo') and game_data.get('full_game_app_id'):
+            full_game_id = game_data['full_game_app_id']
+            full_game_data = steam_data.get(full_game_id, {})
+            
+            # Use full game as primary entry, demo data for unreleased games
+            is_full_game_released = not full_game_data.get('coming_soon', False)
+            
+            if is_full_game_released:
+                # Released full game: use full game data
+                active_data = full_game_data
+                demo_info = {
+                    'demo_steam_app_id': game_key,
+                    'demo_steam_url': f"https://store.steampowered.com/app/{game_key}",
+                }
+            else:
+                # Unreleased full game: use demo data but keep full game's release status
+                active_data = {
+                    **game_data,  # Demo data (reviews, image, etc.)
+                    # Override with full game's release status
+                    'coming_soon': full_game_data.get('coming_soon', False),
+                    'planned_release_date': full_game_data.get('planned_release_date'),
+                    'release_date': full_game_data.get('release_date', 'Coming soon'),
+                    # Keep demo's app ID and URL as main links since that's what's playable
+                    'steam_app_id': game_key,
+                    'steam_url': f"https://store.steampowered.com/app/{game_key}",
+                }
+                demo_info = {}
+            
+            # Create unified entry using full game ID as key
+            unified_games[full_game_id] = {
+                'game_key': full_game_id,
+                'platform': 'steam',
+                'name': full_game_data.get('name', game_data.get('name', 'Unknown Game')),
+                'videos': [],
+                'video_count': 0,
+                # Use active data for display
+                **active_data,
+                # Always keep the full game name and key
+                'name': full_game_data.get('name', game_data.get('name', 'Unknown Game')),
+                'game_key': full_game_id,
+                # Store demo info for links
+                **demo_info,
+                # Store both IDs for video merging
+                '_demo_app_id': game_key,
+                '_full_game_app_id': full_game_id
+            }
+            
+            processed_games.add(game_key)
+            processed_games.add(full_game_id)
+            
+        # Check if this is a full game with a demo
+        elif game_data.get('has_demo') and game_data.get('demo_app_id'):
+            demo_id = game_data['demo_app_id']
+            demo_data = steam_data.get(demo_id, {})
+            
+            # Use demo data for unreleased games, full game data for released
+            is_full_game_released = not game_data.get('coming_soon', False)
+            
+            if is_full_game_released:
+                # Released full game: use full game data
+                active_data = game_data
+                demo_info = {
+                    'demo_steam_app_id': demo_id,
+                    'demo_steam_url': f"https://store.steampowered.com/app/{demo_id}",
+                }
+            else:
+                # Unreleased full game: use demo data but keep full game's release status
+                active_data = {
+                    **demo_data,  # Demo data (reviews, image, etc.)
+                    # Override with full game's release status
+                    'coming_soon': game_data.get('coming_soon', False),
+                    'planned_release_date': game_data.get('planned_release_date'),
+                    'release_date': game_data.get('release_date', 'Coming soon'),
+                    # Keep demo's app ID and URL as main links since that's what's playable
+                    'steam_app_id': demo_id,
+                    'steam_url': f"https://store.steampowered.com/app/{demo_id}",
+                }
+                demo_info = {}
+            
+            # Create unified entry using full game ID as key
+            unified_games[game_key] = {
+                'game_key': game_key,
+                'platform': 'steam',
+                'name': game_data.get('name', 'Unknown Game'),
+                'videos': [],
+                'video_count': 0,
+                # Use active data for display
+                **active_data,
+                # Always keep the full game name and key
+                'name': game_data.get('name', 'Unknown Game'),
+                'game_key': game_key,
+                # Store demo info for links
+                **demo_info,
+                # Store both IDs for video merging
+                '_demo_app_id': demo_id,
+                '_full_game_app_id': game_key
+            }
+            
+            processed_games.add(game_key)
+            processed_games.add(demo_id)
+            
+        # Regular game (no demo relationship)
+        else:
+            unified_games[game_key] = {
+                'game_key': game_key,
+                'platform': 'steam',
+                'name': game_data.get('name', 'Unknown Game'),
+                'videos': [],
+                'video_count': 0,
+                **game_data
+            }
+            processed_games.add(game_key)
+    
+    return unified_games
+
+
 def process_and_unify_games(steam_data, other_games, all_videos):
     """Process games using existing logic adapted from JavaScript processGames()"""
     unified_games = {}
+    
+    # First, create unified demo/full game entries
+    unified_games = create_unified_steam_games(steam_data)
+    
+    # Add other platform games (itch, crazygames)
+    for game_key, game_data in other_games.items():
+        if game_key not in unified_games:
+            unified_games[game_key] = {
+                'game_key': game_key,
+                'platform': game_data.get('platform', 'other'),
+                'name': game_data.get('name', 'Unknown Game'),
+                'videos': [],
+                'video_count': 0,
+                **game_data  # Include all game data
+            }
 
-    # Process each video and create game entries
+    # Then, process each video and add to existing game entries
     for video_id, video in all_videos.items():
         # Skip videos without game references
         if not (video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url')):
@@ -681,30 +822,38 @@ def process_and_unify_games(steam_data, other_games, all_videos):
 
         # Determine game key and platform
         if video.get('steam_app_id'):
-            game_key = video['steam_app_id']
+            steam_app_id = video['steam_app_id']
+            
+            # Find the unified game entry for this Steam app ID
+            target_game_key = None
+            for game_key, game_data in unified_games.items():
+                if game_data.get('platform') == 'steam':
+                    # Check if this video belongs to this unified game
+                    if (game_key == steam_app_id or  # Direct match
+                        game_data.get('_demo_app_id') == steam_app_id or  # Demo video
+                        game_data.get('_full_game_app_id') == steam_app_id):  # Full game video
+                        target_game_key = game_key
+                        break
+            
+            if not target_game_key:
+                # This shouldn't happen with our unified creation, but handle it
+                continue
+                
+            game_key = target_game_key
             platform = 'steam'
-            game_data = steam_data.get(game_key, {})
+            
         elif video.get('itch_url'):
             game_key = video['itch_url']
             platform = 'itch'
-            game_data = other_games.get(game_key, {})
         elif video.get('crazygames_url'):
             game_key = video['crazygames_url']
             platform = 'crazygames'
-            game_data = other_games.get(game_key, {})
         else:
             continue
 
-        # Initialize game entry if not exists
+        # Game should already exist from unified creation
         if game_key not in unified_games:
-            unified_games[game_key] = {
-                'game_key': game_key,
-                'platform': platform,
-                'name': game_data.get('name', 'Unknown Game'),
-                'videos': [],
-                'video_count': 0,
-                **game_data  # Include all game data from JSON
-            }
+            continue
 
         # Add video to game
         unified_games[game_key]['videos'].append({
@@ -718,6 +867,11 @@ def process_and_unify_games(steam_data, other_games, all_videos):
 
         unified_games[game_key]['video_count'] += 1
 
+    # Clean up temporary fields
+    for game_key, game_data in unified_games.items():
+        game_data.pop('_demo_app_id', None)
+        game_data.pop('_full_game_app_id', None)
+    
     logging.info(f"Processed {len(unified_games)} games from {len(all_videos)} videos")
     return unified_games
 
