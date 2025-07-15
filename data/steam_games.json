@@ -699,18 +699,18 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1082970/header.jpg?t=1749834949",
       "is_early_access": true,
-      "last_updated": "2025-07-11T21:36:32.440303",
+      "last_updated": "2025-07-15T20:48:26.846125",
       "name": "Archaelund",
       "positive_review_percentage": 84,
       "price": "24,99\u20ac",
       "publishers": [
         "4 Dimension Games"
       ],
-      "recent_review_count": 18,
-      "recent_review_percentage": 83,
+      "recent_review_count": 17,
+      "recent_review_percentage": 82,
       "recent_review_summary": "Very Positive",
       "release_date": "8 Jan, 2024",
-      "review_count": 323,
+      "review_count": 324,
       "review_summary": "Very Positive",
       "steam_app_id": "1082970",
       "steam_url": "https://store.steampowered.com/app/1082970",
@@ -4079,18 +4079,18 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1482380/header.jpg?t=1745423686",
-      "last_updated": "2025-07-07T18:25:39.460448",
+      "last_updated": "2025-07-15T20:48:37.445872",
       "name": "Maniac",
-      "positive_review_percentage": 92,
-      "price": "2,49\u20ac",
+      "positive_review_percentage": 91,
+      "price": "4,99\u20ac",
       "publishers": [
         "Skystone Games"
       ],
-      "recent_review_count": 44,
-      "recent_review_percentage": 90,
+      "recent_review_count": 36,
+      "recent_review_percentage": 88,
       "recent_review_summary": "Very Positive",
       "release_date": "28 Mar, 2024",
-      "review_count": 1493,
+      "review_count": 1500,
       "review_summary": "Very Positive",
       "steam_app_id": "1482380",
       "steam_url": "https://store.steampowered.com/app/1482380",
@@ -14073,20 +14073,20 @@
         "Indie",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2106670/ca138dad7136383f2b1945005d1640dd997775e6/header.jpg?t=1751615206",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2106670/ca138dad7136383f2b1945005d1640dd997775e6/header.jpg?t=1752482428",
       "is_early_access": true,
-      "last_updated": "2025-07-11T02:25:15.300528",
+      "last_updated": "2025-07-15T20:48:15.643359",
       "name": "Gatekeeper",
       "positive_review_percentage": 84,
       "price": "14,99\u20ac",
       "publishers": [
         "HypeTrain Digital"
       ],
-      "recent_review_count": 43,
-      "recent_review_percentage": 79,
-      "recent_review_summary": "Mostly Positive",
+      "recent_review_count": 48,
+      "recent_review_percentage": 81,
+      "recent_review_summary": "Very Positive",
       "release_date": "13 May, 2024",
-      "review_count": 1473,
+      "review_count": 1479,
       "review_summary": "Very Positive",
       "steam_app_id": "2106670",
       "steam_url": "https://store.steampowered.com/app/2106670",
@@ -17401,8 +17401,6 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "coming_soon": true,
-      "demo_app_id": "3491930",
       "developers": [
         "Overboy"
       ],
@@ -17413,17 +17411,18 @@
         "RPG",
         "Early Access"
       ],
-      "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2225960/425f6fbdcab44710187348f88bf9a7ccf16ee193/header.jpg?t=1752529679",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2225960/425f6fbdcab44710187348f88bf9a7ccf16ee193/header.jpg?t=1752591657",
       "is_early_access": true,
-      "last_updated": "2025-07-15T03:08:36.433198",
+      "last_updated": "2025-07-15T20:48:38.163627",
       "name": "Noobs Are Coming",
+      "positive_review_percentage": 100,
+      "price": "4,67\u20ac",
       "publishers": [
         "Overboy"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 10,
+      "review_summary": "Positive",
       "steam_app_id": "2225960",
       "steam_url": "https://store.steampowered.com/app/2225960",
       "tags": [
@@ -20791,15 +20790,14 @@
         "Strategy",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2347080/c6c09a8eb1a0fac5ac8e0d2ea0a228c8303d8967/header.jpg?t=1751993147",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2347080/c6c09a8eb1a0fac5ac8e0d2ea0a228c8303d8967/header.jpg?t=1752596754",
       "is_early_access": true,
-      "last_updated": "2025-07-11T20:27:27.503552",
+      "last_updated": "2025-07-15T20:48:13.373052",
       "name": "Frosthaven",
-      "planned_release_date": "To be announced",
       "publishers": [
         "Arc Games"
       ],
-      "release_date": "To be announced",
+      "release_date": "31 Jul, 2025",
       "review_count": 0,
       "review_summary": "No user reviews",
       "steam_app_id": "2347080",
@@ -29662,7 +29660,7 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
+      "demo_app_id": "3701450",
       "developers": [
         "Open Lab Games"
       ],
@@ -29671,16 +29669,19 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1752224826",
-      "last_updated": "2025-07-15T03:10:19.105299",
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1752595200",
+      "last_updated": "2025-07-15T20:48:29.504358",
       "name": "Becoming Saint",
+      "positive_review_percentage": 80,
+      "price": "13,49\u20ac",
       "publishers": [
         "Firesquid",
         "2P Games"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 10,
+      "review_summary": "Positive",
       "steam_app_id": "2643010",
       "steam_url": "https://store.steampowered.com/app/2643010",
       "tags": [
@@ -31503,8 +31504,8 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2706020/aae58bc3878e9cced451df4119da929cd63600fc/header_alt_assets_5.jpg?t=1752155237",
-      "last_updated": "2025-07-11T18:43:52.648084",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2706020/header.jpg?t=1752155237",
+      "last_updated": "2025-07-15T20:48:22.683294",
       "name": "ALL WILL FALL: Physics-Based Survival City Builder",
       "planned_release_date": "2025",
       "publishers": [
@@ -42126,13 +42127,15 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017760/ea170308c2303bb212013d61e002c23d726bc901/header.jpg?t=1748602497",
-      "last_updated": "2025-07-07T16:33:43.715033",
+      "last_updated": "2025-07-15T20:48:33.533037",
       "name": "Relic Abyss",
       "planned_release_date": "To be announced",
       "publishers": [
         "Reverse Loop"
       ],
       "release_date": "To be announced",
+      "review_count": 0,
+      "review_summary": "No user reviews",
       "steam_app_id": "3017760",
       "steam_url": "https://store.steampowered.com/app/3017760",
       "tags": [
@@ -50072,7 +50075,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3211850/header.jpg?t=1749046432",
-      "last_updated": "2025-07-11T18:43:28.356164",
+      "last_updated": "2025-07-15T20:48:23.532417",
       "name": "Calyx",
       "planned_release_date": "To be announced",
       "publishers": [
@@ -56888,18 +56891,18 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3400850/header.jpg?t=1748861053",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-11T18:43:29.106382",
+      "last_updated": "2025-07-15T20:48:24.837837",
       "name": "Calyx Demo",
       "positive_review_percentage": 92,
       "price": "Free",
       "publishers": [
         "Studio 568"
       ],
-      "recent_review_count": 12,
-      "recent_review_percentage": 66,
+      "recent_review_count": 11,
+      "recent_review_percentage": 63,
       "recent_review_summary": "Mixed",
       "release_date": "17 Jan, 2025",
-      "review_count": 280,
+      "review_count": 281,
       "review_summary": "Very Positive",
       "steam_app_id": "3400850",
       "steam_url": "https://store.steampowered.com/app/3400850",
@@ -56935,7 +56938,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3400960/0a2865fae48080d06574d755538812f6bf58929a/header.jpg?t=1749732471",
       "is_free": true,
-      "last_updated": "2025-07-07T17:59:42.453033",
+      "last_updated": "2025-07-15T20:48:16.633297",
       "name": "Oaken Tower",
       "planned_release_date": "Coming soon",
       "price": "Free",
@@ -61307,17 +61310,17 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503440/96206c6bbccdf9e1db9427b776d6ba7f2a00a9a1/header.jpg?t=1752512231",
-      "last_updated": "2025-07-15T03:10:13.356951",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503440/96206c6bbccdf9e1db9427b776d6ba7f2a00a9a1/header.jpg?t=1752552985",
+      "last_updated": "2025-07-15T20:48:14.509148",
       "name": "Astro Prospector",
-      "positive_review_percentage": 97,
+      "positive_review_percentage": 96,
       "price": "4,49\u20ac",
       "publishers": [
         "Incrementalist",
         "SpaceJazz"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 89,
+      "review_count": 200,
       "review_summary": "Very Positive",
       "steam_app_id": "3503440",
       "steam_url": "https://store.steampowered.com/app/3503440",
@@ -62786,7 +62789,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3552820/f679ba0e8040cef057725458b27bbc40ca0212b6/header.jpg?t=1751375042",
-      "last_updated": "2025-07-09T02:46:21.753366",
+      "last_updated": "2025-07-15T20:48:19.033065",
       "name": "The Horde Wants You Dead",
       "planned_release_date": "Q3 2025",
       "publishers": [
@@ -65686,18 +65689,18 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3692220/0a2865fae48080d06574d755538812f6bf58929a/header.jpg?t=1746595863",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T17:59:43.323590",
+      "last_updated": "2025-07-15T20:48:17.365538",
       "name": "Oaken Tower Demo",
-      "positive_review_percentage": 78,
+      "positive_review_percentage": 76,
       "price": "Free",
       "publishers": [
         "Bocary Studios"
       ],
-      "recent_review_count": 28,
+      "recent_review_count": 40,
       "recent_review_percentage": 67,
       "recent_review_summary": "Mixed",
       "release_date": "29 Apr, 2025",
-      "review_count": 51,
+      "review_count": 63,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3692220",
       "steam_url": "https://store.steampowered.com/app/3692220",
@@ -65736,15 +65739,15 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3694300/ea170308c2303bb212013d61e002c23d726bc901/header.jpg?t=1748877496",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T16:33:44.460144",
+      "last_updated": "2025-07-15T20:48:34.158203",
       "name": "Relic Abyss Demo",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 92,
       "price": "Free",
       "publishers": [
         "Reverse Loop"
       ],
       "release_date": "27 May, 2025",
-      "review_count": 35,
+      "review_count": 38,
       "review_summary": "Positive",
       "steam_app_id": "3694300",
       "steam_url": "https://store.steampowered.com/app/3694300",
@@ -65975,6 +65978,51 @@
         "Pixel Graphics",
         "Arcade",
         "2D"
+      ]
+    },
+    "3701450": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support",
+        "Adjustable Text Size",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Touch Only Option"
+      ],
+      "developers": [
+        "Open Lab Games"
+      ],
+      "full_game_app_id": "2643010",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3701450/65724eb78f081acbffc33b143589a7d73550c65e/header.jpg?t=1752589177",
+      "insufficient_reviews": true,
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-15T20:48:30.486360",
+      "name": "Becoming Saint Demo",
+      "price": "Free",
+      "publishers": [
+        "Firesquid"
+      ],
+      "release_date": "27 May, 2025",
+      "review_count": 9,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "3701450",
+      "steam_url": "https://store.steampowered.com/app/3701450",
+      "tags": [
+        "Simulation",
+        "Strategy",
+        "Political Sim",
+        "Real Time Tactics",
+        "Medieval",
+        "RTS",
+        "Auto Battler",
+        "Roguelike",
+        "Dark Humor",
+        "Minimalist"
       ]
     },
     "3703420": {
@@ -66897,15 +66945,15 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3743220/3cf251e8b91c53c1010fdc1cf33aba3f233a1c7f/header.jpg?t=1752086257",
-      "last_updated": "2025-07-13T03:08:25.137877",
+      "last_updated": "2025-07-15T20:48:28.181342",
       "name": "A Solitaire Mystery",
-      "positive_review_percentage": 95,
-      "price": "$8.99",
+      "positive_review_percentage": 92,
+      "price": "8,77\u20ac",
       "publishers": [
         "Hempuli Oy"
       ],
-      "release_date": "Jul 9, 2025",
-      "review_count": 66,
+      "release_date": "9 Jul, 2025",
+      "review_count": 97,
       "review_summary": "Very Positive",
       "steam_app_id": "3743220",
       "steam_url": "https://store.steampowered.com/app/3743220",
