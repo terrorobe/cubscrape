@@ -52,86 +52,87 @@ class SteamDataUpdater:
         """
         Get refresh interval in days based on game age or proximity to release.
 
-        For released games:
-        - New games (< 30 days): Daily refresh
-        - Recent games (< 365 days): Weekly refresh
-        - Older games (≥ 365 days): Monthly refresh
-
-        For unreleased games:
-        - Within 3 days of release: Daily refresh
-        - Same quarter (Q1/Q2/Q3/Q4): Weekly refresh
-        - Same year (year-only format): Weekly refresh
-        - Different quarter or year: Monthly refresh
+        For released games: Based on age since release
+        For unreleased games: Based on days until earliest possible release
         """
+        release_info = game_data.planned_release_date or game_data.release_date
+        if not release_info:
+            return 30 if game_data.coming_soon else 7  # Monthly for unknown unreleased, weekly for unknown released
+
         if game_data.coming_soon:
-            # Use planned_release_date if available, otherwise fall back to release_date
-            release_info = game_data.planned_release_date or game_data.release_date
-
-            if not release_info:
-                return 30  # Monthly for unknown release dates
-
-            now = datetime.now()
-
-            # Try to parse specific date formats
+            days_until_release = self._get_days_until_release(release_info)
+            return self._interval_for_days_until_release(days_until_release)
+        else:
             try:
-                # Try "10 Jul, 2025" format
                 release_date = datetime.strptime(release_info, "%d %b, %Y")
-                days_until_release = (release_date - now).days
+                age_days = (datetime.now() - release_date).days
+                return self._interval_for_age(age_days)
+            except Exception:
+                return 7  # Default to weekly on any error
 
-                if days_until_release <= 3:
-                    return 1  # Daily when very close to release
-                elif days_until_release <= 90:  # Roughly a quarter
-                    return 7  # Weekly when in same quarter
-                else:
-                    return 30  # Monthly when further out
+    def _get_days_until_release(self, release_info: str) -> int:
+        """
+        Calculate days until the earliest possible release date.
+        Returns the number of days until the start of the release window.
+        """
+        now = datetime.now()
 
-            except ValueError:
-                pass
-
-            # Check for quarter format "Q3 2025"
-            if release_info.startswith('Q'):
-                try:
-                    quarter = int(release_info[1])
-                    year = int(release_info.split()[1])
-                    current_quarter = (now.month - 1) // 3 + 1
-
-                    if year == now.year and quarter == current_quarter:
-                        return 7  # Weekly for same quarter
-                    else:
-                        return 30  # Monthly for different quarter or year
-                except (ValueError, IndexError):
-                    pass
-
-            # Check for year-only format "2025"
-            try:
-                year = int(release_info)
-                if year == now.year:
-                    return 7  # Weekly for same year
-                else:
-                    return 30  # Monthly for future years
-            except ValueError:
-                pass
-
-            # Default to monthly for other formats
-            return 30
-
-        # Released games logic remains the same
-        if not game_data.release_date:
-            return 7  # Default to weekly if no release date
-
+        # Try specific date format first
         try:
-            # Released games use format: "9 Jul, 2025"
-            release_date = datetime.strptime(game_data.release_date, "%d %b, %Y")
-            age_days = (datetime.now() - release_date).days
+            release_date = datetime.strptime(release_info, "%d %b, %Y")
+            return (release_date - now).days
+        except ValueError:
+            pass
 
-            if age_days < 30:
-                return 1  # Daily
-            elif age_days < 365:
-                return 7  # Weekly
-            else:
-                return 30  # Monthly
-        except Exception:
-            return 7  # Default to weekly on any error
+        # Try month/year format - use first day of the month
+        try:
+            release_date = datetime.strptime(release_info, "%B %Y")
+            return (release_date - now).days
+        except ValueError:
+            pass
+
+        # Try quarter format - use first day of the quarter
+        if release_info.startswith('Q'):
+            try:
+                quarter = int(release_info[1])
+                year = int(release_info.split()[1])
+
+                # First month of each quarter: Q1=Jan, Q2=Apr, Q3=Jul, Q4=Oct
+                quarter_start_month = (quarter - 1) * 3 + 1
+                quarter_start = datetime(year, quarter_start_month, 1)
+                return (quarter_start - now).days
+            except (ValueError, IndexError):
+                pass
+
+        # Try year-only format - use January 1st
+        try:
+            year = int(release_info)
+            year_start = datetime(year, 1, 1)
+            return (year_start - now).days
+        except ValueError:
+            pass
+
+        return 365  # Default to distant future for unparseable formats
+
+    def _interval_for_days_until_release(self, days_until: int) -> int:
+        """Convert days until release to refresh interval."""
+        if days_until <= 3:
+            return 1  # Daily when very close
+        elif days_until <= 30:
+            return 7  # Weekly within a month
+        elif days_until <= 90:
+            return 7  # Weekly within a quarter
+        else:
+            return 30  # Monthly for distant releases
+
+    def _interval_for_age(self, age_days: int) -> int:
+        """Convert game age to refresh interval in days."""
+        if age_days < 30:
+            return 1  # Daily for new games
+        elif age_days < 365:
+            return 7  # Weekly for recent games
+        else:
+            return 30  # Monthly for older games
 
     def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None):
         """
