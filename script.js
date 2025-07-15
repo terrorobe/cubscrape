@@ -4,6 +4,79 @@ let otherGamesData = {};
 let filteredGames = [];
 let channels = {};
 
+// Performance tracking (disable for production)
+const PERFORMANCE_TRACKING = window.location.hostname === 'localhost' || window.location.search.includes('debug=true');
+
+const performanceTracker = {
+    startTimer(name) {
+        if (!PERFORMANCE_TRACKING) return;
+        performance.mark(`${name}-start`);
+        console.time(name);
+    },
+    
+    endTimer(name) {
+        if (!PERFORMANCE_TRACKING) return;
+        performance.mark(`${name}-end`);
+        performance.measure(name, `${name}-start`, `${name}-end`);
+        console.timeEnd(name);
+        
+        const measure = performance.getEntriesByName(name)[0];
+        console.log(`📊 ${name}: ${measure.duration.toFixed(2)}ms`);
+    },
+    
+    measureImageLoading() {
+        if (!PERFORMANCE_TRACKING) return;
+        const images = document.querySelectorAll('img');
+        let loadedCount = 0;
+        const totalImages = images.length;
+        const startTime = performance.now();
+        
+        console.log(`🖼️ Starting to load ${totalImages} images`);
+        
+        images.forEach((img, index) => {
+            if (img.complete) {
+                loadedCount++;
+            } else {
+                img.addEventListener('load', () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        const duration = performance.now() - startTime;
+                        console.log(`🖼️ All ${totalImages} images loaded: ${duration.toFixed(2)}ms`);
+                    }
+                });
+            }
+        });
+        
+        if (loadedCount === totalImages) {
+            console.log('🖼️ All images already loaded');
+        }
+    },
+    
+    measureMemoryUsage() {
+        if (!PERFORMANCE_TRACKING) return;
+        if (performance.memory) {
+            const used = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+            const total = Math.round(performance.memory.totalJSHeapSize / 1024 / 1024);
+            console.log(`🧠 Memory usage: ${used}MB / ${total}MB`);
+        }
+    }
+};
+
+// Lazy loading image observer
+const imageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src; // Load the actual image
+            img.classList.remove('lazy-image'); // Remove lazy class
+            imageObserver.unobserve(img); // Stop observing this image
+        }
+    });
+}, {
+    // Start loading when image is 500px from entering viewport
+    rootMargin: '500px'
+});
+
 // Constants
 const MAX_TAGS_DISPLAY = 3;
 const PLATFORMS = {
@@ -84,6 +157,7 @@ function getRatingClass(percentage) {
 
 // Load and process data
 async function loadData() {
+    performanceTracker.startTimer('loadData');
     try {
         // Load config first
         const configResponse = await fetch('config.json');
@@ -139,9 +213,15 @@ async function loadData() {
         populateFilters();
         loadFiltersFromURL();
         renderGames();
+        
+        performanceTracker.endTimer('loadData');
+        performanceTracker.measureMemoryUsage();
+        
+        // Images now load progressively with lazy loading
     } catch (error) {
         console.error('Error loading data:', error);
         document.getElementById('gameGrid').innerHTML = '<div class="loading">Error loading game data. Please check back later.</div>';
+        performanceTracker.endTimer('loadData');
     }
 }
 
@@ -606,7 +686,9 @@ function applyFilters() {
 
 // Render games to grid
 function renderGames() {
+    performanceTracker.startTimer('renderGames');
     applyFilters();
+    performanceTracker.endTimer('renderGames');
 }
 
 function applyReleaseFilter(games, releaseFilter) {
@@ -676,18 +758,55 @@ function generateVideoItemHTML(video) {
 }
 
 function renderFilteredGames(games) {
+    performanceTracker.startTimer('renderFilteredGames');
     const gameGrid = document.getElementById('gameGrid');
     const gameCount = document.getElementById('gameCount');
     
     if (games.length === 0) {
         gameGrid.innerHTML = '<div class="no-results">No games match your filters.</div>';
         gameCount.textContent = 'No games found';
+        performanceTracker.endTimer('renderFilteredGames');
         return;
     }
     
     gameCount.textContent = `Showing ${games.length} games`;
-    gameGrid.innerHTML = games.map(generateGameCardHTML).join('');
+    
+    // Use document fragment for batch DOM updates
+    const fragment = document.createDocumentFragment();
+    games.forEach(game => {
+        const gameCardHTML = generateGameCardHTML(game);
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = gameCardHTML;
+        const gameCard = tempDiv.firstElementChild; // Use firstElementChild instead of firstChild
+        
+        // Add lazy loading to images
+        if (gameCard) {
+            const img = gameCard.querySelector('.game-image');
+            if (img && img.src) {
+                img.dataset.src = img.src;
+                img.classList.add('lazy-image');
+                img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDYwIiBoZWlnaHQ9IjIxNSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvYWRpbmcuLi48L3RleHQ+PC9zdmc+';
+            }
+            fragment.appendChild(gameCard);
+        }
+    });
+    
+    // Single DOM update instead of many
+    gameGrid.innerHTML = ''; // Clear existing content
+    gameGrid.appendChild(fragment);
+    
+    // Start observing lazy images
+    const lazyImages = gameGrid.querySelectorAll('.lazy-image');
+    lazyImages.forEach(img => {
+        imageObserver.observe(img);
+    });
+    
+    performanceTracker.endTimer('renderFilteredGames');
+    
+    // Note: Image loading measurement less relevant with lazy loading
+    // Images now load on-demand as user scrolls
 }
+
 
 function generateGameCardHTML(game) {
     const statusText = getStatusText(game);
@@ -994,12 +1113,40 @@ function loadFiltersFromURL() {
 }
 
 // Event listeners
-document.getElementById('releaseFilter').addEventListener('change', applyFilters);
-document.getElementById('platformFilter').addEventListener('change', applyFilters);
-document.getElementById('ratingFilter').addEventListener('change', applyFilters);
-document.getElementById('tagFilter').addEventListener('change', applyFilters);
-document.getElementById('channelFilter').addEventListener('change', applyFilters);
-document.getElementById('sortBy').addEventListener('change', applyFilters);
+const filterIds = ['releaseFilter', 'platformFilter', 'ratingFilter', 'tagFilter', 'channelFilter', 'sortBy'];
+filterIds.forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+        performanceTracker.startTimer('filterChange');
+        applyFilters();
+        performanceTracker.endTimer('filterChange');
+    });
+});
+
+// Core Web Vitals tracking
+new PerformanceObserver((list) => {
+    const entries = list.getEntries();
+    const lastEntry = entries[entries.length - 1];
+    console.log('🎯 LCP (Largest Contentful Paint):', lastEntry.startTime.toFixed(2) + 'ms');
+}).observe({entryTypes: ['largest-contentful-paint']});
+
+new PerformanceObserver((list) => {
+    const entries = list.getEntries();
+    entries.forEach(entry => {
+        console.log('⚡ FID (First Input Delay):', (entry.processingStart - entry.startTime).toFixed(2) + 'ms');
+    });
+}).observe({entryTypes: ['first-input']});
+
+new PerformanceObserver((list) => {
+    let clsValue = 0;
+    list.getEntries().forEach(entry => {
+        if (!entry.hadRecentInput) {
+            clsValue += entry.value;
+        }
+    });
+    if (clsValue > 0) {
+        console.log('📐 CLS (Cumulative Layout Shift):', clsValue.toFixed(4));
+    }
+}).observe({entryTypes: ['layout-shift']});
 
 // Initialize
 loadData();
