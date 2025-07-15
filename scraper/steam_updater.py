@@ -5,7 +5,6 @@ import logging
 from dataclasses import replace
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 from data_manager import DataManager
 from models import SteamGameData
@@ -29,6 +28,25 @@ class SteamDataUpdater:
     def _save_steam_data(self):
         """Save Steam data to file"""
         self.data_manager.save_steam_data(self.steam_data)
+
+    def _get_interval_name(self, interval_days: int) -> str:
+        """Convert interval days to human-readable name"""
+        if interval_days == 1:
+            return "daily"
+        elif interval_days == 7:
+            return "weekly"
+        else:
+            return "monthly"
+
+    def _get_release_date_info(self, game_data: SteamGameData) -> str:
+        """Get formatted release date information for logging"""
+        if game_data.coming_soon:
+            release_timeframe = game_data.planned_release_date or game_data.release_date
+            return f", unreleased ({release_timeframe})" if release_timeframe else ", unreleased"
+        elif game_data.release_date:
+            return f", released {game_data.release_date}"
+        else:
+            return ""
 
     def _get_refresh_interval_days(self, game_data: SteamGameData) -> int:
         """
@@ -115,7 +133,7 @@ class SteamDataUpdater:
         except Exception:
             return 7  # Default to weekly on any error
 
-    def update_all_games_from_channels(self, channels: list[str], max_updates: Optional[int] = None):
+    def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None):
         """
         Update Steam data for all games referenced in the specified channels.
 
@@ -156,14 +174,8 @@ class SteamDataUpdater:
 
                     if last_updated_date > stale_date:
                         days_ago = (datetime.now() - last_updated_date).days
-                        interval_name = "daily" if refresh_interval_days == 1 else "weekly" if refresh_interval_days == 7 else "monthly"
-                        if game_data.coming_soon:
-                            release_timeframe = game_data.planned_release_date or game_data.release_date
-                            release_date_info = f", unreleased ({release_timeframe})" if release_timeframe else ", unreleased"
-                        elif game_data.release_date:
-                            release_date_info = f", released {game_data.release_date}"
-                        else:
-                            release_date_info = ""
+                        interval_name = self._get_interval_name(refresh_interval_days)
+                        release_date_info = self._get_release_date_info(game_data)
                         logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh{release_date_info}")
                         should_update = False
 
@@ -171,10 +183,23 @@ class SteamDataUpdater:
                 # Log update info including name and last update if known
                 if app_id in self.steam_data['games']:
                     game_data = self.steam_data['games'][app_id]
-                    last_update_info = f", last updated {game_data.last_updated}" if game_data.last_updated else ""
-                    logging.info(f"Updating Steam data for app {app_id} ({game_data.name}){last_update_info}")
+
+                    # Calculate days since last update if available
+                    if game_data.last_updated:
+                        last_updated_date = datetime.fromisoformat(game_data.last_updated)
+                        days_ago = (datetime.now() - last_updated_date).days
+                        update_info = f"updated {days_ago} days ago"
+                    else:
+                        update_info = "never updated"
+
+                    # Get fetch interval and release date info
+                    refresh_interval_days = self._get_refresh_interval_days(game_data)
+                    interval_name = self._get_interval_name(refresh_interval_days)
+                    release_date_info = self._get_release_date_info(game_data)
+
+                    logging.info(f"Updating app {app_id} ({game_data.name}) - {update_info}, {interval_name} refresh{release_date_info}")
                 else:
-                    logging.info(f"Updating Steam data for app {app_id} (new game)")
+                    logging.info(f"Updating app {app_id} (new game)")
 
                 if self._fetch_steam_app_with_related(app_id):
                     updates_done += 1
