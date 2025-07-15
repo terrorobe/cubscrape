@@ -239,7 +239,7 @@ function populateFilters() {
     
     Object.keys(channels).forEach(channelId => {
         const option = document.createElement('option');
-        option.value = channelId;
+        option.value = channels[channelId].name;  // Use channel name as value
         option.textContent = channels[channelId].name;
         channelFilter.appendChild(option);
     });

@@ -635,14 +635,32 @@ def load_all_unified_games(project_root):
         logging.warning("other_games.json not found, using empty data")
         other_games = {}
 
+    # Load config to get channel names
+    config_file = project_root / 'config.json'
+    try:
+        with config_file.open() as f:
+            config = json.load(f)
+            channels_config = config.get('channels', {})
+    except Exception as e:
+        logging.warning(f"Failed to load config.json: {e}")
+        channels_config = {}
+
     # Load all video files
     video_files = list(project_root.glob('data/videos-*.json'))
     all_videos = {}
 
     for file in video_files:
         try:
+            # Extract channel ID from filename (e.g., videos-aliensrock.json -> aliensrock)
+            channel_id = file.stem.replace('videos-', '')
+            channel_name = channels_config.get(channel_id, {}).get('name', channel_id)
+
             with file.open() as f:
                 channel_data = json.load(f)
+                # Add channel info to each video
+                for video in channel_data.get('videos', {}).values():
+                    video['channel_id'] = channel_id
+                    video['channel_name'] = channel_name
                 all_videos.update(channel_data.get('videos', {}))
         except Exception as e:
             logging.warning(f"Failed to load {file}: {e}")
