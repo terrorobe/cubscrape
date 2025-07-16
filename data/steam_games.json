@@ -10004,6 +10004,51 @@
         "Casual"
       ]
     },
+    "1890310": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "2336830",
+      "developers": [
+        "CodeRadGames"
+      ],
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1890310/header_alt_assets_0.jpg?t=1751448669",
+      "last_updated": "2025-07-16T20:53:09.711786",
+      "name": "Rogue Blight",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "CodeRadGames"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "1890310",
+      "steam_url": "https://store.steampowered.com/app/1890310",
+      "tags": [
+        "Souls-like",
+        "Roguelite",
+        "Action Roguelike",
+        "Dark Fantasy",
+        "2D Platformer",
+        "Hack and Slash",
+        "Perma Death",
+        "Roguelike",
+        "RPG",
+        "2D"
+      ]
+    },
     "1892090": {
       "categories": [
         "Single-player",
@@ -17406,16 +17451,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2225960/425f6fbdcab44710187348f88bf9a7ccf16ee193/header.jpg?t=1752591657",
       "is_early_access": true,
-      "last_updated": "2025-07-15T20:48:38.163627",
+      "last_updated": "2025-07-16T20:53:07.627269",
       "name": "Noobs Are Coming",
-      "positive_review_percentage": 100,
+      "positive_review_percentage": 98,
       "price": "4,67\u20ac",
       "publishers": [
         "Overboy"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 10,
-      "review_summary": "Positive",
+      "review_count": 60,
+      "review_summary": "Very Positive",
       "steam_app_id": "2225960",
       "steam_url": "https://store.steampowered.com/app/2225960",
       "tags": [
@@ -17424,8 +17469,8 @@
         "Arena Shooter",
         "Roguelite",
         "Bullet Hell",
-        "Roguelike",
         "Dark Fantasy",
+        "Roguelike",
         "Replay Value",
         "Action",
         "Hack and Slash"
@@ -20223,6 +20268,52 @@
         "Action RPG"
       ]
     },
+    "2336830": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Steam Leaderboards"
+      ],
+      "developers": [
+        "CodeRadGames"
+      ],
+      "full_game_app_id": "1890310",
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2336830/header.jpg?t=1735292651",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-16T20:53:10.362405",
+      "name": "Rogue Blight Demo",
+      "positive_review_percentage": 96,
+      "price": "Free",
+      "publishers": [
+        "CodeRadGames"
+      ],
+      "release_date": "4 Dec, 2024",
+      "review_count": 84,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2336830",
+      "steam_url": "https://store.steampowered.com/app/2336830",
+      "tags": [
+        "Roguelite",
+        "Souls-like",
+        "Action Roguelike",
+        "Roguelike",
+        "RPG",
+        "2D",
+        "Dark Fantasy",
+        "Hack and Slash",
+        "2D Platformer",
+        "Choices Matter"
+      ]
+    },
     "2337200": {
       "categories": [
         "Single-player",
@@ -21538,16 +21629,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2368930/8b46bc2873941e4b04f70ce8008696734b2251eb/header.jpg?t=1752652293",
-      "last_updated": "2025-07-16T15:02:48.041244",
+      "last_updated": "2025-07-16T20:53:05.645136",
       "name": "ISLANDERS: New Shores",
-      "positive_review_percentage": 96,
+      "positive_review_percentage": 97,
       "price": "8,99\u20ac",
       "publishers": [
         "Coatsink",
         "Thunderful Publishing"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 232,
+      "review_count": 237,
       "review_summary": "Very Positive",
       "steam_app_id": "2368930",
       "steam_url": "https://store.steampowered.com/app/2368930",
@@ -21732,6 +21823,52 @@
         "Procedural Generation"
       ]
     },
+    "2377280": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Custom Volume Controls",
+        "Playable without Timed Input",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "demo_app_id": "3675810",
+      "developers": [
+        "River End Games"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377280/header.jpg?t=1752669881",
+      "last_updated": "2025-07-16T20:53:12.021114",
+      "name": "Eriksholm: The Stolen Dream",
+      "positive_review_percentage": 95,
+      "price": "39,99\u20ac",
+      "publishers": [
+        "Nordcurrent Labs"
+      ],
+      "release_date": "15 Jul, 2025",
+      "review_count": 74,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2377280",
+      "steam_url": "https://store.steampowered.com/app/2377280",
+      "tags": [
+        "Stealth",
+        "Narrative",
+        "Story Rich",
+        "Adventure",
+        "Female Protagonist",
+        "Action-Adventure",
+        "Strategy",
+        "Alternate History",
+        "Linear",
+        "Isometric"
+      ]
+    },
     "2377620": {
       "categories": [
         "Single-player",
@@ -21739,8 +21876,6 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "coming_soon": true,
-      "demo_app_id": "3750170",
       "developers": [
         "One Flow Man"
       ],
@@ -21749,10 +21884,10 @@
         "Casual",
         "Indie"
       ],
-      "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377620/header.jpg?t=1750195384",
-      "last_updated": "2025-07-16T15:02:49.370224",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377620/header.jpg?t=1752678276",
+      "last_updated": "2025-07-16T20:53:06.229754",
       "name": "Lord O' Pirates",
+      "price": "4,49\u20ac",
       "publishers": [
         "Treestyle Studios LLC"
       ],
@@ -29663,18 +29798,18 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1752595200",
-      "last_updated": "2025-07-15T20:48:29.504358",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1752672695",
+      "last_updated": "2025-07-16T20:53:08.480291",
       "name": "Becoming Saint",
-      "positive_review_percentage": 80,
+      "positive_review_percentage": 66,
       "price": "13,49\u20ac",
       "publishers": [
         "Firesquid",
         "2P Games"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 10,
-      "review_summary": "Positive",
+      "review_count": 33,
+      "review_summary": "Mixed",
       "steam_app_id": "2643010",
       "steam_url": "https://store.steampowered.com/app/2643010",
       "tags": [
@@ -61265,7 +61400,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503440/96206c6bbccdf9e1db9427b776d6ba7f2a00a9a1/header.jpg?t=1752552985",
-      "last_updated": "2025-07-15T20:48:14.509148",
+      "last_updated": "2025-07-16T20:53:06.912322",
       "name": "Astro Prospector",
       "positive_review_percentage": 96,
       "price": "4,49\u20ac",
@@ -61274,7 +61409,7 @@
         "SpaceJazz"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 200,
+      "review_count": 307,
       "review_summary": "Very Positive",
       "steam_app_id": "3503440",
       "steam_url": "https://store.steampowered.com/app/3503440",
@@ -65195,6 +65330,51 @@
         "Dystopian"
       ]
     },
+    "3675810": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        " River End Games"
+      ],
+      "full_game_app_id": "2377280",
+      "genres": [
+        "Action",
+        "Adventure"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3675810/3ad4f5aab1f75e58a815108ed1f50a3efc839d73/header.jpg?t=1749414932",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-16T20:53:12.715532",
+      "name": "Eriksholm: The Stolen Dream Demo",
+      "positive_review_percentage": 95,
+      "price": "Free",
+      "publishers": [
+        " Nordcurrent Labs"
+      ],
+      "recent_review_count": 180,
+      "recent_review_percentage": 97,
+      "recent_review_summary": "Overwhelmingly Positive",
+      "release_date": "8 Jun, 2025",
+      "review_count": 479,
+      "review_summary": "Very Positive",
+      "steam_app_id": "3675810",
+      "steam_url": "https://store.steampowered.com/app/3675810",
+      "tags": [
+        "Exploration",
+        "Action-Adventure",
+        "Female Protagonist",
+        "3D",
+        "Isometric",
+        "Third Person",
+        "Alternate History",
+        "Historical",
+        "Action",
+        "Linear"
+      ]
+    },
     "3676860": {
       "categories": [
         "Single-player",
@@ -66894,15 +67074,15 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3743220/3cf251e8b91c53c1010fdc1cf33aba3f233a1c7f/header.jpg?t=1752086257",
-      "last_updated": "2025-07-15T20:48:28.181342",
+      "last_updated": "2025-07-16T20:53:11.156117",
       "name": "A Solitaire Mystery",
-      "positive_review_percentage": 92,
-      "price": "8,77\u20ac",
+      "positive_review_percentage": 91,
+      "price": "9,75\u20ac",
       "publishers": [
         "Hempuli Oy"
       ],
       "release_date": "9 Jul, 2025",
-      "review_count": 97,
+      "review_count": 105,
       "review_summary": "Very Positive",
       "steam_app_id": "3743220",
       "steam_url": "https://store.steampowered.com/app/3743220",
@@ -67399,6 +67579,49 @@
         "Singleplayer",
         "Minimalist",
         "2D"
+      ]
+    },
+    "3769130": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Custom Volume Controls",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "EagleEye Games"
+      ],
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3769130/320ecc31730377d03c319b411fbf9ee95908d3c2/header.jpg?t=1752669637",
+      "last_updated": "2025-07-16T20:53:09.072395",
+      "name": "Keep on Mining!",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "EagleEye Games"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3769130",
+      "steam_url": "https://store.steampowered.com/app/3769130",
+      "tags": [
+        "Casual",
+        "Clicker",
+        "Idler",
+        "Relaxing",
+        "Capitalism",
+        "Indie",
+        "Mining",
+        "Arcade",
+        "Economy",
+        "Singleplayer"
       ]
     },
     "3771090": {
