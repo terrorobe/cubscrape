@@ -9596,15 +9596,15 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1866300/9569bf5c864c4cefe1ab4461eff461b89d042a30/header.jpg?t=1752509241",
       "is_early_access": true,
-      "last_updated": "2025-07-15T15:02:28.764082",
+      "last_updated": "2025-07-16T15:02:46.525102",
       "name": "Dawn Apart",
-      "positive_review_percentage": 79,
+      "positive_review_percentage": 76,
       "price": "17,99\u20ac",
       "publishers": [
         "Astra Logical"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 24,
+      "review_count": 42,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1866300",
       "steam_url": "https://store.steampowered.com/app/1866300",
@@ -21537,17 +21537,17 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2368930/8b46bc2873941e4b04f70ce8008696734b2251eb/header.jpg?t=1752249473",
-      "last_updated": "2025-07-16T08:53:07.197702",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2368930/8b46bc2873941e4b04f70ce8008696734b2251eb/header.jpg?t=1752652293",
+      "last_updated": "2025-07-16T15:02:48.041244",
       "name": "ISLANDERS: New Shores",
-      "positive_review_percentage": 97,
+      "positive_review_percentage": 96,
       "price": "8,99\u20ac",
       "publishers": [
         "Coatsink",
         "Thunderful Publishing"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 224,
+      "review_count": 232,
       "review_summary": "Very Positive",
       "steam_app_id": "2368930",
       "steam_url": "https://store.steampowered.com/app/2368930",
@@ -21751,7 +21751,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377620/header.jpg?t=1750195384",
-      "last_updated": "2025-07-16T08:53:10.258406",
+      "last_updated": "2025-07-16T15:02:49.370224",
       "name": "Lord O' Pirates",
       "publishers": [
         "Treestyle Studios LLC"
@@ -30030,15 +30030,15 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2651220/5263be8eeec9c7535cd3a4669c0aa91bf37c738f/header.jpg?t=1752579820",
-      "last_updated": "2025-07-15T15:02:24.607514",
+      "last_updated": "2025-07-16T15:02:48.684527",
       "name": "Blacksmith: Ignite the Forge",
-      "positive_review_percentage": 61,
+      "positive_review_percentage": 68,
       "price": "8,77\u20ac",
       "publishers": [
         "Awaken Realms"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 13,
+      "review_count": 16,
       "review_summary": "Mixed",
       "steam_app_id": "2651220",
       "steam_url": "https://store.steampowered.com/app/2651220",
@@ -32213,12 +32213,13 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2734270/4842cfb0ee3a3aac92a1e484451e87c3635c8ef1/header.jpg?t=1752643967",
       "is_early_access": true,
-      "last_updated": "2025-07-16T08:53:08.401716",
+      "last_updated": "2025-07-16T15:02:50.666017",
       "name": "Sector Unknown",
+      "planned_release_date": "Coming soon",
       "publishers": [
         "Creative Storm Entertainment"
       ],
-      "release_date": "16 Jul, 2025",
+      "release_date": "Coming soon",
       "review_count": 0,
       "review_summary": "No user reviews",
       "steam_app_id": "2734270",
@@ -35177,9 +35178,9 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752274574",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/eb7464a8693d4bfcee4283ec9ac3843af993b238/header.jpg?t=1752642697",
       "is_early_access": true,
-      "last_updated": "2025-07-15T15:02:29.570800",
+      "last_updated": "2025-07-16T15:02:47.365392",
       "name": "He is Coming",
       "publishers": [
         "Hooded Horse"
@@ -51760,17 +51761,17 @@
         "Indie",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3247750/header.jpg?t=1752499419",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3247750/header.jpg?t=1752666967",
       "is_early_access": true,
-      "last_updated": "2025-07-15T08:53:09.443500",
+      "last_updated": "2025-07-16T15:02:50.049362",
       "name": "Mycopunk",
-      "positive_review_percentage": 93,
+      "positive_review_percentage": 92,
       "price": "14,99\u20ac",
       "publishers": [
         "Devolver Digital"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 801,
+      "review_count": 911,
       "review_summary": "Very Positive",
       "steam_app_id": "3247750",
       "steam_url": "https://store.steampowered.com/app/3247750",
@@ -51782,8 +51783,8 @@
         "Abstract",
         "Colorful",
         "PvE",
-        "First-Person",
         "Co-op",
+        "First-Person",
         "Funny"
       ]
     },
@@ -64176,7 +64177,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1750862384",
-      "last_updated": "2025-07-15T15:02:30.969233",
+      "last_updated": "2025-07-16T15:02:45.691699",
       "name": "Combo Overload",
       "publishers": [
         "AraragiAriel"
