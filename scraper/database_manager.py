@@ -159,7 +159,7 @@ class DatabaseManager:
     def _get_platform_url(self, game):
         """Get the correct platform URL based on the game's platform"""
         platform = game.get('platform', 'steam')
-        
+
         if platform == 'itch':
             return game.get('url')  # Itch games use 'url' field
         else:
@@ -168,7 +168,7 @@ class DatabaseManager:
     def _get_crazygames_url(self, game):
         """Get the correct CrazyGames URL"""
         platform = game.get('platform', 'steam')
-        
+
         if platform == 'crazygames':
             return game.get('url')  # CrazyGames use 'url' field
         else:
