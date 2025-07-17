@@ -4746,15 +4746,15 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1546080/fcb4026260f395095e137eab4da9408b76fbc271/header.jpg?t=1752481861",
       "is_early_access": true,
-      "last_updated": "2025-07-16T08:53:19.100745",
+      "last_updated": "2025-07-17T15:02:44.045420",
       "name": "Every Day We Fight",
-      "positive_review_percentage": 74,
+      "positive_review_percentage": 73,
       "price": "19,49\u20ac",
       "publishers": [
         "Hooded Horse"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 143,
+      "review_count": 153,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1546080",
       "steam_url": "https://store.steampowered.com/app/1546080",
@@ -13813,16 +13813,16 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2096860/header.jpg?t=1752511625",
-      "last_updated": "2025-07-16T08:53:18.399929",
+      "last_updated": "2025-07-17T15:02:39.324362",
       "name": "Reclaim The Sea",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 93,
       "price": "9,43\u20ac",
       "publishers": [
         "1LastGame",
         "indienova"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 12,
+      "review_count": 15,
       "review_summary": "Positive",
       "steam_app_id": "2096860",
       "steam_url": "https://store.steampowered.com/app/2096860",
@@ -22354,8 +22354,8 @@
         "Indie",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1752701001",
-      "last_updated": "2025-07-17T08:53:02.575182",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1752740964",
+      "last_updated": "2025-07-17T15:02:41.127395",
       "name": "Dust Raiders",
       "publishers": [
         "Games Operators",
@@ -35167,7 +35167,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2821800/86bc8c56afd939f707cfdb5257d52f13cbc34435/header.jpg?t=1748265023",
       "is_early_access": true,
-      "last_updated": "2025-07-15T03:09:03.986776",
+      "last_updated": "2025-07-17T15:02:36.420753",
       "name": "Drill Core",
       "positive_review_percentage": 84,
       "price": "19,50\u20ac",
@@ -35178,7 +35178,7 @@
       "recent_review_percentage": 80,
       "recent_review_summary": "Very Positive",
       "release_date": "12 Sep, 2024",
-      "review_count": 1192,
+      "review_count": 1198,
       "review_summary": "Very Positive",
       "steam_app_id": "2821800",
       "steam_url": "https://store.steampowered.com/app/2821800",
@@ -35298,10 +35298,10 @@
         "Online PvP",
         "Steam Achievements",
         "Full controller support",
+        "Steam Trading Cards",
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "2984660",
       "developers": [
         "Chronocle"
@@ -35312,10 +35312,11 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752713184",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752757027",
       "is_early_access": true,
-      "last_updated": "2025-07-17T08:53:01.649627",
+      "last_updated": "2025-07-17T15:02:37.090126",
       "name": "He is Coming",
+      "price": "9,74\u20ac",
       "publishers": [
         "Hooded Horse"
       ],
@@ -40602,15 +40603,15 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983410/c3c3f64cf373361772582ec43a01c26fbb1e7640/header.jpg?t=1752249483",
       "is_early_access": true,
-      "last_updated": "2025-07-16T08:53:06.482876",
+      "last_updated": "2025-07-17T15:02:42.455255",
       "name": "Xenopurge",
-      "positive_review_percentage": 91,
-      "price": "Rp 86 247",
+      "positive_review_percentage": 92,
+      "price": "9,74\u20ac",
       "publishers": [
         "Firesquid"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 57,
+      "review_count": 63,
       "review_summary": "Very Positive",
       "steam_app_id": "2983410",
       "steam_url": "https://store.steampowered.com/app/2983410",
@@ -48960,15 +48961,15 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3183220/d05bae7c51b2851d31a65a9082150c98ab5652e8/header.jpg?t=1752209873",
       "is_early_access": true,
-      "last_updated": "2025-07-16T08:53:07.804503",
+      "last_updated": "2025-07-17T15:02:39.943334",
       "name": "Aurora Defense",
-      "positive_review_percentage": 70,
+      "positive_review_percentage": 71,
       "price": "9,74\u20ac",
       "publishers": [
         "Moka Games"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 54,
+      "review_count": 56,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3183220",
       "steam_url": "https://store.steampowered.com/app/3183220",
@@ -54602,7 +54603,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3330160/1fe6bc72ae06b29602cede91002815e17f61f0e4/header.jpg?t=1752577086",
-      "last_updated": "2025-07-16T08:53:09.001513",
+      "last_updated": "2025-07-17T15:02:38.418444",
       "name": "Kingdom Ascension",
       "publishers": [
         "RainRingStudio"
@@ -54991,7 +54992,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3343160/1eeee54eab7d517b375080b0fef2b5023d19101f/header.jpg?t=1750273064",
-      "last_updated": "2025-07-17T08:53:04.591602",
+      "last_updated": "2025-07-17T15:02:35.745411",
       "name": "Fill Up The Hole",
       "publishers": [
         "Fluffy Lotus"
@@ -56728,7 +56729,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3391190/5eb950f7f6cfda1dd507dc48d8db2b615951df49/header.jpg?t=1752234488",
-      "last_updated": "2025-07-16T08:53:11.464506",
+      "last_updated": "2025-07-17T15:02:43.191842",
       "name": "OREBLAZE",
       "positive_review_percentage": 90,
       "price": "4,49\u20ac",
@@ -57458,15 +57459,15 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3415580/header.jpg?t=1752225108",
       "is_early_access": true,
-      "last_updated": "2025-07-16T08:53:16.899378",
+      "last_updated": "2025-07-17T15:02:37.789864",
       "name": "Death Ring: Second Impact",
-      "positive_review_percentage": 95,
+      "positive_review_percentage": 94,
       "price": "17,55\u20ac",
       "publishers": [
         "Rouge Mecha"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 66,
+      "review_count": 75,
       "review_summary": "Very Positive",
       "steam_app_id": "3415580",
       "steam_url": "https://store.steampowered.com/app/3415580",
@@ -64296,10 +64297,11 @@
       "categories": [
         "Single-player",
         "Steam Achievements",
+        "Custom Volume Controls",
+        "Mouse Only Option",
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "3815350",
       "developers": [
         "AraragiAriel"
@@ -64310,9 +64312,10 @@
         "Simulation"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1750862384",
-      "last_updated": "2025-07-17T08:53:05.178042",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1752753077",
+      "last_updated": "2025-07-17T15:02:41.766076",
       "name": "Combo Overload",
+      "price": "4,49\u20ac",
       "publishers": [
         "AraragiAriel"
       ],
