@@ -22356,11 +22356,12 @@
         "Indie",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1750690135",
-      "last_updated": "2025-07-16T08:53:17.734343",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1752701001",
+      "last_updated": "2025-07-17T03:08:01.703682",
       "name": "Dust Raiders",
       "publishers": [
-        "Games Operators"
+        "Games Operators",
+        "PlayWay S.A."
       ],
       "release_date": "17 Jul, 2025",
       "review_count": 0,
@@ -33041,7 +33042,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/81239e7d3fb2c7405d899912fe09dba6719afea5/header.jpg?t=1752165377",
-      "last_updated": "2025-07-16T01:34:57.085027",
+      "last_updated": "2025-07-17T03:08:04.237002",
       "name": "The King is Watching",
       "publishers": [
         "tinyBuild"
@@ -35313,9 +35314,9 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/eb7464a8693d4bfcee4283ec9ac3843af993b238/header.jpg?t=1752642697",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752713184",
       "is_early_access": true,
-      "last_updated": "2025-07-16T15:02:47.365392",
+      "last_updated": "2025-07-17T03:08:02.858729",
       "name": "He is Coming",
       "publishers": [
         "Hooded Horse"
@@ -54992,7 +54993,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3343160/1eeee54eab7d517b375080b0fef2b5023d19101f/header.jpg?t=1750273064",
-      "last_updated": "2025-07-16T08:53:10.826485",
+      "last_updated": "2025-07-17T03:08:02.263049",
       "name": "Fill Up The Hole",
       "publishers": [
         "Fluffy Lotus"
@@ -56431,18 +56432,18 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385370/header.jpg?t=1752287906",
-      "last_updated": "2025-07-16T02:14:39.127736",
+      "last_updated": "2025-07-17T03:08:03.639316",
       "name": "Maze Mice",
-      "positive_review_percentage": 94,
+      "positive_review_percentage": 93,
       "price": "6,82\u20ac",
       "publishers": [
         "TrampolineTales"
       ],
-      "recent_review_count": 69,
-      "recent_review_percentage": 92,
+      "recent_review_count": 82,
+      "recent_review_percentage": 91,
       "recent_review_summary": "Very Positive",
       "release_date": "11 Jul, 2025",
-      "review_count": 134,
+      "review_count": 148,
       "review_summary": "Very Positive",
       "steam_app_id": "3385370",
       "steam_url": "https://store.steampowered.com/app/3385370",
@@ -64312,7 +64313,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1750862384",
-      "last_updated": "2025-07-16T15:02:45.691699",
+      "last_updated": "2025-07-17T03:08:01.026517",
       "name": "Combo Overload",
       "publishers": [
         "AraragiAriel"
@@ -69999,6 +70000,54 @@
         "3D",
         "Top-Down",
         "Horror"
+      ]
+    },
+    "881100": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Workshop",
+        "Partial Controller Support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Nolla Games"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "RPG",
+        "Simulation"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/881100/header.jpg?t=1675987871",
+      "last_updated": "2025-07-17T03:08:00.163234",
+      "name": "Noita",
+      "positive_review_percentage": 95,
+      "price": "18,99\u20ac",
+      "publishers": [
+        "Nolla Games"
+      ],
+      "recent_review_count": 1071,
+      "recent_review_percentage": 93,
+      "recent_review_summary": "Very Positive",
+      "release_date": "15 Oct, 2020",
+      "review_count": 73114,
+      "review_summary": "Overwhelmingly Positive",
+      "steam_app_id": "881100",
+      "steam_url": "https://store.steampowered.com/app/881100",
+      "tags": [
+        "Physics",
+        "Roguelike",
+        "Pixel Graphics",
+        "Difficult",
+        "Dungeon Crawler",
+        "Indie",
+        "Sandbox",
+        "Open World",
+        "2D",
+        "Perma Death"
       ]
     },
     "887490": {
