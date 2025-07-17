@@ -17262,15 +17262,15 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2224120/header.jpg?t=1750820855",
-      "last_updated": "2025-07-10T04:34:10.384610",
+      "last_updated": "2025-07-17T08:53:03.265435",
       "name": "Zombie Rollerz: The Last Ship",
-      "positive_review_percentage": 68,
-      "price": "$9.99",
+      "positive_review_percentage": 67,
+      "price": "9,75\u20ac",
       "publishers": [
         "Wandering Wizard"
       ],
-      "release_date": "Jun 24, 2025",
-      "review_count": 73,
+      "release_date": "24 Jun, 2025",
+      "review_count": 80,
       "review_summary": "Mixed",
       "steam_app_id": "2224120",
       "steam_url": "https://store.steampowered.com/app/2224120",
@@ -20365,26 +20365,24 @@
         "Game demo",
         "Full controller support"
       ],
-      "demo_app_id": "2338110",
       "developers": [
         "Zing Games Inc.",
         "\u7d2b\u82f1\u4e92\u5a31"
       ],
       "full_game_app_id": "2224120",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2338110/2fb04360e6fb0d47c40b16bf7f9d3a680d9b0835/header.jpg?t=1749442944",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-07T15:57:26.810707",
+      "last_updated": "2025-07-17T08:53:04.015965",
       "name": "Zombie Rollerz: The Last Ship - Demo",
-      "positive_review_percentage": 68,
+      "positive_review_percentage": 67,
       "price": "Free",
       "publishers": [
         "Wandering Wizard"
       ],
       "release_date": "5 May, 2025",
-      "review_count": 72,
+      "review_count": 80,
       "review_summary": "Mixed",
       "steam_app_id": "2338110",
       "steam_url": "https://store.steampowered.com/app/2338110",
@@ -22357,7 +22355,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1752701001",
-      "last_updated": "2025-07-17T03:08:01.703682",
+      "last_updated": "2025-07-17T08:53:02.575182",
       "name": "Dust Raiders",
       "publishers": [
         "Games Operators",
@@ -35316,7 +35314,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752713184",
       "is_early_access": true,
-      "last_updated": "2025-07-17T03:08:02.858729",
+      "last_updated": "2025-07-17T08:53:01.649627",
       "name": "He is Coming",
       "publishers": [
         "Hooded Horse"
@@ -36291,18 +36289,18 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2857000/header.jpg?t=1751904891",
-      "last_updated": "2025-07-10T04:34:08.426347",
+      "last_updated": "2025-07-17T08:53:01.056406",
       "name": "refarm",
       "positive_review_percentage": 89,
-      "price": "3,19\u20ac",
+      "price": "3,99\u20ac",
       "publishers": [
         "otterhands"
       ],
-      "recent_review_count": 82,
-      "recent_review_percentage": 92,
+      "recent_review_count": 67,
+      "recent_review_percentage": 91,
       "recent_review_summary": "Very Positive",
       "release_date": "1 Nov, 2024",
-      "review_count": 191,
+      "review_count": 203,
       "review_summary": "Very Positive",
       "steam_app_id": "2857000",
       "steam_url": "https://store.steampowered.com/app/2857000",
@@ -54993,7 +54991,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3343160/1eeee54eab7d517b375080b0fef2b5023d19101f/header.jpg?t=1750273064",
-      "last_updated": "2025-07-17T03:08:02.263049",
+      "last_updated": "2025-07-17T08:53:04.591602",
       "name": "Fill Up The Hole",
       "publishers": [
         "Fluffy Lotus"
@@ -64313,7 +64311,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1750862384",
-      "last_updated": "2025-07-17T03:08:01.026517",
+      "last_updated": "2025-07-17T08:53:05.178042",
       "name": "Combo Overload",
       "publishers": [
         "AraragiAriel"
