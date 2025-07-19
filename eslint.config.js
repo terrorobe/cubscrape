@@ -19,7 +19,7 @@ module.exports = [
         },
         rules: {
             // Possible Errors
-            "no-console": ["warn", { "allow": ["warn", "error"] }],
+            "no-console": "off",
             "no-debugger": "error",
             "no-duplicate-case": "error",
             "no-empty": "error",

@@ -86,12 +86,36 @@ Data is saved to:
 
 ### Viewing the Web Interface
 
-1. Open `index.html` in a web browser
-2. Or serve it with a local web server:
+#### Quick Start (Development)
+```bash
+# Builds database (if needed) and starts web server
+npm run dev
+# OR
+uv run python dev.py
+```
+
+#### Manual Steps
+1. Build the SQLite database:
+   ```bash
+   uv run python scraper/scraper.py build-db
+   ```
+2. Start the web server:
    ```bash
    uv run python -m http.server 8000
-   # Visit http://localhost:8000/
    ```
+3. Visit http://localhost:8000/
+
+#### Other Commands
+```bash
+# Lint JavaScript code
+npm run lint
+
+# Just build the database
+npm run build-db
+
+# Just start the server
+npm run server
+```
 
 ## Data Structure
 
