@@ -64,6 +64,7 @@ class OtherGameData:
     url: str
     name: str
     is_free: bool = True
+    release_date: str = ""
     header_image: str = ""
     tags: list[str] = field(default_factory=list)
     positive_review_percentage: int | None = None

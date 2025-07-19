@@ -52,8 +52,7 @@ class YouTubeSteamScraper:
         # Initialize video processor
         self.video_processor = VideoProcessor(
             self.data_manager, self.youtube_extractor, self.config_manager,
-            self.game_inference, self.itch_fetcher, self.crazygames_fetcher,
-            self.other_games_data
+            self.game_inference, self.other_games_data
         )
 
 

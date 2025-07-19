@@ -6,7 +6,7 @@ and video metadata management.
 """
 
 import logging
-from dataclasses import asdict, replace
+from dataclasses import replace
 from datetime import datetime
 
 from models import VideoData
@@ -16,14 +16,11 @@ from utils import extract_game_links, extract_steam_app_id
 class VideoProcessor:
     """Handles video processing pipeline and game link extraction"""
 
-    def __init__(self, data_manager, youtube_extractor, config_manager, game_inference,
-                 itch_fetcher, crazygames_fetcher, other_games_data):
+    def __init__(self, data_manager, youtube_extractor, config_manager, game_inference, other_games_data):
         self.data_manager = data_manager
         self.youtube_extractor = youtube_extractor
         self.config_manager = config_manager
         self.game_inference = game_inference
-        self.itch_fetcher = itch_fetcher
-        self.crazygames_fetcher = crazygames_fetcher
         self.other_games_data = other_games_data
 
     def process_videos(self, videos_data, channel_url: str, max_new_videos: int | None = None,
@@ -161,22 +158,16 @@ class VideoProcessor:
 
     def process_video_game_links(self, video) -> VideoData:
         """Extract and process game links from a video"""
-        # Convert VideoData to dict for processing, or use dict directly
-        if isinstance(video, VideoData):
-            video_dict = asdict(video)
-        else:
-            video_dict = video
-
-        # Extract game links
-        game_links = extract_game_links(video_dict['description'])
+        # Extract game links from description
+        game_links = extract_game_links(video.description)
 
         # Store video data with game links if found
         video_data = VideoData(
-            video_id=video_dict['video_id'],
-            title=video_dict['title'],
-            description=video_dict['description'],
-            published_at=video_dict['published_at'],
-            thumbnail=video_dict['thumbnail'],
+            video_id=video.video_id,
+            title=video.title,
+            description=video.description,
+            published_at=video.published_at,
+            thumbnail=video.thumbnail,
             steam_app_id=None,
             itch_url=None,
             itch_is_demo=False,  # Flag to indicate itch.io is demo/test version
@@ -205,35 +196,15 @@ class VideoProcessor:
             logging.info(f"  Found Itch.io link: {game_links.itch}" +
                         (f", CrazyGames: {game_links.crazygames}" if game_links.crazygames else ""))
 
-            # Fetch itch.io metadata if not already cached
-            if game_links.itch not in self.other_games_data['games']:
-                logging.info("  Fetching Itch.io metadata...")
-                itch_data = self.itch_fetcher.fetch_data(game_links.itch)
-                if itch_data:
-                    # Convert OtherGameData to dict for storage (until we migrate other_games_data structure)
-                    itch_dict = asdict(itch_data)
-                    itch_dict['last_updated'] = datetime.now().isoformat()
-                    self.other_games_data['games'][game_links.itch] = itch_dict
-
         elif game_links.crazygames:
             video_data = replace(video_data, crazygames_url=game_links.crazygames)
             logging.info(f"  Found CrazyGames link: {game_links.crazygames}")
-
-            # Fetch CrazyGames metadata if not already cached
-            if game_links.crazygames not in self.other_games_data['games']:
-                logging.info("  Fetching CrazyGames metadata...")
-                crazygames_data = self.crazygames_fetcher.fetch_data(game_links.crazygames)
-                if crazygames_data:
-                    # Convert OtherGameData to dict for storage (until we migrate other_games_data structure)
-                    crazygames_dict = asdict(crazygames_data)
-                    crazygames_dict['last_updated'] = datetime.now().isoformat()
-                    self.other_games_data['games'][game_links.crazygames] = crazygames_dict
 
         else:
             logging.info("  No game links found, trying YouTube detection...")
 
             # Last resort: try YouTube's detected game
-            detected_game = self.youtube_extractor.extract_youtube_detected_game(video_dict['video_id'])
+            detected_game = self.youtube_extractor.extract_youtube_detected_game(video.video_id)
             if detected_game:
                 logging.info(f"  YouTube detected game: {detected_game}")
                 video_data = replace(video_data, youtube_detected_game=detected_game)

@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 from config_manager import ConfigManager
+from other_games_updater import OtherGamesUpdater
 from steam_updater import SteamDataUpdater
 
 from scraper import YouTubeSteamScraper, build_database
@@ -27,8 +28,8 @@ class CLICommands:
         parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
         parser.add_argument(
             'mode',
-            choices=['backfill', 'cron', 'reprocess', 'single-app', 'data-quality', 'infer-games', 'build-db'],
-            help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), single-app, data-quality, infer-games, or build-db'
+            choices=['backfill', 'cron', 'reprocess', 'single-app', 'data-quality', 'infer-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other'],
+            help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), single-app, data-quality, infer-games, build-db, fetch-videos (only fetch new videos), refresh-steam (only refresh Steam data), or refresh-other (only refresh other games data)'
         )
         parser.add_argument(
             '--channel',
@@ -44,6 +45,11 @@ class CLICommands:
             '--max-steam-updates',
             type=int,
             help='Maximum number of Steam games to update'
+        )
+        parser.add_argument(
+            '--max-other-updates',
+            type=int,
+            help='Maximum number of other platform games to update'
         )
         parser.add_argument(
             '--app-id',
@@ -68,7 +74,10 @@ class CLICommands:
             'single-app': self._handle_single_app,
             'data-quality': self._handle_data_quality,
             'infer-games': self._handle_infer_games,
-            'build-db': self._handle_build_db
+            'build-db': self._handle_build_db,
+            'fetch-videos': self._handle_fetch_videos,
+            'refresh-steam': self._handle_refresh_steam,
+            'refresh-other': self._handle_refresh_other
         }
 
         handler = command_map.get(parsed_args.mode)
@@ -136,6 +145,13 @@ class CLICommands:
             max_updates=args.max_steam_updates
         )
 
+        # Update other platform games using OtherGamesUpdater
+        other_games_updater = OtherGamesUpdater()
+        other_games_updater.update_games_from_channels(
+            channels_to_process,
+            max_updates=args.max_other_updates
+        )
+
     def _handle_cron(self, args):
         """Handle cron command"""
         project_root = self._get_project_root()
@@ -163,6 +179,13 @@ class CLICommands:
             steam_updater.update_all_games_from_channels(
                 enabled_channels,
                 max_updates=args.max_steam_updates
+            )
+
+            # Update other platform games once for all enabled channels
+            other_games_updater = OtherGamesUpdater()
+            other_games_updater.update_games_from_channels(
+                enabled_channels,
+                max_updates=args.max_other_updates
             )
 
     def _handle_single_app(self, args):
@@ -208,6 +231,65 @@ class CLICommands:
         """Handle build-db command"""
         logging.info("Building SQLite database from existing JSON data")
         build_database()
+
+    def _handle_fetch_videos(self, args):
+        """Handle fetch-videos command - only fetch new YouTube videos without processing game data"""
+        project_root = self._get_project_root()
+        config_manager = ConfigManager(project_root)
+        channels = config_manager.get_channels()
+
+        if args.channel:
+            if not config_manager.validate_channel_exists(args.channel):
+                print(f"Error: Channel '{args.channel}' not found in config.json")
+                sys.exit(1)
+            channels_to_process = [args.channel]
+            logging.info(f"Fetch videos mode: processing channel {args.channel}")
+        else:
+            channels_to_process = [ch for ch in channels if config_manager.is_channel_enabled(ch)]
+            logging.info(f"Fetch videos mode: processing all enabled channels ({len(channels_to_process)} channels)")
+
+        total_new_videos = 0
+        for channel_id in channels_to_process:
+            logging.info(f"Fetching videos for channel: {channel_id}")
+            scraper = YouTubeSteamScraper(channel_id)
+            channel_url = config_manager.get_channel_url(channel_id)
+
+            new_videos = scraper.process_videos(
+                channel_url,
+                max_new_videos=args.max_new,
+                fetch_newest_first=True,
+                cutoff_date=args.cutoff_date
+            )
+            total_new_videos += new_videos
+            logging.info(f"Fetched {new_videos} new videos for {channel_id}")
+
+        logging.info(f"Fetch videos completed. Total new videos: {total_new_videos}")
+
+    def _handle_refresh_steam(self, args):
+        """Handle refresh-steam command - only refresh Steam game data"""
+        project_root = self._get_project_root()
+        config_manager = ConfigManager(project_root)
+        channels = config_manager.get_channels()
+
+        # Get all enabled channels for Steam updates
+        enabled_channels = [ch for ch in channels if config_manager.is_channel_enabled(ch)]
+
+        if not enabled_channels:
+            logging.warning("No enabled channels found")
+            return
+
+        logging.info("Refreshing Steam game data")
+        steam_updater = SteamDataUpdater()
+        steam_updater.update_all_games_from_channels(
+            enabled_channels,
+            max_updates=args.max_steam_updates
+        )
+
+    def _handle_refresh_other(self, _args):
+        """Handle refresh-other command - only refresh other games (Itch.io, CrazyGames) data"""
+        logging.info("Refreshing other games data (Itch.io, CrazyGames)")
+        other_games_updater = OtherGamesUpdater()
+        other_games_updater.update_all_other_games()
 
 
 def main():

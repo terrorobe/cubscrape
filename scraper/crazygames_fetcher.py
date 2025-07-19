@@ -36,6 +36,7 @@ class CrazyGamesDataFetcher:
                 url=crazygames_url,
                 name=self._extract_name(soup),
                 is_free=True,  # CrazyGames are free browser games
+                release_date=self._extract_release_date(soup),
                 header_image=self._extract_header_image(soup),
                 tags=self._extract_tags(soup)
             )
@@ -66,6 +67,22 @@ class CrazyGamesDataFetcher:
         og_image = soup.find('meta', property='og:image')
         if og_image and og_image.get('content'):
             return og_image['content']
+        return ""
+
+    def _extract_release_date(self, soup: BeautifulSoup) -> str:
+        """Extract release date from CrazyGames page"""
+        # Look for Released field in game summary table
+        table_rows = soup.select('.GameSummary_gameTableRow__9i4Mt')
+        for row in table_rows:
+            header = row.select_one('.GameSummary_gameTableRowHeader__qmvU_')
+            content = row.select_one('.GameSummary_gameTableRowContent__RW5fE')
+
+            if header and content:
+                header_text = header.get_text(strip=True).lower()
+                if 'released' in header_text:
+                    release_text = content.get_text(strip=True)
+                    return release_text
+
         return ""
 
     def _extract_tags(self, soup: BeautifulSoup) -> list:

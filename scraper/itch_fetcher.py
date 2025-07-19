@@ -33,6 +33,7 @@ class ItchDataFetcher:
                 url=itch_url,
                 name=self._extract_name(soup),
                 is_free=True,  # Most itch games are free or pay-what-you-want
+                release_date=self._extract_release_date(soup),
                 header_image=self._extract_header_image(soup),
                 tags=self._extract_tags(soup)
             )
@@ -61,6 +62,29 @@ class ItchDataFetcher:
         og_image = soup.find('meta', property='og:image')
         if og_image and og_image.get('content'):
             return og_image['content']
+        return ""
+
+    def _extract_release_date(self, soup: BeautifulSoup) -> str:
+        """Extract release/published date from Itch.io page"""
+        # Look for the release date row in the info table
+        table_rows = soup.select('table tr')
+        for row in table_rows:
+            cells = row.find_all('td')
+            if len(cells) == 2:
+                label = cells[0].get_text(strip=True).lower()
+                if 'published' in label:
+                    # Look for abbr element in the second cell
+                    abbr = cells[1].find('abbr', title=True)
+                    if abbr and abbr.get('title'):
+                        title = abbr.get('title')
+                        # Parse Itch.io format: "27 May 2025 @ 14:17 UTC"
+                        date_match = re.search(r'(\d{1,2} \w+ \d{4})', title)
+                        if date_match:
+                            return date_match.group(1)
+                        # Return cleaned title if it contains a year (remove time part)
+                        if re.search(r'\d{4}', title):
+                            return title.split('@')[0].strip()
+
         return ""
 
     def _extract_tags(self, soup: BeautifulSoup) -> list:
