@@ -717,6 +717,9 @@ function getReleaseInfo(game) {
         return game.planned_release_date || 'Coming soon';
     }
     if (game.is_early_access) {
+        if (game.release_date) {
+            return `Early Access • ${game.release_date}`;
+        }
         return 'Early Access';
     }
     if (game.release_date) {
