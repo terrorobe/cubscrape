@@ -155,24 +155,61 @@ h1 {
 }
 
 .game-rating {
-    font-weight: 700;
     padding: 4px 8px;
     border-radius: 4px;
-    font-size: 0.85rem;
+    display: inline-block;
 }
 
+.rating-numbers {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.rating-summary {
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* HSL Rainbow Gradient for Ratings */
 .rating-positive {
-    background-color: var(--positive);
-    color: white;
+    background-color: hsl(120, 70%, 40%); /* Deep green for overwhelmingly positive */
+    color: black;
+}
+
+.rating-positive.rating-very-positive {
+    background-color: hsl(100, 60%, 50%);
+    color: black;
+}
+
+.rating-positive.rating-mostly-positive {
+    background-color: hsl(80, 60%, 50%);
+    color: black;
+}
+
+.rating-positive.rating-just-positive {
+    background-color: hsl(60, 60%, 50%);
+    color: black;
 }
 
 .rating-mixed {
-    background-color: var(--mixed);
+    background-color: hsl(45, 60%, 50%); /* Yellow-orange for mixed */
     color: black;
 }
 
 .rating-negative {
-    background-color: var(--negative);
+    background-color: hsl(20, 60%, 50%); /* Orange-red for mostly negative */
+    color: white;
+}
+
+.rating-negative.rating-very-negative {
+    background-color: hsl(10, 70%, 50%);
+    color: white;
+}
+
+.rating-negative.rating-overwhelmingly-negative {
+    background-color: hsl(0, 80%, 40%); /* Deep red for overwhelmingly negative */
     color: white;
 }
 
@@ -188,24 +225,6 @@ h1 {
     font-weight: 400;
 }
 
-.game-status {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
-.status-early-access {
-    color: var(--early-access);
-    font-weight: 600;
-}
-
-.status-coming-soon {
-    color: var(--accent);
-}
-
-.status-demo {
-    color: var(--early-access);
-    font-weight: 600;
-}
 
 .full-game-info {
     font-size: 0.8rem;
@@ -333,15 +352,28 @@ h1 {
     margin-left: 8px;
 }
 
-.game-price {
+.game-price-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    gap: 10px;
+}
+
+.price-value {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--accent);
-    margin: 10px 0;
     padding: 4px 8px;
     background: rgba(102, 192, 244, 0.1);
     border-radius: 4px;
-    display: inline-block;
+}
+
+.release-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: right;
+    flex-shrink: 0;
 }
 
 .update-info {

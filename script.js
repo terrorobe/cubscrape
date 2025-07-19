@@ -183,10 +183,41 @@ function getStatusClass(game) {
     return '';
 }
 
-function getRatingClass(percentage) {
+function getRatingClass(percentage, reviewSummary) {
     if (!percentage) {
         return '';
     }
+    
+    // Use review summary for more specific classification when available
+    if (reviewSummary) {
+        const summary = reviewSummary.toLowerCase();
+        if (summary.includes('overwhelmingly positive')) {
+            return 'positive';
+        }
+        if (summary.includes('very positive')) {
+            return 'positive rating-very-positive';
+        }
+        if (summary.includes('mostly positive')) {
+            return 'positive rating-mostly-positive';
+        }
+        if (summary.includes('positive')) {
+            return 'positive rating-just-positive';
+        }
+        if (summary.includes('mixed')) {
+            return 'mixed';
+        }
+        if (summary.includes('mostly negative')) {
+            return 'negative';
+        }
+        if (summary.includes('overwhelmingly negative')) {
+            return 'negative rating-overwhelmingly-negative';
+        }
+        if (summary.includes('negative')) {
+            return 'negative rating-very-negative';
+        }
+    }
+    
+    // Fallback to percentage-based classification
     if (percentage >= 80) {
         return 'positive';
     }
@@ -529,7 +560,7 @@ function renderFilteredGames(games) {
 function generateGameCardHTML(game) {
     const statusText = getStatusText(game);
     const statusClass = getStatusClass(game);
-    const ratingClass = getRatingClass(game.positive_review_percentage);
+    const ratingClass = getRatingClass(game.positive_review_percentage, game.review_summary);
     const topTags = (game.tags || []).slice(0, MAX_TAGS_DISPLAY);
     
     // Get the correct platform URL for card click
@@ -567,13 +598,11 @@ function generateGameTitleHTML(game) {
 
 function generateGameMetaHTML(game, statusText, statusClass, ratingClass) {
     const reviewHTML = generateReviewHTML(game, ratingClass);
-    const statusHTML = generateStatusHTML(statusText, statusClass, game);
     const fullGameHTML = generateFullGameHTML(game);
     
     return `
         <div class="game-meta">
             ${reviewHTML}
-            ${statusHTML}
             ${fullGameHTML}
         </div>
     `;
@@ -583,18 +612,18 @@ function generateReviewHTML(game, ratingClass) {
     // Handle "No user reviews" case explicitly
     if (game.review_summary === 'No user reviews' || game.review_count === 0) {
         return `
-            <span class="game-rating rating-insufficient">
+            <div class="game-rating rating-insufficient">
                 No user reviews
-            </span>
+            </div>
         `;
     }
     
     // Show "Too few reviews" block when there are reviews but insufficient for percentage
     if (game.insufficient_reviews || (game.review_count !== undefined && game.review_count > 0 && !game.positive_review_percentage)) {
         return `
-            <span class="game-rating rating-insufficient">
+            <div class="game-rating rating-insufficient">
                 Too few reviews (${game.review_count || 0})
-            </span>
+            </div>
         `;
     }
     
@@ -610,22 +639,18 @@ function generateReviewHTML(game, ratingClass) {
     ` : '';
     
     return `
-        <span class="game-rating rating-${ratingClass}">
-            ${game.positive_review_percentage}% ${game.review_summary || 'Positive'}
-            ${game.review_count ? ` (${game.review_count.toLocaleString()})` : ''}
-        </span>
+        <div class="game-rating rating-${ratingClass}">
+            <div class="rating-numbers">
+                ${game.positive_review_percentage}% ${game.review_count ? `(${game.review_count.toLocaleString()})` : ''}
+            </div>
+            <div class="rating-summary">
+                ${game.review_summary || 'Positive'}
+            </div>
+        </div>
         ${recentReviewHTML}
     `;
 }
 
-function generateStatusHTML(statusText, statusClass, game) {
-    return `
-        <span class="game-status ${statusClass ? 'status-' + statusClass : ''}">
-            ${statusText}
-            ${game.demo_itch_url ? ' + Itch Demo' : ''}
-        </span>
-    `;
-}
 
 function generateFullGameHTML(game) {
     // Unified games handle this in their main status - no need for separate full game info
@@ -649,7 +674,55 @@ function generateFullGameHTML(game) {
 
 function generateGamePriceHTML(game) {
     const price = game.display_price !== undefined ? game.display_price : game.price;
-    return price ? `<div class="game-price">${price}</div>` : '';
+    const priceHTML = price ? `<span class="price-value">${price}</span>` : '';
+    
+    // Get release status info
+    const releaseInfo = getReleaseInfo(game);
+    const releaseHTML = releaseInfo ? `<span class="release-info">${releaseInfo}</span>` : '';
+    
+    if (!priceHTML && !releaseHTML) {
+        return '';
+    }
+    
+    return `
+        <div class="game-price-line">
+            ${priceHTML}
+            ${releaseHTML}
+        </div>
+    `;
+}
+
+function getReleaseInfo(game) {
+    // For unified display
+    if (game.display_status) {
+        return game.display_status;
+    }
+    
+    // Platform-specific games
+    if (game.platform === PLATFORMS.ITCH) {
+        return 'Available on Itch.io';
+    }
+    if (game.platform === PLATFORMS.CRAZYGAMES) {
+        return 'Play on CrazyGames';
+    }
+    
+    // Steam games
+    if (game.is_demo) {
+        if (game.coming_soon) {
+            return `Demo • Full game ${game.planned_release_date || 'coming soon'}`;
+        }
+        return 'Demo available';
+    }
+    if (game.coming_soon) {
+        return game.planned_release_date || 'Coming soon';
+    }
+    if (game.is_early_access) {
+        return 'Early Access';
+    }
+    if (game.release_date) {
+        return `Released ${game.release_date}`;
+    }
+    return 'Released';
 }
 
 function generateGameTagsHTML(topTags) {
