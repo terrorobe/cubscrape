@@ -3,11 +3,13 @@ Itch.io data fetching and parsing functionality
 """
 
 import logging
+import os
 import re
 
 import requests
 from bs4 import BeautifulSoup
 from models import OtherGameData
+from utils import load_env_file
 
 
 class ItchDataFetcher:
@@ -17,6 +19,15 @@ class ItchDataFetcher:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
+
+        # Load .env file if ITCH_COOKIES is not already set
+        if 'ITCH_COOKIES' not in os.environ:
+            load_env_file()
+
+        # Load optional authentication from environment
+        itch_cookies = os.getenv('ITCH_COOKIES')
+        if itch_cookies:
+            self.headers['Cookie'] = itch_cookies
 
     def fetch_data(self, itch_url: str) -> OtherGameData | None:
         """Fetch game data from Itch.io"""
@@ -67,17 +78,21 @@ class ItchDataFetcher:
     def _extract_release_date(self, soup: BeautifulSoup) -> str:
         """Extract release/published date from Itch.io page"""
         # Look for the release date row in the info table
+        date_keywords = ['published', 'release date', 'released', 'created', 'updated']
+
         table_rows = soup.select('table tr')
         for row in table_rows:
             cells = row.find_all('td')
             if len(cells) == 2:
                 label = cells[0].get_text(strip=True).lower()
-                if 'published' in label:
+
+                # Check if any date keyword matches
+                if any(keyword in label for keyword in date_keywords):
                     # Look for abbr element in the second cell
                     abbr = cells[1].find('abbr', title=True)
                     if abbr and abbr.get('title'):
                         title = abbr.get('title')
-                        # Parse Itch.io format: "27 May 2025 @ 14:17 UTC"
+                        # Parse authenticated format: "08 April 2025 @ 04:55 UTC"
                         date_match = re.search(r'(\d{1,2} \w+ \d{4})', title)
                         if date_match:
                             return date_match.group(1)

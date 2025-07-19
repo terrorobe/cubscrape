@@ -89,6 +89,10 @@ class OtherGamesUpdater:
         if not last_updated_str:
             return True, "never updated"
 
+        # Missing release date is reason for immediate refresh
+        if not game_data.release_date:
+            return True, "missing release date"
+
         try:
             last_updated = dateutil_parse(last_updated_str)
             days_since_update = (datetime.now() - last_updated.replace(tzinfo=None)).days

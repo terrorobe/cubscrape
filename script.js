@@ -706,11 +706,17 @@ function getReleaseInfo(game) {
         return game.display_status;
     }
     
-    // Platform-specific games
+    // Platform-specific games - show release date if available
     if (game.platform === PLATFORMS.ITCH) {
+        if (game.release_date) {
+            return `Released ${game.release_date}`;
+        }
         return 'Available on Itch.io';
     }
     if (game.platform === PLATFORMS.CRAZYGAMES) {
+        if (game.release_date) {
+            return `Released ${game.release_date}`;
+        }
         return 'Play on CrazyGames';
     }
     
