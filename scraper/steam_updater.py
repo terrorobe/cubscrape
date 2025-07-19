@@ -2,11 +2,13 @@
 Steam Data Updater - Orchestrates Steam game updates across multiple channels
 """
 import logging
+import re
 from dataclasses import replace
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from data_manager import DataManager
+from dateutil.parser import parse as dateutil_parse
 from models import SteamGameData
 from steam_fetcher import SteamDataFetcher
 
@@ -63,54 +65,26 @@ class SteamDataUpdater:
             days_until_release = self._get_days_until_release(release_info)
             return self._interval_for_days_until_release(days_until_release, release_info)
         else:
-            try:
-                release_date = datetime.strptime(release_info, "%d %b, %Y")
-                age_days = (datetime.now() - release_date).days
+            # For released games, use flexible parsing
+            parsed_date, granularity = self._parse_steam_date(release_info)
+            if parsed_date:
+                age_days = (datetime.now() - parsed_date).days
                 return self._interval_for_age(age_days)
-            except Exception:
-                return 7  # Default to weekly on any error
+            else:
+                return 7  # Default to weekly if unparseable
 
     def _get_days_until_release(self, release_info: str) -> int:
         """
-        Calculate days until the earliest possible release date.
+        Calculate days until the earliest possible release date using flexible parsing.
         Returns the number of days until the start of the release window.
         """
         now = datetime.now()
 
-        # Try specific date format first
-        try:
-            release_date = datetime.strptime(release_info, "%d %b, %Y")
-            return (release_date - now).days
-        except ValueError:
-            pass
+        # Use new flexible parsing with granularity detection
+        parsed_date, granularity = self._parse_steam_date(release_info)
 
-        # Try month/year format - use first day of the month
-        try:
-            release_date = datetime.strptime(release_info, "%B %Y")
-            return (release_date - now).days
-        except ValueError:
-            pass
-
-        # Try quarter format - use first day of the quarter
-        if release_info.startswith('Q'):
-            try:
-                quarter = int(release_info[1])
-                year = int(release_info.split()[1])
-
-                # First month of each quarter: Q1=Jan, Q2=Apr, Q3=Jul, Q4=Oct
-                quarter_start_month = (quarter - 1) * 3 + 1
-                quarter_start = datetime(year, quarter_start_month, 1)
-                return (quarter_start - now).days
-            except (ValueError, IndexError):
-                pass
-
-        # Try year-only format - use January 1st
-        try:
-            year = int(release_info)
-            year_start = datetime(year, 1, 1)
-            return (year_start - now).days
-        except ValueError:
-            pass
+        if parsed_date:
+            return (parsed_date - now).days
 
         return 365  # Default to distant future for unparseable formats
 
@@ -146,6 +120,70 @@ class SteamDataUpdater:
         else:
             return 30  # Monthly for older games
 
+    def _parse_steam_date(self, date_str: str) -> tuple[datetime | None, str | None]:
+        """
+        Parse Steam release dates with granularity detection.
+        Returns (parsed_date, granularity) or (None, None) if unparseable.
+        For imprecise dates (year, quarter), returns the earliest possible date.
+        """
+        if not date_str:
+            return None, None
+
+        date_str = date_str.strip()
+
+        # Detect granularity first
+        granularity = self._detect_granularity(date_str)
+
+        # Handle quarter format - use first day of the quarter
+        if granularity == 'quarter' and date_str.upper().startswith('Q'):
+            try:
+                quarter = int(date_str[1])
+                year = int(date_str.split()[1])
+                # First month of each quarter: Q1=Jan, Q2=Apr, Q3=Jul, Q4=Oct
+                quarter_start_month = (quarter - 1) * 3 + 1
+                quarter_start = datetime(year, quarter_start_month, 1)
+                return quarter_start, granularity
+            except (ValueError, IndexError):
+                return None, None
+
+        # Handle year-only format - use January 1st
+        elif granularity == 'year':
+            try:
+                year = int(date_str)
+                year_start = datetime(year, 1, 1)
+                return year_start, granularity
+            except ValueError:
+                return None, None
+
+        # Use dateutil for flexible parsing of all other dates
+        try:
+            parsed = dateutil_parse(date_str)
+            # For month-level dates, ensure we use first day of month
+            if granularity == 'month':
+                parsed = parsed.replace(day=1)
+            return parsed, granularity
+        except Exception:
+            return None, None
+
+    def _detect_granularity(self, date_str: str) -> str:
+        """Detect the granularity of a date string."""
+        date_str = date_str.lower().strip()
+
+        # Quarter notation
+        if re.match(r'q[1-4]\s+\d{4}', date_str):
+            return 'quarter'
+
+        # Year only
+        if re.match(r'^\d{4}$', date_str):
+            return 'year'
+
+        # Month + Year (two words, second is 4-digit year)
+        if re.match(r'^\w+\s+\d{4}$', date_str):
+            return 'month'
+
+        # Assume anything else is day-level if it has more components
+        return 'day'
+
     def _is_overdue_release(self, game_data: SteamGameData) -> bool:
         """Check if game has passed its exact release date but is still marked as coming soon."""
         if not game_data.coming_soon:
@@ -155,13 +193,14 @@ class SteamDataUpdater:
         if not release_info:
             return False
 
-        try:
-            # Only check exact dates like "15 Jan, 2025"
-            release_date = datetime.strptime(release_info, "%d %b, %Y")
-            return datetime.now() >= release_date
-        except ValueError:
-            # Ignore imprecise dates like "August 2025" or "Q1 2025"
-            return False
+        # Use new flexible parsing
+        parsed_date, granularity = self._parse_steam_date(release_info)
+
+        # Only check day-level dates for overdue (skip imprecise dates)
+        if parsed_date and granularity == 'day':
+            return datetime.now() >= parsed_date
+
+        return False
 
 
     def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None):
