@@ -357,7 +357,18 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin: 10px 0;
-    gap: 10px;
+    min-height: 2rem; /* Consistent height */
+}
+
+.price-left {
+    display: flex;
+    align-items: center;
+}
+
+.price-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .price-value {
@@ -373,7 +384,6 @@ h1 {
     font-size: 0.9rem;
     color: var(--text-secondary);
     text-align: right;
-    flex-shrink: 0;
 }
 
 .update-info {

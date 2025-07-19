@@ -680,14 +680,10 @@ function generateGamePriceHTML(game) {
     const releaseInfo = getReleaseInfo(game);
     const releaseHTML = releaseInfo ? `<span class="release-info">${releaseInfo}</span>` : '';
     
-    if (!priceHTML && !releaseHTML) {
-        return '';
-    }
-    
     return `
         <div class="game-price-line">
-            ${priceHTML}
-            ${releaseHTML}
+            <div class="price-left">${priceHTML}</div>
+            <div class="price-right">${releaseHTML}</div>
         </div>
     `;
 }
@@ -706,26 +702,44 @@ function getReleaseInfo(game) {
         return 'Play on CrazyGames';
     }
     
-    // Steam games
+    // Steam games - handle demos specially, then decouple type and date
     if (game.is_demo) {
         if (game.coming_soon) {
-            return `Demo • Full game ${game.planned_release_date || 'coming soon'}`;
+            const fullGameDate = game.planned_release_date || 'coming soon';
+            return `Demo • Full game ${fullGameDate}`;
         }
-        return 'Demo available';
+        return 'Demo';
     }
-    if (game.coming_soon) {
-        return game.planned_release_date || 'Coming soon';
+    
+    // For non-demo games, decouple release type and date
+    const releaseType = getReleaseType(game);
+    const releaseDate = getReleaseDate(game);
+    
+    if (releaseType && releaseDate) {
+        return `${releaseType} • ${releaseDate}`;
     }
+    return releaseType || 'Released';
+}
+
+function getReleaseType(game) {
     if (game.is_early_access) {
-        if (game.release_date) {
-            return `Early Access • ${game.release_date}`;
-        }
         return 'Early Access';
     }
-    if (game.release_date) {
-        return `Released ${game.release_date}`;
+    if (game.coming_soon) {
+        return 'Unreleased';
     }
     return 'Released';
+}
+
+function getReleaseDate(game) {
+    // Priority order for date selection
+    if (game.planned_release_date) {
+        return game.planned_release_date;
+    }
+    if (game.release_date) {
+        return game.release_date;
+    }
+    return null;
 }
 
 function generateGameTagsHTML(topTags) {
