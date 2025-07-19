@@ -84,6 +84,10 @@ const imageObserver = new IntersectionObserver((entries) => {
     rootMargin: '500px'
 });
 
+function generateYouTubeUrl(videoId) {
+    return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
 // Constants
 const MAX_TAGS_DISPLAY = 3;
 const PLATFORMS = {
@@ -326,7 +330,7 @@ function applyFilters() {
         rating: ratingFilter > 0 ? ratingFilter : null,
         tag: tagFilter || null,
         channel: channelFilter || null,
-        sort: sortBy !== 'rating' ? sortBy : null
+        sort: sortBy !== 'rating-score' ? sortBy : null
     });
     
     // Use SQLite for filtering
@@ -384,9 +388,12 @@ function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter,
     
     // Sorting
     const sortMappings = {
-        rating: 'positive_review_percentage DESC',
-        date: 'latest_video_date DESC',
-        name: 'name ASC'
+        'rating-score': 'positive_review_percentage DESC',
+        'rating-category': 'review_summary_priority ASC, positive_review_percentage DESC, review_count DESC',
+        'date': 'latest_video_date DESC',
+        'name': 'name ASC',
+        'release-new': 'release_date DESC',
+        'release-old': 'release_date ASC'
     };
     
     if (sortMappings[sortBy]) {
@@ -416,7 +423,6 @@ function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter,
         try {
             game.genres = JSON.parse(game.genres || '[]');
             game.tags = JSON.parse(game.tags || '[]');
-            game.categories = JSON.parse(game.categories || '[]');
             game.developers = JSON.parse(game.developers || '[]');
             game.publishers = JSON.parse(game.publishers || '[]');
             game.unique_channels = JSON.parse(game.unique_channels || '[]');
@@ -498,7 +504,7 @@ function generateChannelHTML(videosByChannel) {
 function generateVideoItemHTML(video) {
     return `
         <div class="video-item">
-            <a href="https://youtube.com/watch?v=${video.video_id}" target="_blank" >
+            <a href="${generateYouTubeUrl(video.video_id)}" target="_blank" >
                 ${video.video_title}
             </a>
             <span class="video-item-date">${formatDate(video.video_date)}</span>
@@ -609,6 +615,9 @@ function generateGameMetaHTML(game, statusText, statusClass, ratingClass) {
 }
 
 function generateReviewHTML(game, ratingClass) {
+    // Determine if this is an inferred summary for non-Steam platforms
+    const isInferred = game.platform !== 'steam' && game.review_summary;
+    
     // Handle "No user reviews" case explicitly
     if (game.review_summary === 'No user reviews' || game.review_count === 0) {
         return `
@@ -638,13 +647,16 @@ function generateReviewHTML(game, ratingClass) {
         </div>
     ` : '';
     
+    // Add tooltip for inferred summaries
+    const tooltipAttr = isInferred ? 'title="Review summary inferred from rating data"' : '';
+    
     return `
-        <div class="game-rating rating-${ratingClass}">
+        <div class="game-rating rating-${ratingClass}" ${tooltipAttr}>
             <div class="rating-numbers">
                 ${game.positive_review_percentage}% ${game.review_count ? `(${game.review_count.toLocaleString()})` : ''}
             </div>
             <div class="rating-summary">
-                ${game.review_summary || 'Positive'}
+                ${game.review_summary}${isInferred ? ' *' : ''}
             </div>
         </div>
         ${recentReviewHTML}
@@ -766,7 +778,7 @@ function generateVideoInfoHTML(game) {
     return `
         <div class="video-info">
             ${latestVideoTitle ? `<div class="video-title">
-                <a href="https://youtube.com/watch?v=${latestVideoId}" target="_blank" >
+                <a href="${generateYouTubeUrl(latestVideoId)}" target="_blank" >
                     ${latestVideoTitle}
                 </a>
             </div>` : ''}
@@ -827,7 +839,7 @@ function generateGameLinksHTML(game) {
                 </a>
                 ${demoLink}
                 ${crazyGamesLink}
-                ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" >YouTube</a>` : ''}
+                ${game.latest_video_id ? `<a href="${generateYouTubeUrl(game.latest_video_id)}" target="_blank" >YouTube</a>` : ''}
             </div>
         `;
     }
@@ -866,7 +878,7 @@ function generateGameLinksHTML(game) {
             ${steamDemoLink}
             ${itchDemoLink}
             ${crazyGamesLink}
-            ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" >YouTube</a>` : ''}
+            ${game.latest_video_id ? `<a href="${generateYouTubeUrl(game.latest_video_id)}" target="_blank" >YouTube</a>` : ''}
         </div>
     `;
 }

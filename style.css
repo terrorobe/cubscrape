@@ -172,6 +172,7 @@ h1 {
     opacity: 0.9;
 }
 
+
 /* HSL Rainbow Gradient for Ratings */
 .rating-positive {
     background-color: hsl(120, 70%, 40%); /* Deep green for overwhelmingly positive */

@@ -16,6 +16,7 @@ CREATE TABLE games (
     positive_review_percentage INTEGER,
     review_count INTEGER,
     review_summary TEXT,
+    review_summary_priority INTEGER,
     recent_review_percentage INTEGER,
     recent_review_count INTEGER,
     recent_review_summary TEXT,
@@ -32,7 +33,6 @@ CREATE TABLE games (
     unique_channels TEXT,  -- JSON array
     genres TEXT,           -- JSON array
     tags TEXT,             -- JSON array
-    categories TEXT,       -- JSON array
     developers TEXT,       -- JSON array
     publishers TEXT,       -- JSON array
     demo_steam_app_id TEXT,
@@ -46,7 +46,6 @@ CREATE TABLE game_videos (
     video_id TEXT,
     video_title TEXT,
     video_date TEXT,
-    video_url TEXT,
     channel_name TEXT,
     published_at TEXT
 );
@@ -55,7 +54,6 @@ CREATE TABLE game_videos (
 CREATE INDEX idx_platform ON games(platform);
 CREATE INDEX idx_release_status ON games(coming_soon, is_early_access);
 CREATE INDEX idx_rating ON games(positive_review_percentage);
-CREATE INDEX idx_video_count ON games(video_count);
-CREATE INDEX idx_price ON games(price_final);
+CREATE INDEX idx_review_priority ON games(review_summary_priority);
 CREATE INDEX idx_game_videos ON game_videos(game_id);
 CREATE INDEX idx_channel_videos ON game_videos(channel_name);

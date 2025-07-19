@@ -34,16 +34,20 @@ class DatabaseManager:
         cursor = conn.cursor()
 
         for game_key, game in games_data.items():
+            # Generate review summary for non-Steam platforms
+            review_summary = self._generate_review_summary(game)
+            review_summary_priority = self._get_review_summary_priority(review_summary)
+
             # Insert game record
             cursor.execute('''
                 INSERT INTO games (
                     game_key, steam_app_id, name, platform, coming_soon,
                     is_early_access, is_demo, is_free, price, price_final,
-                    positive_review_percentage, review_count, review_summary,
+                    positive_review_percentage, review_count, review_summary, review_summary_priority,
                     recent_review_percentage, recent_review_count, recent_review_summary,
                     insufficient_reviews, release_date, planned_release_date, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
-                    unique_channels, genres, tags, categories, developers, publishers,
+                    unique_channels, genres, tags, developers, publishers,
                     demo_steam_app_id, demo_steam_url, demo_itch_url
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
@@ -59,7 +63,8 @@ class DatabaseManager:
                 self._extract_price_final(game),
                 game.get('positive_review_percentage', 0),
                 game.get('review_count', 0),
-                game.get('review_summary'),
+                review_summary,
+                review_summary_priority,
                 game.get('recent_review_percentage'),
                 game.get('recent_review_count'),
                 game.get('recent_review_summary'),
@@ -76,7 +81,6 @@ class DatabaseManager:
                 json.dumps(self._get_unique_channels(game)),
                 json.dumps(game.get('genres', [])),
                 json.dumps(game.get('tags', [])),
-                json.dumps(game.get('categories', [])),
                 json.dumps(game.get('developers', [])),
                 json.dumps(game.get('publishers', [])),
                 self._get_demo_steam_app_id(game),
@@ -91,17 +95,79 @@ class DatabaseManager:
                 cursor.execute('''
                     INSERT INTO game_videos (
                         game_id, video_id, video_title, video_date,
-                        video_url, channel_name, published_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                        channel_name, published_at
+                    ) VALUES (?, ?, ?, ?, ?, ?)
                 ''', (
                     game_id,
                     video.get('video_id'),
                     video.get('video_title'),
                     video.get('video_date'),
-                    video.get('video_url'),
                     video.get('channel_name'),
                     video.get('published_at')
                 ))
+
+    def _generate_review_summary(self, game):
+        """Generate review summary for non-Steam platforms using Steam's thresholds"""
+        platform = game.get('platform')
+
+        # Steam games already have official summaries
+        if platform == 'steam':
+            return game.get('review_summary')
+
+        percentage = game.get('positive_review_percentage')
+        review_count = game.get('review_count', 0)
+
+        if not review_count or review_count == 0:
+            return 'No user reviews'
+
+        if review_count < 10:
+            return 'Need more reviews for score'
+
+        if not percentage:
+            return None
+
+        # Apply Steam's thresholds
+        if percentage >= 95:
+            if review_count >= 500:
+                return 'Overwhelmingly Positive'
+            elif review_count >= 50:
+                return 'Very Positive'
+            else:
+                return 'Positive'
+        elif percentage >= 80:
+            if review_count >= 50:
+                return 'Very Positive'
+            else:
+                return 'Positive'
+        elif percentage >= 70:
+            return 'Mostly Positive'
+        elif percentage >= 40:
+            return 'Mixed'
+        elif percentage >= 20:
+            return 'Mostly Negative'
+        else:
+            return 'Negative'
+
+    def _get_review_summary_priority(self, review_summary):
+        """Get numeric priority for review summary for efficient sorting"""
+        if not review_summary:
+            return 99
+
+        priorities = {
+            'Overwhelmingly Positive': 1,
+            'Very Positive': 2,
+            'Positive': 3,
+            'Mostly Positive': 4,
+            'Mixed': 5,
+            'Mostly Negative': 6,
+            'Negative': 7,
+            'Very Negative': 8,
+            'Overwhelmingly Negative': 9,
+            'Need more reviews for score': 10,
+            'No user reviews': 11
+        }
+
+        return priorities.get(review_summary, 99)
 
     def _extract_price_final(self, game):
         """Extract numeric price for filtering"""

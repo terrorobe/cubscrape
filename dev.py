@@ -37,13 +37,25 @@ def main():
     should_rebuild = True
 
     if db_path.exists():
+        db_mtime = db_path.stat().st_mtime
+
         # Check if any JSON files are newer than the database
         json_files = list(Path("data").glob("*.json"))
+        schema_file = Path("data/schema.sql")
+
+        files_to_check = []
         if json_files:
-            newest_json = max(json_files, key=lambda p: p.stat().st_mtime)
-            if db_path.stat().st_mtime > newest_json.stat().st_mtime:
+            files_to_check.extend(json_files)
+        if schema_file.exists():
+            files_to_check.append(schema_file)
+
+        if files_to_check:
+            newest_file = max(files_to_check, key=lambda p: p.stat().st_mtime)
+            if db_mtime > newest_file.stat().st_mtime:
                 should_rebuild = False
                 print("✅ Database is up to date")
+            else:
+                print(f"🔄 Database needs rebuild - {newest_file.name} is newer")
 
     # Build database if needed
     if should_rebuild:
