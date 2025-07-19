@@ -100,7 +100,9 @@ const RELEASE_FILTERS = {
 
 // Utility Functions
 function formatDate(dateString) {
-    if (!dateString) return '';
+    if (!dateString) {
+        return '';
+    }
     
     // Handle different date formats
     let date;
@@ -465,7 +467,7 @@ function generateChannelHTML(videosByChannel) {
 function generateVideoItemHTML(video) {
     return `
         <div class="video-item">
-            <a href="https://youtube.com/watch?v=${video.video_id}" target="_blank">
+            <a href="https://youtube.com/watch?v=${video.video_id}" target="_blank" >
                 ${video.video_title}
             </a>
             <span class="video-item-date">${formatDate(video.video_date)}</span>
@@ -535,7 +537,7 @@ function generateGameCardHTML(game) {
         game.platform === PLATFORMS.CRAZYGAMES ? game.crazygames_url : game.steam_url;
     
     return `
-        <div class="game-card" onclick="window.open('${cardClickUrl}', '_blank')">
+        <div class="game-card" data-url="${cardClickUrl}">
             ${generateGameImageHTML(game)}
             <div class="game-info">
                 <div class="game-content">
@@ -674,7 +676,7 @@ function generateVideoInfoHTML(game) {
     return `
         <div class="video-info">
             ${latestVideoTitle ? `<div class="video-title">
-                <a href="https://youtube.com/watch?v=${latestVideoId}" target="_blank" onclick="event.stopPropagation()">
+                <a href="https://youtube.com/watch?v=${latestVideoId}" target="_blank" >
                     ${latestVideoTitle}
                 </a>
             </div>` : ''}
@@ -700,7 +702,7 @@ function generateMultiVideoHTML(game) {
     }
     
     return `
-        <div class="video-count video-expand-toggle" onclick="toggleVideos('${game.game_key}', ${game.id}, event)" style="cursor: pointer;">
+        <div class="video-count video-expand-toggle" data-game-key="${game.game_key}" data-game-id="${game.id}" style="cursor: pointer;">
             <span class="expand-icon">▶</span>
             <span class="expand-text" data-game-key="${game.game_key}">Featured in ${game.video_count} videos</span>
         </div>
@@ -717,25 +719,25 @@ function generateGameLinksHTML(game) {
             game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' : 'Steam';
         
         const demoLink = game.display_links.demo ? `
-            <a href="${game.display_links.demo}" target="_blank" onclick="event.stopPropagation()">
+            <a href="${game.display_links.demo}" target="_blank" >
                 Demo
             </a>
         ` : '';
         
         const crazyGamesLink = game.crazygames_url && game.platform !== PLATFORMS.CRAZYGAMES ? `
-            <a href="${game.crazygames_url}" target="_blank" onclick="event.stopPropagation()">
+            <a href="${game.crazygames_url}" target="_blank" >
                 CrazyGames
             </a>
         ` : '';
         
         return `
             <div class="game-links">
-                <a href="${game.display_links.main}" target="_blank" onclick="event.stopPropagation()">
+                <a href="${game.display_links.main}" target="_blank" >
                     ${mainLinkText}
                 </a>
                 ${demoLink}
                 ${crazyGamesLink}
-                ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>` : ''}
+                ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" >YouTube</a>` : ''}
             </div>
         `;
     }
@@ -745,19 +747,19 @@ function generateGameLinksHTML(game) {
         game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' : 'Steam';
     
     const itchDemoLink = game.demo_itch_url ? `
-        <a href="${game.demo_itch_url}" target="_blank" onclick="event.stopPropagation()">
+        <a href="${game.demo_itch_url}" target="_blank" >
             Itch.io Demo
         </a>
     ` : '';
     
     const steamDemoLink = game.demo_steam_app_id ? `
-        <a href="${game.demo_steam_url}" target="_blank" onclick="event.stopPropagation()">
+        <a href="${game.demo_steam_url}" target="_blank" >
             Demo
         </a>
     ` : '';
     
     const crazyGamesLink = game.crazygames_url && game.platform !== PLATFORMS.CRAZYGAMES ? `
-        <a href="${game.crazygames_url}" target="_blank" onclick="event.stopPropagation()">
+        <a href="${game.crazygames_url}" target="_blank" >
             CrazyGames
         </a>
     ` : '';
@@ -768,13 +770,13 @@ function generateGameLinksHTML(game) {
     
     return `
         <div class="game-links">
-            <a href="${platformUrl}" target="_blank" onclick="event.stopPropagation()">
+            <a href="${platformUrl}" target="_blank" >
                 ${platformName}
             </a>
             ${steamDemoLink}
             ${itchDemoLink}
             ${crazyGamesLink}
-            ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" onclick="event.stopPropagation()">YouTube</a>` : ''}
+            ${game.latest_video_id ? `<a href="https://youtube.com/watch?v=${game.latest_video_id}" target="_blank" >YouTube</a>` : ''}
         </div>
     `;
 }
@@ -790,7 +792,7 @@ function generateUpdateInfoHTML(game) {
 
 // Toggle videos display
 function toggleVideos(gameKey, gameId, event) {
-    event.stopPropagation(); // Prevent card click
+    // Event propagation is handled by event delegation
     const videosDiv = document.getElementById(`videos-${gameKey}`);
     const expandText = document.querySelector(`.expand-text[data-game-key="${gameKey}"]`);
     const expandIcon = expandText.previousElementSibling;
@@ -900,6 +902,28 @@ new PerformanceObserver((list) => {
         console.log('📐 CLS (Cumulative Layout Shift):', clsValue.toFixed(4));
     }
 }).observe({entryTypes: ['layout-shift']});
+
+// Set up event delegation for game cards
+document.addEventListener('click', (e) => {
+    // Handle game card clicks
+    const gameCard = e.target.closest('.game-card');
+    if (gameCard && !e.target.closest('a') && !e.target.closest('.video-expand-toggle')) {
+        const url = gameCard.dataset.url;
+        if (url) {
+            window.open(url, '_blank');
+        }
+    }
+    
+    // Handle video toggle clicks
+    const videoToggle = e.target.closest('.video-expand-toggle');
+    if (videoToggle) {
+        const gameKey = videoToggle.dataset.gameKey;
+        const gameId = videoToggle.dataset.gameId;
+        if (gameKey && gameId) {
+            toggleVideos(gameKey, gameId, e);
+        }
+    }
+});
 
 // Initialize
 loadData();
