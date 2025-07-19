@@ -787,7 +787,7 @@ function generateUpdateInfoHTML(game) {
     }
     
     const platformName = game.platform === PLATFORMS.STEAM ? 'Steam' : game.platform;
-    return `<div class="update-info">${platformName} data: ${formatDate(game.last_updated)}</div>`;
+    return `<div class="update-info" title="${platformName} data last updated">${formatDate(game.last_updated)}</div>`;
 }
 
 // Toggle videos display
