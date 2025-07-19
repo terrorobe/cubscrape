@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/terrorobe/cubscrape#readme",
   "devDependencies": {
-    "eslint": "^9.30.1"
+    "eslint": "^9.31.0"
   }
 }
