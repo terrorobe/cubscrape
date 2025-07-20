@@ -33155,7 +33155,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/81239e7d3fb2c7405d899912fe09dba6719afea5/header.jpg?t=1752165377",
-      "last_updated": "2025-07-20T14:59:54.124027",
+      "last_updated": "2025-07-21T00:04:25.049217",
       "name": "The King is Watching",
       "publishers": [
         "tinyBuild"
@@ -57451,7 +57451,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3400960/0a2865fae48080d06574d755538812f6bf58929a/header.jpg?t=1749732471",
       "is_free": true,
-      "last_updated": "2025-07-20T20:52:01.087097",
+      "last_updated": "2025-07-20T23:45:52.162080",
       "name": "Oaken Tower",
       "planned_release_date": "Coming soon",
       "price": "Free",
@@ -66092,6 +66092,47 @@
         "Sci-fi"
       ]
     },
+    "3684530": {
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "Black Heart Games LLC"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3684530/b761a1d1d52d3578ba37ad481a8efd5e3fb49142/header.jpg?t=1749850482",
+      "itch_url": "https://black-heart-games-studio.itch.io/plinkidle",
+      "last_updated": "2025-07-20T23:47:33.002351",
+      "name": "PlinkIdle",
+      "planned_release_date": "Q4 2025",
+      "publishers": [
+        "Black Heart Games LLC"
+      ],
+      "release_date": "Q4 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3684530",
+      "steam_url": "https://store.steampowered.com/app/3684530",
+      "tags": [
+        "Casual",
+        "Idler",
+        "2D",
+        "Pixel Graphics",
+        "Relaxing",
+        "Clicker",
+        "Hand-drawn",
+        "Atmospheric",
+        "Family Friendly",
+        "Nature"
+      ]
+    },
     "3687160": {
       "categories": [
         "Single-player",
@@ -66391,6 +66432,51 @@
         "Inventory Management",
         "Magic",
         "Roguelike"
+      ]
+    },
+    "3695630": {
+      "categories": [
+        "Single-player",
+        "Camera Comfort",
+        "Color Alternatives",
+        "Custom Volume Controls",
+        "Playable without Timed Input",
+        "Stereo Sound",
+        "Partial Controller Support",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "Mezzanine Software"
+      ],
+      "genres": [
+        "Action",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3695630/a7ed2783ebafe23e04df26117b3c2ea9b91858ef/header.jpg?t=1751575569",
+      "itch_url": "https://mezzaninesoftware.itch.io/landsword",
+      "last_updated": "2025-07-20T23:47:33.888537",
+      "name": "Project Landsword",
+      "planned_release_date": "To be announced",
+      "publishers": [
+        "Mezzanine Software"
+      ],
+      "release_date": "To be announced",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3695630",
+      "steam_url": "https://store.steampowered.com/app/3695630",
+      "tags": [
+        "Action",
+        "Mechs",
+        "Destruction",
+        "Top-Down Shooter",
+        "Stealth",
+        "Pixel Graphics",
+        "Singleplayer",
+        "Arcade",
+        "2.5D",
+        "Top-Down"
       ]
     },
     "3697890": {
@@ -67580,7 +67666,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3743220/3cf251e8b91c53c1010fdc1cf33aba3f233a1c7f/header.jpg?t=1752086257",
-      "last_updated": "2025-07-20T08:51:41.471114",
+      "last_updated": "2025-07-20T23:45:53.208814",
       "name": "A Solitaire Mystery",
       "positive_review_percentage": 92,
       "price": "9,75\u20ac",
@@ -67588,7 +67674,7 @@
         "Hempuli Oy"
       ],
       "release_date": "9 Jul, 2025",
-      "review_count": 126,
+      "review_count": 132,
       "review_summary": "Very Positive",
       "steam_app_id": "3743220",
       "steam_url": "https://store.steampowered.com/app/3743220",
@@ -67649,6 +67735,55 @@
         "Collectathon",
         "Economy",
         "Idler"
+      ]
+    },
+    "3745230": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Adjustable Text Size",
+        "Camera Comfort",
+        "Color Alternatives",
+        "Custom Volume Controls",
+        "Keyboard Only Option",
+        "Mouse Only Option",
+        "Save Anytime",
+        "Touch Only Option",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "duocar"
+      ],
+      "genres": [
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3745230/0082903ebdeb315da63820476ecf2e0c9c9859c6/header.jpg?t=1749659556",
+      "itch_url": "https://duocar.itch.io/the-great-hatch",
+      "last_updated": "2025-07-20T23:47:31.813859",
+      "name": "The Great Hatch",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "duocar"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3745230",
+      "steam_url": "https://store.steampowered.com/app/3745230",
+      "tags": [
+        "Strategy",
+        "Clicker",
+        "Simulation",
+        "Idler",
+        "Building",
+        "Roguelite",
+        "Colony Sim",
+        "Pixel Graphics",
+        "Cute",
+        "Economy"
       ]
     },
     "3750130": {
