@@ -325,12 +325,12 @@ function applyFilters() {
     
     // Update URL with current filter values
     updateURLParams({
-        release: releaseFilter || null,
+        release: releaseFilter !== 'all' ? releaseFilter : null,
         platform: platformFilter !== 'all' ? platformFilter : null,
         rating: ratingFilter > 0 ? ratingFilter : null,
         tag: tagFilter || null,
         channel: channelFilter || null,
-        sort: sortBy !== 'rating-score' ? sortBy : null
+        sort: sortBy !== 'date' ? sortBy : null
     });
     
     // Use SQLite for filtering
@@ -405,7 +405,7 @@ function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter,
     if (sortMappings[sortBy]) {
         query += ` ORDER BY ${sortMappings[sortBy]}`;
     } else {
-        query += ' ORDER BY positive_review_percentage DESC';
+        query += ' ORDER BY latest_video_date DESC';
     }
     
     // Execute query
@@ -621,8 +621,8 @@ function generateGameMetaHTML(game, statusText, statusClass, ratingClass) {
 }
 
 function generateReviewHTML(game, ratingClass) {
-    // Determine if this is an inferred summary for non-Steam platforms
-    const isInferred = game.platform !== 'steam' && game.review_summary;
+    // Determine if this is an inferred summary (from database field or non-Steam platforms)
+    const isInferred = game.is_inferred_summary || (game.platform !== 'steam' && game.review_summary);
     
     // Handle "No user reviews" case explicitly
     if (game.review_summary === 'No user reviews' || game.review_count === 0) {
@@ -653,8 +653,15 @@ function generateReviewHTML(game, ratingClass) {
         </div>
     ` : '';
     
-    // Add tooltip for inferred summaries
-    const tooltipAttr = isInferred ? 'title="Review summary inferred from rating data"' : '';
+    // Add tooltip for inferred summaries or supplementary review info
+    let tooltipText = '';
+    if (isInferred) {
+        tooltipText = 'Review summary inferred from rating data';
+    }
+    if (game.review_tooltip) {
+        tooltipText = tooltipText ? `${tooltipText}. ${game.review_tooltip}` : game.review_tooltip;
+    }
+    const tooltipAttr = tooltipText ? `title="${tooltipText}"` : '';
     
     return `
         <div class="game-rating rating-${ratingClass}" ${tooltipAttr}>

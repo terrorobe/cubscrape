@@ -4,6 +4,8 @@ import re
 import sqlite3
 from pathlib import Path
 
+from utils import generate_review_summary
+
 
 class DatabaseManager:
     def __init__(self, schema_file='data/schema.sql', db_file='data/games.db'):
@@ -38,6 +40,12 @@ class DatabaseManager:
             review_summary = self._generate_review_summary(game)
             review_summary_priority = self._get_review_summary_priority(review_summary)
 
+            # Only use percentage if there are enough reviews (applies to all platforms)
+            percentage = game.get('positive_review_percentage', 0)
+            review_count = game.get('review_count', 0)
+            if review_count < 10:
+                percentage = None
+
             # Insert game record
             cursor.execute('''
                 INSERT INTO games (
@@ -48,8 +56,8 @@ class DatabaseManager:
                     insufficient_reviews, release_date, planned_release_date, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, developers, publishers,
-                    demo_steam_app_id, demo_steam_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -61,7 +69,7 @@ class DatabaseManager:
                 game.get('is_free', False),
                 game.get('price'),
                 self._extract_price_final(game),
-                game.get('positive_review_percentage', 0),
+                percentage,
                 game.get('review_count', 0),
                 review_summary,
                 review_summary_priority,
@@ -84,7 +92,9 @@ class DatabaseManager:
                 json.dumps(game.get('developers', [])),
                 json.dumps(game.get('publishers', [])),
                 self._get_demo_steam_app_id(game),
-                self._get_demo_steam_url(game)
+                self._get_demo_steam_url(game),
+                game.get('review_tooltip'),
+                game.get('is_inferred_summary', False)
             ))
 
             game_id = cursor.lastrowid
@@ -113,39 +123,11 @@ class DatabaseManager:
         if platform == 'steam':
             return game.get('review_summary')
 
+        # For non-Steam platforms, generate clean summary (asterisk handled in frontend)
         percentage = game.get('positive_review_percentage')
         review_count = game.get('review_count', 0)
 
-        if not review_count or review_count == 0:
-            return 'No user reviews'
-
-        if review_count < 10:
-            return 'Need more reviews for score'
-
-        if not percentage:
-            return None
-
-        # Apply Steam's thresholds
-        if percentage >= 95:
-            if review_count >= 500:
-                return 'Overwhelmingly Positive'
-            elif review_count >= 50:
-                return 'Very Positive'
-            else:
-                return 'Positive'
-        elif percentage >= 80:
-            if review_count >= 50:
-                return 'Very Positive'
-            else:
-                return 'Positive'
-        elif percentage >= 70:
-            return 'Mostly Positive'
-        elif percentage >= 40:
-            return 'Mixed'
-        elif percentage >= 20:
-            return 'Mostly Negative'
-        else:
-            return 'Negative'
+        return generate_review_summary(percentage, review_count)
 
     def _get_review_summary_priority(self, review_summary):
         """Get numeric priority for review summary for efficient sorting"""

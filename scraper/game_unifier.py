@@ -8,6 +8,8 @@ and processing all game data for database generation.
 import json
 import logging
 
+from utils import generate_review_summary
+
 
 def _create_fallback_game(game_key, game_data, missing_ref_id=None):
     """Create a fallback game entry when relationships are missing"""
@@ -86,9 +88,20 @@ def _merge_itch_data_into_steam_game(steam_game, itch_data):
 
     # Use Itch review data if Steam has no reviews
     if not steam_game.get('review_count') and itch_data.get('review_count'):
-        steam_game['positive_review_percentage'] = itch_data.get('positive_review_percentage')
-        steam_game['review_count'] = itch_data.get('review_count')
-        steam_game['review_summary'] = f"Based on {itch_data.get('review_count')} Itch.io reviews"
+        itch_percentage = itch_data.get('positive_review_percentage')
+        itch_count = itch_data.get('review_count')
+
+        # Only set percentage if there are enough reviews for a meaningful score
+        if itch_count >= 10:
+            steam_game['positive_review_percentage'] = itch_percentage
+        steam_game['review_count'] = itch_count
+
+        # Generate proper review summary using Steam's thresholds (clean, no asterisk)
+        steam_game['review_summary'] = generate_review_summary(itch_percentage, itch_count)
+        steam_game['is_inferred_summary'] = True  # Flag to indicate this is inferred from non-Steam data
+
+        # Store supplementary review info for tooltip
+        steam_game['review_tooltip'] = f"Based on {itch_count} Itch.io reviews"
 
     # Handle release date logic carefully
     steam_release = steam_game.get('release_date', '')

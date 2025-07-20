@@ -156,6 +156,40 @@ def clean_tag_text(tag_text: str) -> str:
 
 
 
+def generate_review_summary(percentage: int | None, review_count: int) -> str | None:
+    """Generate review summary using Steam's thresholds"""
+    if not review_count or review_count == 0:
+        return 'No user reviews'
+
+    if review_count < 10:
+        return 'Need more reviews for score'
+
+    if not percentage:
+        return None
+
+    # Apply Steam's thresholds
+    if percentage >= 95:
+        if review_count >= 500:
+            return 'Overwhelmingly Positive'
+        elif review_count >= 50:
+            return 'Very Positive'
+        else:
+            return 'Positive'
+    elif percentage >= 80:
+        if review_count >= 50:
+            return 'Very Positive'
+        else:
+            return 'Positive'
+    elif percentage >= 70:
+        return 'Mostly Positive'
+    elif percentage >= 40:
+        return 'Mixed'
+    elif percentage >= 20:
+        return 'Mostly Negative'
+    else:
+        return 'Negative'
+
+
 def load_env_file(env_file: str | Path = ".env") -> None:
     """Load environment variables from .env file if it exists"""
     env_path = Path(env_file)
