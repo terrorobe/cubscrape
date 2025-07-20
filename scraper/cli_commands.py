@@ -193,6 +193,14 @@ class CLICommands:
                 max_updates=args.max_steam_updates
             )
 
+            # Run cross-platform auto-linking after all updates
+            logging.info("Running cross-platform auto-linking")
+            from cross_platform_matcher import run_cross_platform_matching
+            stats = run_cross_platform_matching(project_root)
+            if 'error' not in stats:
+                logging.info(f"Auto-linking results: {stats['approved_links']} new links, "
+                           f"{stats['conflicting_links_removed']} conflicts resolved")
+
     def _handle_single_app(self, args):
         """Handle single-app command"""
         if not args.app_id:

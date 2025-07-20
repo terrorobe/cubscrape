@@ -125,9 +125,57 @@ class ItchDataFetcher:
 
         return ""
 
+    def _check_steam_demo_precedence(self, steam_app_id: str) -> bool:
+        """Check if Steam app should be ignored due to demo precedence rules
+
+        Returns True if the Steam game should be ignored (not linked to Itch)
+        """
+        try:
+            import json
+            from pathlib import Path
+
+            # Load Steam games data to check for demo relationships
+            script_dir = Path(__file__).resolve().parent
+            project_root = script_dir.parent
+            steam_data_file = project_root / 'data' / 'steam_games.json'
+
+            if not steam_data_file.exists():
+                return False
+
+            with steam_data_file.open() as f:
+                steam_data = json.load(f)
+
+            steam_games = steam_data.get('games', {})
+            steam_game = steam_games.get(steam_app_id, {})
+
+            if not steam_game:
+                return False
+
+            # Check if this Steam game has demo relationships
+            has_demo_pair = (
+                steam_game.get('demo_app_id') or
+                steam_game.get('full_game_app_id')
+            )
+
+            if has_demo_pair:
+                logging.info(f"Steam app {steam_app_id} has demo pair - ignoring Itch link due to precedence rules")
+                return True
+
+            return False
+
+        except Exception as e:
+            logging.debug(f"Error checking Steam demo precedence for {steam_app_id}: {e}")
+            return False
+
     def _verify_steam_game_name(self, steam_url: str, itch_game_name: str) -> bool:
         """Verify that the Steam game name matches the Itch.io game name"""
         try:
+            # Extract Steam app ID to check precedence rules
+            app_id = extract_steam_app_id(steam_url)
+            if app_id and self._check_steam_demo_precedence(app_id):
+                logging.info(f"Skipping Steam link {steam_url} due to demo precedence rules")
+                return False
+
             # Make a quick request to Steam to get the game name
             response = requests.get(steam_url, headers=self.headers, timeout=10)
             if response.status_code != 200:
