@@ -143,18 +143,18 @@ class CLICommands:
                 cutoff_date=args.cutoff_date
             )
 
+        # Update other platform games first (may contain Steam links)
+        other_games_updater = OtherGamesUpdater()
+        other_games_updater.update_games_from_channels(
+            channels_to_process,
+            max_updates=args.max_other_updates
+        )
+
         # Update Steam data using SteamDataUpdater
         steam_updater = SteamDataUpdater()
         steam_updater.update_all_games_from_channels(
             channels_to_process,
             max_updates=args.max_steam_updates
-        )
-
-        # Update other platform games using OtherGamesUpdater
-        other_games_updater = OtherGamesUpdater()
-        other_games_updater.update_games_from_channels(
-            channels_to_process,
-            max_updates=args.max_other_updates
         )
 
     def _handle_cron(self, args):
@@ -178,19 +178,19 @@ class CLICommands:
             channel_url = config_manager.get_channel_url(channel_id)
             scraper.process_videos(channel_url, max_new_videos=10, fetch_newest_first=True)
 
-        # Update Steam data once for all enabled channels
+        # Update other platform games first (may contain Steam links)
         if enabled_channels:
-            steam_updater = SteamDataUpdater()
-            steam_updater.update_all_games_from_channels(
-                enabled_channels,
-                max_updates=args.max_steam_updates
-            )
-
-            # Update other platform games once for all enabled channels
             other_games_updater = OtherGamesUpdater()
             other_games_updater.update_games_from_channels(
                 enabled_channels,
                 max_updates=args.max_other_updates
+            )
+
+            # Update Steam data once for all enabled channels
+            steam_updater = SteamDataUpdater()
+            steam_updater.update_all_games_from_channels(
+                enabled_channels,
+                max_updates=args.max_steam_updates
             )
 
     def _handle_single_app(self, args):

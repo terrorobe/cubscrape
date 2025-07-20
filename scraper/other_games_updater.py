@@ -15,6 +15,7 @@ from data_manager import DataManager
 from dateutil.parser import parse as dateutil_parse
 from itch_fetcher import ItchDataFetcher
 from models import OtherGameData
+from update_logger import GameUpdateLogger
 
 
 class OtherGamesUpdater:
@@ -41,14 +42,13 @@ class OtherGamesUpdater:
         """Save other games data to file"""
         self.data_manager.save_other_games_data(self.other_games_data)
 
-    def _get_interval_name(self, interval_days: int) -> str:
-        """Convert interval days to human-readable name"""
-        if interval_days == 7:
-            return "weekly"
-        elif interval_days == 30:
-            return "monthly"
+    def _get_release_date_info(self, game_data: OtherGameData) -> str:
+        """Get formatted release date information for logging"""
+        if game_data.release_date:
+            return f", released {game_data.release_date}"
         else:
-            return f"{interval_days}d"
+            return ""
+
 
     def _calculate_refresh_interval(self, game_data: OtherGameData) -> int:
         """
@@ -99,7 +99,7 @@ class OtherGamesUpdater:
             required_interval = self._calculate_refresh_interval(game_data)
 
             if days_since_update >= required_interval:
-                interval_name = self._get_interval_name(required_interval)
+                interval_name = GameUpdateLogger.get_interval_name(required_interval)
                 return True, f"{interval_name} refresh due ({days_since_update}d old)"
             else:
                 return False, f"recently updated ({days_since_update}d ago)"
@@ -198,6 +198,15 @@ class OtherGamesUpdater:
                 if should_update:
                     platform = existing_game.platform
                     games_to_update.append((url, platform, reason))
+                else:
+                    # Log skip info with detailed reason
+                    platform = existing_game.platform
+                    game_name = existing_game.name or "Unknown"
+                    refresh_interval_days = self._calculate_refresh_interval(existing_game)
+                    release_date_info = self._get_release_date_info(existing_game)
+
+                    GameUpdateLogger.log_game_skip(platform, game_name, existing_game.last_updated,
+                                                 refresh_interval_days, reason, release_date_info)
 
         if not games_to_update:
             logging.info("No other platform games need updates")
@@ -215,7 +224,15 @@ class OtherGamesUpdater:
         updated_count = 0
 
         for url, platform, reason in games_to_update:
-            logging.info(f"Updating {platform} game: {url} ({reason})")
+            # Log update info including name and last update if known
+            existing_game = self.other_games_data.get('games', {}).get(url)
+            if existing_game and existing_game.name:
+                refresh_interval_days = self._calculate_refresh_interval(existing_game)
+                release_date_info = self._get_release_date_info(existing_game)
+                GameUpdateLogger.log_game_update_start(platform, existing_game.name, existing_game.last_updated,
+                                                     refresh_interval_days, reason, release_info=release_date_info)
+            else:
+                logging.info(f"Updating {platform} game: {url} ({reason})")
 
             game_data = self._fetch_game_data(url, platform)
             if game_data:
@@ -229,9 +246,9 @@ class OtherGamesUpdater:
                 self.other_games_data['games'][url] = game_data
                 updated_count += 1
 
-                logging.info(f"✅ Updated {platform} game: {game_data.name}")
+                GameUpdateLogger.log_game_update_success(game_data.name)
             else:
-                logging.warning(f"❌ Failed to fetch {platform} game: {url}")
+                GameUpdateLogger.log_game_update_failure(url, platform)
 
         # Save data if any updates were made
         if updated_count > 0:
@@ -262,13 +279,19 @@ class OtherGamesUpdater:
 
         for url, game_data in games.items():
             platform = game_data.platform
+            game_name = game_data.name or "Unknown"
+
             if force_update:
                 should_update, reason = True, "forced update"
             else:
                 should_update, reason = self._should_update_game(url, game_data)
 
             if should_update:
-                logging.info(f"Updating {platform} game: {url} ({reason})")
+                refresh_interval_days = self._calculate_refresh_interval(game_data)
+                release_date_info = self._get_release_date_info(game_data)
+                GameUpdateLogger.log_game_update_start(platform, game_name, game_data.last_updated,
+                                                     refresh_interval_days, reason, release_info=release_date_info)
+
                 updated_data = self._fetch_game_data(url, platform)
 
                 if updated_data:
@@ -276,11 +299,15 @@ class OtherGamesUpdater:
                     updated_data.last_updated = datetime.now().isoformat()
                     self.other_games_data['games'][url] = updated_data
                     updated_count += 1
-                    logging.info(f"✅ Updated {platform} game: {updated_data.name}")
+                    GameUpdateLogger.log_game_update_success(updated_data.name)
                 else:
-                    logging.warning(f"❌ Failed to update {platform} game: {url}")
+                    GameUpdateLogger.log_game_update_failure(url, platform)
             else:
-                logging.debug(f"Skipping {platform} game {url}: {reason}")
+                # Log skip info with detailed reason
+                refresh_interval_days = self._calculate_refresh_interval(game_data)
+                release_date_info = self._get_release_date_info(game_data)
+                GameUpdateLogger.log_game_skip(platform, game_name, game_data.last_updated,
+                                             refresh_interval_days, reason, release_date_info)
 
         if updated_count > 0:
             self._save_other_games_data()

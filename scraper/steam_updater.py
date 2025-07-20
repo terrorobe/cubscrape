@@ -11,6 +11,7 @@ from data_manager import DataManager
 from dateutil.parser import parse as dateutil_parse
 from models import SteamGameData
 from steam_fetcher import SteamDataFetcher
+from update_logger import GameUpdateLogger
 from utils import extract_steam_app_id
 
 
@@ -32,14 +33,6 @@ class SteamDataUpdater:
         """Save Steam data to file"""
         self.data_manager.save_steam_data(self.steam_data)
 
-    def _get_interval_name(self, interval_days: int) -> str:
-        """Convert interval days to human-readable name"""
-        if interval_days == 1:
-            return "daily"
-        elif interval_days == 7:
-            return "weekly"
-        else:
-            return "monthly"
 
     def _get_release_date_info(self, game_data: SteamGameData) -> str:
         """Get formatted release date information for logging"""
@@ -300,10 +293,9 @@ class SteamDataUpdater:
                         stale_date = datetime.now() - timedelta(days=refresh_interval_days)
 
                         if last_updated_date > stale_date:
-                            days_ago = (datetime.now() - last_updated_date).days
-                            interval_name = self._get_interval_name(refresh_interval_days)
                             release_date_info = self._get_release_date_info(game_data)
-                            logging.info(f"Skipping app {app_id} ({game_data.name}) - updated {days_ago} days ago, {interval_name} refresh{release_date_info}")
+                            GameUpdateLogger.log_game_skip("steam", game_data.name, game_data.last_updated,
+                                                         refresh_interval_days, release_info=release_date_info)
                             should_update = False
                         else:
                             update_reason = "scheduled refresh"
@@ -312,23 +304,13 @@ class SteamDataUpdater:
                 # Log update info including name and last update if known
                 if app_id in self.steam_data['games']:
                     game_data = self.steam_data['games'][app_id]
-
-                    # Calculate days since last update if available
-                    if game_data.last_updated:
-                        last_updated_date = datetime.fromisoformat(game_data.last_updated)
-                        days_ago = (datetime.now() - last_updated_date).days
-                        update_info = f"updated {days_ago} days ago"
-                    else:
-                        update_info = "never updated"
-
-                    # Get fetch interval and release date info
                     refresh_interval_days = self._get_refresh_interval_days(game_data)
-                    interval_name = self._get_interval_name(refresh_interval_days)
                     release_date_info = self._get_release_date_info(game_data)
 
-                    logging.info(f"Updating app {app_id} ({game_data.name}) - {update_info}, {interval_name} refresh{release_date_info} ({update_reason})")
+                    GameUpdateLogger.log_game_update_start("steam", game_data.name, game_data.last_updated,
+                                                         refresh_interval_days, update_reason, app_id, release_date_info)
                 else:
-                    logging.info(f"Updating app {app_id} ({update_reason})")
+                    logging.info(f"Updating steam app {app_id} ({update_reason})")
 
                 # Pass Itch URL if this Steam game was discovered from Itch
                 itch_url = steam_to_itch_urls.get(app_id)
@@ -356,7 +338,7 @@ class SteamDataUpdater:
             # Fetch the main app using SteamDataFetcher
             steam_data = self.steam_fetcher.fetch_data(steam_url)
             if not steam_data:
-                logging.warning(f"  Failed to fetch data for app {app_id}")
+                GameUpdateLogger.log_game_update_failure(app_id, "steam")
                 return False
 
             # Update with timestamp and Itch URL if provided
@@ -365,9 +347,9 @@ class SteamDataUpdater:
                                 itch_url=itch_url)
             self.steam_data['games'][app_id] = steam_data
             if itch_url:
-                logging.info(f"  Updated: {steam_data.name} (with Itch.io link)")
+                GameUpdateLogger.log_game_update_success(steam_data.name, additional_info="with Itch.io link")
             else:
-                logging.info(f"  Updated: {steam_data.name}")
+                GameUpdateLogger.log_game_update_success(steam_data.name)
 
             # Handle demo -> full game relationship
             if steam_data.is_demo and steam_data.full_game_app_id:
@@ -386,7 +368,7 @@ class SteamDataUpdater:
             return True
 
         except Exception as e:
-            logging.error(f"  Error fetching Steam data for {app_id}: {e}")
+            GameUpdateLogger.log_game_update_failure(app_id, "steam", str(e))
             return False
 
     def _should_update_related_app(self, app_id: str) -> bool:
@@ -418,11 +400,11 @@ class SteamDataUpdater:
             if app_data:
                 app_data = replace(app_data, last_updated=datetime.now().isoformat())
                 self.steam_data['games'][app_id] = app_data
-                logging.info(f"  Updated {app_type}: {app_data.name}")
+                GameUpdateLogger.log_game_update_success(app_data.name, additional_info=app_type)
                 return True
             return False
         except Exception as e:
-            logging.error(f"  Error fetching {app_type} data: {e}")
+            GameUpdateLogger.log_game_update_failure(app_id, "steam", f"Error fetching {app_type} data: {e}")
             return False
 
     def fetch_single_app(self, app_id: str) -> bool:
