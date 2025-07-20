@@ -38,6 +38,31 @@ class OtherGamesUpdater:
         self.itch_fetcher = ItchDataFetcher()
         self.crazygames_fetcher = CrazyGamesDataFetcher()
 
+        # Check for required Itch.io authentication
+        self._validate_itch_authentication()
+
+    def _validate_itch_authentication(self):
+        """Validate that Itch.io authentication is properly configured"""
+        import os
+
+        # Check if ITCH_COOKIES is set in environment
+        itch_cookies = os.getenv('ITCH_COOKIES')
+        if not itch_cookies:
+            raise RuntimeError(
+                "ITCH_COOKIES environment variable is not set. "
+                "Itch.io authentication is required for accurate data extraction. "
+                "Please configure the .env file with your Itch.io authentication cookies."
+            )
+
+        # Check if the fetcher has cookies in headers
+        if 'Cookie' not in self.itch_fetcher.headers:
+            raise RuntimeError(
+                "Itch.io authentication cookies not found in fetcher headers. "
+                "Please ensure the .env file is properly configured with ITCH_COOKIES."
+            )
+
+        logging.info("Itch.io authentication validated successfully")
+
     def _save_other_games_data(self):
         """Save other games data to file"""
         self.data_manager.save_other_games_data(self.other_games_data)

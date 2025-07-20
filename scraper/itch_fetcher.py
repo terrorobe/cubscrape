@@ -85,7 +85,7 @@ class ItchDataFetcher:
     def _extract_release_date(self, soup: BeautifulSoup) -> str:
         """Extract release/published date from Itch.io page"""
         # Look for the release date row in the info table
-        date_keywords = ['published', 'release date', 'released', 'created', 'updated']
+        date_keywords = ['published', 'release date', 'released', 'created']
 
         table_rows = soup.select('table tr')
         for row in table_rows:
@@ -93,19 +93,20 @@ class ItchDataFetcher:
             if len(cells) == 2:
                 label = cells[0].get_text(strip=True).lower()
 
-                # Check if any date keyword matches
-                if any(keyword in label for keyword in date_keywords):
-                    # Look for abbr element in the second cell
-                    abbr = cells[1].find('abbr', title=True)
-                    if abbr and abbr.get('title'):
-                        title = abbr.get('title')
-                        # Parse authenticated format: "08 April 2025 @ 04:55 UTC"
-                        date_match = re.search(r'(\d{1,2} \w+ \d{4})', title)
-                        if date_match:
-                            return date_match.group(1)
-                        # Return cleaned title if it contains a year (remove time part)
-                        if re.search(r'\d{4}', title):
-                            return title.split('@')[0].strip()
+                # Check for date keywords
+                for keyword in date_keywords:
+                    if keyword in label:
+                        # Look for abbr element in the second cell
+                        abbr = cells[1].find('abbr', title=True)
+                        if abbr and abbr.get('title'):
+                            title = abbr.get('title')
+                            # Parse authenticated format: "08 April 2025 @ 04:55 UTC"
+                            date_match = re.search(r'(\d{1,2} \w+ \d{4})', title)
+                            if date_match:
+                                return date_match.group(1)
+                            # Return cleaned title if it contains a year (remove time part)
+                            if re.search(r'\d{4}', title):
+                                return title.split('@')[0].strip()
 
         return ""
 
