@@ -11,6 +11,7 @@ from data_manager import DataManager
 from dateutil.parser import parse as dateutil_parse
 from models import SteamGameData
 from steam_fetcher import SteamDataFetcher
+from utils import extract_steam_app_id
 
 
 class SteamDataUpdater:
@@ -202,6 +203,12 @@ class SteamDataUpdater:
 
         return False
 
+    def _extract_steam_app_id(self, steam_url: str) -> str | None:
+        """Extract Steam app ID from a Steam URL"""
+        if not steam_url:
+            return None
+
+        return extract_steam_app_id(steam_url)
 
     def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None):
         """
@@ -233,7 +240,30 @@ class SteamDataUpdater:
                             except ValueError:
                                 continue
 
-        logging.info(f"Found {len(steam_app_ids)} unique Steam games")
+
+        # Also collect Steam app IDs from other games data (Itch.io with Steam links)
+        # Track mapping of Steam app IDs to their Itch URLs
+        steam_to_itch_urls = {}  # app_id -> itch_url
+        other_games_data = self.data_manager.load_other_games_data()
+        other_steam_count = 0
+        if other_games_data and 'games' in other_games_data:
+            for itch_url, game_data in other_games_data['games'].items():
+                if hasattr(game_data, 'steam_url') and game_data.steam_url:
+                    # Extract app ID from Steam URL
+                    app_id = self._extract_steam_app_id(game_data.steam_url)
+                    if app_id and app_id not in steam_app_ids:
+                        steam_app_ids.add(app_id)
+                        other_steam_count += 1
+                        logging.info(f"Found Steam link from {game_data.platform}: {game_data.name} -> {app_id}")
+
+                    # Track the Itch URL for this Steam game
+                    if app_id and game_data.platform == 'itch':
+                        steam_to_itch_urls[app_id] = itch_url
+
+        if other_steam_count > 0:
+            logging.info(f"Added {other_steam_count} Steam games from other platforms")
+
+        logging.info(f"Found {len(steam_app_ids)} unique Steam games total")
 
         updates_done = 0
 
@@ -300,19 +330,22 @@ class SteamDataUpdater:
                 else:
                     logging.info(f"Updating app {app_id} ({update_reason})")
 
-                if self._fetch_steam_app_with_related(app_id):
+                # Pass Itch URL if this Steam game was discovered from Itch
+                itch_url = steam_to_itch_urls.get(app_id)
+                if self._fetch_steam_app_with_related(app_id, itch_url):
                     updates_done += 1
 
         # Save updated data
         self._save_steam_data()
         logging.info(f"Steam data update complete. Updated {updates_done} games.")
 
-    def _fetch_steam_app_with_related(self, app_id: str) -> bool:
+    def _fetch_steam_app_with_related(self, app_id: str, itch_url: str | None = None) -> bool:
         """
         Fetch Steam app data and automatically fetch related demo/full game data.
 
         Args:
             app_id: Steam app ID to fetch
+            itch_url: Optional Itch.io URL if this Steam game was discovered from Itch
 
         Returns:
             True if any data was updated, False otherwise
@@ -326,10 +359,15 @@ class SteamDataUpdater:
                 logging.warning(f"  Failed to fetch data for app {app_id}")
                 return False
 
-            # Update with timestamp
-            steam_data = replace(steam_data, last_updated=datetime.now().isoformat())
+            # Update with timestamp and Itch URL if provided
+            steam_data = replace(steam_data,
+                                last_updated=datetime.now().isoformat(),
+                                itch_url=itch_url)
             self.steam_data['games'][app_id] = steam_data
-            logging.info(f"  Updated: {steam_data.name}")
+            if itch_url:
+                logging.info(f"  Updated: {steam_data.name} (with Itch.io link)")
+            else:
+                logging.info(f"  Updated: {steam_data.name}")
 
             # Handle demo -> full game relationship
             if steam_data.is_demo and steam_data.full_game_app_id:

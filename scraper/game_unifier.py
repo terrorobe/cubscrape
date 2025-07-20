@@ -37,10 +37,16 @@ def _determine_active_data_and_demo_info(demo_data, full_game_data, demo_id, _fu
     if is_full_game_released:
         # Released full game: use full game data, reference demo
         active_data = full_game_data
-        demo_info = {
-            'demo_steam_app_id': demo_id,
-            'demo_steam_url': f"https://store.steampowered.com/app/{demo_id}",
-        } if demo_id else {}
+        demo_info = {}
+
+        # Add Steam demo info if available (takes precedence)
+        if demo_id:
+            demo_info['demo_steam_app_id'] = demo_id
+            demo_info['demo_steam_url'] = f"https://store.steampowered.com/app/{demo_id}"
+
+        # Always add Itch URL if present (as secondary demo option)
+        if full_game_data.get('itch_url'):
+            demo_info['itch_url'] = full_game_data['itch_url']
     else:
         # Unreleased full game: use demo data but keep full game's release status
         active_data = {
@@ -74,6 +80,48 @@ def _create_unified_game_entry(primary_key, primary_name, demo_id, full_game_id,
         '_demo_app_id': demo_id,
         '_full_game_app_id': full_game_id
     }
+
+def _merge_itch_data_into_steam_game(steam_game, itch_data):
+    """Merge Itch.io data into Steam game when Steam data is incomplete or missing"""
+
+    # Use Itch review data if Steam has no reviews
+    if not steam_game.get('review_count') and itch_data.get('review_count'):
+        steam_game['positive_review_percentage'] = itch_data.get('positive_review_percentage')
+        steam_game['review_count'] = itch_data.get('review_count')
+        steam_game['review_summary'] = f"Based on {itch_data.get('review_count')} Itch.io reviews"
+
+    # Handle release date logic carefully
+    steam_release = steam_game.get('release_date', '')
+    steam_planned = steam_game.get('planned_release_date', '')
+    itch_release = itch_data.get('release_date', '')
+
+    # If Steam is "coming soon" but Itch is released, this means Itch is like a demo
+    if (steam_release in ['To be announced', 'Coming soon', ''] and
+        steam_planned in ['To be announced', 'Coming soon', ''] and
+        itch_release):
+        # Keep Steam as "coming soon" but mark that a demo exists
+        steam_game['is_demo'] = False  # This is the full game, but unreleased
+        steam_game['has_demo'] = True  # The Itch version acts as a demo
+        # Don't change coming_soon - keep it as coming soon for Steam
+    elif steam_release in ['To be announced', 'Coming soon', ''] and itch_release:
+        # If no planned date, use Itch date as the release date
+        steam_game['release_date'] = itch_release
+        steam_game['coming_soon'] = False
+
+    # Use Itch tags to supplement Steam tags (merge unique tags)
+    if itch_data.get('tags'):
+        steam_tags = set(steam_game.get('tags', []))
+        itch_tags = set(itch_data.get('tags', []))
+        merged_tags = list(steam_tags | itch_tags)  # Union of both tag sets
+        steam_game['tags'] = merged_tags[:20]  # Limit to 20 tags
+
+    # Use Itch pricing info if available
+    if itch_data.get('is_free') and not steam_game.get('price'):
+        steam_game['is_free'] = True
+        steam_game['price'] = 'Free'
+
+    logging.info(f"Merged Itch.io data into Steam game: {steam_game.get('name')}")
+
 
 def create_unified_steam_games(steam_data):
     """Create unified Steam games by merging demo and full game pairs"""
@@ -156,9 +204,32 @@ def process_and_unify_games(steam_data, other_games, all_videos):
     unified_games = create_unified_steam_games(steam_data)
 
     # Add other platform games (itch, crazygames)
+    # But skip Itch games that have been absorbed into Steam games
     other_games_added = 0
+    itch_absorbed = 0
+    itch_to_steam_mapping = {}  # Map Itch URLs to Steam game keys for video processing
+
     for game_key, game_data in other_games.items():
         if game_key not in unified_games:
+            # Check if this is an Itch game that's been absorbed into a Steam game
+            if game_data.get('platform') == 'itch' and game_data.get('steam_url'):
+                # Check if any Steam game has this Itch URL
+                absorbed = False
+                for steam_game_key, steam_game in unified_games.items():
+                    if steam_game.get('platform') == 'steam' and steam_game.get('itch_url') == game_key:
+                        absorbed = True
+                        itch_absorbed += 1
+
+                        # Map Itch URL to Steam game key for video processing
+                        itch_to_steam_mapping[game_key] = steam_game_key
+
+                        # Merge Itch data into Steam game when Steam data is incomplete
+                        _merge_itch_data_into_steam_game(steam_game, game_data)
+                        break
+
+                if absorbed:
+                    continue  # Skip this Itch game as it's part of a Steam game
+
             unified_games[game_key] = {
                 'game_key': game_key,
                 'platform': game_data.get('platform', 'other'),
@@ -170,6 +241,8 @@ def process_and_unify_games(steam_data, other_games, all_videos):
             other_games_added += 1
 
     logging.info(f"Added {other_games_added} other platform games to unified dataset")
+    if itch_absorbed > 0:
+        logging.info(f"Skipped {itch_absorbed} Itch games that are part of Steam games")
 
     # Then, process each video and add to existing game entries
     for video_id, video in all_videos.items():
@@ -198,7 +271,9 @@ def process_and_unify_games(steam_data, other_games, all_videos):
             game_key = target_game_key
 
         elif video.get('itch_url'):
-            game_key = video['itch_url']
+            itch_url = video['itch_url']
+            # Check if this Itch URL maps to a Steam game
+            game_key = itch_to_steam_mapping.get(itch_url, itch_url)
         elif video.get('crazygames_url'):
             game_key = video['crazygames_url']
         else:

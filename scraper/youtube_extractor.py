@@ -21,7 +21,22 @@ class YouTubeExtractor:
             'no_warnings': True,
             'extract_flat': True,
             'force_generic_extractor': False,
+            'logger': self._get_quiet_logger(),
         }
+
+    def _get_quiet_logger(self):
+        """Custom logger to suppress yt-dlp ERROR messages for expected cases"""
+        class QuietLogger:
+            def debug(self, msg): pass
+            def info(self, msg): pass
+            def warning(self, msg): pass
+            def error(self, msg):
+                # Suppress known error messages
+                if "members-only content" in msg or "Private video" in msg or "Video unavailable" in msg:
+                    pass
+                else:
+                    logging.error(f"yt-dlp: {msg}")
+        return QuietLogger()
 
     def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict]:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
@@ -34,7 +49,8 @@ class YouTubeExtractor:
             'extract_flat': True,
             'force_generic_extractor': False,
             'playliststart': skip_count + 1,
-            'playlistend': skip_count + batch_size
+            'playlistend': skip_count + batch_size,
+            'logger': self._get_quiet_logger(),
         }
 
         with yt_dlp.YoutubeDL(ydl_opts_lightweight) as ydl:
@@ -70,8 +86,13 @@ class YouTubeExtractor:
 
         return videos
 
-    def get_full_video_metadata(self, video_id: str) -> dict | None:
-        """Fetch full metadata for a specific video"""
+    def get_full_video_metadata(self, video_id: str) -> tuple[dict | None, bool]:
+        """Fetch full metadata for a specific video
+
+        Returns: (metadata_dict, is_expected_skip)
+        - metadata_dict: Video metadata or None if failed
+        - is_expected_skip: True if this is an expected skip (members-only, private, etc.)
+        """
         try:
             video_url = f"https://www.youtube.com/watch?v={video_id}"
             with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
@@ -85,16 +106,18 @@ class YouTubeExtractor:
                         video_info.get('timestamp', 0)
                     ).isoformat() if video_info.get('timestamp') else '',
                     'thumbnail': video_info.get('thumbnail', '')
-                }
+                }, False
         except Exception as e:
             error_msg = str(e)
-            if "This video is available to this channel's members" in error_msg:
-                logging.info(f"Skipping member-only video {video_id}")
+            if "members-only content" in error_msg or "This video is available to this channel's members" in error_msg:
+                logging.info(f"Skipping members-only video {video_id}")
+                return None, True
             elif "Private video" in error_msg or "Video unavailable" in error_msg:
                 logging.info(f"Skipping unavailable video {video_id}")
+                return None, True
             else:
                 logging.error(f"Error fetching full metadata for video {video_id}: {e}")
-            return None
+                return None, False
 
     def extract_youtube_detected_game(self, video_id: str) -> str | None:
         """Extract YouTube's detected game from JSON data as last resort"""

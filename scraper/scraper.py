@@ -10,14 +10,12 @@ from datetime import datetime
 from pathlib import Path
 
 from config_manager import ConfigManager
-from crazygames_fetcher import CrazyGamesDataFetcher
 from data_manager import DataManager
 from data_quality import DataQualityChecker
 from database_manager import DatabaseManager
 from game_inference import GameInferenceEngine
 from game_unifier import load_all_unified_games
-from itch_fetcher import ItchDataFetcher
-from models import OtherGameData, SteamGameData, VideoData
+from models import SteamGameData, VideoData
 from steam_fetcher import SteamDataFetcher
 from video_processor import VideoProcessor
 from youtube_extractor import YouTubeExtractor
@@ -44,10 +42,8 @@ class YouTubeSteamScraper:
         # Store channel info
         self.channel_id = channel_id
 
-        # Initialize fetchers
+        # Initialize Steam fetcher
         self.steam_fetcher = SteamDataFetcher()
-        self.itch_fetcher = ItchDataFetcher()
-        self.crazygames_fetcher = CrazyGamesDataFetcher()
 
         # Initialize video processor
         self.video_processor = VideoProcessor(
@@ -65,22 +61,10 @@ class YouTubeSteamScraper:
         """Save Steam data to JSON file"""
         self.data_manager.save_steam_data(self.steam_data)
 
-    def save_other_games(self):
-        """Save other games data to JSON file"""
-        self.data_manager.save_other_games_data(self.other_games_data)
-
-
     def extract_youtube_detected_game(self, video_id: str) -> str | None:
         """Extract YouTube's detected game from JSON data as last resort"""
         return self.youtube_extractor.extract_youtube_detected_game(video_id)
 
-    def fetch_itch_data(self, itch_url: str) -> OtherGameData | None:
-        """Fetch game data from Itch.io using the modular fetcher"""
-        return self.itch_fetcher.fetch_data(itch_url)
-
-    def fetch_crazygames_data(self, crazygames_url: str) -> OtherGameData | None:
-        """Fetch game data from CrazyGames using the modular fetcher"""
-        return self.crazygames_fetcher.fetch_data(crazygames_url)
 
     def fetch_steam_data(self, steam_url: str) -> SteamGameData | None:
         """Fetch game data from Steam using the modular fetcher"""
@@ -104,9 +88,6 @@ class YouTubeSteamScraper:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
         return self.video_processor.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
 
-    def get_full_video_metadata(self, video_id: str) -> dict | None:
-        """Fetch full metadata for a specific video"""
-        return self.video_processor.get_full_video_metadata(video_id)
 
     def _process_video_game_links(self, video) -> VideoData:
         """Extract and process game links from a video"""

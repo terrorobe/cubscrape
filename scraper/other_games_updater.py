@@ -122,12 +122,12 @@ class OtherGamesUpdater:
 
                 for video_data in videos.values():
                     # Collect Itch.io URLs
-                    itch_url = video_data.get('itch_url')
+                    itch_url = video_data.itch_url
                     if itch_url:
                         urls['itch'].add(itch_url)
 
                     # Collect CrazyGames URLs
-                    crazygames_url = video_data.get('crazygames_url')
+                    crazygames_url = video_data.crazygames_url
                     if crazygames_url:
                         urls['crazygames'].add(crazygames_url)
 
@@ -242,10 +242,13 @@ class OtherGamesUpdater:
 
         return updated_count
 
-    def update_all_other_games(self) -> int:
+    def update_all_other_games(self, force_update: bool = False) -> int:
         """
         Update all existing other games data by re-fetching from their URLs.
         This is the simpler method used by the refresh-other CLI command.
+
+        Args:
+            force_update: If True, update all games regardless of refresh intervals
         """
         games = self.other_games_data.get('games', {})
         if not games:
@@ -259,7 +262,10 @@ class OtherGamesUpdater:
 
         for url, game_data in games.items():
             platform = game_data.platform
-            should_update, reason = self._should_update_game(url, game_data)
+            if force_update:
+                should_update, reason = True, "forced update"
+            else:
+                should_update, reason = self._should_update_game(url, game_data)
 
             if should_update:
                 logging.info(f"Updating {platform} game: {url} ({reason})")

@@ -54,6 +54,7 @@ class SteamGameData:
     recent_review_summary: str | None = None
     insufficient_reviews: bool = False
     planned_release_date: str | None = None
+    itch_url: str | None = None  # Itch.io URL if this Steam game is also on Itch
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
@@ -69,6 +70,7 @@ class OtherGameData:
     tags: list[str] = field(default_factory=list)
     positive_review_percentage: int | None = None
     review_count: int | None = None
+    steam_url: str = ""  # Steam link if found and name matches
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
 
 

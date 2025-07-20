@@ -9,7 +9,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from models import OtherGameData
-from utils import load_env_file
+from utils import calculate_name_similarity, extract_steam_app_id, load_env_file
 
 
 class ItchDataFetcher:
@@ -28,6 +28,7 @@ class ItchDataFetcher:
         itch_cookies = os.getenv('ITCH_COOKIES')
         if itch_cookies:
             self.headers['Cookie'] = itch_cookies
+            logging.info("Using Itch.io authentication token for enhanced data access")
 
     def fetch_data(self, itch_url: str) -> OtherGameData | None:
         """Fetch game data from Itch.io"""
@@ -54,6 +55,12 @@ class ItchDataFetcher:
             if rating_data:
                 game_data.positive_review_percentage = rating_data.get('percentage')
                 game_data.review_count = rating_data.get('count')
+
+            # Extract Steam link if present and name matches
+            steam_url = self._extract_steam_link(soup, game_data.name)
+            if steam_url:
+                game_data.steam_url = steam_url
+                logging.info(f"Found matching Steam link for {game_data.name}: {steam_url}")
 
             return game_data
 
@@ -101,6 +108,55 @@ class ItchDataFetcher:
                             return title.split('@')[0].strip()
 
         return ""
+
+    def _extract_steam_link(self, soup: BeautifulSoup, itch_game_name: str) -> str:
+        """Extract Steam link if present and game name matches"""
+        # Search in all links on the page
+        all_links = soup.find_all('a', href=True)
+        for link in all_links:
+            href = link.get('href', '')
+            app_id = extract_steam_app_id(href)
+            if app_id:
+                steam_url = f"https://store.steampowered.com/app/{app_id}"
+
+                # Check if this Steam link has a matching game name
+                if self._verify_steam_game_name(steam_url, itch_game_name):
+                    return steam_url
+
+        return ""
+
+    def _verify_steam_game_name(self, steam_url: str, itch_game_name: str) -> bool:
+        """Verify that the Steam game name matches the Itch.io game name"""
+        try:
+            # Make a quick request to Steam to get the game name
+            response = requests.get(steam_url, headers=self.headers, timeout=10)
+            if response.status_code != 200:
+                return False
+
+            # Extract game name from Steam page title
+            steam_soup = BeautifulSoup(response.content, 'lxml')
+            title_elem = steam_soup.find('title')
+            if not title_elem:
+                return False
+
+            # Steam titles are usually in format "Game Name on Steam"
+            steam_title = title_elem.get_text(strip=True)
+            steam_name = steam_title.replace(' on Steam', '').strip()
+
+            # Calculate similarity between names
+            similarity = calculate_name_similarity(itch_game_name, steam_name)
+
+            # Consider it a match if similarity is high enough (75% word overlap)
+            if similarity >= 0.75:
+                logging.info(f"Steam name match: '{itch_game_name}' ↔ '{steam_name}' (similarity: {similarity:.2f})")
+                return True
+            else:
+                logging.debug(f"Steam name mismatch: '{itch_game_name}' ↔ '{steam_name}' (similarity: {similarity:.2f})")
+                return False
+
+        except Exception as e:
+            logging.debug(f"Error verifying Steam game name for {steam_url}: {e}")
+            return False
 
     def _extract_tags(self, soup: BeautifulSoup) -> list:
         """Extract tags from Itch.io page"""

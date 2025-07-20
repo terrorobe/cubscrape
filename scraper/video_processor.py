@@ -112,7 +112,7 @@ class VideoProcessor:
 
                 # Get full video metadata
                 try:
-                    full_video = self.get_full_video_metadata(video_id)
+                    full_video, is_expected_skip = self.get_full_video_metadata(video_id)
                     if full_video:
                         video_date = full_video.get('published_at', '')[:10] if full_video.get('published_at') else 'Unknown'
 
@@ -128,15 +128,32 @@ class VideoProcessor:
                                 logging.warning(f"Could not parse video date: {video_date}")
 
                         logging.info(f"Processing: {full_video.get('title', 'Unknown Title')} ({video_date})")
+                        # Convert dict to VideoData object for processing
+                        video_obj = VideoData(
+                            video_id=full_video.get('video_id', ''),
+                            title=full_video.get('title', ''),
+                            description=full_video.get('description', ''),
+                            published_at=full_video.get('published_at', ''),
+                            thumbnail=full_video.get('thumbnail', ''),
+                            steam_app_id=None,
+                            itch_url=None,
+                            itch_is_demo=False,
+                            crazygames_url=None,
+                            youtube_detected_game=None,
+                            youtube_detected_matched=None,
+                            inferred_game=None
+                        )
                         # Process video with game link extraction
-                        video_data = self.process_video_game_links(full_video)
+                        video_data = self.process_video_game_links(video_obj)
 
                         videos_data['videos'][video_id] = video_data
                         known_video_ids.add(video_id)  # Add to our tracking set
                         new_videos_processed += 1
                         batch_new_count += 1
                     else:
-                        logging.warning(f"Failed to get full metadata for {video_id}")
+                        # Only warn if it's not an expected skip (members-only, private, etc.)
+                        if not is_expected_skip:
+                            logging.warning(f"Failed to get full metadata for {video_id}")
                 except Exception as e:
                     logging.error(f"Error processing video {video_id}: {e}")
                     continue
@@ -268,6 +285,6 @@ class VideoProcessor:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
         return self.youtube_extractor.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
 
-    def get_full_video_metadata(self, video_id: str) -> dict | None:
+    def get_full_video_metadata(self, video_id: str) -> tuple[dict | None, bool]:
         """Fetch full metadata for a specific video"""
         return self.youtube_extractor.get_full_video_metadata(video_id)

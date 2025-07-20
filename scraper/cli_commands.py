@@ -52,6 +52,11 @@ class CLICommands:
             help='Maximum number of other platform games to update'
         )
         parser.add_argument(
+            '--force',
+            action='store_true',
+            help='Force update all games regardless of refresh intervals'
+        )
+        parser.add_argument(
             '--app-id',
             type=str,
             help='Steam app ID to fetch (required for single-app mode)'
@@ -285,11 +290,11 @@ class CLICommands:
             max_updates=args.max_steam_updates
         )
 
-    def _handle_refresh_other(self, _args):
+    def _handle_refresh_other(self, args):
         """Handle refresh-other command - only refresh other games (Itch.io, CrazyGames) data"""
         logging.info("Refreshing other games data (Itch.io, CrazyGames)")
         other_games_updater = OtherGamesUpdater()
-        other_games_updater.update_all_other_games()
+        other_games_updater.update_all_other_games(force_update=args.force)
 
 
 def main():

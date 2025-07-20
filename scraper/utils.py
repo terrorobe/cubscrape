@@ -10,11 +10,8 @@ from pathlib import Path
 from models import GameLinks
 
 
-def extract_game_links(description: str) -> GameLinks:
-    """Extract game store links from video description"""
-    links = GameLinks()
-
-    # Steam patterns
+def extract_steam_app_id(url: str) -> str | None:
+    """Extract Steam app ID from a Steam URL"""
     steam_patterns = [
         r'https?://store\.steampowered\.com/app/(\d+)',
         r'https?://steam\.com/app/(\d+)',
@@ -23,11 +20,21 @@ def extract_game_links(description: str) -> GameLinks:
     ]
 
     for pattern in steam_patterns:
-        match = re.search(pattern, description)
+        match = re.search(pattern, url)
         if match:
-            app_id = match.group(1)
-            links.steam = f"https://store.steampowered.com/app/{app_id}"
-            break
+            return match.group(1)
+
+    return None
+
+
+def extract_game_links(description: str) -> GameLinks:
+    """Extract game store links from video description"""
+    links = GameLinks()
+
+    # Extract Steam link
+    app_id = extract_steam_app_id(description)
+    if app_id:
+        links.steam = f"https://store.steampowered.com/app/{app_id}"
 
     # Itch.io patterns
     itch_patterns = [
@@ -147,12 +154,6 @@ def clean_tag_text(tag_text: str) -> str:
     return re.sub(r'[\d,]+$', '', tag_text).strip()
 
 
-def extract_steam_app_id(steam_url: str) -> str:
-    """Extract Steam app ID from URL"""
-    match = re.search(r'/app/(\d+)', steam_url)
-    if match:
-        return match.group(1)
-    raise ValueError(f"Could not extract app ID from URL: {steam_url}")
 
 
 def load_env_file(env_file: str | Path = ".env") -> None:

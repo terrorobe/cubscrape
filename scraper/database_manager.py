@@ -48,8 +48,8 @@ class DatabaseManager:
                     insufficient_reviews, release_date, planned_release_date, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, developers, publishers,
-                    demo_steam_app_id, demo_steam_url, demo_itch_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    demo_steam_app_id, demo_steam_url
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -84,8 +84,7 @@ class DatabaseManager:
                 json.dumps(game.get('developers', [])),
                 json.dumps(game.get('publishers', [])),
                 self._get_demo_steam_app_id(game),
-                self._get_demo_steam_url(game),
-                game.get('demo_itch_url')
+                self._get_demo_steam_url(game)
             ))
 
             game_id = cursor.lastrowid

@@ -36,6 +36,8 @@ jobs:
         uv sync
 
     - name: Run scraper
+      env:
+        ITCHIO_TOKEN: ${{ secrets.ITCHIO_TOKEN }}
       run: |
         uv run python scraper/scraper.py ${{ github.event.inputs.mode || 'cron' }}
 

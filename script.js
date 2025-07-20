@@ -353,8 +353,14 @@ function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter,
     
     // Platform filter
     if (platformFilter !== 'all') {
-        query += ' AND platform = ?';
-        params.push(platformFilter);
+        if (platformFilter === 'itch') {
+            // Include both native Itch games AND Steam games with Itch URLs
+            query += ' AND (platform = ? OR (platform = \'steam\' AND itch_url IS NOT NULL))';
+            params.push(platformFilter);
+        } else {
+            query += ' AND platform = ?';
+            params.push(platformFilter);
+        }
     }
     
     // Release status filter
@@ -720,7 +726,15 @@ function getReleaseInfo(game) {
         return 'Play on CrazyGames';
     }
     
-    // Steam games - handle demos specially, then decouple type and date
+    // Steam games - handle special cases first
+    
+    // If Steam game has Itch URL and is coming soon, Itch acts as demo
+    if (game.itch_url && game.coming_soon) {
+        const fullGameDate = game.planned_release_date || 'coming soon';
+        return `Demo • ${fullGameDate}`;
+    }
+    
+    // Handle actual Steam demos
     if (game.is_demo) {
         if (game.coming_soon) {
             const fullGameDate = game.planned_release_date || 'coming soon';
@@ -854,15 +868,16 @@ function generateGameLinksHTML(game) {
     const platformName = game.platform === PLATFORMS.ITCH ? 'Itch.io' : 
         game.platform === PLATFORMS.CRAZYGAMES ? 'CrazyGames' : 'Steam';
     
-    const itchDemoLink = game.demo_itch_url ? `
-        <a href="${game.demo_itch_url}" target="_blank" >
-            Itch.io Demo
-        </a>
-    ` : '';
     
     const steamDemoLink = game.demo_steam_app_id ? `
         <a href="${game.demo_steam_url}" target="_blank" >
             Demo
+        </a>
+    ` : '';
+    
+    const itchLink = game.itch_url && game.platform !== PLATFORMS.ITCH ? `
+        <a href="${game.itch_url}" target="_blank" >
+            Itch.io
         </a>
     ` : '';
     
@@ -882,7 +897,7 @@ function generateGameLinksHTML(game) {
                 ${platformName}
             </a>
             ${steamDemoLink}
-            ${itchDemoLink}
+            ${itchLink}
             ${crazyGamesLink}
             ${game.latest_video_id ? `<a href="${generateYouTubeUrl(game.latest_video_id)}" target="_blank" >YouTube</a>` : ''}
         </div>
