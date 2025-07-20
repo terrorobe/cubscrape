@@ -7926,6 +7926,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1769170/6c8fb7501bad0bba6ed7f005a033df1fa80c9116/header.jpg?t=1750274955",
+      "itch_url": "https://shattered-pixel.itch.io/shattered-pixel-dungeon",
       "last_updated": "2025-07-11T21:36:29.885336",
       "name": "Shattered Pixel Dungeon",
       "positive_review_percentage": 95,
@@ -7952,8 +7953,7 @@
         "Indie",
         "Difficult",
         "2D"
-      ],
-      "itch_url": "https://shattered-pixel.itch.io/shattered-pixel-dungeon"
+      ]
     },
     "1769200": {
       "categories": [
@@ -33156,7 +33156,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/81239e7d3fb2c7405d899912fe09dba6719afea5/header.jpg?t=1752165377",
-      "last_updated": "2025-07-21T00:04:25.049217",
+      "last_updated": "2025-07-21T00:54:54.546167",
       "name": "The King is Watching",
       "publishers": [
         "tinyBuild"
@@ -34063,6 +34063,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2781660/header.jpg?t=1751547180",
+      "itch_url": "https://6side.itch.io/dawn-of-defense",
       "last_updated": "2025-07-11T00:39:21.051020",
       "name": "Dawn Of Defense",
       "planned_release_date": "Q4 2026",
@@ -34085,8 +34086,7 @@
         "Procedural Generation",
         "Strategy",
         "Fantasy"
-      ],
-      "itch_url": "https://6side.itch.io/dawn-of-defense"
+      ]
     },
     "2783300": {
       "categories": [
@@ -37330,6 +37330,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2878030/header.jpg?t=1733569659",
       "is_early_access": true,
+      "itch_url": "https://thejaspel.itch.io/moonwatch",
       "last_updated": "2025-07-19T03:08:46.668412",
       "name": "Moon Watch",
       "positive_review_percentage": 78,
@@ -37353,8 +37354,7 @@
         "Bullet Hell",
         "Dungeon Crawler",
         "Roguelite"
-      ],
-      "itch_url": "https://thejaspel.itch.io/moonwatch"
+      ]
     },
     "2878100": {
       "categories": [
@@ -38366,6 +38366,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2924310/909e3f0ab1dbcbb5bff7b82038bcae9abef7c4c2/header.jpg?t=1747478692",
+      "itch_url": "https://abylight-studios.itch.io/anoxia-station",
       "last_updated": "2025-07-19T08:52:19.367634",
       "name": "Anoxia Station",
       "positive_review_percentage": 78,
@@ -38389,8 +38390,7 @@
         "Dark",
         "Horror",
         "Resource Management"
-      ],
-      "itch_url": "https://abylight-studios.itch.io/anoxia-station"
+      ]
     },
     "2925280": {
       "categories": [
@@ -43426,6 +43426,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3042190/header.jpg?t=1745250649",
+      "itch_url": "https://thefoxknocks.itch.io/nomad-idle",
       "last_updated": "2025-07-15T03:08:31.874872",
       "name": "Nomad Idle",
       "positive_review_percentage": 63,
@@ -43452,8 +43453,7 @@
         "Casual",
         "Character Customization",
         "2D"
-      ],
-      "itch_url": "https://thefoxknocks.itch.io/nomad-idle"
+      ]
     },
     "3043740": {
       "categories": [
@@ -54212,6 +54212,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3303480/header.jpg?t=1733398857",
+      "itch_url": "https://punkcake.itch.io/build-the-sun",
       "last_updated": "2025-07-19T03:09:24.747036",
       "name": "Build The Sun",
       "planned_release_date": "2025",
@@ -54234,8 +54235,7 @@
         "4X",
         "Pixel Graphics",
         "Colorful"
-      ],
-      "itch_url": "https://punkcake.itch.io/build-the-sun"
+      ]
     },
     "3307570": {
       "categories": [
@@ -56382,6 +56382,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372980/header.jpg?t=1750465489",
+      "itch_url": "https://barribob.itch.io/tower-wizard",
       "last_updated": "2025-07-15T03:10:05.745152",
       "name": "Tower Wizard",
       "positive_review_percentage": 97,
@@ -56405,8 +56406,7 @@
         "Cute",
         "Building",
         "Pixel Graphics"
-      ],
-      "itch_url": "https://barribob.itch.io/tower-wizard"
+      ]
     },
     "3373500": {
       "categories": [
@@ -64773,6 +64773,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618390/7751fbe5a80db53a65fc1cc76d8a940c3ee176fb/header_alt_assets_0.jpg?t=1751036959",
+      "itch_url": "https://greenpixels.itch.io/gamblers-table",
       "last_updated": "2025-07-07T18:25:14.242866",
       "name": "Gamblers Table",
       "planned_release_date": "Coming soon",
@@ -64796,8 +64797,7 @@
         "Gambling",
         "Top-Down",
         "Clicker"
-      ],
-      "itch_url": "https://greenpixels.itch.io/gamblers-table"
+      ]
     },
     "3618590": {
       "categories": [
@@ -68562,6 +68562,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3811840/b8a8c3770104cf24b4f16dc4c11554cce7e5ec4c/header.jpg?t=1750344730",
+      "itch_url": "https://pipapou.itch.io/simultree",
       "last_updated": "2025-07-07T14:39:56.956801",
       "name": "Simultree",
       "planned_release_date": "2026",
@@ -68582,8 +68583,7 @@
         "Relaxing",
         "Resource Management",
         "Economy"
-      ],
-      "itch_url": "https://pipapou.itch.io/simultree"
+      ]
     },
     "3815350": {
       "categories": [
