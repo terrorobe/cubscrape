@@ -8340,7 +8340,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1752689663",
-      "last_updated": "2025-07-19T08:53:24.665902",
+      "last_updated": "2025-07-20T14:59:56.887270",
       "name": "Hell Clock",
       "publishers": [
         "Mad Mushroom"
@@ -13809,7 +13809,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1752784055",
-      "last_updated": "2025-07-19T08:53:18.109822",
+      "last_updated": "2025-07-20T14:59:52.119680",
       "name": "Resonant Blade",
       "publishers": [
         "Wise Wombat Games"
@@ -33155,7 +33155,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/81239e7d3fb2c7405d899912fe09dba6719afea5/header.jpg?t=1752165377",
-      "last_updated": "2025-07-19T08:52:14.432360",
+      "last_updated": "2025-07-20T14:59:54.124027",
       "name": "The King is Watching",
       "publishers": [
         "tinyBuild"
@@ -47419,18 +47419,18 @@
         "Massively Multiplayer"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3140620/55db28c57a15f1ddc77454d9f1fe2a11217a1dd6/header_alt_assets_4.jpg?t=1752481894",
-      "last_updated": "2025-07-19T08:51:51.623758",
+      "last_updated": "2025-07-20T14:59:53.470813",
       "name": "C.A.S.T. (CHERNOZEM ANOMALY STRIKE TEAM)",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 91,
       "price": "5,16\u20ac",
       "publishers": [
         "Ascension Studio"
       ],
       "recent_review_count": 73,
-      "recent_review_percentage": 86,
+      "recent_review_percentage": 84,
       "recent_review_summary": "Very Positive",
       "release_date": "14 Jul, 2025",
-      "review_count": 378,
+      "review_count": 381,
       "review_summary": "Very Positive",
       "steam_app_id": "3140620",
       "steam_url": "https://store.steampowered.com/app/3140620",
@@ -52269,7 +52269,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3247750/header.jpg?t=1752795203",
       "is_early_access": true,
-      "last_updated": "2025-07-19T08:53:21.836722",
+      "last_updated": "2025-07-20T14:59:57.765012",
       "name": "Mycopunk",
       "positive_review_percentage": 92,
       "price": "14,99\u20ac",
@@ -52277,7 +52277,7 @@
         "Devolver Digital"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 1093,
+      "review_count": 1171,
       "review_summary": "Very Positive",
       "steam_app_id": "3247750",
       "steam_url": "https://store.steampowered.com/app/3247750",
@@ -55017,16 +55017,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3330160/1fe6bc72ae06b29602cede91002815e17f61f0e4/header.jpg?t=1752898902",
-      "insufficient_reviews": true,
-      "last_updated": "2025-07-19T08:52:32.139883",
+      "last_updated": "2025-07-20T14:59:55.718213",
       "name": "Kingdom Ascension",
+      "positive_review_percentage": 94,
       "price": "9,43\u20ac",
       "publishers": [
         "RainRingStudio"
       ],
       "release_date": "18 Jul, 2025",
-      "review_count": 5,
-      "review_summary": "Need more reviews for score",
+      "review_count": 39,
+      "review_summary": "Positive",
       "steam_app_id": "3330160",
       "steam_url": "https://store.steampowered.com/app/3330160",
       "tags": [
@@ -56848,18 +56848,18 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385370/header.jpg?t=1752287906",
-      "last_updated": "2025-07-19T08:53:19.582299",
+      "last_updated": "2025-07-20T14:59:55.107823",
       "name": "Maze Mice",
       "positive_review_percentage": 92,
       "price": "6,82\u20ac",
       "publishers": [
         "TrampolineTales"
       ],
-      "recent_review_count": 98,
+      "recent_review_count": 101,
       "recent_review_percentage": 89,
       "recent_review_summary": "Very Positive",
       "release_date": "11 Jul, 2025",
-      "review_count": 165,
+      "review_count": 168,
       "review_summary": "Very Positive",
       "steam_app_id": "3385370",
       "steam_url": "https://store.steampowered.com/app/3385370",
@@ -66276,7 +66276,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3692070/e857d294069517d44470a18ec32fa63e0bba5562/header.jpg?t=1752345130",
-      "last_updated": "2025-07-19T08:52:02.690343",
+      "last_updated": "2025-07-20T14:59:52.791061",
       "name": "One Man\u00b4s Trash",
       "publishers": [
         "Jony Pazu Games"
