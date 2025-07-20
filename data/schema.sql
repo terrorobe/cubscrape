@@ -37,7 +37,8 @@ CREATE TABLE games (
     publishers TEXT,       -- JSON array
     demo_steam_app_id TEXT,
     demo_steam_url TEXT,
-    demo_itch_url TEXT
+    review_tooltip TEXT,   -- Supplementary review info for tooltip
+    is_inferred_summary BOOLEAN DEFAULT 0  -- Whether review summary is inferred from non-Steam data
 );
 
 CREATE TABLE game_videos (
