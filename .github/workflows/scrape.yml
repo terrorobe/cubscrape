@@ -19,6 +19,7 @@ on:
 jobs:
   scrape:
     runs-on: self-hosted
+    environment: scraper
 
     steps:
     - uses: actions/checkout@v4
