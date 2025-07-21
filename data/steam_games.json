@@ -26774,6 +26774,22 @@
         "Cyberpunk"
       ]
     },
+    "2510720": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T15:47:53.533952",
+      "name": "[MISSING] Artifact Seeker: Resurrection",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "3054610",
+      "steam_app_id": "2510720",
+      "steam_url": "https://store.steampowered.com/app/2510720",
+      "stub_reason": "Missing demo/old version page",
+      "tags": []
+    },
     "2510960": {
       "categories": [
         "Single-player",
@@ -28011,6 +28027,22 @@
         "Open World"
       ]
     },
+    "2554000": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T15:47:53.533861",
+      "name": "[MISSING] Bronana",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "2492330",
+      "steam_app_id": "2554000",
+      "steam_url": "https://store.steampowered.com/app/2554000",
+      "stub_reason": "Missing demo/old version page",
+      "tags": []
+    },
     "2558200": {
       "categories": [
         "Single-player",
@@ -29105,6 +29137,22 @@
         "Hex Grid",
         "Singleplayer"
       ]
+    },
+    "2614610": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T15:47:53.533700",
+      "name": "[MISSING] FACEMINER",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "2276980",
+      "steam_app_id": "2614610",
+      "steam_url": "https://store.steampowered.com/app/2614610",
+      "stub_reason": "Missing demo/old version page",
+      "tags": []
     },
     "2615010": {
       "categories": [
@@ -50899,6 +50947,22 @@
         "Horror"
       ]
     },
+    "3220780": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T15:47:53.533750",
+      "name": "[MISSING] Wool at the Gates",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "2994990",
+      "steam_app_id": "3220780",
+      "steam_url": "https://store.steampowered.com/app/3220780",
+      "stub_reason": "Missing demo/old version page",
+      "tags": []
+    },
     "3221500": {
       "categories": [
         "Single-player",
@@ -52839,6 +52903,22 @@
         "Economy",
         "Sandbox"
       ]
+    },
+    "3258200": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T15:47:53.533793",
+      "name": "[MISSING] Conquest Dark",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "3238670",
+      "steam_app_id": "3258200",
+      "steam_url": "https://store.steampowered.com/app/3258200",
+      "stub_reason": "Missing demo/old version page",
+      "tags": []
     },
     "3260480": {
       "categories": [
@@ -55014,6 +55094,22 @@
         "Roguelite",
         "Action Roguelike"
       ]
+    },
+    "3328600": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T15:47:53.533914",
+      "name": "[MISSING] Coin Push RPG",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "3036010",
+      "steam_app_id": "3328600",
+      "steam_url": "https://store.steampowered.com/app/3328600",
+      "stub_reason": "Missing demo/old version page",
+      "tags": []
     },
     "3330160": {
       "categories": [
@@ -57801,10 +57897,11 @@
       "genres": [],
       "header_image": "",
       "is_stub": true,
-      "last_updated": "2025-07-21T14:28:56.056969",
+      "last_updated": "2025-07-21T15:47:53.533990",
       "name": "[FAILED FETCH] 3413250",
       "publishers": [],
       "release_date": "",
+      "resolved_to": "3058140",
       "steam_app_id": "3413250",
       "steam_url": "https://store.steampowered.com/app/3413250",
       "stub_reason": "Steam API fetch failed",
@@ -62082,6 +62179,22 @@
         "Top-Down",
         "Gun Customization"
       ]
+    },
+    "3509290": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T15:47:53.533599",
+      "name": "[MISSING] Asgard's Fall \u2014 Viking Survivors",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "2780710",
+      "steam_app_id": "3509290",
+      "steam_url": "https://store.steampowered.com/app/3509290",
+      "stub_reason": "Missing demo/old version page",
+      "tags": []
     },
     "3510080": {
       "categories": [
