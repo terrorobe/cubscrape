@@ -8349,7 +8349,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1752689663",
-      "last_updated": "2025-07-20T14:59:56.887270",
+      "last_updated": "2025-07-21T15:03:26.904623",
       "name": "Hell Clock",
       "publishers": [
         "Mad Mushroom"
@@ -13825,7 +13825,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1752784055",
-      "last_updated": "2025-07-20T14:59:52.119680",
+      "last_updated": "2025-07-21T15:03:26.087559",
       "name": "Resonant Blade",
       "publishers": [
         "Wise Wombat Games"
@@ -31955,7 +31955,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2712380/header.jpg?t=1752217378",
-      "last_updated": "2025-07-14T15:01:59.805373",
+      "last_updated": "2025-07-21T15:03:17.376947",
       "name": "Legends of Dragaea: Idle Dungeons",
       "planned_release_date": "2025",
       "publishers": [
@@ -33179,11 +33179,10 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/a6757865adf488b7a98e11d1197e0165cd412302/header_alt_assets_0.jpg?t=1753098075",
-      "last_updated": "2025-07-21T14:09:39.762643",
+      "last_updated": "2025-07-21T15:03:23.058709",
       "name": "The King is Watching",
       "positive_review_percentage": 92,
       "price_eur": "13,49\u20ac",
-      "price_usd": "$13.49",
       "publishers": [
         "tinyBuild"
       ],
@@ -35172,18 +35171,19 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2820670/header.jpg?t=1744181363",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-14T15:02:00.438286",
+      "last_updated": "2025-07-21T15:03:18.255010",
       "name": "Legends of Dragaea: Idle Dungeons Demo",
-      "positive_review_percentage": 100,
+      "positive_review_percentage": 94,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "GIGATANK 3000"
       ],
-      "recent_review_count": 10,
-      "recent_review_percentage": 100,
+      "recent_review_count": 13,
+      "recent_review_percentage": 92,
       "recent_review_summary": "Very Positive",
       "release_date": "3 Apr, 2024",
-      "review_count": 15,
+      "review_count": 18,
       "review_summary": "Positive",
       "steam_app_id": "2820670",
       "steam_url": "https://store.steampowered.com/app/2820670",
@@ -41571,7 +41571,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3003120/6d893702a48ceda907f4a796f4aa6ce2ab632589/header.jpg?t=1749738464",
-      "last_updated": "2025-07-14T15:01:56.578378",
+      "last_updated": "2025-07-21T15:03:19.415073",
       "name": "Zombiehood",
       "planned_release_date": "Q3 2025",
       "publishers": [
@@ -42969,18 +42969,16 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3029290/6d893702a48ceda907f4a796f4aa6ce2ab632589/header.jpg?t=1749738462",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-14T15:01:57.278034",
+      "last_updated": "2025-07-21T15:03:20.415354",
       "name": "Zombiehood Demo",
       "positive_review_percentage": 100,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "NLB.DEV"
       ],
-      "recent_review_count": 11,
-      "recent_review_percentage": 100,
-      "recent_review_summary": "Very Positive",
       "release_date": "2 Aug, 2024",
-      "review_count": 13,
+      "review_count": 14,
       "review_summary": "Positive",
       "steam_app_id": "3029290",
       "steam_url": "https://store.steampowered.com/app/3029290",
@@ -43015,8 +43013,8 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3029570/header.jpg?t=1751785195",
-      "last_updated": "2025-07-14T15:01:58.927303",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3029570/header.jpg?t=1752774831",
+      "last_updated": "2025-07-21T15:03:30.502105",
       "name": "BROTANK",
       "planned_release_date": "2025",
       "publishers": [
@@ -47451,18 +47449,19 @@
         "Massively Multiplayer"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3140620/55db28c57a15f1ddc77454d9f1fe2a11217a1dd6/header_alt_assets_4.jpg?t=1752481894",
-      "last_updated": "2025-07-20T14:59:53.470813",
+      "last_updated": "2025-07-21T15:03:21.356162",
       "name": "C.A.S.T. (CHERNOZEM ANOMALY STRIKE TEAM)",
       "positive_review_percentage": 91,
       "price_eur": "5,16\u20ac",
+      "price_usd": "$5.24",
       "publishers": [
         "Ascension Studio"
       ],
-      "recent_review_count": 73,
+      "recent_review_count": 76,
       "recent_review_percentage": 84,
       "recent_review_summary": "Very Positive",
       "release_date": "14 Jul, 2025",
-      "review_count": 381,
+      "review_count": 387,
       "review_summary": "Very Positive",
       "steam_app_id": "3140620",
       "steam_url": "https://store.steampowered.com/app/3140620",
@@ -52301,15 +52300,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3247750/header.jpg?t=1752795203",
       "is_early_access": true,
-      "last_updated": "2025-07-20T14:59:57.765012",
+      "last_updated": "2025-07-21T15:03:25.204719",
       "name": "Mycopunk",
       "positive_review_percentage": 92,
       "price_eur": "14,99\u20ac",
+      "price_usd": "$14.99",
       "publishers": [
         "Devolver Digital"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 1171,
+      "review_count": 1224,
       "review_summary": "Very Positive",
       "steam_app_id": "3247750",
       "steam_url": "https://store.steampowered.com/app/3247750",
@@ -55038,7 +55038,6 @@
         "Stats",
         "Family Sharing"
       ],
-      "demo_app_id": "3416980",
       "developers": [
         "RainRingStudio"
       ],
@@ -55048,17 +55047,17 @@
         "Indie",
         "Strategy"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3330160/1fe6bc72ae06b29602cede91002815e17f61f0e4/header.jpg?t=1752898902",
-      "last_updated": "2025-07-20T14:59:55.718213",
+      "last_updated": "2025-07-21T15:03:22.301232",
       "name": "Kingdom Ascension",
-      "positive_review_percentage": 94,
+      "positive_review_percentage": 93,
       "price_eur": "9,43\u20ac",
+      "price_usd": "$9.59",
       "publishers": [
         "RainRingStudio"
       ],
       "release_date": "18 Jul, 2025",
-      "review_count": 39,
+      "review_count": 49,
       "review_summary": "Positive",
       "steam_app_id": "3330160",
       "steam_url": "https://store.steampowered.com/app/3330160",
@@ -56883,18 +56882,19 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385370/header.jpg?t=1752287906",
-      "last_updated": "2025-07-20T14:59:55.107823",
+      "last_updated": "2025-07-21T15:03:27.884846",
       "name": "Maze Mice",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 90,
       "price_eur": "6,82\u20ac",
+      "price_usd": "$6.99",
       "publishers": [
         "TrampolineTales"
       ],
-      "recent_review_count": 101,
-      "recent_review_percentage": 89,
+      "recent_review_count": 109,
+      "recent_review_percentage": 87,
       "recent_review_summary": "Very Positive",
       "release_date": "11 Jul, 2025",
-      "review_count": 168,
+      "review_count": 176,
       "review_summary": "Very Positive",
       "steam_app_id": "3385370",
       "steam_url": "https://store.steampowered.com/app/3385370",
@@ -58475,19 +58475,17 @@
         "RPG",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3425110/506ed00d72df08d3a769bde48c99207c57317e5f/header.jpg?t=1751785165",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3425110/506ed00d72df08d3a769bde48c99207c57317e5f/header.jpg?t=1752764108",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-14T15:01:58.157634",
+      "last_updated": "2025-07-21T15:03:29.635320",
       "name": "BROTANK demo",
       "positive_review_percentage": 92,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Dfirend Games"
       ],
-      "recent_review_count": 16,
-      "recent_review_percentage": 87,
-      "recent_review_summary": "Very Positive",
       "release_date": "9 Jun, 2025",
       "review_count": 26,
       "review_summary": "Positive",
@@ -66357,7 +66355,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3692070/e857d294069517d44470a18ec32fa63e0bba5562/header.jpg?t=1752345130",
-      "last_updated": "2025-07-20T14:59:52.791061",
+      "last_updated": "2025-07-21T15:03:24.161837",
       "name": "One Man\u00b4s Trash",
       "publishers": [
         "Jony Pazu Games"
