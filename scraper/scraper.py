@@ -68,7 +68,8 @@ class YouTubeSteamScraper:
 
     def fetch_steam_data(self, steam_url: str) -> SteamGameData | None:
         """Fetch game data from Steam using the modular fetcher"""
-        return self.steam_fetcher.fetch_data(steam_url)
+        # Always fetch both EUR and USD prices for new games
+        return self.steam_fetcher.fetch_data(steam_url, fetch_usd=True)
 
     def process_videos(self, channel_url: str, max_new_videos: int | None = None, fetch_newest_first: bool = False, cutoff_date: str | None = None):
         """Process YouTube videos only"""

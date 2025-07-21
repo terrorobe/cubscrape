@@ -28,8 +28,8 @@ class CLICommands:
         parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
         parser.add_argument(
             'mode',
-            choices=['backfill', 'cron', 'reprocess', 'single-app', 'data-quality', 'infer-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other'],
-            help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), single-app, data-quality, infer-games, build-db, fetch-videos (only fetch new videos), refresh-steam (only refresh Steam data), or refresh-other (only refresh other games data)'
+            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'infer-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other'],
+            help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), fetch-steam-apps (fetch specific Steam apps), data-quality, infer-games, build-db, fetch-videos (only fetch new videos), refresh-steam (only refresh Steam data), or refresh-other (only refresh other games data)'
         )
         parser.add_argument(
             '--channel',
@@ -59,7 +59,7 @@ class CLICommands:
         parser.add_argument(
             '--app-id',
             type=str,
-            help='Steam app ID to fetch (required for single-app mode)'
+            help='Steam app ID(s) to fetch (required for fetch-steam-apps mode). Can be a single ID or comma-separated list'
         )
         parser.add_argument(
             '--cutoff-date',
@@ -76,7 +76,7 @@ class CLICommands:
             'reprocess': self._handle_reprocess,
             'backfill': self._handle_backfill,
             'cron': self._handle_cron,
-            'single-app': self._handle_single_app,
+            'fetch-steam-apps': self._handle_fetch_steam_apps,
             'data-quality': self._handle_data_quality,
             'infer-games': self._handle_infer_games,
             'build-db': self._handle_build_db,
@@ -201,18 +201,35 @@ class CLICommands:
                 logging.info(f"Auto-linking results: {stats['approved_links']} new links, "
                            f"{stats['conflicting_links_removed']} conflicts resolved")
 
-    def _handle_single_app(self, args):
-        """Handle single-app command"""
+    def _handle_fetch_steam_apps(self, args):
+        """Handle fetch-steam-apps command"""
         if not args.app_id:
-            print("Error: --app-id is required for single-app mode")
+            print("Error: --app-id is required for fetch-steam-apps mode")
             sys.exit(1)
 
-        # Use SteamDataUpdater for single app fetching
+        # Parse app IDs (support comma-separated list)
+        app_ids = [app_id.strip() for app_id in args.app_id.split(',')]
+
+        # Use SteamDataUpdater for app fetching
         steam_updater = SteamDataUpdater()
-        if steam_updater.fetch_single_app(args.app_id):
-            logging.info(f"Successfully fetched data for app {args.app_id}")
-        else:
-            logging.warning(f"Failed to fetch data for app {args.app_id}")
+
+        success_count = 0
+        failed_count = 0
+
+        for app_id in app_ids:
+            if steam_updater.fetch_single_app(app_id):
+                logging.info(f"Successfully fetched data for app {app_id}")
+                success_count += 1
+            else:
+                logging.warning(f"Failed to fetch data for app {app_id}")
+                failed_count += 1
+
+        # Summary
+        total = len(app_ids)
+        if total > 1:
+            logging.info(f"Fetched {success_count}/{total} apps successfully")
+            if failed_count > 0:
+                logging.warning(f"{failed_count} apps failed to fetch")
 
     def _handle_data_quality(self, _args):
         """Handle data-quality command"""

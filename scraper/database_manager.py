@@ -50,14 +50,14 @@ class DatabaseManager:
             cursor.execute('''
                 INSERT INTO games (
                     game_key, steam_app_id, name, platform, coming_soon,
-                    is_early_access, is_demo, is_free, price, price_final,
+                    is_early_access, is_demo, is_free, price_eur, price_usd, price_final,
                     positive_review_percentage, review_count, review_summary, review_summary_priority,
                     recent_review_percentage, recent_review_count, recent_review_summary,
                     insufficient_reviews, release_date, planned_release_date, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, developers, publishers,
                     demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -67,7 +67,8 @@ class DatabaseManager:
                 game.get('is_early_access', False),
                 game.get('is_demo', False),
                 game.get('is_free', False),
-                game.get('price'),
+                None if game.get('is_free') else game.get('price_eur'),
+                None if game.get('is_free') else game.get('price_usd'),
                 self._extract_price_final(game),
                 percentage,
                 game.get('review_count', 0),
@@ -155,7 +156,8 @@ class DatabaseManager:
         if game.get('is_free'):
             return 0.0
 
-        price = game.get('price', '')
+        # Try EUR price first, then USD
+        price = game.get('price_eur', '') or game.get('price_usd', '')
         if not price:
             return 0.0
 

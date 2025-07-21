@@ -243,6 +243,10 @@ def process_and_unify_games(steam_data, other_games, all_videos):
                 if absorbed:
                     continue  # Skip this Itch game as it's part of a Steam game
 
+            # Mark Itch.io and CrazyGames as free
+            if game_data.get('platform') in ['itch', 'crazygames']:
+                game_data['is_free'] = True
+
             unified_games[game_key] = {
                 'game_key': game_key,
                 'platform': game_data.get('platform', 'other'),

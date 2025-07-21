@@ -38,7 +38,8 @@ class SteamGameData:
     categories: list[str] = field(default_factory=list)
     developers: list[str] = field(default_factory=list)
     publishers: list[str] = field(default_factory=list)
-    price: str | None = None
+    price_eur: str | None = None
+    price_usd: str | None = None
     header_image: str = ""
     tags: list[str] = field(default_factory=list)
     has_demo: bool = False

@@ -4,6 +4,7 @@ Steam data fetching and parsing functionality
 
 import logging
 import re
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,22 +20,65 @@ class SteamDataFetcher:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         self.cookies = {'birthtime': '0', 'mature_content': '1'}
+        self.max_retries = 10
+        self.base_delay = 1
 
-    def fetch_data(self, steam_url: str) -> SteamGameData | None:
-        """Fetch complete game data from Steam"""
+    def _make_request_with_retry(self, url: str, request_type: str = "API", **kwargs):
+        """Make HTTP request with exponential backoff retry logic"""
+        for attempt in range(self.max_retries):
+            try:
+                response = requests.get(url, timeout=30, **kwargs)
+
+                if response.status_code == 429:  # Rate limited
+                    delay = self.base_delay * (2 ** attempt)
+                    logging.warning(f"Rate limited for {request_type} request (attempt {attempt + 1}), waiting {delay}s")
+                    time.sleep(delay)
+                    continue
+
+                if response.status_code != 200:
+                    if attempt == self.max_retries - 1:  # Last attempt
+                        logging.error(f"Failed {request_type} request after {self.max_retries} attempts: HTTP {response.status_code}")
+                        return None
+
+                    delay = self.base_delay * (2 ** attempt)
+                    logging.warning(f"HTTP {response.status_code} for {request_type} request (attempt {attempt + 1}), retrying in {delay}s")
+                    time.sleep(delay)
+                    continue
+
+                return response
+
+            except requests.exceptions.RequestException as e:
+                if attempt == self.max_retries - 1:  # Last attempt
+                    logging.error(f"Network error for {request_type} request after {self.max_retries} attempts: {e}")
+                    return None
+
+                delay = self.base_delay * (2 ** attempt)
+                logging.warning(f"Network error for {request_type} request (attempt {attempt + 1}): {e}, retrying in {delay}s")
+                time.sleep(delay)
+
+        return None
+
+    def fetch_data(self, steam_url: str, fetch_usd: bool = False) -> SteamGameData | None:
+        """Fetch complete game data from Steam with EUR by default"""
         try:
             app_id = extract_steam_app_id(steam_url)
 
-            # First, get basic data from Steam API
-            api_data = self._fetch_api_data(app_id)
-            if not api_data:
+            # First, get basic data from Steam API with EUR (Austria)
+            api_data_eur = self._fetch_api_data(app_id, 'at')
+            if not api_data_eur:
                 return None
 
             # Create initial game data from API
-            game_data = self._parse_api_data(api_data, app_id, steam_url)
+            game_data = self._parse_api_data(api_data_eur, app_id, steam_url)
+
+            # Fetch USD price if requested
+            if fetch_usd:
+                api_data_usd = self._fetch_api_data(app_id, 'us')
+                if api_data_usd:
+                    game_data.price_usd = self._get_price(api_data_usd)
 
             # Fetch additional data from store page
-            store_data = self._fetch_store_page_data(steam_url, api_data)
+            store_data = self._fetch_store_page_data(steam_url, api_data_eur)
 
             # Merge store page data into game data
             self._merge_store_data(game_data, store_data)
@@ -45,16 +89,17 @@ class SteamDataFetcher:
             logging.error(f"Error fetching Steam data for {steam_url}: {e}")
             return None
 
-    def _fetch_api_data(self, app_id: str) -> dict | None:
-        """Fetch basic data from Steam API"""
-        api_url = f"https://store.steampowered.com/api/appdetails?appids={app_id}"
-        response = requests.get(api_url)
+    def _fetch_api_data(self, app_id: str, country_code: str = 'at') -> dict | None:
+        """Fetch basic data from Steam API with country code and retry logic"""
+        api_url = f"https://store.steampowered.com/api/appdetails?appids={app_id}&cc={country_code}"
 
-        if response.status_code != 200:
+        response = self._make_request_with_retry(api_url, f"Steam API (app {app_id})")
+        if not response:
             return None
 
         data = response.json()
         if not data.get(app_id, {}).get('success'):
+            logging.warning(f"Steam API returned success=false for app {app_id}")
             return None
 
         return data[app_id]['data']
@@ -72,7 +117,7 @@ class SteamDataFetcher:
             categories=[c['description'] for c in app_data.get('categories', [])],
             developers=app_data.get('developers', []),
             publishers=app_data.get('publishers', []),
-            price=self._get_price(app_data),
+            price_eur=self._get_price(app_data),
             header_image=app_data.get('header_image', '')
         )
 
@@ -88,9 +133,14 @@ class SteamDataFetcher:
         return None
 
     def _fetch_store_page_data(self, steam_url: str, app_data: dict | None = None) -> dict:
-        """Scrape additional data from Steam store page"""
-        response = requests.get(steam_url, headers=self.headers, cookies=self.cookies)
-        if response.status_code != 200:
+        """Scrape additional data from Steam store page with retry logic"""
+        response = self._make_request_with_retry(
+            steam_url,
+            "Steam store page",
+            headers=self.headers,
+            cookies=self.cookies
+        )
+        if not response:
             return {}
 
         soup = BeautifulSoup(response.content, 'lxml')

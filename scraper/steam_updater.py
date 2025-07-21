@@ -335,11 +335,30 @@ class SteamDataUpdater:
         try:
             steam_url = f"https://store.steampowered.com/app/{app_id}"
 
+            # Check if we need to fetch USD price
+            fetch_usd = False
+            if app_id in self.steam_data['games']:
+                existing_data = self.steam_data['games'][app_id]
+                # Fetch USD if it's missing or if EUR price changed
+                fetch_usd = not existing_data.price_usd
+            else:
+                # New game, fetch both prices
+                fetch_usd = True
+
             # Fetch the main app using SteamDataFetcher
-            steam_data = self.steam_fetcher.fetch_data(steam_url)
+            steam_data = self.steam_fetcher.fetch_data(steam_url, fetch_usd=fetch_usd)
             if not steam_data:
                 GameUpdateLogger.log_game_update_failure(app_id, "steam")
                 return False
+
+            # Check if EUR price changed and we need to update USD
+            if app_id in self.steam_data['games'] and not fetch_usd:
+                existing_data = self.steam_data['games'][app_id]
+                if existing_data.price_eur != steam_data.price_eur:
+                    # EUR price changed, fetch USD too
+                    steam_data_with_usd = self.steam_fetcher.fetch_data(steam_url, fetch_usd=True)
+                    if steam_data_with_usd:
+                        steam_data.price_usd = steam_data_with_usd.price_usd
 
             # Update with timestamp and Itch URL if provided
             steam_data = replace(steam_data,
@@ -396,7 +415,8 @@ class SteamDataUpdater:
         """
         try:
             app_url = f"https://store.steampowered.com/app/{app_id}"
-            app_data = self.steam_fetcher.fetch_data(app_url)
+            # Always fetch both prices for related apps
+            app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True)
             if app_data:
                 app_data = replace(app_data, last_updated=datetime.now().isoformat())
                 self.steam_data['games'][app_id] = app_data

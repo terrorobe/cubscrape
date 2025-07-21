@@ -1,4 +1,5 @@
 let channels = {};
+let selectedCurrency = 'eur'; // Default to EUR
 
 // SQLite database support
 let db = null;
@@ -698,7 +699,18 @@ function generateFullGameHTML(game) {
 }
 
 function generateGamePriceHTML(game) {
-    const price = game.display_price !== undefined ? game.display_price : game.price;
+    // Get the appropriate price based on selected currency
+    let price;
+    if (game.is_free) {
+        price = 'Free';
+    } else if (game.display_price !== undefined) {
+        price = game.display_price;
+    } else if (selectedCurrency === 'usd' && game.price_usd) {
+        price = game.price_usd;
+    } else {
+        price = game.price_eur; // Default to EUR
+    }
+    
     const priceHTML = price ? `<span class="price-value">${price}</span>` : '';
     
     // Get release status info
@@ -1053,6 +1065,13 @@ document.addEventListener('click', (e) => {
             toggleVideos(gameKey, gameId, e);
         }
     }
+});
+
+// Add currency select event listener
+document.getElementById('currencySelect').addEventListener('change', (e) => {
+    selectedCurrency = e.target.value;
+    // Re-render the current view to update prices
+    applyFilters();
 });
 
 // Initialize
