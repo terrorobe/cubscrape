@@ -66,7 +66,8 @@ class SteamDataFetcher:
             # First, get basic data from Steam API with EUR (Austria)
             api_data_eur = self._fetch_api_data(app_id, 'at')
             if not api_data_eur:
-                return None
+                # Create stub entry for failed API fetch
+                return self._create_stub_entry(app_id, steam_url, "Steam API fetch failed")
 
             # Create initial game data from API
             game_data = self._parse_api_data(api_data_eur, app_id, steam_url)
@@ -87,7 +88,8 @@ class SteamDataFetcher:
 
         except Exception as e:
             logging.error(f"Error fetching Steam data for {steam_url}: {e}")
-            return None
+            app_id = extract_steam_app_id(steam_url)
+            return self._create_stub_entry(app_id, steam_url, f"Exception: {e!s}")
 
     def _fetch_api_data(self, app_id: str, country_code: str = 'at') -> dict | None:
         """Fetch basic data from Steam API with country code and retry logic"""
@@ -458,3 +460,14 @@ class SteamDataFetcher:
         for key, value in store_data.items():
             if hasattr(game_data, key):
                 setattr(game_data, key, value)
+
+    def _create_stub_entry(self, app_id: str, steam_url: str, reason: str) -> SteamGameData:
+        """Create a stub entry for failed fetches to avoid retrying"""
+        logging.info(f"Creating stub entry for Steam app {app_id}: {reason}")
+        return SteamGameData(
+            steam_app_id=app_id,
+            steam_url=steam_url,
+            name=f"[FAILED FETCH] {app_id}",
+            is_stub=True,
+            stub_reason=reason
+        )

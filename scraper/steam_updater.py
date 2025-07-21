@@ -48,9 +48,14 @@ class SteamDataUpdater:
         """
         Get refresh interval in days based on game age or proximity to release.
 
+        For stub entries: Always return 30 days (monthly) to avoid frequent retries
         For released games: Based on age since release
         For unreleased games: Based on days until earliest possible release
         """
+        # For stub entries, use monthly refresh interval to avoid frequent retries
+        if game_data.is_stub:
+            return 30
+
         release_info = game_data.planned_release_date or game_data.release_date
         if not release_info:
             return 30 if game_data.coming_soon else 7  # Monthly for unknown unreleased, weekly for unknown released
@@ -241,7 +246,7 @@ class SteamDataUpdater:
         other_steam_count = 0
         if other_games_data and 'games' in other_games_data:
             for itch_url, game_data in other_games_data['games'].items():
-                if hasattr(game_data, 'steam_url') and game_data.steam_url:
+                if game_data.steam_url:
                     # Extract app ID from Steam URL
                     app_id = self._extract_steam_app_id(game_data.steam_url)
                     if app_id and app_id not in steam_app_ids:

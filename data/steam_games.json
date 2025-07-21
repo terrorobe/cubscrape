@@ -44764,6 +44764,21 @@
         "Top-Down"
       ]
     },
+    "3073390": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T14:28:55.692992",
+      "name": "[FAILED FETCH] 3073390",
+      "publishers": [],
+      "release_date": "",
+      "steam_app_id": "3073390",
+      "steam_url": "https://store.steampowered.com/app/3073390",
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
+    },
     "3073990": {
       "categories": [
         "Single-player",
@@ -50444,49 +50459,19 @@
       ]
     },
     "3209890": {
-      "categories": [
-        "Single-player",
-        "Game demo",
-        "Steam Achievements"
-      ],
-      "developers": [
-        "Awaken Realms"
-      ],
-      "full_game_app_id": "2651220",
-      "genres": [
-        "Adventure",
-        "Casual",
-        "Indie",
-        "RPG",
-        "Simulation"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3209890/header.jpg?t=1730286056",
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-11T21:34:56.713426",
-      "name": "Blacksmith: Ignite the Forge Demo",
-      "positive_review_percentage": 94,
-      "price_eur": "Free",
-      "publishers": [
-        "Awaken Realms"
-      ],
-      "release_date": "10 Oct, 2024",
-      "review_count": 37,
-      "review_summary": "Positive",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T14:28:56.311805",
+      "name": "[FAILED FETCH] 3209890",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "3209890",
       "steam_url": "https://store.steampowered.com/app/3209890",
-      "tags": [
-        "Simulation",
-        "Adventure",
-        "Crafting",
-        "Singleplayer",
-        "Casual",
-        "Medieval",
-        "Management",
-        "2D",
-        "Capitalism",
-        "Indie"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3210350": {
       "categories": [
@@ -57809,6 +57794,21 @@
         "Roguelike",
         "Turn-Based Combat"
       ]
+    },
+    "3413250": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-21T14:28:56.056969",
+      "name": "[FAILED FETCH] 3413250",
+      "publishers": [],
+      "release_date": "",
+      "steam_app_id": "3413250",
+      "steam_url": "https://store.steampowered.com/app/3413250",
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3413590": {
       "categories": [

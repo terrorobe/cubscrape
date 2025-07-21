@@ -129,3 +129,17 @@ The project uses a custom ESLint configuration that enforces:
 - **Code quality**: No console statements (warnings), no debugger, consistent variable declarations
 - **Best practices**: Prefer const over let, require curly braces for conditionals
 - **Code style**: 4-space indentation, single quotes, semicolons required
+
+## Development Issues
+
+### Import Path Issues
+- When running Python scripts from project root, some modules in `scraper/` have relative import issues
+- **Solution**: Run Python commands from the `scraper/` directory or use absolute imports
+- **Example**: `cd scraper && uv run python script.py` instead of `uv run python scraper/script.py`
+
+### JSON Data Analysis
+- **Prefer `jq` over `grep`** when analyzing JSON files like `steam_games.json`
+- `grep` can give misleading results due to JSON structure complexity
+- **Example**: Use `jq '.games["2651220"]' data/steam_games.json` instead of `grep -A 20 "2651220" data/steam_games.json`
+- For finding games by name: `jq -r '.games | to_entries[] | select(.value.name | contains("Blacksmith")) | .key + ": " + .value.name' data/steam_games.json`
+

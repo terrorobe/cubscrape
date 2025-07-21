@@ -35,15 +35,22 @@ class ItchDataFetcher:
         try:
             response = requests.get(itch_url, headers=self.headers)
             if response.status_code != 200:
-                return None
+                # Create stub entry for failed HTTP requests
+                return self._create_stub_entry(itch_url, f"HTTP {response.status_code}")
 
             soup = BeautifulSoup(response.content, 'lxml')
+
+            # Try to extract name to validate page content
+            name = self._extract_name(soup)
+            if not name:
+                # Create stub entry if we can't extract basic game data
+                return self._create_stub_entry(itch_url, "No game name found")
 
             # Create base game data
             game_data = OtherGameData(
                 platform='itch',
                 url=itch_url,
-                name=self._extract_name(soup),
+                name=name,
                 is_free=True,  # Most itch games are free or pay-what-you-want
                 release_date=self._extract_release_date(soup),
                 header_image=self._extract_header_image(soup),
@@ -66,7 +73,7 @@ class ItchDataFetcher:
 
         except Exception as e:
             logging.error(f"Error fetching itch.io data for {itch_url}: {e}")
-            return None
+            return self._create_stub_entry(itch_url, f"Exception: {e!s}")
 
     def _extract_name(self, soup: BeautifulSoup) -> str:
         """Extract game name from page"""
@@ -286,3 +293,14 @@ class ItchDataFetcher:
                     return {'count': int(count_match.group(1).replace(',', ''))}
 
         return None
+
+    def _create_stub_entry(self, itch_url: str, reason: str) -> OtherGameData:
+        """Create a stub entry for failed fetches to avoid retrying"""
+        logging.info(f"Creating stub entry for itch.io URL {itch_url}: {reason}")
+        return OtherGameData(
+            platform='itch',
+            url=itch_url,
+            name=f"[FAILED FETCH] {itch_url}",
+            is_stub=True,
+            stub_reason=reason
+        )

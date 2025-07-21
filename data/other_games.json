@@ -723,6 +723,19 @@
       ],
       "url": "https://shattered-pixel.itch.io/shattered-pixel-dungeon"
     },
+    "https://socketlab.itch.io/3kings": {
+      "header_image": "",
+      "is_free": true,
+      "is_stub": true,
+      "last_updated": "2025-07-21T14:28:55.354592",
+      "name": "[FAILED FETCH] https://socketlab.itch.io/3kings",
+      "platform": "itch",
+      "release_date": "",
+      "steam_url": "",
+      "stub_reason": "HTTP 404",
+      "tags": [],
+      "url": "https://socketlab.itch.io/3kings"
+    },
     "https://squidcor.itch.io/second-earth": {
       "header_image": "https://img.itch.zone/aW1nLzE4ODg2MTIuZ2lm/original/ku6j0v.gif",
       "is_free": true,

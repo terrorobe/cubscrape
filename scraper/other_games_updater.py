@@ -81,9 +81,14 @@ class OtherGamesUpdater:
         More conservative than Steam since other platforms change less frequently.
 
         Returns interval in days:
+        - Stub entries: 30 days (monthly) to avoid frequent retries
         - New games (< 30 days): 7 days (weekly)
         - All other games: 30 days (monthly) - max as requested
         """
+        # For stub entries, use monthly refresh interval to avoid frequent retries
+        if game_data.is_stub:
+            return 30
+
         release_date_str = game_data.release_date or ''
 
         if not release_date_str:

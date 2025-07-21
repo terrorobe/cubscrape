@@ -57,6 +57,8 @@ class SteamGameData:
     planned_release_date: str | None = None
     itch_url: str | None = None  # Itch.io URL if this Steam game is also on Itch
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
+    is_stub: bool = False  # True if this is a stub entry for a failed fetch
+    stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")
 
 
 @dataclass
@@ -73,6 +75,8 @@ class OtherGameData:
     review_count: int | None = None
     steam_url: str = ""  # Steam link if found and name matches
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
+    is_stub: bool = False  # True if this is a stub entry for a failed fetch
+    stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")
 
 
 @dataclass
