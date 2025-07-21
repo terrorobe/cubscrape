@@ -274,6 +274,52 @@
         "Base Building"
       ]
     },
+    "1044720": {
+      "categories": [
+        "Single-player",
+        "Steam Workshop",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Crate Entertainment"
+      ],
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1044720/header.jpg?t=1740067525",
+      "is_early_access": true,
+      "last_updated": "2025-07-21T16:57:23.213528",
+      "name": "Farthest Frontier",
+      "positive_review_percentage": 86,
+      "price_eur": "29,50\u20ac",
+      "price_usd": "$29.99",
+      "publishers": [
+        "Crate Entertainment"
+      ],
+      "recent_review_count": 187,
+      "recent_review_percentage": 86,
+      "recent_review_summary": "Very Positive",
+      "release_date": "9 Aug, 2022",
+      "review_count": 18959,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1044720",
+      "steam_url": "https://store.steampowered.com/app/1044720",
+      "tags": [
+        "Early Access",
+        "Historical",
+        "Agriculture",
+        "Medieval",
+        "4X",
+        "Immersive Sim",
+        "City Builder",
+        "Resource Management",
+        "Top-Down",
+        "RTS"
+      ]
+    },
     "1049410": {
       "categories": [
         "Single-player",
