@@ -15,6 +15,12 @@ def _resolve_stub_entries(steam_data):
     """Resolve stub entries by replacing them with their resolved targets"""
     resolved_data = {}
 
+    # First pass: collect all target IDs that are resolved by stubs
+    resolved_target_ids = set()
+    for game_data in steam_data.values():
+        if game_data.get('is_stub') and game_data.get('resolved_to'):
+            resolved_target_ids.add(game_data['resolved_to'])
+
     for app_id, game_data in steam_data.items():
         # Check if this is a stub with a resolution
         if game_data.get('is_stub') and game_data.get('resolved_to'):
@@ -27,9 +33,10 @@ def _resolve_stub_entries(steam_data):
             else:
                 logging.warning(f"Stub {app_id} points to missing game {resolved_app_id}")
                 resolved_data[app_id] = game_data
-        else:
-            # Not a stub or unresolved stub - use as-is
+        elif app_id not in resolved_target_ids:
+            # Only include non-stub games that are not already resolved by a stub
             resolved_data[app_id] = game_data
+        # else: Skip this entry because it's a target that's resolved by a stub
 
     return resolved_data
 
