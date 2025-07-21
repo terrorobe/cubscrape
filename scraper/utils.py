@@ -5,6 +5,7 @@ Utility functions for the YouTube Steam scraper
 import json
 import os
 import re
+import tempfile
 from pathlib import Path
 
 from models import GameLinks
@@ -142,11 +143,23 @@ def load_json(filepath: str | Path, default: dict) -> dict:
 
 
 def save_data(data_dict: dict, file_path: str | Path):
-    """Save data to JSON file"""
+    """Save data to JSON file atomically"""
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open('w') as f:
-        json.dump(data_dict, f, indent=2, sort_keys=True)
+
+    # Write to temporary file first
+    with tempfile.NamedTemporaryFile(
+        mode='w',
+        dir=path.parent,
+        prefix=f'.{path.name}.tmp-',
+        suffix='.json',
+        delete=False
+    ) as tmp_file:
+        json.dump(data_dict, tmp_file, indent=2, sort_keys=True)
+        tmp_path = Path(tmp_file.name)
+
+    # Atomically replace the original file
+    tmp_path.replace(path)
 
 
 def clean_tag_text(tag_text: str) -> str:
