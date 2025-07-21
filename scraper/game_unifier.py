@@ -11,6 +11,29 @@ import logging
 from utils import generate_review_summary
 
 
+def _resolve_stub_entries(steam_data):
+    """Resolve stub entries by replacing them with their resolved targets"""
+    resolved_data = {}
+
+    for app_id, game_data in steam_data.items():
+        # Check if this is a stub with a resolution
+        if game_data.get('is_stub') and game_data.get('resolved_to'):
+            resolved_app_id = game_data['resolved_to']
+            resolved_game = steam_data.get(resolved_app_id)
+
+            if resolved_game:
+                logging.info(f"Resolving stub {app_id} to {resolved_app_id}: {resolved_game.get('name')}")
+                resolved_data[app_id] = resolved_game
+            else:
+                logging.warning(f"Stub {app_id} points to missing game {resolved_app_id}")
+                resolved_data[app_id] = game_data
+        else:
+            # Not a stub or unresolved stub - use as-is
+            resolved_data[app_id] = game_data
+
+    return resolved_data
+
+
 def _create_fallback_game(game_key, game_data, missing_ref_id=None):
     """Create a fallback game entry when relationships are missing"""
     if missing_ref_id:
@@ -143,14 +166,17 @@ def create_unified_steam_games(steam_data):
 
     logging.info(f"Creating unified games from {len(steam_data)} Steam entries")
 
-    for game_key, game_data in steam_data.items():
+    # Resolve stub entries before processing
+    resolved_steam_data = _resolve_stub_entries(steam_data)
+
+    for game_key, game_data in resolved_steam_data.items():
         if game_key in processed_games:
             continue
 
         # Check if this is a demo with a full game
         if game_data.get('is_demo') and game_data.get('full_game_app_id'):
             full_game_id = game_data['full_game_app_id']
-            full_game_data = steam_data.get(full_game_id, {})
+            full_game_data = resolved_steam_data.get(full_game_id, {})
 
             if not full_game_data:
                 # Full game data not found, treat as regular demo

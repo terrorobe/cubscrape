@@ -59,6 +59,7 @@ class SteamGameData:
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
     is_stub: bool = False  # True if this is a stub entry for a failed fetch
     stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")
+    resolved_to: str | None = None  # Steam app ID this stub should resolve to
 
 
 @dataclass
@@ -77,6 +78,7 @@ class OtherGameData:
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
     is_stub: bool = False  # True if this is a stub entry for a failed fetch
     stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")
+    resolved_to: str | None = None  # URL this stub should resolve to
 
 
 @dataclass

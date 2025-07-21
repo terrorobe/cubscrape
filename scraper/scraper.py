@@ -125,8 +125,13 @@ class YouTubeSteamScraper:
 
         # Case 2: Has steam_app_id but it's missing from our database
         steam_app_id = video.get('steam_app_id')
-        if steam_app_id and steam_app_id not in self.steam_data.get('games', {}):
-            return "missing_steam_game"
+        if steam_app_id:
+            game_data = self.steam_data.get('games', {}).get(steam_app_id)
+            if not game_data:
+                return "missing_steam_game"
+            # Case 3: Has steam_app_id but it points to an unresolved stub
+            if game_data.is_stub and not game_data.resolved_to:
+                return "stub_entry"
 
         return None
 
@@ -134,15 +139,16 @@ class YouTubeSteamScraper:
         """Check if Steam app is still available"""
         return self.game_inference.check_steam_availability(app_id)
 
-    def infer_games_from_titles(self, channels_config: dict):
-        """Infer games from video titles and resolve missing Steam games"""
+    def resolve_games(self, channels_config: dict):
+        """Resolve games for videos with missing, broken, or stub game data"""
         print("\n" + "="*80)
-        print("GAME INFERENCE AND MISSING STEAM GAMES RESOLUTION")
+        print("GAME RESOLUTION FOR VIDEOS")
         print("="*80)
 
         total_videos_processed = 0
         games_found = 0
         missing_resolved = 0
+        stubs_resolved = 0
 
         # Load all channel video files
         script_dir = Path(__file__).resolve().parent
@@ -173,12 +179,15 @@ class YouTubeSteamScraper:
             # Categorize videos
             no_game_data = [v for v in videos_to_process if v[2] == "no_game_data"]
             missing_steam = [v for v in videos_to_process if v[2] == "missing_steam_game"]
+            stub_entries = [v for v in videos_to_process if v[2] == "stub_entry"]
 
             print(f"   🔍 Found {len(no_game_data)} videos without game data")
             print(f"   🔍 Found {len(missing_steam)} videos with missing Steam games")
+            print(f"   🔍 Found {len(stub_entries)} videos with unresolved stub entries")
 
             channel_games_found = 0
             channel_missing_resolved = 0
+            channel_stubs_resolved = 0
 
             # Process all videos that need inference
             for _video_id, video, reason in videos_to_process:
@@ -217,6 +226,21 @@ class YouTubeSteamScraper:
 
                     else:
                         print(f"      ❓ Steam app {missing_app_id} status unknown, searching for alternatives...")
+
+                elif reason == "stub_entry":
+                    youtube_url = f"https://www.youtube.com/watch?v={video.get('video_id')}"
+                    stub_app_id = video.get('steam_app_id')
+                    print(f"\n   📹 {title} [STUB ENTRY: {stub_app_id}]")
+                    print(f"      🔗 {youtube_url}")
+
+                    # For stub entries, we need to extract game names from ALL videos referencing this stub
+                    # Not just the current video, since multiple videos might provide different clues
+                    print(f"      🔄 Finding alternative for stub {stub_app_id}...")
+                    potential_names = self._extract_game_names_from_videos_with_steam_id(stub_app_id)
+
+                    if not potential_names:
+                        print(f"      ❌ No game names found for stub {stub_app_id}")
+                        continue
 
                 else:
                     youtube_url = f"https://www.youtube.com/watch?v={video.get('video_id')}"
@@ -272,11 +296,23 @@ class YouTubeSteamScraper:
                     game_name = best_match['name']
                     print(f"      ✅ Found match: {game_name} (App ID: {app_id}, confidence: {best_match['confidence']:.2f})")
 
-                    # Update video data
-                    video['steam_app_id'] = app_id
-                    video['inferred_game'] = True  # Mark as inferred for review
-                    video['inference_reason'] = reason
-                    video['last_updated'] = datetime.now().isoformat()
+                    if reason == "stub_entry":
+                        # For stub entries, update the stub's resolved_to field, keep video unchanged
+                        stub_app_id = video.get('steam_app_id')
+                        if stub_app_id in self.steam_data.get('games', {}):
+                            stub_data = self.steam_data['games'][stub_app_id]
+                            stub_data.resolved_to = app_id
+                            self.steam_data['games'][stub_app_id] = stub_data
+                            print(f"      🔗 Updated stub {stub_app_id} to resolve to {app_id}")
+                            channel_stubs_resolved += 1
+                        else:
+                            print(f"      ⚠️  Stub {stub_app_id} not found in steam_data")
+                    else:
+                        # For missing games and no game data, update video data as before
+                        video['steam_app_id'] = app_id
+                        video['inferred_game'] = True  # Mark as inferred for review
+                        video['inference_reason'] = reason
+                        video['last_updated'] = datetime.now().isoformat()
 
                     # Store YouTube detection info if it was used
                     if detected_game:
@@ -296,40 +332,81 @@ class YouTubeSteamScraper:
                         logging.error(f"      ❌ Error fetching Steam data for {app_id}: {e}")
 
                     games_found += 1
-                    channel_games_found += 1
-                    if reason == "missing_steam_game":
-                        missing_resolved += 1
-                        channel_missing_resolved += 1
+                    if reason == "stub_entry":
+                        # Stub resolution is tracked separately
+                        pass
+                    else:
+                        channel_games_found += 1
+                        if reason == "missing_steam_game":
+                            missing_resolved += 1
+                            channel_missing_resolved += 1
                 else:
                     print("      ❌ No confident matches found on Steam")
 
-            # Save updated video data
+            # Save updated video data and steam data
             if channel_games_found > 0 or channel_missing_resolved > 0:
                 with videos_file.open('w') as f:
                     json.dump(channel_data, f, indent=2, sort_keys=True)
                 print(f"   💾 Saved {channel_games_found} game inferences and {channel_missing_resolved} resolved missing games for {channel_id}")
+
+            if channel_stubs_resolved > 0:
+                self.data_manager.save_steam_data(self.steam_data)
+                print(f"   💾 Saved {channel_stubs_resolved} resolved stub entries")
+                stubs_resolved += channel_stubs_resolved
 
         # Save updated Steam data
         if games_found > 0 or missing_resolved > 0:
             self.save_steam()
 
         print("\n" + "="*80)
-        print("GAME INFERENCE AND RESOLUTION SUMMARY")
+        print("GAME RESOLUTION SUMMARY")
         print("="*80)
         print(f"📊 Videos processed: {total_videos_processed}")
         print(f"🎮 New games found via inference: {games_found}")
         print(f"🔧 Missing Steam games resolved: {missing_resolved}")
-        print(f"✅ Total games found/resolved: {games_found + missing_resolved}")
+        print(f"🔗 Stub entries resolved: {stubs_resolved}")
+        print(f"✅ Total games found/resolved: {games_found + missing_resolved + stubs_resolved}")
         if total_videos_processed > 0:
-            success_rate = ((games_found + missing_resolved) / total_videos_processed) * 100
+            success_rate = ((games_found + missing_resolved + stubs_resolved) / total_videos_processed) * 100
             print(f"📈 Success rate: {success_rate:.1f}%")
         if games_found > 0:
             print("\n⚠️  Note: Inferred games are marked with 'inferred_game: true' for review")
         if missing_resolved > 0:
             print("⚠️  Note: Some videos may have 'broken_app_id' field for depublished games")
+        if stubs_resolved > 0:
+            print("⚠️  Note: Videos with resolved stub entries keep their original Steam IDs")
         print("="*80)
 
-        return games_found + missing_resolved
+        return games_found + missing_resolved + stubs_resolved
+
+    def _extract_game_names_from_videos_with_steam_id(self, steam_app_id: str) -> list[str]:
+        """Extract potential game names from videos that reference a specific Steam app ID"""
+        game_names = set()
+
+        # Search through all video files
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+
+        for videos_file in project_root.glob('data/videos-*.json'):
+            try:
+                with videos_file.open() as f:
+                    channel_data = json.load(f)
+
+                for video in channel_data.get('videos', {}).values():
+                    if video.get('steam_app_id') == steam_app_id:
+                        # Try YouTube detected game first
+                        if video.get('youtube_detected_game'):
+                            game_names.add(video['youtube_detected_game'])
+
+                        # Extract from title using the game inference engine
+                        title = video.get('title', '')
+                        extracted_names = self.game_inference.extract_potential_game_names_from_title(title)
+                        game_names.update(extracted_names)
+
+            except Exception as e:
+                logging.error(f"Error reading {videos_file}: {e}")
+
+        return list(game_names)
 
 
 def build_database():
@@ -351,6 +428,7 @@ def build_database():
     except Exception as e:
         logging.error(f"Database generation failed: {e}")
         raise
+
 
 
 if __name__ == "__main__":

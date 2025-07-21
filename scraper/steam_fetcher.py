@@ -461,7 +461,7 @@ class SteamDataFetcher:
             if hasattr(game_data, key):
                 setattr(game_data, key, value)
 
-    def _create_stub_entry(self, app_id: str, steam_url: str, reason: str) -> SteamGameData:
+    def _create_stub_entry(self, app_id: str, steam_url: str, reason: str, resolved_to: str | None = None) -> SteamGameData:
         """Create a stub entry for failed fetches to avoid retrying"""
         logging.info(f"Creating stub entry for Steam app {app_id}: {reason}")
         return SteamGameData(
@@ -469,5 +469,6 @@ class SteamDataFetcher:
             steam_url=steam_url,
             name=f"[FAILED FETCH] {app_id}",
             is_stub=True,
-            stub_reason=reason
+            stub_reason=reason,
+            resolved_to=resolved_to
         )

@@ -28,8 +28,8 @@ class CLICommands:
         parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
         parser.add_argument(
             'mode',
-            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'infer-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other'],
-            help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), fetch-steam-apps (fetch specific Steam apps), data-quality, infer-games, build-db, fetch-videos (only fetch new videos), refresh-steam (only refresh Steam data), or refresh-other (only refresh other games data)'
+            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other'],
+            help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), fetch-steam-apps (fetch specific Steam apps), data-quality, resolve-games (find games for videos with missing/broken/stub game data), build-db, fetch-videos (only fetch new videos), refresh-steam (only refresh Steam data), or refresh-other (only refresh other games data)'
         )
         parser.add_argument(
             '--channel',
@@ -78,7 +78,7 @@ class CLICommands:
             'cron': self._handle_cron,
             'fetch-steam-apps': self._handle_fetch_steam_apps,
             'data-quality': self._handle_data_quality,
-            'infer-games': self._handle_infer_games,
+            'resolve-games': self._handle_resolve_games,
             'build-db': self._handle_build_db,
             'fetch-videos': self._handle_fetch_videos,
             'refresh-steam': self._handle_refresh_steam,
@@ -244,8 +244,8 @@ class CLICommands:
         logging.info("Data quality check: analyzing all channels and games")
         scraper.check_data_quality(channels)
 
-    def _handle_infer_games(self, _args):
-        """Handle infer-games command"""
+    def _handle_resolve_games(self, _args):
+        """Handle resolve-games command"""
         project_root = self._get_project_root()
         config_manager = ConfigManager(project_root)
         channels = config_manager.get_channels()
@@ -254,8 +254,8 @@ class CLICommands:
         first_channel = next(iter(channels.keys()))
         scraper = YouTubeSteamScraper(first_channel)
 
-        logging.info("Game inference: searching for games in video titles")
-        scraper.infer_games_from_titles(channels)
+        logging.info("Resolving games: finding games for videos with missing, broken, or stub game data")
+        scraper.resolve_games(channels)
 
     def _handle_build_db(self, _args):
         """Handle build-db command"""

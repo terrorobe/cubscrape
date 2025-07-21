@@ -294,7 +294,7 @@ class ItchDataFetcher:
 
         return None
 
-    def _create_stub_entry(self, itch_url: str, reason: str) -> OtherGameData:
+    def _create_stub_entry(self, itch_url: str, reason: str, resolved_to: str | None = None) -> OtherGameData:
         """Create a stub entry for failed fetches to avoid retrying"""
         logging.info(f"Creating stub entry for itch.io URL {itch_url}: {reason}")
         return OtherGameData(
@@ -302,5 +302,6 @@ class ItchDataFetcher:
             url=itch_url,
             name=f"[FAILED FETCH] {itch_url}",
             is_stub=True,
-            stub_reason=reason
+            stub_reason=reason,
+            resolved_to=resolved_to
         )
