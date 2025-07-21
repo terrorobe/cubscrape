@@ -33165,9 +33165,10 @@
     "2753900": {
       "categories": [
         "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "2981670",
       "developers": [
         "Hypnohead"
@@ -33177,28 +33178,31 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/81239e7d3fb2c7405d899912fe09dba6719afea5/header.jpg?t=1752165377",
-      "last_updated": "2025-07-21T08:53:28.952676",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/a6757865adf488b7a98e11d1197e0165cd412302/header_alt_assets_0.jpg?t=1753098075",
+      "last_updated": "2025-07-21T14:09:39.762643",
       "name": "The King is Watching",
+      "positive_review_percentage": 92,
+      "price_eur": "13,49\u20ac",
+      "price_usd": "$13.49",
       "publishers": [
         "tinyBuild"
       ],
       "release_date": "21 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 13,
+      "review_summary": "Positive",
       "steam_app_id": "2753900",
       "steam_url": "https://store.steampowered.com/app/2753900",
       "tags": [
+        "RTS",
+        "Dark Fantasy",
         "Fantasy",
-        "Strategy",
         "Base Building",
         "Roguelike",
+        "Strategy",
         "Resource Management",
-        "City Builder",
-        "Medieval",
-        "Deckbuilding",
         "Tower Defense",
-        "Tactical"
+        "City Builder",
+        "Medieval"
       ]
     },
     "2755220": {
