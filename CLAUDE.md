@@ -20,29 +20,28 @@ This project uses **uv** for Python dependency management and virtual environmen
 
 ```bash
 # Install dependencies and create/activate virtual environment
-uv sync
-
-# Install with development dependencies (includes ruff linter)
 uv sync --extra dev
 
-# Update packages to latest versions within constraints
-uv sync --upgrade --extra dev
+# Run the scraper
+cubscrape cron
+cubscrape backfill --channel dextag
+cubscrape --help
 
-# Run commands in the virtual environment
-uv run python scraper/scraper.py
+# Alternative module execution
+uv run python -m scraper.cli_commands cron
+
+# Development tools
 uv run ruff check
-
-# Check installed packages
-uv pip list
+uv run mypy .
 ```
 
 ### Development Workflow
 
 1. **Initial setup**: `uv sync --extra dev`
-2. **Add dependencies**: Edit `pyproject.toml` then run `uv sync`
-3. **Update packages**: `uv sync --upgrade --extra dev`
-4. **Run linter**: `uv run ruff check` (or `uv run ruff check --fix`)
-5. **Run scripts**: `uv run python scraper/scraper.py cron`
+2. **Run scraper**: `cubscrape cron` or `uv run python -m scraper.cli_commands cron`
+3. **Add dependencies**: Edit `pyproject.toml` then run `uv sync`
+4. **Run linter**: `uv run ruff check --fix`
+5. **Type check**: `uv run mypy .`
 
 ### Dependencies
 
@@ -54,6 +53,7 @@ uv pip list
 
 **Development dependencies** (in `[project.optional-dependencies.dev]`):
 - ruff - Python linter and formatter
+- mypy - Static type checker
 
 ### Notes
 - Always commit `uv.lock` for reproducible builds
@@ -76,6 +76,7 @@ The scraper has been refactored into modular components:
 - **`utils.py`** - Utility functions
 - **`steam_updater.py`** - Steam data orchestration and multi-channel updates
 - **Platform fetchers**: `steam_fetcher.py`, `itch_fetcher.py`, `crazygames_fetcher.py`
+- **`base_fetcher.py`** - BeautifulSoup type-safe helper methods
 
 ### Web Interface:
 - **`script.js`** - Refactored with utility functions and modular templates
@@ -131,11 +132,6 @@ The project uses a custom ESLint configuration that enforces:
 - **Code style**: 4-space indentation, single quotes, semicolons required
 
 ## Development Issues
-
-### Import Path Issues
-- When running Python scripts from project root, some modules in `scraper/` have relative import issues
-- **Solution**: Run Python commands from the `scraper/` directory or use absolute imports
-- **Example**: `cd scraper && uv run python script.py` instead of `uv run python scraper/script.py`
 
 ### JSON Data Analysis
 - **Prefer `jq` over `grep`** when analyzing JSON files like `steam_games.json`
