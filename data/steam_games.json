@@ -8370,7 +8370,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "developers": [
         "Rogue Snail"
       ],
@@ -8379,9 +8378,11 @@
         "Indie",
         "RPG"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753130919",
-      "last_updated": "2025-07-22T16:44:33.416827",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753195534",
+      "last_updated": "2025-07-22T16:50:15.189632",
       "name": "Hell Clock",
+      "price_eur": "19,50\u20ac",
+      "price_usd": "$19.99",
       "publishers": [
         "Mad Mushroom"
       ],
@@ -9820,7 +9821,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1752721425",
       "is_early_access": true,
-      "last_updated": "2025-07-22T16:44:34.678076",
+      "last_updated": "2025-07-22T16:50:14.297692",
       "name": "UnderMine 2",
       "publishers": [
         "Thorium"
