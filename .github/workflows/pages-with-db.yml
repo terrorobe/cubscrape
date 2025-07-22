@@ -4,7 +4,12 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'data/**.json'  # Only trigger on JSON data changes
+      - 'data/**.json'  # JSON data changes
+      - '*.html'        # HTML files
+      - '*.js'          # JavaScript files
+      - '*.css'         # CSS files
+      - '.github/workflows/**.yml'  # Workflow changes
+      - '.github/workflows/**.yaml' # Alternative YAML extension
   workflow_dispatch:
 
 jobs:
