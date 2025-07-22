@@ -249,6 +249,9 @@ async function loadData() {
         loadFiltersFromURL();
         renderGames();
         
+        // Process deeplink after initial render
+        await processDeeplink();
+        
         performanceTracker.endTimer('loadData');
         performanceTracker.measureMemoryUsage();
         
@@ -1058,13 +1061,11 @@ new PerformanceObserver((list) => {
 
 // Set up event delegation for game cards
 document.addEventListener('click', (e) => {
-    // Handle game card clicks
+    // Handle game card clicks - copy deeplink to clipboard
     const gameCard = e.target.closest('.game-card');
-    if (gameCard && !e.target.closest('a') && !e.target.closest('.video-expand-toggle')) {
-        const url = gameCard.dataset.url;
-        if (url) {
-            window.open(url, '_blank');
-        }
+    if (gameCard && !e.target.closest('a') && !e.target.closest('.video-expand-toggle') && !e.target.closest('button')) {
+        e.preventDefault();
+        copyGameDeeplink(gameCard);
     }
     
     // Handle video toggle clicks
@@ -1083,6 +1084,268 @@ document.getElementById('currencySelect').addEventListener('change', (e) => {
     selectedCurrency = e.target.value;
     // Re-render the current view to update prices
     applyFilters();
+});
+
+// ===== DEEPLINK FUNCTIONALITY =====
+
+// Process deeplink after page load
+async function processDeeplink() {
+    const hash = window.location.hash;
+    if (!hash || hash.length <= 1) {
+        return;
+    }
+    
+    // Wait for next frame to ensure DOM is ready
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    
+    // Parse deeplink format: #steam-123456 or #itch-game-slug
+    const deeplinkParts = hash.substring(1).split('-');
+    if (deeplinkParts.length < 2) {
+        return;
+    }
+    
+    const platform = deeplinkParts[0];
+    const gameId = deeplinkParts.slice(1).join('-'); // Handle game IDs with hyphens
+    
+    // Find and scroll to the game
+    await scrollToGame(platform, gameId);
+}
+
+// Scroll to and highlight a specific game
+async function scrollToGame(platform, gameId) {
+    // Build CSS selector based on platform and game ID
+    let selector = '';
+    
+    if (platform === 'steam') {
+        // For Steam games, look for cards with steam URLs containing the app ID
+        selector = `.game-card[data-url*="store.steampowered.com/app/${gameId}"]`;
+    } else if (platform === 'itch') {
+        // For Itch games, look for cards with itch URLs containing the game slug
+        selector = `.game-card[data-url*="${gameId}.itch.io"]`;
+    } else if (platform === 'crazygames') {
+        // For CrazyGames, look for cards with crazygames URLs containing the game slug
+        selector = `.game-card[data-url*="crazygames.com/game/${gameId}"]`;
+    }
+    
+    if (!selector) {
+        console.warn('Unknown platform in deeplink:', platform);
+        return;
+    }
+    
+    const gameCard = document.querySelector(selector);
+    
+    if (!gameCard) {
+        console.warn('Game not found:', platform, gameId);
+        // Try to adjust filters to show the game
+        await tryToShowGame(platform, gameId);
+        return;
+    }
+    
+    // Highlight the game card
+    highlightGame(gameCard);
+    
+    // Scroll to the game card
+    gameCard.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+    });
+}
+
+// Try to adjust filters to show a game that wasn't found
+async function tryToShowGame(platform, gameId) {
+    // If we can't find the game, it might be filtered out
+    // Try setting platform filter and clearing others
+    if (platform === 'steam' || platform === 'itch' || platform === 'crazygames') {
+        document.getElementById('platformFilter').value = platform;
+        // Clear other restrictive filters
+        document.getElementById('releaseFilter').value = 'all';
+        document.getElementById('ratingFilter').value = '0';
+        document.getElementById('tagFilter').value = '';
+        document.getElementById('channelFilter').value = '';
+        
+        // Re-render with new filters
+        applyFilters();
+        
+        // Wait a moment then try again
+        await new Promise(resolve => setTimeout(resolve, 100));
+        await scrollToGame(platform, gameId);
+    }
+}
+
+// Highlight a game card
+function highlightGame(gameCard) {
+    // Remove any existing highlights
+    clearHighlight();
+    
+    // Add highlight class
+    gameCard.classList.add('highlighted');
+    
+    // Set up auto-fade after 6 seconds (allow more time to appreciate the smoother animation)
+    setTimeout(() => {
+        if (gameCard.classList.contains('highlighted')) {
+            gameCard.classList.add('highlight-fading');
+            setTimeout(() => {
+                gameCard.classList.remove('highlighted', 'highlight-fading');
+            }, 1000); // Match CSS animation duration
+        }
+    }, 6000);
+}
+
+
+// Clear highlight and deeplink state
+function clearHighlight() {
+    // Remove highlight from any game cards
+    const highlighted = document.querySelectorAll('.game-card.highlighted, .game-card.highlight-fading');
+    highlighted.forEach(card => {
+        card.classList.remove('highlighted', 'highlight-fading');
+    });
+}
+
+// Clear deeplink 
+function clearDeeplink() {
+    // Clear highlight
+    clearHighlight();
+    
+    // Clear hash from URL
+    const url = new URL(window.location);
+    url.hash = '';
+    window.history.replaceState({}, '', url);
+}
+
+// Generate deeplink URL for a game
+function generateDeeplink(gameCard) {
+    const gameUrl = gameCard.dataset.url;
+    if (!gameUrl) {
+        return null;
+    }
+    
+    let platform, gameId;
+    
+    // Parse Steam URLs
+    if (gameUrl.includes('store.steampowered.com/app/')) {
+        platform = 'steam';
+        const match = gameUrl.match(/\/app\/(\d+)/);
+        gameId = match ? match[1] : null;
+    } else if (gameUrl.includes('.itch.io')) {
+        // Parse Itch URLs  
+        platform = 'itch';
+        const match = gameUrl.match(/https?:\/\/([^.]+)\.itch\.io/);
+        gameId = match ? match[1] : null;
+    } else if (gameUrl.includes('crazygames.com/game/')) {
+        // Parse CrazyGames URLs
+        platform = 'crazygames';
+        const match = gameUrl.match(/\/game\/([^\/]+)/);
+        gameId = match ? match[1] : null;
+    }
+    
+    if (platform && gameId) {
+        const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+        const searchParams = window.location.search;
+        return `${baseUrl}${searchParams}#${platform}-${gameId}`;
+    }
+    
+    return null;
+}
+
+// Copy game deeplink to clipboard (called by card click)
+async function copyGameDeeplink(gameCard) {
+    // Generate deeplink URL
+    const deeplinkUrl = generateDeeplink(gameCard);
+    if (!deeplinkUrl) {
+        console.warn('Could not generate deeplink for this game');
+        return;
+    }
+    
+    try {
+        // Copy to clipboard
+        await navigator.clipboard.writeText(deeplinkUrl);
+        
+        // Get game name for feedback
+        const gameTitle = gameCard.querySelector('.game-title h3')?.textContent || 'Game';
+        
+        // Show visual feedback on the card
+        showCardCopyFeedback(gameCard, gameTitle);
+        
+    } catch (err) {
+        console.error('Failed to copy link:', err);
+    }
+}
+
+// Copy game deeplink to clipboard (called by Share button - kept for backwards compatibility)
+async function copyGameLink(button) {
+    // Find the parent game card
+    const gameCard = button.closest('.game-card');
+    if (!gameCard) {
+        return;
+    }
+    
+    // Use the main copy function
+    await copyGameDeeplink(gameCard);
+}
+
+// Show visual feedback when card is copied
+function showCardCopyFeedback(gameCard, gameTitle) {
+    // Create temporary "Link Copied!" overlay on the card
+    const overlay = document.createElement('div');
+    overlay.className = 'copy-feedback-overlay';
+    overlay.textContent = 'Link Copied!';
+    
+    // Position it over the card
+    overlay.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--positive);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        z-index: 100;
+        animation: copyFeedbackPop 0.6s ease-out;
+        pointer-events: none;
+    `;
+    
+    // Make sure the game card has relative positioning
+    const cardPosition = window.getComputedStyle(gameCard).position;
+    if (cardPosition === 'static') {
+        gameCard.style.position = 'relative';
+    }
+    
+    // Add overlay to card
+    gameCard.appendChild(overlay);
+    
+    // Remove after animation
+    setTimeout(() => {
+        if (overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+        }
+    }, 600);
+    
+    // Also add brief highlight to the card
+    gameCard.classList.add('copy-highlight');
+    setTimeout(() => {
+        gameCard.classList.remove('copy-highlight');
+    }, 300);
+}
+
+
+// Set up keyboard and click handlers for clearing deeplinks
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        clearDeeplink();
+    }
+});
+
+document.addEventListener('click', (e) => {
+    // Clear highlight when clicking anywhere outside highlighted card
+    if (!e.target.closest('.game-card.highlighted')) {
+        const highlighted = document.querySelector('.game-card.highlighted');
+        if (highlighted) {
+            clearDeeplink();
+        }
+    }
 });
 
 // Initialize

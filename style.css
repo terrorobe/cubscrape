@@ -9,6 +9,7 @@
     --mixed: #FFC107;
     --negative: #F44336;
     --early-access: #FF9800;
+    --highlight: #007bff;
 }
 
 * {
@@ -445,6 +446,86 @@ h1 {
 
 .channel-group .video-item:last-child {
     border-bottom: none;
+}
+
+/* Deeplink highlighting styles */
+.game-card.highlighted {
+    box-shadow: 0 0 0 3px var(--highlight);
+    animation: highlightPulse 3s ease-in-out;
+    scroll-margin-top: 100px; /* Account for any fixed headers */
+    transition: box-shadow 0.3s ease-out;
+}
+
+@keyframes highlightPulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 3px var(--highlight); 
+    }
+    50% { 
+        box-shadow: 0 0 0 6px var(--highlight), 0 0 20px rgba(0, 123, 255, 0.2); 
+    }
+}
+
+.game-card.highlight-fading {
+    animation: highlightFadeOut 1s ease-out forwards;
+}
+
+@keyframes highlightFadeOut {
+    from { 
+        box-shadow: 0 0 0 3px var(--highlight);
+        opacity: 1;
+    }
+    to { 
+        box-shadow: 0 0 0 0 transparent;
+        opacity: 1;
+    }
+}
+
+
+/* Copy feedback animations */
+.game-card.copy-highlight {
+    transform: scale(1.02);
+    transition: transform 0.15s ease-out;
+}
+
+@keyframes copyFeedbackPop {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Copy link button (kept for backwards compatibility) */
+.copy-link-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.copy-link-btn:hover {
+    background: var(--highlight);
+    border-color: var(--highlight);
+    color: white;
+}
+
+.copy-link-btn.copied {
+    background: var(--positive);
+    border-color: var(--positive);
+    color: white;
 }
 
 @media (max-width: 768px) {
