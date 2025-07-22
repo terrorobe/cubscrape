@@ -365,6 +365,9 @@ class SteamDataUpdater:
                     steam_data_with_usd = self.steam_fetcher.fetch_data(steam_url, fetch_usd=True)
                     if steam_data_with_usd:
                         steam_data.price_usd = steam_data_with_usd.price_usd
+                else:
+                    # EUR price hasn't changed, preserve existing USD price
+                    steam_data.price_usd = existing_data.price_usd
 
             # Update with timestamp and Itch URL if provided
             steam_data = replace(steam_data,

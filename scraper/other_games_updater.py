@@ -120,8 +120,8 @@ class OtherGamesUpdater:
         if not last_updated_str:
             return True, "never updated"
 
-        # Missing release date is reason for immediate refresh
-        if not game_data.release_date:
+        # Missing release date is reason for immediate refresh (except for stubs)
+        if not game_data.release_date and not game_data.is_stub:
             return True, "missing release date"
 
         try:
