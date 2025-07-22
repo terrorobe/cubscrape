@@ -18,6 +18,7 @@ class GameUpdateLogger:
     def get_interval_name(interval_days: int) -> str:
         """Convert interval days to human-readable name"""
         interval_map = {
+            0: "continuous",
             1: "daily",
             7: "weekly",
             30: "monthly"

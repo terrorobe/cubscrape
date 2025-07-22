@@ -113,7 +113,9 @@ class SteamDataUpdater:
 
     def _interval_for_age(self, age_days: int) -> int:
         """Convert game age to refresh interval in days."""
-        if age_days < 14:
+        if age_days <= 1:
+            return 0  # Every cycle for first day after release
+        elif age_days < 14:
             return 1  # Daily for new games
         elif age_days < 365:
             return 7  # Weekly for recent games
@@ -369,6 +371,9 @@ class SteamDataUpdater:
                     # EUR price hasn't changed, preserve existing USD price
                     steam_data.price_usd = existing_data.price_usd
 
+            # Save old data before updating (needed for demo removal detection)
+            old_data = self.steam_data['games'].get(app_id)
+
             # Update with timestamp and Itch URL if provided
             steam_data = replace(steam_data,
                                 last_updated=datetime.now().isoformat(),
@@ -393,13 +398,11 @@ class SteamDataUpdater:
 
             if steam_data.has_demo and steam_data.demo_app_id:
                 demo_id = steam_data.demo_app_id
-            elif app_id in self.steam_data['games']:
-                old_data = self.steam_data['games'][app_id]
-                if old_data.demo_app_id:
-                    demo_id = old_data.demo_app_id
-                    # Force immediate check when demo was removed
-                    force_demo_check = True
-                    logging.info(f"  Game no longer has demo, forcing check of previous demo {demo_id}")
+            elif old_data and old_data.demo_app_id:
+                demo_id = old_data.demo_app_id
+                # Force immediate check when demo was removed
+                force_demo_check = True
+                logging.info(f"  Game no longer has demo, forcing check of previous demo {demo_id}")
 
             if demo_id and (force_demo_check or self._should_update_related_app(demo_id)):
                 logging.info(f"  Fetching demo {demo_id}")
