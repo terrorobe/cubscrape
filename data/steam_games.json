@@ -8402,7 +8402,6 @@
         "Family Sharing"
       ],
       "coming_soon": true,
-      "demo_app_id": "3563400",
       "developers": [
         "Rogue Snail"
       ],
@@ -8411,9 +8410,8 @@
         "Indie",
         "RPG"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753130919",
-      "last_updated": "2025-07-22T15:03:16.604295",
+      "last_updated": "2025-07-22T16:25:08.730781",
       "name": "Hell Clock",
       "publishers": [
         "Mad Mushroom"
@@ -9853,7 +9851,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1752721425",
       "is_early_access": true,
-      "last_updated": "2025-07-22T15:03:18.520849",
+      "last_updated": "2025-07-22T16:25:12.417464",
       "name": "UnderMine 2",
       "publishers": [
         "Thorium"
@@ -13879,7 +13877,6 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "2108590",
       "developers": [
         "Wise Wombat Games"
@@ -13891,9 +13888,11 @@
         "RPG"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1752784055",
-      "last_updated": "2025-07-22T15:03:11.097397",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1753194060",
+      "last_updated": "2025-07-22T16:25:10.123953",
       "name": "Resonant Blade",
+      "price_eur": "17,55\u20ac",
+      "price_usd": "$17.99",
       "publishers": [
         "Wise Wombat Games"
       ],
@@ -17200,6 +17199,59 @@
         "Action",
         "RPG",
         "Arcade"
+      ]
+    },
+    "2218970": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "MMO",
+        "PvP",
+        "Online PvP",
+        "LAN PvP",
+        "Co-op",
+        "Online Co-op",
+        "LAN Co-op",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Cobra Byte Digital"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Massively Multiplayer",
+        "RPG",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2218970/057914aa1f764408127bdce54685452e0677d2ca/header.jpg?t=1751317785",
+      "is_early_access": true,
+      "last_updated": "2025-07-22T16:25:11.181333",
+      "name": "Plains of Pain",
+      "positive_review_percentage": 84,
+      "price_eur": "19,50\u20ac",
+      "price_usd": "$19.99",
+      "publishers": [
+        "Cobra Byte Digital"
+      ],
+      "release_date": "17 Feb, 2023",
+      "review_count": 318,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2218970",
+      "steam_url": "https://store.steampowered.com/app/2218970",
+      "tags": [
+        "Early Access",
+        "Survival",
+        "Massively Multiplayer",
+        "Multiplayer",
+        "Open World",
+        "Action",
+        "Post-apocalyptic",
+        "PvP",
+        "Sandbox",
+        "Crafting"
       ]
     },
     "2219390": {
@@ -38020,7 +38072,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "2969070",
       "developers": [
         "Definitely Named Steve"
@@ -38030,9 +38081,11 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1753099624",
-      "last_updated": "2025-07-22T15:03:14.010183",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1753192283",
+      "last_updated": "2025-07-22T16:25:06.333756",
       "name": "Steve's Warehouse: Physics. Roguelike. Chaos.",
+      "price_eur": "6,79\u20ac",
+      "price_usd": "$6.79",
       "publishers": [
         "Abiding Bridge",
         "Definitely Named Steve"
@@ -47771,7 +47824,7 @@
         "Massively Multiplayer"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3140620/55db28c57a15f1ddc77454d9f1fe2a11217a1dd6/header_alt_assets_4.jpg?t=1752481894",
-      "last_updated": "2025-07-21T15:03:21.356162",
+      "last_updated": "2025-07-22T16:25:07.370507",
       "name": "C.A.S.T. (CHERNOZEM ANOMALY STRIKE TEAM)",
       "positive_review_percentage": 91,
       "price_eur": "5,16\u20ac",
@@ -47779,11 +47832,11 @@
       "publishers": [
         "Ascension Studio"
       ],
-      "recent_review_count": 76,
-      "recent_review_percentage": 84,
+      "recent_review_count": 79,
+      "recent_review_percentage": 87,
       "recent_review_summary": "Very Positive",
       "release_date": "14 Jul, 2025",
-      "review_count": 387,
+      "review_count": 393,
       "review_summary": "Very Positive",
       "steam_app_id": "3140620",
       "steam_url": "https://store.steampowered.com/app/3140620",
@@ -52633,7 +52686,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3247750/header.jpg?t=1752795203",
       "is_early_access": true,
-      "last_updated": "2025-07-21T15:03:25.204719",
+      "last_updated": "2025-07-22T16:25:05.360739",
       "name": "Mycopunk",
       "positive_review_percentage": 92,
       "price_eur": "14,99\u20ac",
@@ -52642,7 +52695,7 @@
         "Devolver Digital"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 1224,
+      "review_count": 1272,
       "review_summary": "Very Positive",
       "steam_app_id": "3247750",
       "steam_url": "https://store.steampowered.com/app/3247750",
@@ -55438,17 +55491,17 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3330160/1fe6bc72ae06b29602cede91002815e17f61f0e4/header.jpg?t=1752898902",
-      "last_updated": "2025-07-21T15:03:22.301232",
+      "last_updated": "2025-07-22T16:25:15.662451",
       "name": "Kingdom Ascension",
-      "positive_review_percentage": 93,
+      "positive_review_percentage": 92,
       "price_eur": "9,43\u20ac",
       "price_usd": "$9.59",
       "publishers": [
         "RainRingStudio"
       ],
       "release_date": "18 Jul, 2025",
-      "review_count": 49,
-      "review_summary": "Positive",
+      "review_count": 65,
+      "review_summary": "Very Positive",
       "steam_app_id": "3330160",
       "steam_url": "https://store.steampowered.com/app/3330160",
       "tags": [
@@ -57300,19 +57353,19 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385370/header.jpg?t=1752287906",
-      "last_updated": "2025-07-21T15:03:27.884846",
+      "last_updated": "2025-07-22T16:25:17.405566",
       "name": "Maze Mice",
-      "positive_review_percentage": 90,
-      "price_eur": "6,82\u20ac",
-      "price_usd": "$6.99",
+      "positive_review_percentage": 91,
+      "price_eur": "9,75\u20ac",
+      "price_usd": "$9.99",
       "publishers": [
         "TrampolineTales"
       ],
-      "recent_review_count": 109,
+      "recent_review_count": 111,
       "recent_review_percentage": 87,
       "recent_review_summary": "Very Positive",
       "release_date": "11 Jul, 2025",
-      "review_count": 176,
+      "review_count": 180,
       "review_summary": "Very Positive",
       "steam_app_id": "3385370",
       "steam_url": "https://store.steampowered.com/app/3385370",
@@ -66854,7 +66907,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3692070/e857d294069517d44470a18ec32fa63e0bba5562/header.jpg?t=1752345130",
-      "last_updated": "2025-07-21T15:03:24.161837",
+      "last_updated": "2025-07-22T16:25:13.313794",
       "name": "One Man\u00b4s Trash",
       "publishers": [
         "Jony Pazu Games"
@@ -67800,9 +67853,10 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3722670/3a1bf2500283221f5bbd6dd3be9427938d07d128/header.jpg?t=1748530554",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-14T20:54:29.271997",
+      "last_updated": "2025-07-22T16:25:14.689235",
       "name": "One Man\u00b4s Trash Demo",
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Jony Pazu Games"
       ],
