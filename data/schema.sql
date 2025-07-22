@@ -24,6 +24,7 @@ CREATE TABLE games (
     insufficient_reviews BOOLEAN DEFAULT 0,
     release_date TEXT,
     planned_release_date TEXT,
+    release_date_sortable INTEGER,  -- YYYYMMDD format for sorting
     header_image TEXT,
     steam_url TEXT,
     itch_url TEXT,
@@ -57,5 +58,6 @@ CREATE INDEX idx_platform ON games(platform);
 CREATE INDEX idx_release_status ON games(coming_soon, is_early_access);
 CREATE INDEX idx_rating ON games(positive_review_percentage);
 CREATE INDEX idx_review_priority ON games(review_summary_priority);
+CREATE INDEX idx_release_date_sortable ON games(release_date_sortable);
 CREATE INDEX idx_game_videos ON game_videos(game_id);
 CREATE INDEX idx_channel_videos ON game_videos(channel_name);

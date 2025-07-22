@@ -32,6 +32,54 @@ class DatabaseManager:
 
         logging.info(f"Created SQLite database: {self.db_file}")
 
+    def _convert_to_sortable_date_int(self, date_str: str) -> int | None:
+        """Convert release dates to sortable YYYYMMDD integer format
+        Only handles formats for released games
+        """
+        if not date_str:
+            return None
+
+        from datetime import datetime
+
+        # Steam format: "6 Feb, 2025" or "24 Sep, 2024"
+        steam_match = re.match(r'^(\d{1,2})\s+(\w{3}),\s+(\d{4})$', date_str)
+        if steam_match:
+            day = steam_match.group(1)
+            month = steam_match.group(2)
+            year = steam_match.group(3)
+            try:
+                date_obj = datetime.strptime(f"{day} {month} {year}", "%d %b %Y")
+                return int(date_obj.strftime("%Y%m%d"))
+            except ValueError:
+                pass
+
+        # Itch format: "08 April 2025" or "21 March 2025"
+        itch_match = re.match(r'^(\d{2})\s+(\w+)\s+(\d{4})$', date_str)
+        if itch_match:
+            day = itch_match.group(1)
+            month = itch_match.group(2)
+            year = itch_match.group(3)
+            try:
+                date_obj = datetime.strptime(f"{day} {month} {year}", "%d %B %Y")
+                return int(date_obj.strftime("%Y%m%d"))
+            except ValueError:
+                pass
+
+        # CrazyGames format: "March 2025" (use first day of month)
+        month_year_match = re.match(r'^(\w+)\s+(\d{4})$', date_str)
+        if month_year_match:
+            month_name = month_year_match.group(1)
+            year = month_year_match.group(2)
+            try:
+                # Parse month name and create date with first day of month
+                date_obj = datetime.strptime(f"{month_name} 1 {year}", "%B %d %Y")
+                return int(date_obj.strftime("%Y%m%d"))
+            except ValueError:
+                pass
+
+        # Return None if we can't parse it
+        return None
+
     def _populate_games(self, conn, games_data):
         cursor = conn.cursor()
 
@@ -46,6 +94,12 @@ class DatabaseManager:
             if review_count < 10:
                 percentage = None
 
+            # Only give sortable dates to actually released games (not coming soon)
+            is_released = not game.get('coming_soon', False)
+            sortable_date = None
+            if is_released:
+                sortable_date = self._convert_to_sortable_date_int(game.get('release_date', ''))
+
             # Insert game record
             cursor.execute('''
                 INSERT INTO games (
@@ -53,11 +107,11 @@ class DatabaseManager:
                     is_early_access, is_demo, is_free, price_eur, price_usd, price_final,
                     positive_review_percentage, review_count, review_summary, review_summary_priority,
                     recent_review_percentage, recent_review_count, recent_review_summary,
-                    insufficient_reviews, release_date, planned_release_date, header_image, steam_url, itch_url,
+                    insufficient_reviews, release_date, planned_release_date, release_date_sortable, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, developers, publishers,
                     demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -80,6 +134,7 @@ class DatabaseManager:
                 game.get('insufficient_reviews', False),
                 game.get('release_date'),
                 game.get('planned_release_date'),
+                sortable_date,
                 game.get('header_image'),
                 game.get('steam_url'),
                 self._get_platform_url(game),

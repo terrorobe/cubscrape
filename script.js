@@ -352,6 +352,11 @@ function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter,
     `;
     const params = [];
     
+    // For release date sorting, only include games with sortable dates
+    if (sortBy === 'release-new' || sortBy === 'release-old') {
+        query += ' AND release_date_sortable IS NOT NULL';
+    }
+    
     // Platform filter
     if (platformFilter !== 'all') {
         if (platformFilter === 'itch') {
@@ -399,8 +404,8 @@ function applyFiltersSQL(releaseFilter, platformFilter, ratingFilter, tagFilter,
         'rating-category': 'review_summary_priority ASC, positive_review_percentage DESC, review_count DESC',
         'date': 'latest_video_date DESC',
         'name': 'name ASC',
-        'release-new': 'release_date DESC',
-        'release-old': 'release_date ASC'
+        'release-new': 'release_date_sortable DESC',
+        'release-old': 'release_date_sortable ASC'
     };
     
     if (sortMappings[sortBy]) {
@@ -531,7 +536,13 @@ function renderFilteredGames(games) {
         return;
     }
     
-    gameCount.textContent = `Showing ${games.length} games`;
+    const sortBy = document.getElementById('sortBy').value;
+    const isReleaseDateSort = sortBy === 'release-new' || sortBy === 'release-old';
+    const statusText = isReleaseDateSort ? 
+        `Showing ${games.length} games with release dates` : 
+        `Showing ${games.length} games`;
+    
+    gameCount.textContent = statusText;
     
     // Use document fragment for batch DOM updates
     const fragment = document.createDocumentFragment();
