@@ -9,13 +9,14 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-from config_manager import ConfigManager
-from crazygames_fetcher import CrazyGamesDataFetcher
-from data_manager import DataManager
 from dateutil.parser import parse as dateutil_parse
-from itch_fetcher import ItchDataFetcher
-from models import OtherGameData
-from update_logger import GameUpdateLogger
+
+from .config_manager import ConfigManager
+from .crazygames_fetcher import CrazyGamesDataFetcher
+from .data_manager import DataManager
+from .itch_fetcher import ItchDataFetcher
+from .models import OtherGameData
+from .update_logger import GameUpdateLogger
 
 
 class OtherGamesUpdater:
@@ -27,7 +28,7 @@ class OtherGamesUpdater:
     4. Using platform-specific fetchers for individual game fetching
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Get project root
         script_dir = Path(__file__).resolve().parent
         project_root = script_dir.parent
@@ -41,7 +42,7 @@ class OtherGamesUpdater:
         # Check for required Itch.io authentication
         self._validate_itch_authentication()
 
-    def _validate_itch_authentication(self):
+    def _validate_itch_authentication(self) -> None:
         """Validate that Itch.io authentication is properly configured"""
         import os
 
@@ -63,7 +64,7 @@ class OtherGamesUpdater:
 
         logging.info("Itch.io authentication validated successfully")
 
-    def _save_other_games_data(self):
+    def _save_other_games_data(self) -> None:
         """Save other games data to file"""
         self.data_manager.save_other_games_data(self.other_games_data)
 
@@ -143,7 +144,7 @@ class OtherGamesUpdater:
 
         Returns dict with 'itch' and 'crazygames' keys containing sets of URLs.
         """
-        urls = {'itch': set(), 'crazygames': set()}
+        urls: dict[str, set[str]] = {'itch': set(), 'crazygames': set()}
 
         for channel_id in channel_ids:
             try:

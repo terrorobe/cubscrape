@@ -7,8 +7,9 @@ import os
 import re
 import tempfile
 from pathlib import Path
+from typing import Any
 
-from models import GameLinks
+from .models import GameLinks
 
 
 def extract_steam_app_id(url: str) -> str | None:
@@ -133,16 +134,17 @@ def extract_potential_game_names(title: str) -> list[str]:
     return potential_names
 
 
-def load_json(filepath: str | Path, default: dict) -> dict:
+def load_json(filepath: str | Path, default: dict[str, Any]) -> dict[str, Any]:
     """Load JSON file or return default"""
     path = Path(filepath)
     if path.exists():
         with path.open() as f:
-            return json.load(f)
+            result = json.load(f)
+            return result if isinstance(result, dict) else default
     return default
 
 
-def save_data(data_dict: dict, file_path: str | Path):
+def save_data(data_dict: dict, file_path: str | Path) -> None:
     """Save data to JSON file atomically"""
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)

@@ -9,16 +9,16 @@ from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 
-from config_manager import ConfigManager
-from data_manager import DataManager
-from data_quality import DataQualityChecker
-from database_manager import DatabaseManager
-from game_inference import GameInferenceEngine
-from game_unifier import load_all_unified_games
-from models import SteamGameData, VideoData
-from steam_fetcher import SteamDataFetcher
-from video_processor import VideoProcessor
-from youtube_extractor import YouTubeExtractor
+from .config_manager import ConfigManager
+from .data_manager import DataManager
+from .data_quality import DataQualityChecker
+from .database_manager import DatabaseManager
+from .game_inference import GameInferenceEngine
+from .game_unifier import load_all_unified_games
+from .models import SteamGameData, VideoData
+from .steam_fetcher import SteamDataFetcher
+from .video_processor import VideoProcessor
+from .youtube_extractor import YouTubeExtractor
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -53,11 +53,11 @@ class YouTubeSteamScraper:
 
 
 
-    def save_videos(self):
+    def save_videos(self) -> None:
         """Save video data to JSON file"""
         self.data_manager.save_videos_data(self.videos_data, self.channel_id)
 
-    def save_steam(self):
+    def save_steam(self) -> None:
         """Save Steam data to JSON file"""
         self.data_manager.save_steam_data(self.steam_data)
 
@@ -71,7 +71,7 @@ class YouTubeSteamScraper:
         # Always fetch both EUR and USD prices for new games
         return self.steam_fetcher.fetch_data(steam_url, fetch_usd=True)
 
-    def process_videos(self, channel_url: str, max_new_videos: int | None = None, fetch_newest_first: bool = False, cutoff_date: str | None = None):
+    def process_videos(self, channel_url: str, max_new_videos: int | None = None, fetch_newest_first: bool = False, cutoff_date: str | None = None) -> int:
         """Process YouTube videos only"""
         new_videos_processed = self.video_processor.process_videos(
             self.videos_data, channel_url, max_new_videos, fetch_newest_first, cutoff_date
@@ -79,7 +79,7 @@ class YouTubeSteamScraper:
         self.save_videos()
         return new_videos_processed
 
-    def reprocess_video_descriptions(self):
+    def reprocess_video_descriptions(self) -> int:
         """Reprocess existing video descriptions to extract game links with current logic"""
         updated_count = self.video_processor.reprocess_video_descriptions(self.videos_data)
         self.save_videos()
@@ -90,12 +90,12 @@ class YouTubeSteamScraper:
         return self.video_processor.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
 
 
-    def _process_video_game_links(self, video) -> VideoData:
+    def _process_video_game_links(self, video: VideoData) -> VideoData:
         """Extract and process game links from a video"""
         return self.video_processor.process_video_game_links(video)
 
 
-    def check_data_quality(self, channels_config: dict):
+    def check_data_quality(self, channels_config: dict) -> int:
         """Check data quality across all channels and games"""
         # Get the directory of this script, then build paths relative to project root
         script_dir = Path(__file__).resolve().parent
@@ -139,7 +139,7 @@ class YouTubeSteamScraper:
         """Check if Steam app is still available"""
         return self.game_inference.check_steam_availability(app_id)
 
-    def resolve_games(self, channels_config: dict):
+    def resolve_games(self, channels_config: dict) -> int:
         """Resolve games for videos with missing, broken, or stub game data"""
         print("\n" + "="*80)
         print("GAME RESOLUTION FOR VIDEOS")
@@ -409,7 +409,7 @@ class YouTubeSteamScraper:
         return list(game_names)
 
 
-def build_database():
+def build_database() -> None:
     """Generate SQLite database from existing JSON files"""
     try:
         # Get project root
@@ -432,7 +432,7 @@ def build_database():
 
 
 if __name__ == "__main__":
-    from cli_commands import CLICommands
+    from .cli_commands import CLICommands
 
     cli = CLICommands()
     cli.parse_and_execute()

@@ -44,7 +44,7 @@ class GameUpdateLogger:
 
     @staticmethod
     def log_game_skip(platform: str, game_name: str, last_updated_str: str | None,
-                     refresh_interval_days: int, reason: str | None = None, release_info: str | None = None):
+                     refresh_interval_days: int, reason: str | None = None, release_info: str | None = None) -> None:
         """
         Log when a game is skipped during updates.
 
@@ -74,7 +74,7 @@ class GameUpdateLogger:
     @staticmethod
     def log_game_update_start(platform: str, game_name: str, last_updated_str: str | None,
                              refresh_interval_days: int, update_reason: str,
-                             identifier: str | None = None, release_info: str | None = None):
+                             identifier: str | None = None, release_info: str | None = None) -> None:
         """
         Log when starting to update a game.
 
@@ -103,7 +103,7 @@ class GameUpdateLogger:
         logging.info(f"Updating {platform} {entity_type}{id_part} ({game_name}) - {update_info}, {interval_name} refresh{release_part} ({update_reason})")
 
     @staticmethod
-    def log_game_update_success(game_name: str, additional_info: str | None = None):
+    def log_game_update_success(game_name: str, additional_info: str | None = None) -> None:
         """
         Log successful game update.
 
@@ -117,7 +117,7 @@ class GameUpdateLogger:
             logging.info(f"  Updated: {game_name}")
 
     @staticmethod
-    def log_game_update_failure(identifier: str, platform: str, error_msg: str | None = None):
+    def log_game_update_failure(identifier: str, platform: str, error_msg: str | None = None) -> None:
         """
         Log failed game update.
 

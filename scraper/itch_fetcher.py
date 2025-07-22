@@ -8,14 +8,16 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from models import OtherGameData
-from utils import calculate_name_similarity, extract_steam_app_id, load_env_file
+
+from .base_fetcher import BaseFetcher
+from .models import OtherGameData
+from .utils import calculate_name_similarity, extract_steam_app_id, load_env_file
 
 
-class ItchDataFetcher:
+class ItchDataFetcher(BaseFetcher):
     """Handles fetching and parsing Itch.io game data"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
@@ -84,10 +86,7 @@ class ItchDataFetcher:
 
     def _extract_header_image(self, soup: BeautifulSoup) -> str:
         """Extract header image from meta tags"""
-        og_image = soup.find('meta', property='og:image')
-        if og_image and og_image.get('content'):
-            return og_image['content']
-        return ""
+        return self.safe_find_attr(soup, 'content', 'meta', property='og:image')
 
     def _extract_release_date(self, soup: BeautifulSoup) -> str:
         """Extract release/published date from Itch.io page"""
@@ -104,9 +103,9 @@ class ItchDataFetcher:
                 for keyword in date_keywords:
                     if keyword in label:
                         # Look for abbr element in the second cell
-                        abbr = cells[1].find('abbr', title=True)
-                        if abbr and abbr.get('title'):
-                            title = abbr.get('title')
+                        abbr = self.safe_find(cells[1], 'abbr', title=True)
+                        if abbr:
+                            title = self.safe_get_attr(abbr, 'title')
                             # Parse authenticated format: "08 April 2025 @ 04:55 UTC"
                             date_match = re.search(r'(\d{1,2} \w+ \d{4})', title)
                             if date_match:
@@ -122,7 +121,7 @@ class ItchDataFetcher:
         # Search in all links on the page
         all_links = soup.find_all('a', href=True)
         for link in all_links:
-            href = link.get('href', '')
+            href = self.safe_get_attr(link, 'href')
             app_id = extract_steam_app_id(href)
             if app_id:
                 steam_url = f"https://store.steampowered.com/app/{app_id}"
@@ -224,7 +223,8 @@ class ItchDataFetcher:
             cells = row.find_all('td')
             if len(cells) == 2 and cells[0].get_text(strip=True) == 'Tags':
                 # Found the tags row, extract tags from second cell
-                tag_links = cells[1].find_all('a')
+                # Use safe method to find all links in the second cell
+                tag_links = self.safe_find_all(cells[1], 'a')
                 for tag_link in tag_links[:10]:
                     tag_text = tag_link.get_text(strip=True)
                     if tag_text and len(tag_text) > 1 and tag_text not in tags:
@@ -286,7 +286,7 @@ class ItchDataFetcher:
         for selector in count_selectors:
             count_elem = soup.select_one(selector)
             if count_elem:
-                count_text = count_elem.get_text(strip=True) or count_elem.get('data-downloads', '')
+                count_text = self.safe_get_text(count_elem) or self.safe_get_attr(count_elem, 'data-downloads')
                 # Extract number from "1,234 downloads" or "1,234 plays"
                 count_match = re.search(r'([\d,]+)', count_text)
                 if count_match:

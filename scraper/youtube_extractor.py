@@ -8,13 +8,13 @@ import re
 from datetime import datetime
 
 import requests
-import yt_dlp
+import yt_dlp  # type: ignore
 
 
 class YouTubeExtractor:
     """Handles YouTube video metadata extraction and game detection"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         # yt-dlp options
         self.ydl_opts = {
             'quiet': True,
@@ -24,13 +24,13 @@ class YouTubeExtractor:
             'logger': self._get_quiet_logger(),
         }
 
-    def _get_quiet_logger(self):
+    def _get_quiet_logger(self) -> object:
         """Custom logger to suppress yt-dlp ERROR messages for expected cases"""
         class QuietLogger:
-            def debug(self, msg): pass
-            def info(self, msg): pass
-            def warning(self, msg): pass
-            def error(self, msg):
+            def debug(self, msg: str) -> None: pass
+            def info(self, msg: str) -> None: pass
+            def warning(self, msg: str) -> None: pass
+            def error(self, msg: str) -> None:
                 # Suppress known error messages
                 if "members-only content" in msg or "Private video" in msg or "Video unavailable" in msg:
                     pass
@@ -154,7 +154,7 @@ class YouTubeExtractor:
                                     if 'richMetadataRenderer' in rich_content:
                                         title = rich_content['richMetadataRenderer'].get('title', {})
                                         if 'simpleText' in title:
-                                            game_title = title['simpleText'].strip()
+                                            game_title = str(title['simpleText']).strip()
                                             if game_title and len(game_title) > 3:
                                                 return game_title
             except (KeyError, TypeError):

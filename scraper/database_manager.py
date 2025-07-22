@@ -3,16 +3,17 @@ import logging
 import re
 import sqlite3
 from pathlib import Path
+from typing import Any
 
-from utils import generate_review_summary
+from .utils import generate_review_summary
 
 
 class DatabaseManager:
-    def __init__(self, schema_file='data/schema.sql', db_file='data/games.db'):
+    def __init__(self, schema_file: str = 'data/schema.sql', db_file: str = 'data/games.db') -> None:
         self.schema_file = schema_file
         self.db_file = db_file
 
-    def create_database(self, games_data):
+    def create_database(self, games_data: dict[str, Any]) -> None:
         """Create fresh database from schema and populate with data"""
         # Remove existing database
         db_path = Path(self.db_file)
@@ -80,7 +81,7 @@ class DatabaseManager:
         # Return None if we can't parse it
         return None
 
-    def _populate_games(self, conn, games_data):
+    def _populate_games(self, conn: sqlite3.Connection, games_data: dict[str, Any]) -> None:
         cursor = conn.cursor()
 
         for game_key, game in games_data.items():
@@ -171,7 +172,7 @@ class DatabaseManager:
                     video.get('published_at')
                 ))
 
-    def _generate_review_summary(self, game):
+    def _generate_review_summary(self, game: dict[str, Any]) -> str | None:
         """Generate review summary for non-Steam platforms using Steam's thresholds"""
         platform = game.get('platform')
 
@@ -185,7 +186,7 @@ class DatabaseManager:
 
         return generate_review_summary(percentage, review_count)
 
-    def _get_review_summary_priority(self, review_summary):
+    def _get_review_summary_priority(self, review_summary: str | None) -> int:
         """Get numeric priority for review summary for efficient sorting"""
         if not review_summary:
             return 99
@@ -206,7 +207,7 @@ class DatabaseManager:
 
         return priorities.get(review_summary, 99)
 
-    def _extract_price_final(self, game):
+    def _extract_price_final(self, game: dict[str, Any]) -> float:
         """Extract numeric price for filtering"""
         if game.get('is_free'):
             return 0.0
@@ -227,7 +228,7 @@ class DatabaseManager:
 
         return 0.0
 
-    def _get_latest_video_date(self, game):
+    def _get_latest_video_date(self, game: dict[str, Any]) -> str | None:
         """Get the most recent video date for this game"""
         videos = game.get('videos', [])
         if not videos:
@@ -236,7 +237,7 @@ class DatabaseManager:
         dates = [v.get('video_date') for v in videos if v.get('video_date')]
         return max(dates) if dates else None
 
-    def _get_unique_channels(self, game):
+    def _get_unique_channels(self, game: dict[str, Any]) -> list[str]:
         """Get unique channel names that featured this game"""
         videos = game.get('videos', [])
         channels = set()
@@ -247,20 +248,21 @@ class DatabaseManager:
 
         return list(channels)
 
-    def _get_demo_steam_app_id(self, game):
+    def _get_demo_steam_app_id(self, game: dict[str, Any]) -> str | None:
         """Get demo Steam app ID if available"""
         if game.get('has_demo') and game.get('demo_app_id'):
-            return game['demo_app_id']
+            demo_id = game['demo_app_id']
+            return str(demo_id) if demo_id is not None else None
         return None
 
-    def _get_demo_steam_url(self, game):
+    def _get_demo_steam_url(self, game: dict[str, Any]) -> str | None:
         """Get demo Steam URL if available"""
         demo_app_id = self._get_demo_steam_app_id(game)
         if demo_app_id:
             return f"https://store.steampowered.com/app/{demo_app_id}"
         return None
 
-    def _get_platform_url(self, game):
+    def _get_platform_url(self, game: dict[str, Any]) -> str | None:
         """Get the correct platform URL based on the game's platform"""
         platform = game.get('platform', 'steam')
 
@@ -269,7 +271,7 @@ class DatabaseManager:
         else:
             return game.get('itch_url')  # Steam games might have itch_url field
 
-    def _get_crazygames_url(self, game):
+    def _get_crazygames_url(self, game: dict[str, Any]) -> str | None:
         """Get the correct CrazyGames URL"""
         platform = game.get('platform', 'steam')
 

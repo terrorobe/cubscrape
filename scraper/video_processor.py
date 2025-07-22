@@ -8,23 +8,24 @@ and video metadata management.
 import logging
 from dataclasses import replace
 from datetime import datetime
+from typing import Any
 
-from models import VideoData
-from utils import extract_game_links, extract_steam_app_id
+from .models import VideoData
+from .utils import extract_game_links, extract_steam_app_id
 
 
 class VideoProcessor:
     """Handles video processing pipeline and game link extraction"""
 
-    def __init__(self, data_manager, youtube_extractor, config_manager, game_inference, other_games_data):
+    def __init__(self, data_manager: Any, youtube_extractor: Any, config_manager: Any, game_inference: Any, other_games_data: dict) -> None:
         self.data_manager = data_manager
         self.youtube_extractor = youtube_extractor
         self.config_manager = config_manager
         self.game_inference = game_inference
         self.other_games_data = other_games_data
 
-    def process_videos(self, videos_data, channel_url: str, max_new_videos: int | None = None,
-                      fetch_newest_first: bool = False, cutoff_date: str | None = None):
+    def process_videos(self, videos_data: dict, channel_url: str, max_new_videos: int | None = None,
+                      fetch_newest_first: bool = False, cutoff_date: str | None = None) -> int:
         """Process YouTube videos only"""
         logging.info(f"Processing videos from channel: {channel_url}")
 
@@ -39,7 +40,7 @@ class VideoProcessor:
                 logging.info(f"Using cutoff date: {cutoff_date}")
             except ValueError:
                 logging.error(f"Invalid cutoff date format: {cutoff_date}. Use YYYY-MM-DD format.")
-                return
+                return 0
 
         known_video_ids = set(videos_data['videos'].keys())
         new_videos_processed = 0
@@ -140,8 +141,8 @@ class VideoProcessor:
                             itch_is_demo=False,
                             crazygames_url=None,
                             youtube_detected_game=None,
-                            youtube_detected_matched=None,
-                            inferred_game=None
+                            youtube_detected_matched=False,
+                            inferred_game=False
                         )
                         # Process video with game link extraction
                         video_data = self.process_video_game_links(video_obj)
@@ -173,7 +174,7 @@ class VideoProcessor:
         logging.info(f"Video processing complete. Processed {new_videos_processed} new videos.")
         return new_videos_processed
 
-    def process_video_game_links(self, video) -> VideoData:
+    def process_video_game_links(self, video: VideoData) -> VideoData:
         """Extract and process game links from a video"""
         # Extract game links from description
         game_links = extract_game_links(video.description)
@@ -190,8 +191,8 @@ class VideoProcessor:
             itch_is_demo=False,  # Flag to indicate itch.io is demo/test version
             crazygames_url=None,
             youtube_detected_game=None,
-            youtube_detected_matched=None,
-            inferred_game=None
+            youtube_detected_matched=False,
+            inferred_game=False
         )
 
         # Priority: Steam > Itch.io > CrazyGames, but store all found links
@@ -245,7 +246,7 @@ class VideoProcessor:
 
         return video_data
 
-    def reprocess_video_descriptions(self, videos_data):
+    def reprocess_video_descriptions(self, videos_data: dict) -> int:
         """Reprocess existing video descriptions to extract game links with current logic"""
         logging.info("Reprocessing existing video descriptions")
 
@@ -281,10 +282,12 @@ class VideoProcessor:
         logging.info(f"Reprocessing complete. Processed {videos_processed} videos, updated {updated_count} videos.")
         return updated_count
 
-    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict]:
+    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict[Any, Any]]:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
-        return self.youtube_extractor.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
+        result = self.youtube_extractor.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
+        return result if isinstance(result, list) else []
 
-    def get_full_video_metadata(self, video_id: str) -> tuple[dict | None, bool]:
+    def get_full_video_metadata(self, video_id: str) -> tuple[dict[Any, Any] | None, bool]:
         """Fetch full metadata for a specific video"""
-        return self.youtube_extractor.get_full_video_metadata(video_id)
+        result = self.youtube_extractor.get_full_video_metadata(video_id)
+        return result if isinstance(result, tuple) else (None, False)

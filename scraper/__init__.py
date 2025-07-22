@@ -8,7 +8,7 @@ and matching videos with Steam (and other platform) game data.
 from .crazygames_fetcher import CrazyGamesDataFetcher
 from .itch_fetcher import ItchDataFetcher
 from .models import GameLinks, OtherGameData, SteamGameData, SteamSearchResult, VideoData
-from .scraper_refactored import YouTubeSteamScraperRefactored
+
 from .steam_fetcher import SteamDataFetcher
 from .utils import (
     calculate_name_similarity,
@@ -41,7 +41,6 @@ __all__ = [
     'CrazyGamesDataFetcher',
 
     # Main scraper
-    'YouTubeSteamScraperRefactored'
 ]
 
 __version__ = '2.0.0'

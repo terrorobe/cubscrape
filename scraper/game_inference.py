@@ -5,7 +5,8 @@ Game inference and Steam matching utilities
 import logging
 
 import requests
-from utils import extract_potential_game_names
+
+from .utils import extract_potential_game_names
 
 
 class GameInferenceEngine:
@@ -24,7 +25,8 @@ class GameInferenceEngine:
             response = requests.get(url, params=params)
             if response.status_code == 200:
                 data = response.json()
-                return data.get('items', [])
+                items = data.get('items', [])
+                return items if isinstance(items, list) else []
         except Exception as e:
             logging.error(f"Error searching Steam for '{query}': {e}")
 
@@ -38,7 +40,7 @@ class GameInferenceEngine:
                 return None
 
             best_match = None
-            best_confidence = 0
+            best_confidence = 0.0
 
             for result in results[:3]:  # Check top 3 results
                 steam_game_name = result['name'].lower()
@@ -76,7 +78,7 @@ class GameInferenceEngine:
                 return None
 
             best_match = None
-            best_confidence = 0
+            best_confidence = 0.0
             low_confidence_matches = []
 
             # Check all results
@@ -141,7 +143,8 @@ class GameInferenceEngine:
 
     def extract_potential_game_names_from_title(self, title: str) -> list[str]:
         """Extract potential game names from video titles"""
-        return extract_potential_game_names(title)
+        result = extract_potential_game_names(title)
+        return result if isinstance(result, list) else []
 
     def check_steam_availability(self, app_id: str) -> str:
         """Check if Steam app is still available"""

@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from config_manager import ConfigManager
+from .config_manager import ConfigManager
 
 
 class DataQualityChecker:
@@ -237,7 +237,7 @@ class DataQualityChecker:
 
         return other_issues
 
-    def _check_stale_data(self):
+    def _check_stale_data(self) -> None:
         """Check for stale data"""
         print("\n\n5. CHECKING FOR STALE DATA")
         print("-" * 50)
@@ -274,7 +274,7 @@ class DataQualityChecker:
         else:
             print(f"📊 {stale_steam} Steam games and {stale_other} other games are older than 30 days")
 
-    def _print_summary(self, total_issues: int, channels_config: dict):
+    def _print_summary(self, total_issues: int, channels_config: dict) -> None:
         """Print summary report"""
         print("\n\n" + "="*80)
         print("SUMMARY")

@@ -14,6 +14,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "ruff>=0.8.4",
+    "mypy>=1.13.0",
+    "types-requests>=2.31.0",
+    "types-python-dateutil>=2.8.19",
+    "lxml-stubs>=0.5.1",
 ]
 
 [tool.ruff]
@@ -95,3 +99,37 @@ skip-magic-trailing-comma = false
 
 # Automatically detect line ending
 line-ending = "auto"
+
+[tool.mypy]
+# Require type annotations
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+# Warn about redundant constructs
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+# Error on missing imports
+strict_optional = true
+warn_return_any = true
+
+# Check untyped definitions
+check_untyped_defs = true
+
+# Platform configuration
+python_version = "3.12"
+
+# Follow imports and check them
+follow_imports = "normal"
+
+# Show error codes
+show_error_codes = true
+
+# Exclude common directories
+exclude = [
+    "build/",
+    "dist/",
+    ".venv/",
+    "venv/",
+    "node_modules/",
+]

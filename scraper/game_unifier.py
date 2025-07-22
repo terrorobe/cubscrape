@@ -7,11 +7,12 @@ and processing all game data for database generation.
 
 import json
 import logging
+from typing import Any
 
-from utils import generate_review_summary
+from .utils import generate_review_summary
 
 
-def _resolve_stub_entries(steam_data):
+def _resolve_stub_entries(steam_data: dict[str, Any]) -> dict[str, Any]:
     """Resolve stub entries by replacing them with their resolved targets"""
     resolved_data = {}
 
@@ -41,7 +42,7 @@ def _resolve_stub_entries(steam_data):
     return resolved_data
 
 
-def _create_fallback_game(game_key, game_data, missing_ref_id=None):
+def _create_fallback_game(game_key: str, game_data: Any, missing_ref_id: str | None = None) -> dict[str, Any]:
     """Create a fallback game entry when relationships are missing"""
     if missing_ref_id:
         logging.warning(f"Game {game_key} references missing game {missing_ref_id}")
@@ -55,7 +56,7 @@ def _create_fallback_game(game_key, game_data, missing_ref_id=None):
         **game_data
     }
 
-def _determine_active_data_and_demo_info(demo_data, full_game_data, demo_id, _full_game_id):
+def _determine_active_data_and_demo_info(demo_data: Any, full_game_data: Any, demo_id: str, _full_game_id: str) -> tuple[Any, dict[str, Any]]:
     """Determine which data to use as active and what demo info to include
 
     Args:
@@ -95,7 +96,7 @@ def _determine_active_data_and_demo_info(demo_data, full_game_data, demo_id, _fu
 
     return active_data, demo_info
 
-def _create_unified_game_entry(primary_key, primary_name, demo_id, full_game_id, active_data, demo_info):
+def _create_unified_game_entry(primary_key: str, primary_name: str, demo_id: str | None, full_game_id: str | None, active_data: Any, demo_info: dict[str, Any]) -> dict[str, Any]:
     """Create a unified game entry with consistent structure"""
     return {
         'platform': 'steam',
@@ -113,7 +114,7 @@ def _create_unified_game_entry(primary_key, primary_name, demo_id, full_game_id,
         '_full_game_app_id': full_game_id
     }
 
-def _merge_itch_data_into_steam_game(steam_game, itch_data):
+def _merge_itch_data_into_steam_game(steam_game: dict[str, Any], itch_data: Any) -> dict[str, Any]:
     """Merge Itch.io data into Steam game when Steam data is incomplete or missing"""
 
     # Use Itch review data if Steam has no reviews
@@ -164,9 +165,10 @@ def _merge_itch_data_into_steam_game(steam_game, itch_data):
         steam_game['price'] = 'Free'
 
     logging.info(f"Merged Itch.io data into Steam game: {steam_game.get('name')}")
+    return steam_game
 
 
-def create_unified_steam_games(steam_data):
+def create_unified_steam_games(steam_data: dict[str, Any]) -> dict[str, Any]:
     """Create unified Steam games by merging demo and full game pairs"""
     unified_games = {}
     processed_games = set()
@@ -242,7 +244,7 @@ def create_unified_steam_games(steam_data):
     return unified_games
 
 
-def process_and_unify_games(steam_data, other_games, all_videos):
+def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, Any], all_videos: dict[str, Any]) -> dict[str, Any]:
     """Process games using existing logic adapted from JavaScript processGames()"""
     unified_games = {}
 
@@ -351,7 +353,7 @@ def process_and_unify_games(steam_data, other_games, all_videos):
     return unified_games
 
 
-def load_all_unified_games(project_root):
+def load_all_unified_games(project_root: Any) -> dict[str, Any]:
     """Load and process all game data from JSON files"""
 
     # Load JSON files

@@ -2,11 +2,13 @@
 Data management utilities for the YouTube Steam scraper
 """
 
+import logging
 from dataclasses import asdict
 from pathlib import Path
+from typing import Any
 
-from models import OtherGameData, SteamGameData, VideoData
-from utils import load_json, save_data
+from .models import OtherGameData, SteamGameData, VideoData
+from .utils import load_json, save_data
 
 
 class DataManager:
@@ -34,9 +36,17 @@ class DataManager:
         videos_raw = load_json(videos_file, {'videos': {}, 'last_updated': None})
 
         # Convert loaded dictionaries to VideoData objects
+        videos_converted = {}
+        for vid, vdata in videos_raw['videos'].items():
+            try:
+                videos_converted[vid] = self._ensure_video_data(vdata, vid)
+            except (TypeError, ValueError) as e:
+                logging.error(f"Skipping invalid video data for {vid}: {e}")
+                # Skip this video entirely rather than creating broken data
+                continue
+
         return {
-            'videos': {vid: self._dict_to_video_data(vdata) if isinstance(vdata, dict) else vdata
-                      for vid, vdata in videos_raw['videos'].items()},
+            'videos': videos_converted,
             'last_updated': videos_raw.get('last_updated')
         }
 
@@ -46,9 +56,17 @@ class DataManager:
         steam_raw = load_json(steam_file, {'games': {}, 'last_updated': None})
 
         # Convert loaded dictionaries to SteamGameData objects
+        games_converted = {}
+        for app_id, sdata in steam_raw['games'].items():
+            try:
+                games_converted[app_id] = self._ensure_steam_data(sdata, app_id)
+            except (TypeError, ValueError) as e:
+                logging.error(f"Skipping invalid Steam game data for {app_id}: {e}")
+                # Skip this game entirely rather than creating broken data
+                continue
+
         return {
-            'games': {app_id: self._dict_to_steam_data(sdata) if isinstance(sdata, dict) else sdata
-                     for app_id, sdata in steam_raw['games'].items()},
+            'games': games_converted,
             'last_updated': steam_raw.get('last_updated')
         }
 
@@ -58,13 +76,21 @@ class DataManager:
         other_games_raw = load_json(other_games_file, {'games': {}, 'last_updated': None})
 
         # Convert loaded dictionaries to OtherGameData objects
+        games_converted = {}
+        for game_id, gdata in other_games_raw['games'].items():
+            try:
+                games_converted[game_id] = self._ensure_other_game_data(gdata, game_id)
+            except (TypeError, ValueError) as e:
+                logging.error(f"Skipping invalid other game data for {game_id}: {e}")
+                # Skip this game entirely rather than creating broken data
+                continue
+
         return {
-            'games': {game_id: self._dict_to_other_game_data(gdata) if isinstance(gdata, dict) else gdata
-                     for game_id, gdata in other_games_raw['games'].items()},
+            'games': games_converted,
             'last_updated': other_games_raw.get('last_updated')
         }
 
-    def save_videos_data(self, videos_data: dict, channel_id: str):
+    def save_videos_data(self, videos_data: dict, channel_id: str) -> None:
         """Save video data to JSON file"""
         videos_file = self.get_videos_file_path(channel_id)
 
@@ -84,7 +110,7 @@ class DataManager:
         }
         save_data(data_to_save, videos_file)
 
-    def save_steam_data(self, steam_data: dict):
+    def save_steam_data(self, steam_data: dict) -> None:
         """Save Steam data to JSON file"""
         steam_file = self.get_steam_file_path()
 
@@ -104,7 +130,7 @@ class DataManager:
         }
         save_data(data_to_save, steam_file)
 
-    def save_other_games_data(self, other_games_data: dict):
+    def save_other_games_data(self, other_games_data: dict) -> None:
         """Save other games data to JSON file"""
         other_games_file = self.get_other_games_file_path()
 
@@ -123,6 +149,42 @@ class DataManager:
             'games': games_dict
         }
         save_data(data_to_save, other_games_file)
+
+    def _ensure_video_data(self, data: Any, video_id: str = "unknown") -> VideoData:
+        """Ensure data is VideoData instance - fail fast on invalid data"""
+        if isinstance(data, VideoData):
+            return data
+        elif isinstance(data, dict):
+            try:
+                return self._dict_to_video_data(data)
+            except (TypeError, ValueError) as e:
+                raise ValueError(f"Failed to convert video data for {video_id}: {e}. Data: {data}") from e
+        else:
+            raise TypeError(f"Expected dict or VideoData for {video_id}, got {type(data).__name__}. Data: {data}")
+
+    def _ensure_steam_data(self, data: Any, app_id: str = "unknown") -> SteamGameData:
+        """Ensure data is SteamGameData instance - fail fast on invalid data"""
+        if isinstance(data, SteamGameData):
+            return data
+        elif isinstance(data, dict):
+            try:
+                return self._dict_to_steam_data(data)
+            except (TypeError, ValueError) as e:
+                raise ValueError(f"Failed to convert Steam data for {app_id}: {e}. Data: {data}") from e
+        else:
+            raise TypeError(f"Expected dict or SteamGameData for {app_id}, got {type(data).__name__}. Data: {data}")
+
+    def _ensure_other_game_data(self, data: Any, game_id: str = "unknown") -> OtherGameData:
+        """Ensure data is OtherGameData instance - fail fast on invalid data"""
+        if isinstance(data, OtherGameData):
+            return data
+        elif isinstance(data, dict):
+            try:
+                return self._dict_to_other_game_data(data)
+            except (TypeError, ValueError) as e:
+                raise ValueError(f"Failed to convert other game data for {game_id}: {e}. Data: {data}") from e
+        else:
+            raise TypeError(f"Expected dict or OtherGameData for {game_id}, got {type(data).__name__}. Data: {data}")
 
     def _dict_to_video_data(self, video_dict: dict) -> VideoData:
         """Convert dictionary to VideoData object"""

@@ -7,12 +7,13 @@ from dataclasses import replace
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from data_manager import DataManager
 from dateutil.parser import parse as dateutil_parse
-from models import SteamGameData
-from steam_fetcher import SteamDataFetcher
-from update_logger import GameUpdateLogger
-from utils import extract_steam_app_id
+
+from .data_manager import DataManager
+from .models import SteamGameData
+from .steam_fetcher import SteamDataFetcher
+from .update_logger import GameUpdateLogger
+from .utils import extract_steam_app_id
 
 
 class SteamDataUpdater:
@@ -24,12 +25,12 @@ class SteamDataUpdater:
     4. Using SteamDataFetcher for individual game fetching
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.data_manager = DataManager(Path.cwd())
         self.steam_data = self.data_manager.load_steam_data()
         self.steam_fetcher = SteamDataFetcher()
 
-    def _save_steam_data(self):
+    def _save_steam_data(self) -> None:
         """Save Steam data to file"""
         self.data_manager.save_steam_data(self.steam_data)
 
@@ -208,7 +209,7 @@ class SteamDataUpdater:
 
         return extract_steam_app_id(steam_url)
 
-    def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None):
+    def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None) -> None:
         """
         Update Steam data for all games referenced in the specified channels.
 
@@ -220,7 +221,7 @@ class SteamDataUpdater:
 
         # Collect all Steam app IDs from all channels and build latest video date cache
         steam_app_ids = set()
-        latest_video_dates = {}  # app_id -> latest datetime
+        latest_video_dates: dict[str, datetime] = {}  # app_id -> latest datetime
 
         for channel in channels:
             videos_data = self.data_manager.load_videos_data(channel)

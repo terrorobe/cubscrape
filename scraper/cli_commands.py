@@ -10,17 +10,18 @@ import logging
 import sys
 from pathlib import Path
 
-from config_manager import ConfigManager
-from other_games_updater import OtherGamesUpdater
-from steam_updater import SteamDataUpdater
-
-from scraper import YouTubeSteamScraper, build_database
+from .config_manager import ConfigManager
+from .database_manager import DatabaseManager
+from .game_unifier import load_all_unified_games
+from .other_games_updater import OtherGamesUpdater
+from .scraper import YouTubeSteamScraper
+from .steam_updater import SteamDataUpdater
 
 
 class CLICommands:
     """Handles CLI command parsing and execution"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.parser = self._create_parser()
 
     def _create_parser(self) -> argparse.ArgumentParser:
@@ -68,7 +69,7 @@ class CLICommands:
         )
         return parser
 
-    def parse_and_execute(self, args=None):
+    def parse_and_execute(self, args: list[str] | None = None) -> None:
         """Parse command line arguments and execute the appropriate command"""
         parsed_args = self.parser.parse_args(args)
 
@@ -97,7 +98,7 @@ class CLICommands:
         script_dir = Path(__file__).resolve().parent
         return script_dir.parent
 
-    def _handle_reprocess(self, args):
+    def _handle_reprocess(self, args: argparse.Namespace) -> None:
         """Handle reprocess command"""
         if not args.channel:
             print("Error: --channel is required for reprocess mode")
@@ -112,7 +113,7 @@ class CLICommands:
         logging.info(f"Reprocess mode: reprocessing channel {args.channel}")
         scraper.reprocess_video_descriptions()
 
-    def _handle_backfill(self, args):
+    def _handle_backfill(self, args: argparse.Namespace) -> None:
         """Handle backfill command"""
         project_root = self._get_project_root()
         config_manager = ConfigManager(project_root)
@@ -157,7 +158,7 @@ class CLICommands:
             max_updates=args.max_steam_updates
         )
 
-    def _handle_cron(self, args):
+    def _handle_cron(self, args: argparse.Namespace) -> None:
         """Handle cron command"""
         project_root = self._get_project_root()
         config_manager = ConfigManager(project_root)
@@ -195,13 +196,13 @@ class CLICommands:
 
             # Run cross-platform auto-linking after all updates
             logging.info("Running cross-platform auto-linking")
-            from cross_platform_matcher import run_cross_platform_matching
+            from .cross_platform_matcher import run_cross_platform_matching
             stats = run_cross_platform_matching(project_root)
             if 'error' not in stats:
                 logging.info(f"Auto-linking results: {stats['approved_links']} new links, "
                            f"{stats['conflicting_links_removed']} conflicts resolved")
 
-    def _handle_fetch_steam_apps(self, args):
+    def _handle_fetch_steam_apps(self, args: argparse.Namespace) -> None:
         """Handle fetch-steam-apps command"""
         if not args.app_id:
             print("Error: --app-id is required for fetch-steam-apps mode")
@@ -231,7 +232,7 @@ class CLICommands:
             if failed_count > 0:
                 logging.warning(f"{failed_count} apps failed to fetch")
 
-    def _handle_data_quality(self, _args):
+    def _handle_data_quality(self, _args: argparse.Namespace) -> None:
         """Handle data-quality command"""
         project_root = self._get_project_root()
         config_manager = ConfigManager(project_root)
@@ -244,7 +245,7 @@ class CLICommands:
         logging.info("Data quality check: analyzing all channels and games")
         scraper.check_data_quality(channels)
 
-    def _handle_resolve_games(self, _args):
+    def _handle_resolve_games(self, _args: argparse.Namespace) -> None:
         """Handle resolve-games command"""
         project_root = self._get_project_root()
         config_manager = ConfigManager(project_root)
@@ -257,12 +258,15 @@ class CLICommands:
         logging.info("Resolving games: finding games for videos with missing, broken, or stub game data")
         scraper.resolve_games(channels)
 
-    def _handle_build_db(self, _args):
+    def _handle_build_db(self, _args: argparse.Namespace) -> None:
         """Handle build-db command"""
         logging.info("Building SQLite database from existing JSON data")
-        build_database()
+        project_root = self._get_project_root()
+        unified_games = load_all_unified_games(project_root)
+        db_manager = DatabaseManager()
+        db_manager.create_database(unified_games)
 
-    def _handle_fetch_videos(self, args):
+    def _handle_fetch_videos(self, args: argparse.Namespace) -> None:
         """Handle fetch-videos command - only fetch new YouTube videos without processing game data"""
         project_root = self._get_project_root()
         config_manager = ConfigManager(project_root)
@@ -295,7 +299,7 @@ class CLICommands:
 
         logging.info(f"Fetch videos completed. Total new videos: {total_new_videos}")
 
-    def _handle_refresh_steam(self, args):
+    def _handle_refresh_steam(self, args: argparse.Namespace) -> None:
         """Handle refresh-steam command - only refresh Steam game data"""
         project_root = self._get_project_root()
         config_manager = ConfigManager(project_root)
@@ -315,14 +319,14 @@ class CLICommands:
             max_updates=args.max_steam_updates
         )
 
-    def _handle_refresh_other(self, args):
+    def _handle_refresh_other(self, args: argparse.Namespace) -> None:
         """Handle refresh-other command - only refresh other games (Itch.io, CrazyGames) data"""
         logging.info("Refreshing other games data (Itch.io, CrazyGames)")
         other_games_updater = OtherGamesUpdater()
         other_games_updater.update_all_other_games(force_update=args.force)
 
 
-def main():
+def main() -> None:
     """Main entry point for CLI"""
     cli = CLICommands()
     cli.parse_and_execute()

@@ -8,14 +8,16 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from models import OtherGameData
-from utils import clean_tag_text
+
+from .base_fetcher import BaseFetcher
+from .models import OtherGameData
+from .utils import clean_tag_text
 
 
-class CrazyGamesDataFetcher:
+class CrazyGamesDataFetcher(BaseFetcher):
     """Handles fetching and parsing CrazyGames game data"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
@@ -64,10 +66,7 @@ class CrazyGamesDataFetcher:
 
     def _extract_header_image(self, soup: BeautifulSoup) -> str:
         """Extract header image from meta tags"""
-        og_image = soup.find('meta', property='og:image')
-        if og_image and og_image.get('content'):
-            return og_image['content']
-        return ""
+        return self.safe_find_attr(soup, 'content', 'meta', property='og:image')
 
     def _extract_release_date(self, soup: BeautifulSoup) -> str:
         """Extract release date from CrazyGames page"""
@@ -117,7 +116,11 @@ class CrazyGamesDataFetcher:
         script_tags = soup.find_all('script', type='application/ld+json')
         for script in script_tags:
             try:
-                json_data = json.loads(script.string)
+                script_content = self.safe_string(script)
+                if isinstance(script_content, str):
+                    json_data = json.loads(script_content)
+                else:
+                    continue
 
                 # Handle both single dict and array of dicts
                 if isinstance(json_data, list):

@@ -8,6 +8,7 @@ with intelligent precedence rules to avoid conflicts.
 import json
 import logging
 from pathlib import Path
+from typing import Any
 
 
 class CrossPlatformMatcher:
@@ -52,7 +53,7 @@ class CrossPlatformMatcher:
         matches = []
 
         # Create normalized name lookup for Steam games
-        steam_by_name = {}
+        steam_by_name: dict[str, list[tuple[str, Any]]] = {}
         for app_id, game_data in steam_games.items():
             normalized_name = self.normalize_name(game_data.get('name', ''))
             if normalized_name:
@@ -83,7 +84,7 @@ class CrossPlatformMatcher:
             Dict mapping other_game_url -> steam_app_id for approved links
         """
         approved_links = {}
-        steam_game_matches = {}  # Group matches by Steam app ID
+        steam_game_matches: dict[str, list] = {}  # Group matches by Steam app ID
 
         # Group matches by Steam app ID
         for steam_app_id, other_game_url, platform in matches:
@@ -278,7 +279,7 @@ class CrossPlatformMatcher:
 
         return removed_count
 
-    def run_auto_linking(self) -> dict[str, int]:
+    def run_auto_linking(self) -> dict[str, int | str]:
         """Run the complete auto-linking process
 
         Returns:
@@ -318,7 +319,7 @@ class CrossPlatformMatcher:
         # Update links
         steam_updated, other_updated = self.update_cross_platform_links(approved_links)
 
-        stats = {
+        stats: dict[str, int | str] = {
             'potential_matches': len(matches),
             'approved_links': len(approved_links),
             'steam_games_updated': steam_updated,
@@ -330,7 +331,7 @@ class CrossPlatformMatcher:
         return stats
 
 
-def run_cross_platform_matching(project_root: Path) -> dict[str, int]:
+def run_cross_platform_matching(project_root: Path) -> dict[str, int | str]:
     """Convenience function to run cross-platform matching"""
     matcher = CrossPlatformMatcher(project_root)
     return matcher.run_auto_linking()
