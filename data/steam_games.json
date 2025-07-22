@@ -4786,7 +4786,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1546080/fcb4026260f395095e137eab4da9408b76fbc271/header.jpg?t=1752481861",
       "is_early_access": true,
-      "last_updated": "2025-07-21T20:54:00.502837",
+      "last_updated": "2025-07-22T22:32:37.650423",
       "name": "Every Day We Fight",
       "positive_review_percentage": 76,
       "price_eur": "19,49\u20ac",
@@ -4795,7 +4795,7 @@
         "Hooded Horse"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 184,
+      "review_count": 187,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1546080",
       "steam_url": "https://store.steampowered.com/app/1546080",
@@ -8378,17 +8378,18 @@
         "Indie",
         "RPG"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753195534",
-      "last_updated": "2025-07-22T16:50:15.189632",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753204543",
+      "last_updated": "2025-07-22T22:32:42.223653",
       "name": "Hell Clock",
+      "positive_review_percentage": 88,
       "price_eur": "19,50\u20ac",
       "price_usd": "$19.99",
       "publishers": [
         "Mad Mushroom"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 69,
+      "review_summary": "Very Positive",
       "steam_app_id": "1782460",
       "steam_url": "https://store.steampowered.com/app/1782460",
       "tags": [
@@ -9820,17 +9821,17 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1753197806",
       "is_early_access": true,
-      "last_updated": "2025-07-22T20:53:20.092854",
+      "last_updated": "2025-07-22T22:32:50.010864",
       "name": "UnderMine 2",
-      "positive_review_percentage": 70,
+      "positive_review_percentage": 50,
       "price_eur": "17,55\u20ac",
       "price_usd": "$17.99",
       "publishers": [
         "Thorium"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 10,
-      "review_summary": "Mostly Positive",
+      "review_count": 22,
+      "review_summary": "Mixed",
       "steam_app_id": "1869780",
       "steam_url": "https://store.steampowered.com/app/1869780",
       "tags": [
@@ -13860,8 +13861,8 @@
         "RPG"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1753194060",
-      "last_updated": "2025-07-22T16:25:10.123953",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1753215462",
+      "last_updated": "2025-07-22T22:32:49.424501",
       "name": "Resonant Blade",
       "price_eur": "17,55\u20ac",
       "price_usd": "$17.99",
@@ -13910,9 +13911,9 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2096860/header.jpg?t=1752511625",
-      "last_updated": "2025-07-21T20:54:02.411053",
+      "last_updated": "2025-07-22T22:32:39.288865",
       "name": "Reclaim The Sea",
-      "positive_review_percentage": 88,
+      "positive_review_percentage": 85,
       "price_eur": "9,43\u20ac",
       "price_usd": "$9.59",
       "publishers": [
@@ -13920,7 +13921,7 @@
         "indienova"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 25,
+      "review_count": 27,
       "review_summary": "Positive",
       "steam_app_id": "2096860",
       "steam_url": "https://store.steampowered.com/app/2096860",
@@ -33352,16 +33353,17 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/a6757865adf488b7a98e11d1197e0165cd412302/header_alt_assets_0.jpg?t=1753115463",
-      "last_updated": "2025-07-22T15:03:14.648462",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/a6757865adf488b7a98e11d1197e0165cd412302/header_alt_assets_0.jpg?t=1753194703",
+      "last_updated": "2025-07-22T22:32:48.821346",
       "name": "The King is Watching",
-      "positive_review_percentage": 86,
+      "positive_review_percentage": 85,
       "price_eur": "13,49\u20ac",
+      "price_usd": "$13.49",
       "publishers": [
         "tinyBuild"
       ],
       "release_date": "21 Jul, 2025",
-      "review_count": 333,
+      "review_count": 445,
       "review_summary": "Very Positive",
       "steam_app_id": "2753900",
       "steam_url": "https://store.steampowered.com/app/2753900",
@@ -35664,16 +35666,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752862252",
       "is_early_access": true,
-      "last_updated": "2025-07-21T20:53:32.746403",
+      "last_updated": "2025-07-22T22:32:40.622412",
       "name": "He is Coming",
-      "positive_review_percentage": 84,
+      "positive_review_percentage": 83,
       "price_eur": "9,74\u20ac",
       "price_usd": "$9.74",
       "publishers": [
         "Hooded Horse"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 565,
+      "review_count": 673,
       "review_summary": "Very Positive",
       "steam_app_id": "2824490",
       "steam_url": "https://store.steampowered.com/app/2824490",
@@ -38003,8 +38005,9 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1753192283",
-      "last_updated": "2025-07-22T16:25:06.333756",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1753197690",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-22T22:32:42.864699",
       "name": "Steve's Warehouse: Physics. Roguelike. Chaos.",
       "price_eur": "6,79\u20ac",
       "price_usd": "$6.79",
@@ -38013,8 +38016,8 @@
         "Definitely Named Steve"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 7,
+      "review_summary": "Need more reviews for score",
       "steam_app_id": "2902440",
       "steam_url": "https://store.steampowered.com/app/2902440",
       "tags": [
@@ -40990,16 +40993,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983410/c3c3f64cf373361772582ec43a01c26fbb1e7640/header.jpg?t=1752775739",
       "is_early_access": true,
-      "last_updated": "2025-07-21T20:53:39.658009",
+      "last_updated": "2025-07-22T22:32:47.954019",
       "name": "Xenopurge",
-      "positive_review_percentage": 93,
+      "positive_review_percentage": 91,
       "price_eur": "9,74\u20ac",
       "price_usd": "$9.74",
       "publishers": [
         "Firesquid"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 86,
+      "review_count": 91,
       "review_summary": "Very Positive",
       "steam_app_id": "2983410",
       "steam_url": "https://store.steampowered.com/app/2983410",
@@ -41031,21 +41034,22 @@
         "RPG",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2984660/33215909613984876e866b157f47722c6f372975/header.jpg?t=1752274607",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2984660/33215909613984876e866b157f47722c6f372975/header.jpg?t=1752757040",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-15T15:02:30.290487",
+      "last_updated": "2025-07-22T22:32:41.550427",
       "name": "He is Coming Demo",
-      "positive_review_percentage": 96,
+      "positive_review_percentage": 93,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Hooded Horse"
       ],
-      "recent_review_count": 47,
-      "recent_review_percentage": 93,
+      "recent_review_count": 70,
+      "recent_review_percentage": 88,
       "recent_review_summary": "Very Positive",
       "release_date": "10 May, 2024",
-      "review_count": 84,
+      "review_count": 115,
       "review_summary": "Very Positive",
       "steam_app_id": "2984660",
       "steam_url": "https://store.steampowered.com/app/2984660",
@@ -43015,7 +43019,6 @@
         "Includes level editor",
         "Family Sharing"
       ],
-      "demo_app_id": "3209830",
       "developers": [
         "FireFly Studios"
       ],
@@ -43023,9 +43026,8 @@
         "Simulation",
         "Strategy"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3024040/6e854e906a4c5c2bdb74bbcc5828d10ea2714dba/header_alt_assets_0.jpg?t=1752590641",
-      "last_updated": "2025-07-21T20:53:46.022247",
+      "last_updated": "2025-07-22T22:32:46.928454",
       "name": "Stronghold Crusader: Definitive Edition",
       "positive_review_percentage": 90,
       "price_eur": "17,99\u20ac",
@@ -43034,7 +43036,7 @@
         "FireFly Studios"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 2619,
+      "review_count": 2844,
       "review_summary": "Very Positive",
       "steam_app_id": "3024040",
       "steam_url": "https://store.steampowered.com/app/3024040",
@@ -49596,16 +49598,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3183220/d05bae7c51b2851d31a65a9082150c98ab5652e8/header.jpg?t=1752209873",
       "is_early_access": true,
-      "last_updated": "2025-07-21T20:53:36.633237",
+      "last_updated": "2025-07-22T22:32:44.389752",
       "name": "Aurora Defense",
-      "positive_review_percentage": 71,
+      "positive_review_percentage": 72,
       "price_eur": "9,74\u20ac",
       "price_usd": "$9.74",
       "publishers": [
         "Moka Games"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 64,
+      "review_count": 66,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3183220",
       "steam_url": "https://store.steampowered.com/app/3183220",
@@ -50678,52 +50680,19 @@
       ]
     },
     "3209830": {
-      "categories": [
-        "Single-player",
-        "Multi-player",
-        "PvP",
-        "Online PvP",
-        "Co-op",
-        "Online Co-op",
-        "Game demo",
-        "Steam Achievements",
-        "Steam Workshop",
-        "Steam Cloud",
-        "Steam Leaderboards",
-        "Includes level editor"
-      ],
-      "developers": [
-        "FireFly Studios"
-      ],
-      "full_game_app_id": "3024040",
+      "categories": [],
+      "developers": [],
       "genres": [],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3209830/header.jpg?t=1752766476",
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-19T20:15:18.237764",
-      "name": "Stronghold Crusader: Definitive Edition Demo",
-      "positive_review_percentage": 91,
-      "price_eur": "Free",
-      "publishers": [
-        "FireFly Studios"
-      ],
-      "release_date": "20 Jan, 2025",
-      "review_count": 2144,
-      "review_summary": "Very Positive",
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T22:32:47.154300",
+      "name": "[FAILED FETCH] 3209830",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "3209830",
       "steam_url": "https://store.steampowered.com/app/3209830",
-      "tags": [
-        "Strategy",
-        "Real Time Tactics",
-        "City Builder",
-        "Colony Sim",
-        "Sandbox",
-        "Tower Defense",
-        "Building",
-        "Medieval",
-        "Economy",
-        "War"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3209890": {
       "categories": [],
@@ -57556,16 +57525,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3391190/5eb950f7f6cfda1dd507dc48d8db2b615951df49/header.jpg?t=1752234488",
-      "last_updated": "2025-07-21T20:53:40.591555",
+      "last_updated": "2025-07-22T22:32:45.045034",
       "name": "OREBLAZE",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 92,
       "price_eur": "4,49\u20ac",
       "price_usd": "$4.49",
       "publishers": [
         "Ludiminal Games"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 24,
+      "review_count": 26,
       "review_summary": "Positive",
       "steam_app_id": "3391190",
       "steam_url": "https://store.steampowered.com/app/3391190",
@@ -58316,16 +58285,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3415580/header.jpg?t=1752225108",
       "is_early_access": true,
-      "last_updated": "2025-07-21T20:54:17.380823",
+      "last_updated": "2025-07-22T22:32:38.315165",
       "name": "Death Ring: Second Impact",
-      "positive_review_percentage": 93,
+      "positive_review_percentage": 91,
       "price_eur": "19,50\u20ac",
       "price_usd": "$19.99",
       "publishers": [
         "Rouge Mecha"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 96,
+      "review_count": 101,
       "review_summary": "Very Positive",
       "steam_app_id": "3415580",
       "steam_url": "https://store.steampowered.com/app/3415580",
@@ -59150,6 +59119,50 @@
         "Crafting",
         "Agriculture",
         "Action"
+      ]
+    },
+    "343160": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Swift Creek Games"
+      ],
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/343160/8b5c9c92a4600258ba697655f1baba67fa3a36ea/header.jpg?t=1750443407",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-22T22:32:50.899418",
+      "name": "Reef Defense",
+      "price_eur": "10,35\u20ac",
+      "price_usd": "$10.49",
+      "publishers": [
+        "Swift Creek Games"
+      ],
+      "release_date": "20 Jun, 2025",
+      "review_count": 1,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "343160",
+      "steam_url": "https://store.steampowered.com/app/343160",
+      "tags": [
+        "Strategy",
+        "Tower Defense",
+        "Adventure",
+        "Creature Collector",
+        "Hidden Object",
+        "3D",
+        "Colorful",
+        "Realistic",
+        "Top-Down",
+        "Family Friendly"
       ]
     },
     "3435860": {
@@ -65275,16 +65288,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1752753077",
-      "last_updated": "2025-07-21T20:54:03.337360",
+      "last_updated": "2025-07-22T22:32:39.956170",
       "name": "Combo Overload",
-      "positive_review_percentage": 53,
+      "positive_review_percentage": 64,
       "price_eur": "4,49\u20ac",
       "price_usd": "$4.49",
       "publishers": [
         "AraragiAriel"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 13,
+      "review_count": 14,
       "review_summary": "Mixed",
       "steam_app_id": "3618590",
       "steam_url": "https://store.steampowered.com/app/3618590",
@@ -65591,15 +65604,16 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3630650/79dcc74e975d12267bfe22b472bf5c512a68e0f4/header.jpg?t=1743840098",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-15T03:09:59.757234",
+      "last_updated": "2025-07-22T22:32:46.215879",
       "name": "OREBLAZE Demo",
-      "positive_review_percentage": 89,
+      "positive_review_percentage": 92,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Ludiminal Games"
       ],
       "release_date": "5 Apr, 2025",
-      "review_count": 19,
+      "review_count": 26,
       "review_summary": "Positive",
       "steam_app_id": "3630650",
       "steam_url": "https://store.steampowered.com/app/3630650",
@@ -71226,18 +71240,19 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/881100/header.jpg?t=1675987871",
-      "last_updated": "2025-07-17T03:08:00.163234",
+      "last_updated": "2025-07-22T22:32:43.810300",
       "name": "Noita",
       "positive_review_percentage": 95,
       "price_eur": "18,99\u20ac",
+      "price_usd": "$19.99",
       "publishers": [
         "Nolla Games"
       ],
-      "recent_review_count": 1071,
-      "recent_review_percentage": 93,
+      "recent_review_count": 1140,
+      "recent_review_percentage": 92,
       "recent_review_summary": "Very Positive",
       "release_date": "15 Oct, 2020",
-      "review_count": 73114,
+      "review_count": 73277,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "881100",
       "steam_url": "https://store.steampowered.com/app/881100",
