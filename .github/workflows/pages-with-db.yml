@@ -36,7 +36,7 @@ jobs:
     
     - name: Generate SQLite database
       run: |
-        uv run python scraper/scraper.py build-db
+        cubscrape build-db
     
     - name: Verify database creation
       run: |

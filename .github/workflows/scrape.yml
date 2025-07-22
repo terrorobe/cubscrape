@@ -40,7 +40,7 @@ jobs:
       env:
         ITCH_COOKIES: ${{ secrets.ITCHIO_TOKEN }}
       run: |
-        uv run python scraper/scraper.py ${{ github.event.inputs.mode || 'cron' }}
+        cubscrape ${{ github.event.inputs.mode || 'cron' }}
 
     - name: Commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v5
