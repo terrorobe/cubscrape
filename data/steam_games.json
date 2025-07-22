@@ -5388,10 +5388,11 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1600910/header.jpg?t=1726817438",
       "is_demo": true,
-      "last_updated": "2025-07-19T08:52:32.899766",
+      "last_updated": "2025-07-22T16:45:47.041440",
       "name": "Demon's Mirror",
       "positive_review_percentage": 86,
       "price_eur": "19,99\u20ac",
+      "price_usd": "$19.99",
       "publishers": [
         "Good Shepherd Entertainment"
       ],
@@ -7844,51 +7845,19 @@
       ]
     },
     "1766480": {
-      "categories": [
-        "Single-player",
-        "Game demo",
-        "Steam Achievements",
-        "Full controller support",
-        "Steam Cloud",
-        "Stats",
-        "Steam Leaderboards"
-      ],
-      "developers": [
-        "Turtle Cream"
-      ],
-      "full_game_app_id": "1334500",
-      "genres": [
-        "Indie",
-        "RPG"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1766480/header.jpg?t=1737440429",
-      "is_demo": true,
-      "is_early_access": true,
-      "is_free": true,
-      "last_updated": "2025-07-11T17:59:48.264680",
-      "name": "RP7 Demo",
-      "positive_review_percentage": 74,
-      "price_eur": "Free",
-      "publishers": [
-        "Turtle Cream"
-      ],
-      "release_date": "1 Apr, 2024",
-      "review_count": 50,
-      "review_summary": "Mostly Positive",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T16:45:47.347448",
+      "name": "[FAILED FETCH] 1766480",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "1766480",
       "steam_url": "https://store.steampowered.com/app/1766480",
-      "tags": [
-        "Roguelike",
-        "Strategy",
-        "Dungeon Crawler",
-        "Casual",
-        "Co-op",
-        "Cute",
-        "Roguelite",
-        "RPG",
-        "Choices Matter",
-        "2D"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "1768280": {
       "categories": [
@@ -8411,7 +8380,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753130919",
-      "last_updated": "2025-07-22T16:25:08.730781",
+      "last_updated": "2025-07-22T16:44:33.416827",
       "name": "Hell Clock",
       "publishers": [
         "Mad Mushroom"
@@ -9851,7 +9820,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1752721425",
       "is_early_access": true,
-      "last_updated": "2025-07-22T16:25:12.417464",
+      "last_updated": "2025-07-22T16:44:34.678076",
       "name": "UnderMine 2",
       "publishers": [
         "Thorium"
@@ -27973,10 +27942,11 @@
       "is_demo": true,
       "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-07-11T21:36:05.640166",
+      "last_updated": "2025-07-22T16:45:48.690029",
       "name": "Arcane Wilds Demo",
       "positive_review_percentage": 75,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Avancadia"
       ],
@@ -28864,46 +28834,19 @@
       ]
     },
     "2598400": {
-      "categories": [
-        "Single-player",
-        "Game demo",
-        "Steam Cloud"
-      ],
-      "developers": [
-        "1LastGame"
-      ],
-      "full_game_app_id": "2096860",
-      "genres": [
-        "Strategy"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2598400/header.jpg?t=1737458311",
-      "insufficient_reviews": true,
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-11T18:44:20.094676",
-      "name": "Reclaim The Sea Demo",
-      "price_eur": "Free",
-      "publishers": [
-        "1LastGame",
-        "indienova"
-      ],
-      "release_date": "19 Dec, 2023",
-      "review_count": 9,
-      "review_summary": "Need more reviews for score",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T16:45:48.984651",
+      "name": "[FAILED FETCH] 2598400",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "2598400",
       "steam_url": "https://store.steampowered.com/app/2598400",
-      "tags": [
-        "Strategy",
-        "Roguelike",
-        "Singleplayer",
-        "Pixel Graphics",
-        "Roguelite",
-        "Difficult",
-        "2D",
-        "Procedural Generation",
-        "Replay Value",
-        "Fantasy"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "2601560": {
       "categories": [
@@ -34228,43 +34171,19 @@
       ]
     },
     "2780820": {
-      "categories": [
-        "Single-player",
-        "Game demo"
-      ],
-      "developers": [
-        "Oxymoron games s.r.o."
-      ],
-      "full_game_app_id": "2147380",
+      "categories": [],
+      "developers": [],
       "genres": [],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2780820/header.jpg?t=1717410950",
-      "is_demo": true,
-      "is_early_access": true,
-      "is_free": true,
-      "last_updated": "2025-07-11T20:26:41.616142",
-      "name": "Silence of the Siren Demo",
-      "positive_review_percentage": 92,
-      "price_eur": "Free",
-      "publishers": [
-        "Oxymoron games s.r.o."
-      ],
-      "release_date": "1 Feb, 2024",
-      "review_count": 305,
-      "review_summary": "Very Positive",
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T16:45:49.299716",
+      "name": "[FAILED FETCH] 2780820",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "2780820",
       "steam_url": "https://store.steampowered.com/app/2780820",
-      "tags": [
-        "Early Access",
-        "4X",
-        "Base Building",
-        "Tactical RPG",
-        "Turn-Based Combat",
-        "Exploration",
-        "RPG",
-        "Turn-Based Tactics",
-        "PvP",
-        "Turn-Based Strategy"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "2781230": {
       "categories": [
@@ -40201,7 +40120,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2964010/header.jpg?t=1747393031",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-21T20:54:35.334553",
+      "last_updated": "2025-07-22T16:45:50.434423",
       "name": "Private Military Manager: Tactical Auto Battler Demo",
       "positive_review_percentage": 78,
       "price_eur": "Free",
@@ -43015,44 +42934,19 @@
       ]
     },
     "3023940": {
-      "categories": [
-        "Single-player",
-        "Game demo"
-      ],
-      "developers": [
-        "Hungry Couch Games"
-      ],
-      "full_game_app_id": "2821800",
-      "genres": [
-        "Strategy"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3023940/header.jpg?t=1724159551",
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-15T03:09:04.612431",
-      "name": "Drill Core Demo",
-      "positive_review_percentage": 81,
-      "price_eur": "Free",
-      "publishers": [
-        "tinyBuild"
-      ],
-      "release_date": "30 May, 2024",
-      "review_count": 94,
-      "review_summary": "Very Positive",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T16:45:50.730800",
+      "name": "[FAILED FETCH] 3023940",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "3023940",
       "steam_url": "https://store.steampowered.com/app/3023940",
-      "tags": [
-        "Strategy",
-        "Colony Sim",
-        "Exploration",
-        "Roguelite",
-        "Side Scroller",
-        "Tower Defense",
-        "City Builder",
-        "Roguelike",
-        "2D",
-        "Base Building"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3023960": {
       "categories": [
@@ -43660,10 +43554,10 @@
         "Indie",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1752577212",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1752822372",
       "is_demo": true,
       "is_early_access": true,
-      "last_updated": "2025-07-15T20:06:09.876255",
+      "last_updated": "2025-07-22T16:45:52.064482",
       "name": "Demon Hunt",
       "publishers": [
         "Massive Hug"
@@ -58482,47 +58376,19 @@
       ]
     },
     "3416980": {
-      "categories": [
-        "Single-player",
-        "Game demo"
-      ],
-      "developers": [
-        "RainRingStuido"
-      ],
-      "full_game_app_id": "3330160",
-      "genres": [
-        "Adventure",
-        "Casual",
-        "Indie",
-        "Strategy"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3416980/1fe6bc72ae06b29602cede91002815e17f61f0e4/header.jpg?t=1750067696",
-      "insufficient_reviews": true,
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-19T03:08:24.255278",
-      "name": "Kingdom Ascension Demo",
-      "price_eur": "Free",
-      "publishers": [
-        "RainRingStuido"
-      ],
-      "release_date": "31 Dec, 2024",
-      "review_count": 9,
-      "review_summary": "Need more reviews for score",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T16:45:52.365667",
+      "name": "[FAILED FETCH] 3416980",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "3416980",
       "steam_url": "https://store.steampowered.com/app/3416980",
-      "tags": [
-        "Strategy",
-        "Building",
-        "Auto Battler",
-        "Base Building",
-        "RTS",
-        "Resource Management",
-        "Adventure",
-        "Survival",
-        "Casual",
-        "Grand Strategy"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3417770": {
       "categories": [
@@ -64177,50 +64043,19 @@
       ]
     },
     "3563400": {
-      "categories": [
-        "Single-player",
-        "Game demo",
-        "Full controller support"
-      ],
-      "developers": [
-        "Rogue Snail"
-      ],
-      "full_game_app_id": "1782460",
-      "genres": [
-        "Action",
-        "Indie",
-        "RPG"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3563400/79c1d42755e5ca7401802583fa7754e91a374bb8/header.jpg?t=1751048091",
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-16T01:34:31.777791",
-      "name": "Hell Clock Demo",
-      "positive_review_percentage": 94,
-      "price_eur": "Free",
-      "publishers": [
-        "Mad Mushroom"
-      ],
-      "recent_review_count": 177,
-      "recent_review_percentage": 90,
-      "recent_review_summary": "Very Positive",
-      "release_date": "20 Mar, 2025",
-      "review_count": 637,
-      "review_summary": "Very Positive",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T16:45:52.690665",
+      "name": "[FAILED FETCH] 3563400",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "3563400",
       "steam_url": "https://store.steampowered.com/app/3563400",
-      "tags": [
-        "Action",
-        "Action RPG",
-        "RPG",
-        "Roguelite",
-        "Roguelike",
-        "Action Roguelike",
-        "Action-Adventure",
-        "Shooter",
-        "Dungeon Crawler",
-        "Mystery Dungeon"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3568660": {
       "categories": [
@@ -68435,47 +68270,19 @@
       ]
     },
     "3750170": {
-      "categories": [
-        "Single-player",
-        "Game demo",
-        "Full controller support",
-        "Custom Volume Controls",
-        "Keyboard Only Option"
-      ],
-      "developers": [
-        "One Flow Man"
-      ],
-      "full_game_app_id": "2377620",
-      "genres": [
-        "Action"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3750170/a4982354cfcef0c5efda1238d3078337b86fb2f0/header.jpg?t=1748479488",
-      "insufficient_reviews": true,
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-15T03:09:21.566404",
-      "name": "Lord O' Pirates Demo",
-      "price_eur": "Free",
-      "publishers": [
-        "Treestyle Studios LLC"
-      ],
-      "release_date": "28 May, 2025",
-      "review_count": 8,
-      "review_summary": "Need more reviews for score",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-22T16:45:52.994357",
+      "name": "[FAILED FETCH] 3750170",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "3750170",
       "steam_url": "https://store.steampowered.com/app/3750170",
-      "tags": [
-        "Action",
-        "Action Roguelike",
-        "Bullet Hell",
-        "Pixel Graphics",
-        "Aliens",
-        "Lovecraftian",
-        "Combat",
-        "Controller",
-        "Naval Combat",
-        "PvE"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3752200": {
       "categories": [
