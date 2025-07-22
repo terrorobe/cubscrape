@@ -387,11 +387,23 @@ class SteamDataUpdater:
                     self._fetch_related_app(full_game_id, "full game")
 
             # Handle main game -> demo relationship
+            # Check both current data and old data for demo_app_id
+            demo_id = None
+            force_demo_check = False
+
             if steam_data.has_demo and steam_data.demo_app_id:
                 demo_id = steam_data.demo_app_id
-                if self._should_update_related_app(demo_id):
-                    logging.info(f"  Found demo {demo_id}, fetching data")
-                    self._fetch_related_app(demo_id, "demo")
+            elif app_id in self.steam_data['games']:
+                old_data = self.steam_data['games'][app_id]
+                if old_data.demo_app_id:
+                    demo_id = old_data.demo_app_id
+                    # Force immediate check when demo was removed
+                    force_demo_check = True
+                    logging.info(f"  Game no longer has demo, forcing check of previous demo {demo_id}")
+
+            if demo_id and (force_demo_check or self._should_update_related_app(demo_id)):
+                logging.info(f"  Fetching demo {demo_id}")
+                self._fetch_related_app(demo_id, "demo")
 
             return True
 

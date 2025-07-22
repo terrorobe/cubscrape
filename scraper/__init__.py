@@ -8,7 +8,6 @@ and matching videos with Steam (and other platform) game data.
 from .crazygames_fetcher import CrazyGamesDataFetcher
 from .itch_fetcher import ItchDataFetcher
 from .models import GameLinks, OtherGameData, SteamGameData, SteamSearchResult, VideoData
-
 from .steam_fetcher import SteamDataFetcher
 from .utils import (
     calculate_name_similarity,

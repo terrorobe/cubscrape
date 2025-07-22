@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-def run_command(cmd, description):
+def run_command(cmd: str, description: str) -> bool:
     """Run a command and handle errors"""
     print(f"\n📦 {description}...")
     try:
@@ -24,7 +24,7 @@ def run_command(cmd, description):
         print(f"❌ Error running command: {e}")
         return False
 
-def main():
+def main() -> None:
     print("🚀 Starting development environment...\n")
 
     # Check if we're in the right directory
@@ -59,7 +59,7 @@ def main():
 
     # Build database if needed
     if should_rebuild:
-        if not run_command("uv run python scraper/scraper.py build-db", "Building SQLite database from JSON files"):
+        if not run_command("cubscrape build-db", "Building SQLite database from JSON files"):
             print("\n❌ Failed to build database")
             sys.exit(1)
         print("✅ Database built successfully")
