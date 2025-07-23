@@ -2516,8 +2516,8 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/header.jpg?t=1752141705",
-      "last_updated": "2025-07-22T15:03:12.037422",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/header.jpg?t=1753272628",
+      "last_updated": "2025-07-23T15:03:37.464307",
       "name": "Let Them Trade",
       "publishers": [
         "ByteRockers' Games"
@@ -8381,16 +8381,16 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753229937",
-      "last_updated": "2025-07-23T08:53:48.470037",
+      "last_updated": "2025-07-23T15:03:30.270951",
       "name": "Hell Clock",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 87,
       "price_eur": "19,50\u20ac",
       "price_usd": "$19.99",
       "publishers": [
         "Mad Mushroom"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 169,
+      "review_count": 231,
       "review_summary": "Very Positive",
       "steam_app_id": "1782460",
       "steam_url": "https://store.steampowered.com/app/1782460",
@@ -8403,8 +8403,8 @@
         "Dungeon Crawler",
         "Action Roguelike",
         "Alternate History",
-        "Perma Death",
-        "Loot"
+        "Loot",
+        "Perma Death"
       ]
     },
     "1783940": {
@@ -9633,15 +9633,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1866300/9569bf5c864c4cefe1ab4461eff461b89d042a30/header.jpg?t=1752509241",
       "is_early_access": true,
-      "last_updated": "2025-07-22T15:03:20.758512",
+      "last_updated": "2025-07-23T15:03:32.146191",
       "name": "Dawn Apart",
-      "positive_review_percentage": 79,
+      "positive_review_percentage": 78,
       "price_eur": "17,99\u20ac",
+      "price_usd": "$17.99",
       "publishers": [
         "Astra Logical"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 124,
+      "review_count": 138,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1866300",
       "steam_url": "https://store.steampowered.com/app/1866300",
@@ -9825,16 +9826,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1753197806",
       "is_early_access": true,
-      "last_updated": "2025-07-23T08:53:45.708637",
+      "last_updated": "2025-07-23T15:03:40.908376",
       "name": "UnderMine 2",
-      "positive_review_percentage": 69,
+      "positive_review_percentage": 59,
       "price_eur": "17,55\u20ac",
       "price_usd": "$17.99",
       "publishers": [
         "Thorium"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 65,
+      "review_count": 92,
       "review_summary": "Mixed",
       "steam_app_id": "1869780",
       "steam_url": "https://store.steampowered.com/app/1869780",
@@ -13870,7 +13871,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1753215462",
       "insufficient_reviews": true,
-      "last_updated": "2025-07-23T08:53:39.684745",
+      "last_updated": "2025-07-23T15:03:43.007606",
       "name": "Resonant Blade",
       "price_eur": "17,55\u20ac",
       "price_usd": "$17.99",
@@ -22086,15 +22087,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377280/header.jpg?t=1752669881",
-      "last_updated": "2025-07-22T15:03:20.108088",
+      "last_updated": "2025-07-23T15:03:31.200444",
       "name": "Eriksholm: The Stolen Dream",
       "positive_review_percentage": 94,
       "price_eur": "39,99\u20ac",
+      "price_usd": "$39.99",
       "publishers": [
         "Nordcurrent Labs"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 369,
+      "review_count": 407,
       "review_summary": "Very Positive",
       "steam_app_id": "2377280",
       "steam_url": "https://store.steampowered.com/app/2377280",
@@ -22127,7 +22129,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377620/header.jpg?t=1752678276",
-      "last_updated": "2025-07-22T15:03:22.865846",
+      "last_updated": "2025-07-23T15:03:41.634393",
       "name": "Lord O' Pirates",
       "positive_review_percentage": 91,
       "price_eur": "4,49\u20ac",
@@ -30125,9 +30127,9 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1752672695",
-      "last_updated": "2025-07-22T15:03:21.722673",
+      "last_updated": "2025-07-23T15:03:35.404436",
       "name": "Becoming Saint",
-      "positive_review_percentage": 67,
+      "positive_review_percentage": 71,
       "price_eur": "13,49\u20ac",
       "price_usd": "$13.49",
       "publishers": [
@@ -30135,8 +30137,8 @@
         "2P Games"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 61,
-      "review_summary": "Mixed",
+      "review_count": 74,
+      "review_summary": "Mostly Positive",
       "steam_app_id": "2643010",
       "steam_url": "https://store.steampowered.com/app/2643010",
       "tags": [
@@ -30490,16 +30492,16 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2651220/5263be8eeec9c7535cd3a4669c0aa91bf37c738f/header.jpg?t=1752579820",
-      "last_updated": "2025-07-22T15:03:15.769352",
+      "last_updated": "2025-07-23T15:03:29.609073",
       "name": "Blacksmith: Ignite the Forge",
-      "positive_review_percentage": 63,
+      "positive_review_percentage": 65,
       "price_eur": "9,75\u20ac",
       "price_usd": "$9.99",
       "publishers": [
         "Awaken Realms"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 33,
+      "review_count": 35,
       "review_summary": "Mixed",
       "steam_app_id": "2651220",
       "steam_url": "https://store.steampowered.com/app/2651220",
@@ -35544,6 +35546,7 @@
         "Steam Achievements",
         "Full controller support",
         "Steam Cloud",
+        "Steam Leaderboards",
         "Family Sharing"
       ],
       "developers": [
@@ -35553,8 +35556,8 @@
         "Indie",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2821800/53401902f3157b220a9845be1b8d3080f2061967/header_alt_assets_2.jpg?t=1753128490",
-      "last_updated": "2025-07-22T15:03:06.684266",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2821800/53401902f3157b220a9845be1b8d3080f2061967/header_alt_assets_2.jpg?t=1753201763",
+      "last_updated": "2025-07-23T15:03:43.730295",
       "name": "Drill Core",
       "positive_review_percentage": 85,
       "price_eur": "15,60\u20ac",
@@ -35562,11 +35565,11 @@
       "publishers": [
         "tinyBuild"
       ],
-      "recent_review_count": 157,
-      "recent_review_percentage": 87,
+      "recent_review_count": 175,
+      "recent_review_percentage": 86,
       "recent_review_summary": "Very Positive",
       "release_date": "17 Jul, 2025",
-      "review_count": 1320,
+      "review_count": 1340,
       "review_summary": "Very Positive",
       "steam_app_id": "2821800",
       "steam_url": "https://store.steampowered.com/app/2821800",
@@ -38052,7 +38055,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1753197690",
-      "last_updated": "2025-07-23T08:53:44.081741",
+      "last_updated": "2025-07-23T15:03:40.300416",
       "name": "Steve's Warehouse: Physics. Roguelike. Chaos.",
       "positive_review_percentage": 100,
       "price_eur": "6,79\u20ac",
@@ -38062,7 +38065,7 @@
         "Definitely Named Steve"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 10,
+      "review_count": 13,
       "review_summary": "Positive",
       "steam_app_id": "2902440",
       "steam_url": "https://store.steampowered.com/app/2902440",
@@ -41561,7 +41564,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1752921328",
-      "last_updated": "2025-07-22T15:03:03.763024",
+      "last_updated": "2025-07-23T15:03:28.911113",
       "name": "Clutchtime\u2122: Basketball Deckbuilder",
       "publishers": [
         "Bigosaur"
@@ -41787,19 +41790,19 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3001330/c606589dc281fda785815c5aa1456f06ed29a4a3/header.jpg?t=1753067914",
-      "last_updated": "2025-07-22T15:03:19.490923",
+      "last_updated": "2025-07-23T15:03:34.521578",
       "name": "Forest Heroes",
-      "positive_review_percentage": 87,
+      "positive_review_percentage": 86,
       "price_eur": "8,77\u20ac",
       "price_usd": "$8.99",
       "publishers": [
         "Hoochoo Game Studios"
       ],
-      "recent_review_count": 34,
-      "recent_review_percentage": 91,
+      "recent_review_count": 38,
+      "recent_review_percentage": 86,
       "recent_review_summary": "Very Positive",
       "release_date": "17 Jul, 2025",
-      "review_count": 164,
+      "review_count": 168,
       "review_summary": "Very Positive",
       "steam_app_id": "3001330",
       "steam_url": "https://store.steampowered.com/app/3001330",
@@ -54026,6 +54029,54 @@
         "CRPG"
       ]
     },
+    "3281380": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "demo_app_id": "3544940",
+      "developers": [
+        "Eleven Dusks Studios"
+      ],
+      "genres": [
+        "Action",
+        "Casual",
+        "Indie",
+        "RPG"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3281380/0ba1675beed7ef35da68dc4d04b18dafa8301239/header.jpg?t=1752798962",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-23T15:03:38.508228",
+      "name": "Nelumbra",
+      "price_eur": "3,94\u20ac",
+      "price_usd": "$3.94",
+      "publishers": [
+        "Eleven Dusks Studios"
+      ],
+      "release_date": "11 Jul, 2025",
+      "review_count": 8,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "3281380",
+      "steam_url": "https://store.steampowered.com/app/3281380",
+      "tags": [
+        "Action Roguelike",
+        "Pixel Graphics",
+        "Bullet Hell",
+        "Singleplayer",
+        "Survival",
+        "Roguelike",
+        "Top-Down Shooter",
+        "Roguelite",
+        "Arcade",
+        "Abstract"
+      ]
+    },
     "3281470": {
       "categories": [
         "Single-player",
@@ -55850,7 +55901,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3343160/1eeee54eab7d517b375080b0fef2b5023d19101f/header.jpg?t=1752850926",
-      "last_updated": "2025-07-22T15:03:10.044171",
+      "last_updated": "2025-07-23T15:03:33.838025",
       "name": "Fill Up The Hole",
       "positive_review_percentage": 91,
       "price_eur": "2,69\u20ac",
@@ -55859,7 +55910,7 @@
         "Fluffy Lotus"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 256,
+      "review_count": 279,
       "review_summary": "Very Positive",
       "steam_app_id": "3343160",
       "steam_url": "https://store.steampowered.com/app/3343160",
@@ -62419,8 +62470,8 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503440/96206c6bbccdf9e1db9427b776d6ba7f2a00a9a1/header.jpg?t=1753090041",
-      "last_updated": "2025-07-22T15:03:08.213596",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503440/96206c6bbccdf9e1db9427b776d6ba7f2a00a9a1/header.jpg?t=1753271953",
+      "last_updated": "2025-07-23T15:03:42.349932",
       "name": "Astro Prospector",
       "positive_review_percentage": 95,
       "price_eur": "4,99\u20ac",
@@ -62430,7 +62481,7 @@
         "SpaceJazz"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 674,
+      "review_count": 713,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "3503440",
       "steam_url": "https://store.steampowered.com/app/3503440",
@@ -63593,6 +63644,46 @@
         "Base Building",
         "Roguelite",
         "Medieval"
+      ]
+    },
+    "3544940": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Full controller support"
+      ],
+      "developers": [
+        "Eleven Dusks Studios"
+      ],
+      "full_game_app_id": "3281380",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3544940/header.jpg?t=1740421645",
+      "insufficient_reviews": true,
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-23T15:03:39.582803",
+      "name": "Nelumbra Demo",
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Eleven Dusks Studios"
+      ],
+      "release_date": "24 Feb, 2025",
+      "review_count": 8,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "3544940",
+      "steam_url": "https://store.steampowered.com/app/3544940",
+      "tags": [
+        "Action Roguelike",
+        "Pixel Graphics",
+        "Bullet Hell",
+        "Singleplayer",
+        "Survival",
+        "Roguelike",
+        "Top-Down Shooter",
+        "Roguelite",
+        "Arcade",
+        "Abstract"
       ]
     },
     "3545900": {
@@ -66915,12 +67006,13 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3692070/e857d294069517d44470a18ec32fa63e0bba5562/header.jpg?t=1752345130",
-      "last_updated": "2025-07-23T08:53:45.040025",
+      "last_updated": "2025-07-23T15:03:33.204052",
       "name": "One Man\u00b4s Trash",
+      "planned_release_date": "Coming soon",
       "publishers": [
         "Jony Pazu Games"
       ],
-      "release_date": "23 Jul, 2025",
+      "release_date": "Coming soon",
       "review_count": 0,
       "review_summary": "No user reviews",
       "steam_app_id": "3692070",
@@ -67317,18 +67409,19 @@
       "full_game_app_id": "2643010",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3701450/65724eb78f081acbffc33b143589a7d73550c65e/header.jpg?t=1752589177",
-      "insufficient_reviews": true,
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-15T20:48:30.486360",
+      "last_updated": "2025-07-23T15:03:36.593181",
       "name": "Becoming Saint Demo",
+      "positive_review_percentage": 71,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Firesquid"
       ],
       "release_date": "27 May, 2025",
-      "review_count": 9,
-      "review_summary": "Need more reviews for score",
+      "review_count": 74,
+      "review_summary": "Mostly Positive",
       "steam_app_id": "3701450",
       "steam_url": "https://store.steampowered.com/app/3701450",
       "tags": [
