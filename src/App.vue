@@ -311,7 +311,7 @@ export default {
         locateFile: (file) => `https://sql.js.org/dist/${file}`,
       })
 
-      const response = await fetch('/data/games.db')
+      const response = await fetch('./data/games.db')
       if (!response.ok) {
         throw new Error(`Failed to load database: ${response.status}`)
       }
