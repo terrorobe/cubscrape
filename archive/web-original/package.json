@@ -1,0 +1,28 @@
+{
+  "name": "cubscrape",
+  "version": "1.0.0",
+  "description": "A tool that scrapes YouTube gaming channels to discover Steam games, fetches their metadata, and presents them in a filterable web interface.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "uv run python dev.py",
+    "lint": "eslint script.js",
+    "build-db": "uv run python scraper/scraper.py build-db",
+    "server": "uv run python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/terrorobe/cubscrape.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/terrorobe/cubscrape/issues"
+  },
+  "homepage": "https://github.com/terrorobe/cubscrape#readme",
+  "devDependencies": {
+    "eslint": "^9.31.0"
+  }
+}

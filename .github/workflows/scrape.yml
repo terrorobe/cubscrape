@@ -22,28 +22,28 @@ jobs:
     environment: scraper
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.ACTIONS_PAT }}
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACTIONS_PAT }}
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v3
-      with:
-        enable-cache: true
-        cache-dependency-glob: "uv.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: 'uv.lock'
 
-    - name: Install dependencies
-      run: |
-        uv sync
+      - name: Install dependencies
+        run: |
+          uv sync
 
-    - name: Run scraper
-      env:
-        ITCH_COOKIES: ${{ secrets.ITCHIO_TOKEN }}
-      run: |
-        uv run cubscrape ${{ github.event.inputs.mode || 'cron' }}
+      - name: Run scraper
+        env:
+          ITCH_COOKIES: ${{ secrets.ITCHIO_TOKEN }}
+        run: |
+          uv run cubscrape ${{ github.event.inputs.mode || 'cron' }}
 
-    - name: Commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: Update game data
-        file_pattern: 'data/'
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update game data
+          file_pattern: 'data/'

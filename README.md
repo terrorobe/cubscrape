@@ -14,16 +14,23 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 ### Prerequisites
 - Python 3.12+
 - uv (Python package manager)
+- Node.js 20+
+- npm (comes with Node.js)
 - direnv (recommended for automatic environment loading)
 
 ### Installation
 
 1. Clone the repository
-2. Install dependencies:
+2. Install Python dependencies:
    ```bash
    uv sync --extra dev
    ```
    This creates a virtual environment and installs all dependencies including development tools.
+
+3. Install JavaScript dependencies:
+   ```bash
+   npm install
+   ```
 
 4. Configure channels and options:
    ```bash
@@ -37,11 +44,13 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 
 ### Processing Modes
 
+Note: If `cubscrape` command is not available in your PATH, prefix all commands with `uv run`.
+
 **Backfill Mode** - Process a specific channel with full options:
 ```bash
-uv run python scraper/scraper.py backfill --channel idlecub --max-new 20
-uv run python scraper/scraper.py backfill --channel dextag --max-steam-updates 10
-uv run python scraper/scraper.py backfill --channel olexa --max-new 50
+cubscrape backfill --channel idlecub --max-new 20
+cubscrape backfill --channel dextag --max-steam-updates 10
+cubscrape backfill --channel olexa --max-new 50
 ```
 
 Note: Steam games now use age-based refresh intervals automatically:
@@ -51,28 +60,28 @@ Note: Steam games now use age-based refresh intervals automatically:
 
 **Cron Mode** - Process recent videos from all enabled channels:
 ```bash
-uv run python scraper/scraper.py cron
+cubscrape cron
 ```
 
 **Reprocess Mode** - Reprocess existing videos to extract new game links:
 ```bash
-uv run python scraper/scraper.py reprocess --channel idlecub
+cubscrape reprocess --channel idlecub
 ```
 
 **Single App Mode** - Fetch specific Steam game data:
 ```bash
-uv run python scraper/scraper.py single-app --app-id 123456
+cubscrape single-app --app-id 123456
 ```
 
 **Data Quality Mode** - Check data integrity and completeness:
 ```bash
-uv run python scraper/scraper.py data-quality
+cubscrape data-quality
 # Identifies missing Steam games referenced in videos
 ```
 
 **Game Inference Mode** - Find games from video titles and resolve missing Steam games:
 ```bash
-uv run python scraper/scraper.py infer-games
+cubscrape infer-games
 # Uses YouTube's game detection when available (more reliable)
 # Falls back to title parsing for game name extraction  
 # Interactive prompts for low confidence matches
@@ -86,35 +95,43 @@ Data is saved to:
 
 ### Viewing the Web Interface
 
-#### Quick Start (Development)
+The web interface is built with Vue 3, Vite, and Tailwind CSS.
+
+#### Development Mode
 ```bash
-# Builds database (if needed) and starts web server
+# Start dev server (automatically builds DB if needed)
 npm run dev
-# OR
-uv run python dev.py
+
+# Or skip DB check and just run Vite
+npm run dev:vite
+```
+Visit http://localhost:5173/
+
+#### Production Build
+```bash
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-#### Manual Steps
-1. Build the SQLite database:
-   ```bash
-   uv run python scraper/scraper.py build-db
-   ```
-2. Start the web server:
-   ```bash
-   uv run python -m http.server 8000
-   ```
-3. Visit http://localhost:8000/
+#### Database Setup
+The Vue app expects a SQLite database at `/data/games.db`:
+```bash
+# Build the SQLite database
+cubscrape build-db
+# OR
+npm run build-db
+```
 
 #### Other Commands
 ```bash
-# Lint JavaScript code
+# Lint and format code
 npm run lint
-
-# Just build the database
-npm run build-db
-
-# Just start the server
-npm run server
+npm run lint:fix
+npm run format
+npm run format:check
 ```
 
 ## Data Structure

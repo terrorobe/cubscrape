@@ -1,28 +1,36 @@
 {
-  "name": "cubscrape",
+  "name": "cubscrape-vue",
   "version": "1.0.0",
-  "description": "A tool that scrapes YouTube gaming channels to discover Steam games, fetches their metadata, and presents them in a filterable web interface.",
-  "main": "script.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "uv run python dev.py",
-    "lint": "eslint script.js",
-    "build-db": "uv run python scraper/scraper.py build-db",
-    "server": "uv run python -m http.server 8000"
+    "dev": "node scripts/dev.js",
+    "dev:vite": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .vue,.js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write 'src/**/*.{js,vue,css}' 'scripts/**/*.js' '*.{js,json,css,html}'",
+    "format:check": "prettier --check 'src/**/*.{js,vue,css}' 'scripts/**/*.js' '*.{js,json,css,html}'",
+    "build-db": "uv run cubscrape build-db"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/terrorobe/cubscrape.git"
+  "dependencies": {
+    "sql.js": "^1.11.0",
+    "vue": "^3.5.13"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/terrorobe/cubscrape/issues"
-  },
-  "homepage": "https://github.com/terrorobe/cubscrape#readme",
   "devDependencies": {
-    "eslint": "^9.31.0"
+    "@eslint/js": "^9.31.0",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-better-tailwindcss": "^3.7.1",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-vue": "^10.3.0",
+    "postcss": "^8.4.49",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "tailwindcss": "^4.1.11",
+    "vite": "^7.0.5"
   }
 }
