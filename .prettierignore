@@ -1,0 +1,20 @@
+# Ignore everything by default
+*
+
+# Only format Vue-related files
+!src/
+!src/**
+!*.html
+!*.js
+!*.json
+!*.css
+!postcss.config.js
+!vite.config.js
+!tailwind.config.js
+!eslint.config.js
+
+# But still ignore these
+node_modules/
+dist/
+.vite/
+package-lock.json

@@ -15,6 +15,10 @@ yarn-debug.log*
 yarn-error.log*
 .npm
 
+# Vue/Vite
+dist/
+.vite/
+
 # Logs
 *.log
 

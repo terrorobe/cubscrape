@@ -1,96 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curated Steam Games from YouTube</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- SQLite WebAssembly -->
-    <script src="https://sql.js.org/dist/sql-wasm.js"></script>
-    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "82206d8921b74fbe9277463e09da16a2"}'></script><!-- End Cloudflare Web Analytics -->
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Curated Steam Games</h1>
-            <p class="subtitle">Discovered from YouTube Gaming Channels</p>
-        </header>
-
-        <div class="filters">
-            <div class="filter-group">
-                <label for="releaseFilter">Release Status:</label>
-                <select id="releaseFilter">
-                    <option value="all">All Games</option>
-                    <option value="released">Released Only</option>
-                    <option value="early-access">Early Access</option>
-                    <option value="coming-soon">Coming Soon</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="platformFilter">Platform:</label>
-                <select id="platformFilter">
-                    <option value="all">All Platforms</option>
-                    <option value="steam">Steam</option>
-                    <option value="itch">Itch.io</option>
-                    <option value="crazygames">CrazyGames</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="ratingFilter">Minimum Rating:</label>
-                <select id="ratingFilter">
-                    <option value="0">All Ratings</option>
-                    <option value="70">70%+ Positive</option>
-                    <option value="80">80%+ Positive</option>
-                    <option value="90">90%+ Positive</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="tagFilter">Tag:</label>
-                <select id="tagFilter">
-                    <option value="">All Tags</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="channelFilter">Channel:</label>
-                <select id="channelFilter">
-                    <option value="">All Channels</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="sortBy">Sort By:</label>
-                <select id="sortBy">
-                    <option value="date">Video Date</option>
-                    <option value="rating-score">Rating Score</option>
-                    <option value="rating-category">Rating Category</option>
-                    <option value="name">Game Name</option>
-                    <option value="release-new">Release: Newest</option>
-                    <option value="release-old">Release: Oldest</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="currencySelect">Currency:</label>
-                <select id="currencySelect">
-                    <option value="eur">EUR (€)</option>
-                    <option value="usd">USD ($)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="stats">
-            <span id="gameCount">Loading...</span>
-        </div>
-
-        <div id="gameGrid" class="game-grid">
-            <div class="loading">Loading games...</div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Discovery - Vue Edition</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
