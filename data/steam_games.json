@@ -8381,16 +8381,16 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753229937",
-      "last_updated": "2025-07-23T15:03:30.270951",
+      "last_updated": "2025-07-23T20:53:33.008713",
       "name": "Hell Clock",
-      "positive_review_percentage": 87,
+      "positive_review_percentage": 85,
       "price_eur": "19,50\u20ac",
       "price_usd": "$19.99",
       "publishers": [
         "Mad Mushroom"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 231,
+      "review_count": 281,
       "review_summary": "Very Positive",
       "steam_app_id": "1782460",
       "steam_url": "https://store.steampowered.com/app/1782460",
@@ -9826,16 +9826,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1753197806",
       "is_early_access": true,
-      "last_updated": "2025-07-23T15:03:40.908376",
+      "last_updated": "2025-07-23T20:53:22.848399",
       "name": "UnderMine 2",
-      "positive_review_percentage": 59,
+      "positive_review_percentage": 61,
       "price_eur": "17,55\u20ac",
       "price_usd": "$17.99",
       "publishers": [
         "Thorium"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 92,
+      "review_count": 126,
       "review_summary": "Mixed",
       "steam_app_id": "1869780",
       "steam_url": "https://store.steampowered.com/app/1869780",
@@ -13871,7 +13871,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1753215462",
       "insufficient_reviews": true,
-      "last_updated": "2025-07-23T15:03:43.007606",
+      "last_updated": "2025-07-23T20:53:37.916278",
       "name": "Resonant Blade",
       "price_eur": "17,55\u20ac",
       "price_usd": "$17.99",
@@ -20246,6 +20246,52 @@
         "Singleplayer"
       ]
     },
+    "2330720": {
+      "categories": [
+        "Single-player",
+        "Steam Workshop",
+        "Steam Cloud",
+        "Stats",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2849200",
+      "developers": [
+        "ChipWits, Inc."
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2330720/9d52d1a988ab90745bfe10aa8d1a8aac66d857d9/header.jpg?t=1752721492",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-23T20:53:24.002613",
+      "name": "ChipWits",
+      "price_eur": "14,79\u20ac",
+      "price_usd": "$14.99",
+      "publishers": [
+        "ChipWits, Inc."
+      ],
+      "release_date": "11 Jul, 2025",
+      "review_count": 2,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "2330720",
+      "steam_url": "https://store.steampowered.com/app/2330720",
+      "tags": [
+        "Programming",
+        "Automation",
+        "Logic",
+        "Puzzle",
+        "Simulation",
+        "Education",
+        "Family Friendly",
+        "Robots",
+        "Coding",
+        "Sandbox"
+      ]
+    },
     "2330750": {
       "categories": [
         "Single-player",
@@ -22600,6 +22646,7 @@
         "Steam Cloud",
         "Family Sharing"
       ],
+      "demo_app_id": "3509010",
       "developers": [
         "Vixa Games"
       ],
@@ -22607,10 +22654,11 @@
         "Indie",
         "Strategy"
       ],
+      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1753095269",
-      "last_updated": "2025-07-22T20:53:23.458964",
+      "last_updated": "2025-07-23T20:53:29.115804",
       "name": "Dust Raiders",
-      "positive_review_percentage": 60,
+      "positive_review_percentage": 61,
       "price_eur": "13,42\u20ac",
       "price_usd": "$13.59",
       "publishers": [
@@ -22618,7 +22666,7 @@
         "PlayWay S.A."
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 76,
+      "review_count": 83,
       "review_summary": "Mixed",
       "steam_app_id": "2397450",
       "steam_url": "https://store.steampowered.com/app/2397450",
@@ -33387,16 +33435,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/a6757865adf488b7a98e11d1197e0165cd412302/header_alt_assets_0.jpg?t=1753194703",
-      "last_updated": "2025-07-22T22:32:48.821346",
+      "last_updated": "2025-07-23T20:53:31.199545",
       "name": "The King is Watching",
-      "positive_review_percentage": 85,
+      "positive_review_percentage": 83,
       "price_eur": "13,49\u20ac",
       "price_usd": "$13.49",
       "publishers": [
         "tinyBuild"
       ],
       "release_date": "21 Jul, 2025",
-      "review_count": 445,
+      "review_count": 706,
       "review_summary": "Very Positive",
       "steam_app_id": "2753900",
       "steam_url": "https://store.steampowered.com/app/2753900",
@@ -33404,8 +33452,8 @@
         "RTS",
         "Dark Fantasy",
         "Fantasy",
-        "Base Building",
         "Roguelike",
+        "Base Building",
         "Strategy",
         "Resource Management",
         "Tower Defense",
@@ -35709,7 +35757,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1752862252",
       "is_early_access": true,
-      "last_updated": "2025-07-23T03:09:08.321833",
+      "last_updated": "2025-07-23T20:53:26.503021",
       "name": "He is Coming",
       "positive_review_percentage": 83,
       "price_eur": "9,74\u20ac",
@@ -35718,7 +35766,7 @@
         "Hooded Horse"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 690,
+      "review_count": 754,
       "review_summary": "Very Positive",
       "steam_app_id": "2824490",
       "steam_url": "https://store.steampowered.com/app/2824490",
@@ -36450,6 +36498,48 @@
         "Underwater",
         "Submarine",
         "Roguelite"
+      ]
+    },
+    "2849200": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Cloud",
+        "Stats",
+        "Steam Leaderboards"
+      ],
+      "developers": [
+        "ChipWits, Inc."
+      ],
+      "full_game_app_id": "2330720",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2849200/47b5ab75493fbe63f026e9b5b369bb21301468b2/header.jpg?t=1751940118",
+      "insufficient_reviews": true,
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-23T20:53:25.104361",
+      "name": "ChipWits Demo",
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "ChipWits, Inc."
+      ],
+      "release_date": "26 Sep, 2024",
+      "review_count": 2,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "2849200",
+      "steam_url": "https://store.steampowered.com/app/2849200",
+      "tags": [
+        "Programming",
+        "Automation",
+        "Logic",
+        "Puzzle",
+        "Simulation",
+        "Education",
+        "Family Friendly",
+        "Robots",
+        "Coding",
+        "Sandbox"
       ]
     },
     "2852980": {
@@ -38055,7 +38145,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1753197690",
-      "last_updated": "2025-07-23T15:03:40.300416",
+      "last_updated": "2025-07-23T20:53:33.785819",
       "name": "Steve's Warehouse: Physics. Roguelike. Chaos.",
       "positive_review_percentage": 100,
       "price_eur": "6,79\u20ac",
@@ -38065,7 +38155,7 @@
         "Definitely Named Steve"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 13,
+      "review_count": 14,
       "review_summary": "Positive",
       "steam_app_id": "2902440",
       "steam_url": "https://store.steampowered.com/app/2902440",
@@ -40958,21 +41048,22 @@
         "Indie",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2981670/f0f124f45d02c308a4082ee8092ac73265d3b486/header.jpg?t=1745844162",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2981670/f0f124f45d02c308a4082ee8092ac73265d3b486/header.jpg?t=1753128720",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-16T01:34:57.720388",
+      "last_updated": "2025-07-23T20:53:32.276911",
       "name": "The King is Watching Demo",
       "positive_review_percentage": 96,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "tinyBuild"
       ],
-      "recent_review_count": 53,
-      "recent_review_percentage": 100,
+      "recent_review_count": 98,
+      "recent_review_percentage": 90,
       "recent_review_summary": "Very Positive",
       "release_date": "21 May, 2024",
-      "review_count": 1179,
+      "review_count": 1235,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "2981670",
       "steam_url": "https://store.steampowered.com/app/2981670",
@@ -47797,7 +47888,7 @@
         "Massively Multiplayer"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3140620/55db28c57a15f1ddc77454d9f1fe2a11217a1dd6/header_alt_assets_4.jpg?t=1752481894",
-      "last_updated": "2025-07-22T16:25:07.370507",
+      "last_updated": "2025-07-23T20:53:25.829696",
       "name": "C.A.S.T. (CHERNOZEM ANOMALY STRIKE TEAM)",
       "positive_review_percentage": 91,
       "price_eur": "5,16\u20ac",
@@ -47805,11 +47896,11 @@
       "publishers": [
         "Ascension Studio"
       ],
-      "recent_review_count": 79,
+      "recent_review_count": 82,
       "recent_review_percentage": 87,
       "recent_review_summary": "Very Positive",
       "release_date": "14 Jul, 2025",
-      "review_count": 393,
+      "review_count": 397,
       "review_summary": "Very Positive",
       "steam_app_id": "3140620",
       "steam_url": "https://store.steampowered.com/app/3140620",
@@ -52640,16 +52731,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3247750/header.jpg?t=1752795203",
       "is_early_access": true,
-      "last_updated": "2025-07-22T16:25:05.360739",
+      "last_updated": "2025-07-23T20:53:35.129779",
       "name": "Mycopunk",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 91,
       "price_eur": "14,99\u20ac",
       "price_usd": "$14.99",
       "publishers": [
         "Devolver Digital"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 1272,
+      "review_count": 1323,
       "review_summary": "Very Positive",
       "steam_app_id": "3247750",
       "steam_url": "https://store.steampowered.com/app/3247750",
@@ -55503,16 +55594,16 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3330160/1fe6bc72ae06b29602cede91002815e17f61f0e4/header.jpg?t=1752898902",
-      "last_updated": "2025-07-22T16:25:15.662451",
+      "last_updated": "2025-07-23T20:53:34.425644",
       "name": "Kingdom Ascension",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 91,
       "price_eur": "9,43\u20ac",
       "price_usd": "$9.59",
       "publishers": [
         "RainRingStudio"
       ],
       "release_date": "18 Jul, 2025",
-      "review_count": 65,
+      "review_count": 71,
       "review_summary": "Very Positive",
       "steam_app_id": "3330160",
       "steam_url": "https://store.steampowered.com/app/3330160",
@@ -57373,19 +57464,19 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385370/header.jpg?t=1752287906",
-      "last_updated": "2025-07-22T16:25:17.405566",
+      "last_updated": "2025-07-23T20:53:35.912790",
       "name": "Maze Mice",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 90,
       "price_eur": "9,75\u20ac",
       "price_usd": "$9.99",
       "publishers": [
         "TrampolineTales"
       ],
-      "recent_review_count": 111,
-      "recent_review_percentage": 87,
+      "recent_review_count": 114,
+      "recent_review_percentage": 85,
       "recent_review_summary": "Very Positive",
       "release_date": "11 Jul, 2025",
-      "review_count": 180,
+      "review_count": 183,
       "review_summary": "Very Positive",
       "steam_app_id": "3385370",
       "steam_url": "https://store.steampowered.com/app/3385370",
@@ -57417,18 +57508,19 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385410/header.jpg?t=1740349659",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-16T02:14:40.001107",
+      "last_updated": "2025-07-23T20:53:37.046131",
       "name": "Maze Mice Demo",
-      "positive_review_percentage": 94,
+      "positive_review_percentage": 90,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "TrampolineTales"
       ],
-      "recent_review_count": 69,
-      "recent_review_percentage": 92,
+      "recent_review_count": 114,
+      "recent_review_percentage": 85,
       "recent_review_summary": "Very Positive",
       "release_date": "23 Feb, 2025",
-      "review_count": 134,
+      "review_count": 183,
       "review_summary": "Very Positive",
       "steam_app_id": "3385410",
       "steam_url": "https://store.steampowered.com/app/3385410",
@@ -57991,10 +58083,11 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3400960/0a2865fae48080d06574d755538812f6bf58929a/header.jpg?t=1749732471",
       "is_free": true,
-      "last_updated": "2025-07-20T23:45:52.162080",
+      "last_updated": "2025-07-23T20:53:27.459120",
       "name": "Oaken Tower",
       "planned_release_date": "Coming soon",
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Bocary Studios"
       ],
@@ -62625,6 +62718,48 @@
         "Gun Customization"
       ]
     },
+    "3509010": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Vixa Games"
+      ],
+      "full_game_app_id": "2397450",
+      "genres": [
+        "Action",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3509010/header.jpg?t=1753275146",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-23T20:53:30.471051",
+      "name": "Dust Raiders Demo",
+      "positive_review_percentage": 61,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Games Operators"
+      ],
+      "release_date": "23 Feb, 2025",
+      "review_count": 83,
+      "review_summary": "Mixed",
+      "steam_app_id": "3509010",
+      "steam_url": "https://store.steampowered.com/app/3509010",
+      "tags": [
+        "Indie",
+        "Adventure",
+        "Post-apocalyptic",
+        "Simulation",
+        "Strategy",
+        "Real Time Tactics",
+        "Trading",
+        "Management",
+        "Exploration",
+        "Economy"
+      ]
+    },
     "3509290": {
       "categories": [],
       "developers": [],
@@ -67049,18 +67184,19 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3692220/0a2865fae48080d06574d755538812f6bf58929a/header.jpg?t=1746595863",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-15T20:48:17.365538",
+      "last_updated": "2025-07-23T20:53:28.343404",
       "name": "Oaken Tower Demo",
-      "positive_review_percentage": 76,
+      "positive_review_percentage": 72,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Bocary Studios"
       ],
-      "recent_review_count": 40,
-      "recent_review_percentage": 67,
+      "recent_review_count": 50,
+      "recent_review_percentage": 64,
       "recent_review_summary": "Mixed",
       "release_date": "29 Apr, 2025",
-      "review_count": 63,
+      "review_count": 76,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3692220",
       "steam_url": "https://store.steampowered.com/app/3692220",
