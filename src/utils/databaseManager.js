@@ -13,6 +13,7 @@ export class DatabaseManager {
     this.db = null
     this.SQL = null
     this.lastModified = null
+    this.lastETag = null
     this.checkInterval = null
     this.isDevelopment = import.meta.env.DEV
     this.listeners = new Set()
@@ -57,8 +58,32 @@ export class DatabaseManager {
     try {
       this.lastCheckTime = new Date()
 
+      // In production, check headers first to avoid unnecessary downloads
+      if (!this.isDevelopment && this.lastModified) {
+        const headResponse = await fetch('./data/games.db', {
+          method: 'HEAD',
+          cache: 'no-cache',
+        })
+
+        if (!headResponse.ok) {
+          throw new Error(`Failed to check database: ${headResponse.status}`)
+        }
+
+        const lastModified = headResponse.headers.get('Last-Modified')
+        const etag = headResponse.headers.get('ETag')
+
+        // Check if database hasn't changed (use both headers for reliability)
+        if (
+          (lastModified && lastModified === this.lastModified) ||
+          (etag && etag === this.lastETag)
+        ) {
+          // Database hasn't changed, no need to download
+          return false
+        }
+      }
+
+      // Download the actual database (development or when changed in production)
       const response = await fetch('./data/games.db', {
-        // Add cache-busting in production to detect changes
         cache: this.isDevelopment ? 'default' : 'no-cache',
       })
 
@@ -66,12 +91,9 @@ export class DatabaseManager {
         throw new Error(`Failed to load database: ${response.status}`)
       }
 
-      // Check if database has been modified
+      // Store headers for next comparison
       const lastModified = response.headers.get('Last-Modified')
-      if (this.lastModified && lastModified === this.lastModified) {
-        // Database hasn't changed, no need to reload
-        return false
-      }
+      const etag = response.headers.get('ETag')
 
       const dbBuffer = await response.arrayBuffer()
 
@@ -82,6 +104,7 @@ export class DatabaseManager {
 
       this.db = new this.SQL.Database(new Uint8Array(dbBuffer))
       this.lastModified = lastModified
+      this.lastETag = etag
 
       // Make database available globally for backward compatibility
       window.gameDatabase = this.db
@@ -105,7 +128,8 @@ export class DatabaseManager {
    * Force reload the database
    */
   async reloadDatabase() {
-    this.lastModified = null // Force reload by clearing last modified
+    this.lastModified = null // Force reload by clearing headers
+    this.lastETag = null
     return await this.loadDatabase()
   }
 
