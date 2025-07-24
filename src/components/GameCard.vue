@@ -74,11 +74,11 @@
         </div>
 
         <!-- Price Line -->
-        <div class="my-3 flex min-h-8 items-center justify-between">
+        <div class="my-3 flex h-8 items-center justify-between">
           <div class="flex items-center">
             <div
               v-if="getPrice(game)"
-              class="rounded-sm bg-accent/10 p-3 text-lg font-bold text-accent"
+              class="rounded-sm bg-accent/10 px-3 py-1 text-lg font-bold text-accent"
             >
               {{ getPrice(game) }}
             </div>
