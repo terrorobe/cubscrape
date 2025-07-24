@@ -5,10 +5,28 @@ Data management utilities for the YouTube Steam scraper
 import logging
 from dataclasses import asdict
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from .models import OtherGameData, SteamGameData, VideoData, VideoGameReference
 from .utils import load_json, save_data
+
+
+class VideosDataDict(TypedDict):
+    """Type definition for videos data dictionary"""
+    videos: dict[str, VideoData]
+    last_updated: str | None
+
+
+class SteamDataDict(TypedDict):
+    """Type definition for Steam games data dictionary"""
+    games: dict[str, SteamGameData]
+    last_updated: str | None
+
+
+class OtherGamesDataDict(TypedDict):
+    """Type definition for other games data dictionary"""
+    games: dict[str, OtherGameData]
+    last_updated: str | None
 
 
 class DataManager:
@@ -30,7 +48,7 @@ class DataManager:
         """Get path to other games data file"""
         return self.data_dir / 'other_games.json'
 
-    def load_videos_data(self, channel_id: str) -> dict:
+    def load_videos_data(self, channel_id: str) -> VideosDataDict:
         """Load and convert video data for a channel"""
         videos_file = self.get_videos_file_path(channel_id)
         videos_raw = load_json(videos_file, {'videos': {}, 'last_updated': None})
@@ -50,7 +68,7 @@ class DataManager:
             'last_updated': videos_raw.get('last_updated')
         }
 
-    def load_steam_data(self) -> dict:
+    def load_steam_data(self) -> SteamDataDict:
         """Load and convert Steam games data"""
         steam_file = self.get_steam_file_path()
         steam_raw = load_json(steam_file, {'games': {}, 'last_updated': None})
@@ -70,7 +88,7 @@ class DataManager:
             'last_updated': steam_raw.get('last_updated')
         }
 
-    def load_other_games_data(self) -> dict:
+    def load_other_games_data(self) -> OtherGamesDataDict:
         """Load and convert other games data"""
         other_games_file = self.get_other_games_file_path()
         other_games_raw = load_json(other_games_file, {'games': {}, 'last_updated': None})
@@ -90,7 +108,7 @@ class DataManager:
             'last_updated': other_games_raw.get('last_updated')
         }
 
-    def save_videos_data(self, videos_data: dict, channel_id: str) -> None:
+    def save_videos_data(self, videos_data: VideosDataDict, channel_id: str) -> None:
         """Save video data to JSON file"""
         videos_file = self.get_videos_file_path(channel_id)
 
@@ -110,7 +128,7 @@ class DataManager:
         }
         save_data(data_to_save, videos_file)
 
-    def save_steam_data(self, steam_data: dict) -> None:
+    def save_steam_data(self, steam_data: SteamDataDict) -> None:
         """Save Steam data to JSON file"""
         steam_file = self.get_steam_file_path()
 
@@ -130,7 +148,7 @@ class DataManager:
         }
         save_data(data_to_save, steam_file)
 
-    def save_other_games_data(self, other_games_data: dict) -> None:
+    def save_other_games_data(self, other_games_data: OtherGamesDataDict) -> None:
         """Save other games data to JSON file"""
         other_games_file = self.get_other_games_file_path()
 

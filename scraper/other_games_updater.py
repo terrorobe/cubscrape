@@ -153,11 +153,11 @@ class OtherGamesUpdater:
 
                 for video_data in videos.values():
                     # Collect game URLs from multi-game references
-                    for game_ref in video_data.get('game_references', []):
-                        if game_ref.get('platform') == 'itch':
-                            urls['itch'].add(game_ref['platform_id'])
-                        elif game_ref.get('platform') == 'crazygames':
-                            urls['crazygames'].add(game_ref['platform_id'])
+                    for game_ref in video_data.game_references:
+                        if game_ref.platform == 'itch':
+                            urls['itch'].add(game_ref.platform_id)
+                        elif game_ref.platform == 'crazygames':
+                            urls['crazygames'].add(game_ref.platform_id)
 
             except Exception as e:
                 logging.error(f"Error loading channel {channel_id}: {e}")

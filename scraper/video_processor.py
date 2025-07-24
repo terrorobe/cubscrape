@@ -8,23 +8,26 @@ and video metadata management.
 import logging
 from dataclasses import replace
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .models import VideoData
+
+if TYPE_CHECKING:
+    from .data_manager import OtherGamesDataDict, VideosDataDict
 from .utils import extract_all_game_links
 
 
 class VideoProcessor:
     """Handles video processing pipeline and game link extraction"""
 
-    def __init__(self, data_manager: Any, youtube_extractor: Any, config_manager: Any, game_inference: Any, other_games_data: dict) -> None:
+    def __init__(self, data_manager: Any, youtube_extractor: Any, config_manager: Any, game_inference: Any, other_games_data: "OtherGamesDataDict") -> None:
         self.data_manager = data_manager
         self.youtube_extractor = youtube_extractor
         self.config_manager = config_manager
         self.game_inference = game_inference
         self.other_games_data = other_games_data
 
-    def process_videos(self, videos_data: dict, channel_url: str, max_new_videos: int | None = None,
+    def process_videos(self, videos_data: "VideosDataDict", channel_url: str, max_new_videos: int | None = None,
                       fetch_newest_first: bool = False, cutoff_date: str | None = None) -> int:
         """Process YouTube videos only"""
         logging.info(f"Processing videos from channel: {channel_url}")
@@ -216,7 +219,7 @@ class VideoProcessor:
 
         return video_data
 
-    def reprocess_video_descriptions(self, videos_data: dict) -> int:
+    def reprocess_video_descriptions(self, videos_data: "VideosDataDict") -> int:
         """Reprocess existing video descriptions to extract game links with current logic"""
         logging.info("Reprocessing existing video descriptions")
 

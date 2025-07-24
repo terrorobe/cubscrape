@@ -9,7 +9,7 @@ from pathlib import Path
 
 from dateutil.parser import parse as dateutil_parse
 
-from .data_manager import DataManager
+from .data_manager import DataManager, SteamDataDict
 from .models import SteamGameData
 from .steam_fetcher import SteamDataFetcher
 from .update_logger import GameUpdateLogger
@@ -27,7 +27,7 @@ class SteamDataUpdater:
 
     def __init__(self) -> None:
         self.data_manager = DataManager(Path.cwd())
-        self.steam_data = self.data_manager.load_steam_data()
+        self.steam_data: SteamDataDict = self.data_manager.load_steam_data()
         self.steam_fetcher = SteamDataFetcher()
 
     def _save_steam_data(self) -> None:
@@ -281,16 +281,16 @@ class SteamDataUpdater:
             update_reason = "new game"
 
             if app_id in self.steam_data['games']:
-                game_data = self.steam_data['games'][app_id]
+                steam_game_data: SteamGameData = self.steam_data['games'][app_id]
 
                 # Check for overdue release trigger
-                if self._is_overdue_release(game_data):
+                if self._is_overdue_release(steam_game_data):
                     should_update = True
                     update_reason = "overdue release"
 
                 # Check for recent video reference trigger
-                elif game_data.last_updated:
-                    last_updated_date = datetime.fromisoformat(game_data.last_updated)
+                elif steam_game_data.last_updated:
+                    last_updated_date = datetime.fromisoformat(steam_game_data.last_updated)
                     latest_video_date = latest_video_dates.get(app_id)
 
                     if latest_video_date and latest_video_date > last_updated_date:
@@ -299,12 +299,12 @@ class SteamDataUpdater:
 
                     # Check normal age-based refresh intervals
                     else:
-                        refresh_interval_days = self._get_refresh_interval_days(game_data)
+                        refresh_interval_days = self._get_refresh_interval_days(steam_game_data)
                         stale_date = datetime.now() - timedelta(days=refresh_interval_days)
 
                         if last_updated_date > stale_date:
-                            release_date_info = self._get_release_date_info(game_data)
-                            GameUpdateLogger.log_game_skip("steam", game_data.name, game_data.last_updated,
+                            release_date_info = self._get_release_date_info(steam_game_data)
+                            GameUpdateLogger.log_game_skip("steam", steam_game_data.name, steam_game_data.last_updated,
                                                          refresh_interval_days, release_info=release_date_info)
                             should_update = False
                         else:
@@ -313,18 +313,18 @@ class SteamDataUpdater:
             if should_update:
                 # Log update info including name and last update if known
                 if app_id in self.steam_data['games']:
-                    game_data = self.steam_data['games'][app_id]
-                    refresh_interval_days = self._get_refresh_interval_days(game_data)
-                    release_date_info = self._get_release_date_info(game_data)
+                    steam_game_data_for_logging: SteamGameData = self.steam_data['games'][app_id]
+                    refresh_interval_days = self._get_refresh_interval_days(steam_game_data_for_logging)
+                    release_date_info = self._get_release_date_info(steam_game_data_for_logging)
 
-                    GameUpdateLogger.log_game_update_start("steam", game_data.name, game_data.last_updated,
+                    GameUpdateLogger.log_game_update_start("steam", steam_game_data_for_logging.name, steam_game_data_for_logging.last_updated,
                                                          refresh_interval_days, update_reason, app_id, release_date_info)
                 else:
                     logging.info(f"Updating steam app {app_id} ({update_reason})")
 
                 # Pass Itch URL if this Steam game was discovered from Itch
-                itch_url = steam_to_itch_urls.get(app_id)
-                if self._fetch_steam_app_with_related(app_id, itch_url):
+                related_itch_url: str | None = steam_to_itch_urls.get(app_id)
+                if self._fetch_steam_app_with_related(app_id, related_itch_url):
                     updates_done += 1
 
         # Save updated data

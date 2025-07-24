@@ -5,14 +5,18 @@ Data quality checking and reporting utilities
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .config_manager import ConfigManager
+
+if TYPE_CHECKING:
+    from .data_manager import OtherGamesDataDict, SteamDataDict
 
 
 class DataQualityChecker:
     """Handles data quality analysis and reporting"""
 
-    def __init__(self, project_root: Path, steam_data: dict, other_games_data: dict):
+    def __init__(self, project_root: Path, steam_data: "SteamDataDict", other_games_data: "OtherGamesDataDict"):
         self.project_root = project_root
         self.steam_data = steam_data
         self.other_games_data = other_games_data
@@ -257,17 +261,17 @@ class DataQualityChecker:
                 except ValueError:
                     print(f"❌ Steam game {app_id} has invalid last_updated format: {game.last_updated}")
 
-        for game in self.other_games_data.get('games', {}).values():
-            last_updated = game.last_updated
+        for other_game in self.other_games_data.get('games', {}).values():
+            last_updated = other_game.last_updated
             if last_updated:
                 try:
                     last_updated_date = datetime.fromisoformat(last_updated)
                     if last_updated_date < stale_threshold:
                         days_old = (datetime.now() - last_updated_date).days
-                        print(f"🕐 {game.platform} game '{game.name}' is {days_old} days old")
+                        print(f"🕐 {other_game.platform} game '{other_game.name}' is {days_old} days old")
                         stale_other += 1
                 except ValueError:
-                    print(f"❌ {game.platform} game has invalid last_updated format: {last_updated}")
+                    print(f"❌ {other_game.platform} game has invalid last_updated format: {last_updated}")
 
         if stale_steam == 0 and stale_other == 0:
             print("✅ No stale game data found")
