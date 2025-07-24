@@ -434,11 +434,13 @@ class CLICommands:
             video_data.game_references = game_references
 
             # Clean up backward compatibility fields but preserve video-level inference metadata
+            # Remove single-game fields
             video_data.steam_app_id = None
             video_data.itch_url = None
             video_data.crazygames_url = None
-            video_data.inferred_game = None  # Moved to game-reference level
-            video_data.youtube_detected_matched = None  # Moved to game-reference level
+            video_data.itch_is_demo = False  # Set to default instead of deleting
+            video_data.inferred_game = False  # Set to default instead of deleting
+            video_data.youtube_detected_matched = False  # Set to default instead of deleting
             # Keep: inference_reason, youtube_detected_game (video-level metadata)
 
             converted_count += 1

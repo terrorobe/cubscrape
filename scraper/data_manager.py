@@ -209,10 +209,10 @@ class DataManager:
         return OtherGameData(**game_dict)
 
     def _clean_dict_for_json(self, data_dict: dict) -> dict[str, Any]:
-        """Remove None values but preserve boolean False and handle nested structures"""
+        """Remove None values and False boolean values to keep JSON clean"""
         cleaned: dict[str, Any] = {}
         for k, v in data_dict.items():
-            if v is None:
+            if v is None or v is False:
                 continue
             elif isinstance(v, dict):
                 cleaned[k] = self._clean_dict_for_json(v)

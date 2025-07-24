@@ -179,15 +179,8 @@ class VideoProcessor:
         # Extract ALL game references from description using new multi-game logic
         game_references = extract_all_game_links(video.description)
 
-        # Store video data with game references
-        video_data = VideoData(
-            video_id=video.video_id,
-            title=video.title,
-            description=video.description,
-            published_at=video.published_at,
-            thumbnail=video.thumbnail,
-            game_references=game_references
-        )
+        # Store video data with game references (preserve all existing fields)
+        video_data = replace(video, game_references=game_references)
 
         if game_references:
             logging.info(f"  Found {len(game_references)} game reference(s)")

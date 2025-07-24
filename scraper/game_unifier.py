@@ -156,12 +156,9 @@ def _merge_itch_data_into_steam_game(steam_game: dict[str, Any], itch_data: Any)
         steam_game['release_date'] = itch_release
         steam_game['coming_soon'] = False
 
-    # Use Itch tags to supplement Steam tags (merge unique tags)
-    if itch_data.get('tags'):
-        steam_tags = set(steam_game.get('tags', []))
-        itch_tags = set(itch_data.get('tags', []))
-        merged_tags = list(steam_tags | itch_tags)  # Union of both tag sets
-        steam_game['tags'] = merged_tags[:20]  # Limit to 20 tags
+    # Keep Steam and Itch tags separate to preserve platform-specific ordering
+    # Steam tags maintain their semantic "Top 10" ordering
+    # Itch tags maintain their creator-defined ordering
 
     # Use Itch pricing info if available
     if itch_data.get('is_free') and not steam_game.get('price'):
