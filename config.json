@@ -34,6 +34,11 @@
       "name": "Nookrium",
       "url": "https://www.youtube.com/@Nookrium/videos",
       "enabled": true
+    },
+    "orbitalpotato": {
+      "name": "Orbital Potato",
+      "url": "https://www.youtube.com/@orbitalpotato/videos",
+      "enabled": true
     }
   },
   "skip_steam_matching": ["League of Legends"]

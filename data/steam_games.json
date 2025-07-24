@@ -3459,16 +3459,16 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/1de461fe2cb7121fa632b7b8ca950e5168c5c59d/header_alt_assets_1.jpg?t=1753365497",
-      "last_updated": "2025-07-25T00:42:51.866023",
+      "last_updated": "2025-07-25T01:23:45.797674",
       "name": "Let Them Trade",
-      "positive_review_percentage": 96,
+      "positive_review_percentage": 94,
       "price_eur": "14,39\u20ac",
       "price_usd": "$14.39",
       "publishers": [
         "ByteRockers' Games"
       ],
       "release_date": "24 Jul, 2025",
-      "review_count": 29,
+      "review_count": 36,
       "review_summary": "Positive",
       "steam_app_id": "1313290",
       "steam_url": "https://store.steampowered.com/app/1313290",
@@ -5280,6 +5280,49 @@
         "Story Rich",
         "Interactive Fiction",
         "Noir"
+      ]
+    },
+    "1475310": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "3238150",
+      "developers": [
+        "Rising Tail"
+      ],
+      "genres": [
+        "Casual",
+        "Simulation",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1475310/header.jpg?t=1752601821",
+      "last_updated": "2025-07-25T01:23:54.284979",
+      "name": "Factory Magnate",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "indie.io"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "1475310",
+      "steam_url": "https://store.steampowered.com/app/1475310",
+      "tags": [
+        "Automation",
+        "Base Building",
+        "Resource Management",
+        "Simulation",
+        "Strategy",
+        "Building",
+        "Sandbox",
+        "Management",
+        "Moddable",
+        "Family Friendly"
       ]
     },
     "1481170": {
@@ -12643,6 +12686,49 @@
         "Simulation"
       ]
     },
+    "1928080": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "Loonworks Games"
+      ],
+      "genres": [
+        "Adventure",
+        "Casual",
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928080/header.jpg?t=1753111908",
+      "last_updated": "2025-07-25T01:23:43.057483",
+      "name": "Prospector",
+      "publishers": [
+        "HypeTrain Digital"
+      ],
+      "release_date": "31 Jul, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "1928080",
+      "steam_url": "https://store.steampowered.com/app/1928080",
+      "tags": [
+        "Resource Management",
+        "Sandbox",
+        "Open World",
+        "Building",
+        "Crafting",
+        "Automation",
+        "Exploration",
+        "Adventure",
+        "Space",
+        "Base Building"
+      ]
+    },
     "1928980": {
       "categories": [
         "Single-player",
@@ -16084,6 +16170,57 @@
         "Difficult",
         "2D",
         "Singleplayer"
+      ]
+    },
+    "2094910": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Color Alternatives",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Mouse Only Option",
+        "Playable without Timed Input",
+        "Stereo Sound",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Remoob"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2094910/f932d658cb2d457b60c2e37d3c9620163abbab47/header_alt_assets_4.jpg?t=1753357041",
+      "last_updated": "2025-07-25T01:23:56.746685",
+      "name": "Pile Up!",
+      "positive_review_percentage": 78,
+      "price_eur": "4,87\u20ac",
+      "price_usd": "$4.99",
+      "publishers": [
+        "Catoptric Games",
+        "IndieArk"
+      ],
+      "recent_review_count": 28,
+      "recent_review_percentage": 75,
+      "recent_review_summary": "Mostly Positive",
+      "release_date": "23 Jul, 2025",
+      "review_count": 715,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "2094910",
+      "steam_url": "https://store.steampowered.com/app/2094910",
+      "tags": [
+        "Relaxing",
+        "Base Building",
+        "Indie",
+        "Casual",
+        "Atmospheric",
+        "Sandbox",
+        "Minimalist",
+        "Stylized",
+        "Colorful",
+        "Roguelite"
       ]
     },
     "2096860": {
@@ -22792,6 +22929,50 @@
         "Action-Adventure"
       ]
     },
+    "2308690": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "demo_app_id": "3068740",
+      "developers": [
+        "Blindflug Studios AG"
+      ],
+      "genres": [
+        "Simulation",
+        "Strategy",
+        "Free To Play",
+        "Early Access"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2308690/header.jpg?t=1752770798",
+      "is_early_access": true,
+      "last_updated": "2025-07-25T01:23:52.015002",
+      "name": "Ground of Aces",
+      "positive_review_percentage": 85,
+      "price_eur": "24,50\u20ac",
+      "price_usd": "$24.99",
+      "publishers": [
+        "Blindflug Studios AG"
+      ],
+      "release_date": "10 Jul, 2025",
+      "review_count": 335,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2308690",
+      "steam_url": "https://store.steampowered.com/app/2308690",
+      "tags": [
+        "Early Access",
+        "Strategy",
+        "Simulation",
+        "Base Building",
+        "City Builder",
+        "Colony Sim",
+        "Resource Management",
+        "Management",
+        "RTS",
+        "World War II"
+      ]
+    },
     "2312680": {
       "categories": [
         "Multi-player",
@@ -25512,6 +25693,47 @@
         "Open World"
       ]
     },
+    "2385970": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "3874880",
+      "developers": [
+        "Vinyl Studios Pty Ltd"
+      ],
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2385970/e819cf942fee8a4ed1494ea3313365e88168db3d/header.jpg?t=1753262204",
+      "last_updated": "2025-07-25T01:23:46.661647",
+      "name": "Kardashev",
+      "planned_release_date": "2025",
+      "publishers": [
+        "Vinyl Studios Pty Ltd"
+      ],
+      "release_date": "2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2385970",
+      "steam_url": "https://store.steampowered.com/app/2385970",
+      "tags": [
+        "Automation",
+        "Strategy",
+        "Base Building",
+        "Space",
+        "Resource Management",
+        "Sandbox",
+        "Crafting",
+        "3D",
+        "First-Person",
+        "Indie"
+      ]
+    },
     "2387090": {
       "categories": [
         "Game demo"
@@ -25996,6 +26218,45 @@
         "Arcade",
         "Roguelike",
         "2D"
+      ]
+    },
+    "2403830": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "City From Naught Inc."
+      ],
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2403830/header.jpg?t=1752947387",
+      "last_updated": "2025-07-25T01:23:57.858662",
+      "name": "Brave New Wonders",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "City From Naught Inc."
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2403830",
+      "steam_url": "https://store.steampowered.com/app/2403830",
+      "tags": [
+        "Strategy",
+        "Simulation",
+        "City Builder",
+        "Crafting",
+        "Automation",
+        "Resource Management",
+        "Base Building",
+        "Indie",
+        "Post-apocalyptic",
+        "Building"
       ]
     },
     "2405470": {
@@ -35685,6 +35946,54 @@
         "Fantasy",
         "Cute",
         "Procedural Generation"
+      ]
+    },
+    "2688950": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "HDR available",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Frontier Developments"
+      ],
+      "genres": [
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2688950/header.jpg?t=1752746395",
+      "last_updated": "2025-07-25T01:23:40.366195",
+      "name": "Planet Coaster 2",
+      "positive_review_percentage": 67,
+      "price_eur": "49,99\u20ac",
+      "price_usd": "$49.99",
+      "publishers": [
+        "Frontier Developments"
+      ],
+      "recent_review_count": 544,
+      "recent_review_percentage": 80,
+      "recent_review_summary": "Very Positive",
+      "release_date": "6 Nov, 2024",
+      "review_count": 8981,
+      "review_summary": "Mixed",
+      "steam_app_id": "2688950",
+      "steam_url": "https://store.steampowered.com/app/2688950",
+      "tags": [
+        "Simulation",
+        "Strategy",
+        "Sandbox",
+        "Building",
+        "City Builder",
+        "3D",
+        "God Game",
+        "Singleplayer",
+        "Economy",
+        "Realistic"
       ]
     },
     "2691050": {
@@ -46740,7 +47049,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1753346011",
-      "last_updated": "2025-07-25T00:42:54.443207",
+      "last_updated": "2025-07-25T01:23:48.319406",
       "name": "Clutchtime\u2122: Basketball Deckbuilder",
       "positive_review_percentage": 100,
       "price_eur": "14,39\u20ac",
@@ -46749,7 +47058,7 @@
         "Bigosaur"
       ],
       "release_date": "24 Jul, 2025",
-      "review_count": 15,
+      "review_count": 16,
       "review_summary": "Positive",
       "steam_app_id": "2995450",
       "steam_url": "https://store.steampowered.com/app/2995450",
@@ -50181,6 +50490,49 @@
         "Colorful",
         "Isometric",
         "Pixel Graphics"
+      ]
+    },
+    "3068740": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Blindflug Studios AG"
+      ],
+      "full_game_app_id": "2308690",
+      "genres": [
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3068740/header.jpg?t=1752770635",
+      "is_demo": true,
+      "is_early_access": true,
+      "is_free": true,
+      "last_updated": "2025-07-25T01:23:53.073672",
+      "name": "Ground of Aces Demo",
+      "positive_review_percentage": 85,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Blindflug Studios AG"
+      ],
+      "release_date": "18 Jul, 2024",
+      "review_count": 335,
+      "review_summary": "Very Positive",
+      "steam_app_id": "3068740",
+      "steam_url": "https://store.steampowered.com/app/3068740",
+      "tags": [
+        "Early Access",
+        "Strategy",
+        "Simulation",
+        "Base Building",
+        "City Builder",
+        "Colony Sim",
+        "Resource Management",
+        "Management",
+        "RTS",
+        "World War II"
       ]
     },
     "3069810": {
@@ -56132,6 +56484,48 @@
         "Shoot 'Em Up"
       ]
     },
+    "3207880": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Jarkem"
+      ],
+      "genres": [
+        "Adventure",
+        "Indie",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3207880/header.jpg?t=1737137864",
+      "last_updated": "2025-07-25T01:23:45.039658",
+      "name": "Universe Horizon",
+      "positive_review_percentage": 93,
+      "price_eur": "2,99\u20ac",
+      "price_usd": "$2.99",
+      "publishers": [
+        "Jarkem"
+      ],
+      "release_date": "11 Jan, 2025",
+      "review_count": 163,
+      "review_summary": "Very Positive",
+      "steam_app_id": "3207880",
+      "steam_url": "https://store.steampowered.com/app/3207880",
+      "tags": [
+        "Idler",
+        "Clicker",
+        "Exploration",
+        "Space",
+        "Automation",
+        "Resource Management",
+        "2D",
+        "Indie",
+        "Point & Click",
+        "Strategy"
+      ]
+    },
     "3208110": {
       "categories": [
         "Single-player",
@@ -57054,10 +57448,11 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3228180/header.jpg?t=1745442905",
-      "last_updated": "2025-07-18T20:52:51.663632",
+      "last_updated": "2025-07-25T01:23:44.000334",
       "name": "Click Mage",
       "positive_review_percentage": 93,
       "price_eur": "4,99\u20ac",
+      "price_usd": "$4.99",
       "publishers": [
         "Tiny Crow Games"
       ],
@@ -57065,7 +57460,7 @@
       "recent_review_percentage": 88,
       "recent_review_summary": "Very Positive",
       "release_date": "6 Jan, 2025",
-      "review_count": 1845,
+      "review_count": 1852,
       "review_summary": "Very Positive",
       "steam_app_id": "3228180",
       "steam_url": "https://store.steampowered.com/app/3228180",
@@ -57670,6 +58065,46 @@
         "Arcade",
         "Open World",
         "Snow"
+      ]
+    },
+    "3238150": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Rising Tail"
+      ],
+      "full_game_app_id": "1475310",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3238150/0ddd8ab176e962b4cfd62534ea5e6636a1492388/header.jpg?t=1752601279",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-25T01:23:55.395952",
+      "name": "Factory Magnate Demo",
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "indie.io"
+      ],
+      "release_date": "15 Jul, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3238150",
+      "steam_url": "https://store.steampowered.com/app/3238150",
+      "tags": [
+        "Automation",
+        "Base Building",
+        "Resource Management",
+        "Simulation",
+        "Strategy",
+        "Building",
+        "Sandbox",
+        "Management",
+        "Moddable",
+        "Family Friendly"
       ]
     },
     "3238240": {
@@ -60117,6 +60552,49 @@
         "Hack and Slash"
       ]
     },
+    "3298880": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "3494260",
+      "developers": [
+        "Angel \u00d1eco aka. NecoPlanet"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3298880/header.jpg?t=1741890335",
+      "last_updated": "2025-07-25T01:23:49.292640",
+      "name": "Clicker Kingdom",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "Angel \u00d1eco aka. NecoPlanet"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3298880",
+      "steam_url": "https://store.steampowered.com/app/3298880",
+      "tags": [
+        "Casual",
+        "Simulation",
+        "Strategy",
+        "4X",
+        "City Builder",
+        "Farming Sim",
+        "Point & Click",
+        "RTS",
+        "2D Platformer",
+        "Clicker"
+      ]
+    },
     "3299050": {
       "categories": [
         "Single-player",
@@ -61953,8 +62431,8 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3361510/f5a8a639dd2b5cc9063ee4a4d471e4fe3d90b32d/header.jpg?t=1751654718",
-      "last_updated": "2025-07-09T01:37:56.227145",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3361510/464a07362fbcfc902988b469725e65e049d7260d/header.jpg?t=1752826531",
+      "last_updated": "2025-07-25T01:23:41.275936",
       "name": "Coal LLC",
       "planned_release_date": "Coming soon",
       "publishers": [
@@ -65854,21 +66332,22 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451610/f5a8a639dd2b5cc9063ee4a4d471e4fe3d90b32d/header.jpg?t=1751153155",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451610/464a07362fbcfc902988b469725e65e049d7260d/header.jpg?t=1752827251",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-09T01:37:56.879376",
+      "last_updated": "2025-07-25T01:23:42.142920",
       "name": "Coal LLC Demo",
       "positive_review_percentage": 100,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Bye Bye Ocean"
       ],
-      "recent_review_count": 24,
+      "recent_review_count": 22,
       "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "17 Jan, 2025",
-      "review_count": 34,
+      "review_count": 43,
       "review_summary": "Positive",
       "steam_app_id": "3451610",
       "steam_url": "https://store.steampowered.com/app/3451610",
@@ -67553,6 +68032,49 @@
         "Tower Defense",
         "Trains",
         "Pixel Graphics"
+      ]
+    },
+    "3494260": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Angel \u00d1eco aka. NecoPlanet"
+      ],
+      "full_game_app_id": "3298880",
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3494260/header.jpg?t=1738830836",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-25T01:23:50.686739",
+      "name": "Clicker Kingdom Demo",
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Angel \u00d1eco aka. NecoPlanet"
+      ],
+      "release_date": "6 Feb, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3494260",
+      "steam_url": "https://store.steampowered.com/app/3494260",
+      "tags": [
+        "Casual",
+        "Simulation",
+        "Strategy",
+        "4X",
+        "City Builder",
+        "Farming Sim",
+        "Point & Click",
+        "RTS",
+        "2D Platformer",
+        "Clicker"
       ]
     },
     "3494500": {
@@ -75104,6 +75626,50 @@
         "Arcade",
         "Underwater",
         "Pixel Graphics"
+      ]
+    },
+    "3874880": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Custom Volume Controls",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Stereo Sound",
+        "Surround Sound",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "VinylStudios Pty Ltd"
+      ],
+      "full_game_app_id": "2385970",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3874880/e819cf942fee8a4ed1494ea3313365e88168db3d/header.jpg?t=1753001273",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-25T01:23:47.647439",
+      "name": "Kardashev Demo",
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "VinylStudios Pty Ltd"
+      ],
+      "release_date": "14 Jul, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3874880",
+      "steam_url": "https://store.steampowered.com/app/3874880",
+      "tags": [
+        "Automation",
+        "Strategy",
+        "Base Building",
+        "Space",
+        "Resource Management",
+        "Sandbox",
+        "Crafting",
+        "3D",
+        "First-Person",
+        "Indie"
       ]
     },
     "3920": {
