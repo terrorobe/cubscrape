@@ -716,20 +716,42 @@ export default {
       }
     }
 
+    const slugifyForFragment = (text) => {
+      // RFC 3986 allowed characters in URL fragments:
+      // unreserved: A-Z a-z 0-9 - . _ ~
+      // sub-delims: ! $ & ' ( ) * + , ; =
+      // also allowed in fragments: : @ / ?
+      // Replace spaces with underscores, everything else forbidden gets replaced with hyphen
+
+      return (
+        text
+          // First, replace spaces with underscores
+          .replace(/ /g, '_')
+          // Then replace any other forbidden characters with hyphens
+          .replace(/[^A-Za-z0-9\-._~!$&'()*+,;=:@/?]/g, '-')
+          // Replace multiple consecutive hyphens with single hyphen
+          .replace(/-+/g, '-')
+          // Remove leading/trailing hyphens
+          .replace(/^-+|-+$/g, '')
+      )
+    }
+
     const generateDeeplink = (game) => {
       const baseUrl = window.location.origin + window.location.pathname
       const searchParams = window.location.search
 
-      // Generate platform-specific deeplink
+      // Generate platform-specific deeplink with readable slug
       if (game.platform === 'steam' && game.steam_app_id) {
-        return `${baseUrl}${searchParams}#steam-${game.steam_app_id}`
+        const slug = slugifyForFragment(game.name)
+        return `${baseUrl}${searchParams}#steam-${game.steam_app_id}-${slug}`
       }
 
       if (game.platform === 'itch' && game.itch_url) {
         // Extract game slug from itch URL
         const match = game.itch_url.match(/itch\.io\/games\/([^/?]+)/)
         if (match) {
-          return `${baseUrl}${searchParams}#itch-${match[1]}`
+          const slug = slugifyForFragment(game.name)
+          return `${baseUrl}${searchParams}#itch-${match[1]}-${slug}`
         }
       }
 
@@ -739,7 +761,8 @@ export default {
           /crazygames\.com\/game\/([^/?]+)/,
         )
         if (match) {
-          return `${baseUrl}${searchParams}#crazygames-${match[1]}`
+          const slug = slugifyForFragment(game.name)
+          return `${baseUrl}${searchParams}#crazygames-${match[1]}-${slug}`
         }
       }
 
@@ -793,6 +816,7 @@ export default {
       highlightFading,
       toggleVideos,
       handleCardClick,
+      slugifyForFragment,
       generateDeeplink,
       getChannelText,
       groupVideosByChannel,

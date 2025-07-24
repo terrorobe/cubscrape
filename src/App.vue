@@ -15,8 +15,31 @@
         @filters-changed="updateFilters"
       />
 
-      <div class="mb-5 text-center text-text-secondary">
-        <span>Showing {{ filteredGames.length }} games</span>
+      <div class="relative mb-5 text-text-secondary">
+        <!-- Centered in screen -->
+        <div class="text-center">
+          <span>Showing {{ filteredGames.length }} games</span>
+        </div>
+
+        <!-- Database Status - Absolute positioned to right -->
+        <div class="absolute top-0 right-0 flex items-center gap-4 text-sm">
+          <div class="flex items-center gap-2">
+            <span
+              class="size-2 rounded-full"
+              :class="databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'"
+            ></span>
+            <span>{{ databaseStatus.games }} total</span>
+          </div>
+          <div class="text-xs text-text-secondary/70">
+            <span v-if="databaseStatus.lastGenerated">
+              Database:
+              {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
+            </span>
+            <span v-if="databaseStatus.lastChecked && !isDevelopment">
+              • Last check: {{ formatTimestamp(databaseStatus.lastChecked) }}
+            </span>
+          </div>
+        </div>
       </div>
 
       <div
@@ -52,9 +75,10 @@
 </template>
 
 <script>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import GameCard from './components/GameCard.vue'
 import GameFilters from './components/GameFilters.vue'
+import { databaseManager } from './utils/databaseManager.js'
 
 export default {
   name: 'App',
@@ -78,6 +102,13 @@ export default {
     const channels = ref([])
     const allTags = ref([])
     const highlightedGameId = ref(null)
+    const isDevelopment = import.meta.env.DEV
+    const databaseStatus = ref({
+      connected: false,
+      games: 0,
+      lastGenerated: null,
+      lastChecked: null,
+    })
 
     const loadChannelsAndTags = (database) => {
       // Get all unique channels
@@ -305,33 +336,68 @@ export default {
     let db = null
 
     const loadDatabase = async () => {
-      const initSqlJs = (await import('sql.js')).default
+      await databaseManager.init()
+      db = databaseManager.getDatabase()
+    }
 
-      const SQL = await initSqlJs({
-        locateFile: (file) => `https://sql.js.org/dist/${file}`,
-      })
-
-      const response = await fetch('./data/games.db')
-      if (!response.ok) {
-        throw new Error(`Failed to load database: ${response.status}`)
+    const updateDatabaseStatus = () => {
+      const stats = databaseManager.getStats()
+      if (stats) {
+        databaseStatus.value.connected = true
+        databaseStatus.value.games = stats.games
+        databaseStatus.value.lastGenerated = stats.lastModified
+          ? new Date(stats.lastModified)
+          : null
+        databaseStatus.value.lastChecked = stats.lastCheckTime
+      } else {
+        databaseStatus.value.connected = false
+        databaseStatus.value.games = 0
+        databaseStatus.value.lastGenerated = null
+        databaseStatus.value.lastChecked = null
       }
+    }
 
-      const dbBuffer = await response.arrayBuffer()
-      db = new SQL.Database(new Uint8Array(dbBuffer))
+    const formatTimestamp = (timestamp, useOld = false) => {
+      if (!timestamp) {
+        return 'Unknown'
+      }
+      const date = new Date(timestamp)
+      const now = new Date()
+      const diffMs = now - date
+      const diffMins = Math.floor(diffMs / 60000)
+      const diffHours = Math.floor(diffMs / 3600000)
 
-      // Make database available globally for video loading
-      window.gameDatabase = db
+      const suffix = useOld ? ' old' : ' ago'
 
-      console.log(
-        'Database loaded, total games:',
-        db.exec('SELECT COUNT(*) FROM games')[0].values[0][0],
-      )
+      if (diffMins < 1) {
+        return 'just now'
+      }
+      if (diffMins < 60) {
+        return `${diffMins}m${suffix}`
+      }
+      if (diffHours < 24) {
+        return `${diffHours}h${suffix}`
+      }
+      return date.toLocaleDateString()
+    }
+
+    const onDatabaseUpdate = (database) => {
+      db = database
+      loadChannelsAndTags(db)
+      executeQuery(db)
+      updateDatabaseStatus()
+      console.log('🔄 UI updated with new database')
     }
 
     const loadGames = async () => {
       try {
         await loadDatabase()
+
+        // Set up listener for database updates
+        databaseManager.addUpdateListener(onDatabaseUpdate)
+
         loadChannelsAndTags(db)
+        updateDatabaseStatus()
 
         // Load filters from URL before executing query
         loadFiltersFromURL()
@@ -358,14 +424,42 @@ export default {
       // Wait for next frame to ensure DOM is ready
       await new Promise((resolve) => requestAnimationFrame(resolve))
 
-      // Parse deeplink format: #steam-123456 or #itch-game-slug
+      // Parse deeplink format:
+      // Old format: #steam-123456 or #itch-game-slug
+      // New format: #steam-123456-Game-Name or #itch-game-slug-Game-Name
       const deeplinkParts = hash.substring(1).split('-')
       if (deeplinkParts.length < 2) {
         return
       }
 
       const platform = deeplinkParts[0]
-      const gameId = deeplinkParts.slice(1).join('-') // Handle game IDs with hyphens
+      let gameId
+
+      // For Steam, the ID is numeric, so we can detect where it ends
+      if (platform === 'steam') {
+        // Find the first non-numeric part after platform
+        let idEndIndex = 1
+        while (
+          idEndIndex < deeplinkParts.length &&
+          /^\d+$/.test(deeplinkParts[idEndIndex])
+        ) {
+          idEndIndex++
+        }
+        gameId = deeplinkParts.slice(1, idEndIndex).join('-')
+      } else {
+        // For other platforms, we need to be more careful
+        // The game ID could contain hyphens, so we look for a part that looks like a slugified name
+        // As a heuristic, if we have more than 2 parts, assume the last parts are the name slug
+        // This maintains backward compatibility with old URLs
+        if (deeplinkParts.length === 2) {
+          // Old format: just platform and ID
+          gameId = deeplinkParts[1]
+        } else {
+          // New format: try to intelligently split
+          // For now, assume single-part IDs (can be refined based on platform patterns)
+          gameId = deeplinkParts[1]
+        }
+      }
 
       // Find and scroll to the game
       await scrollToGame(platform, gameId)
@@ -562,11 +656,22 @@ export default {
       }
 
       document.addEventListener('keydown', handleKeydown)
+    })
 
-      // Cleanup on unmount
-      return () => {
-        document.removeEventListener('keydown', handleKeydown)
+    onUnmounted(() => {
+      // Cleanup database manager
+      if (databaseManager.isLoaded()) {
+        databaseManager.removeUpdateListener(onDatabaseUpdate)
+        databaseManager.destroy()
       }
+
+      // Remove keyboard handler
+      const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+          clearHighlight()
+        }
+      }
+      document.removeEventListener('keydown', handleKeydown)
     })
 
     return {
@@ -577,6 +682,9 @@ export default {
       allTags,
       filteredGames,
       highlightedGameId,
+      databaseStatus,
+      isDevelopment,
+      formatTimestamp,
       updateFilters,
       clearHighlight,
     }

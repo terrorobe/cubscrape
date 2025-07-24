@@ -14,24 +14,45 @@ class DatabaseManager:
         self.db_file = db_file
 
     def create_database(self, games_data: dict[str, Any]) -> None:
-        """Create fresh database from schema and populate with data"""
-        # Remove existing database
-        db_path = Path(self.db_file)
-        if db_path.exists():
-            db_path.unlink()
+        """Create fresh database from schema and populate with data using atomic replacement"""
+        # Create temporary database file for atomic replacement
+        temp_db_file = f"{self.db_file}.tmp"
+        temp_db_path = Path(temp_db_file)
 
-        # Create new database from schema
-        conn = sqlite3.connect(self.db_file)
-        with Path(self.schema_file).open() as f:
-            conn.executescript(f.read())
+        # Clean up any existing temporary file
+        if temp_db_path.exists():
+            temp_db_path.unlink()
+            logging.warning(f"Removed stale temporary database: {temp_db_file}")
 
-        # Populate with data
-        self._populate_games(conn, games_data)
+        try:
+            # Create and populate temporary database
+            conn = sqlite3.connect(temp_db_file)
 
-        conn.commit()
-        conn.close()
+            # Load schema
+            with Path(self.schema_file).open() as f:
+                conn.executescript(f.read())
 
-        logging.info(f"Created SQLite database: {self.db_file}")
+            # Populate with data
+            self._populate_games(conn, games_data)
+
+            # Ensure all data is written to disk
+            conn.commit()
+            conn.close()
+
+            # Atomic replacement: rename is atomic on most filesystems
+            # This ensures the database is never in a partial state
+            temp_db_path.rename(self.db_file)
+
+            logging.info(f"Created SQLite database: {self.db_file}")
+
+        except Exception as e:
+            # Clean up temporary file on any error
+            if temp_db_path.exists():
+                temp_db_path.unlink()
+                logging.info(f"Cleaned up temporary database after error: {temp_db_file}")
+
+            # Re-raise the original exception
+            raise RuntimeError(f"Failed to create database: {e}") from e
 
     def _convert_to_sortable_date_int(self, date_str: str) -> int | None:
         """Convert release dates to sortable YYYYMMDD integer format

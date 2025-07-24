@@ -6,7 +6,10 @@ Each command is implemented as a separate function for better organization.
 """
 
 import argparse
+import atexit
 import logging
+import os
+import signal
 import sys
 from pathlib import Path
 
@@ -23,6 +26,63 @@ class CLICommands:
 
     def __init__(self) -> None:
         self.parser = self._create_parser()
+        self.lock_file_path: Path | None = None
+
+    def _create_lock_file(self) -> None:
+        """Create a lock file in the data directory"""
+        project_root = self._get_project_root()
+        self.lock_file_path = project_root / "data" / ".cubscrape.lock"
+
+        # Check if lock file already exists
+        if self.lock_file_path.exists():
+            # Read the PID from the lock file
+            try:
+                with self.lock_file_path.open() as f:
+                    pid = int(f.read().strip())
+
+                # Check if process is still running
+                try:
+                    # On Unix, sending signal 0 checks if process exists
+                    os.kill(pid, 0)
+                    logging.error(f"Another cubscrape instance is already running (PID: {pid})")
+                    sys.exit(1)
+                except ProcessLookupError:
+                    # Process no longer exists, remove stale lock file
+                    logging.warning(f"Removing stale lock file from PID {pid}")
+                    self.lock_file_path.unlink()
+            except (OSError, ValueError):
+                # Invalid lock file content, remove it
+                logging.warning("Removing invalid lock file")
+                self.lock_file_path.unlink()
+
+        # Create the lock file with current PID
+        with self.lock_file_path.open('w') as f:
+            f.write(str(os.getpid()))
+
+        # Register cleanup function for normal exit
+        atexit.register(self._remove_lock_file)
+
+        # Register signal handlers for graceful shutdown
+        signal.signal(signal.SIGTERM, self._signal_handler)
+        signal.signal(signal.SIGINT, self._signal_handler)
+
+        logging.info(f"Created lock file: {self.lock_file_path}")
+
+    def _signal_handler(self, signum: int, _frame: object) -> None:
+        """Handle termination signals gracefully"""
+        signal_name = signal.Signals(signum).name
+        logging.info(f"Received {signal_name}, cleaning up...")
+        self._remove_lock_file()
+        sys.exit(0)
+
+    def _remove_lock_file(self) -> None:
+        """Remove the lock file"""
+        if self.lock_file_path and self.lock_file_path.exists():
+            try:
+                self.lock_file_path.unlink()
+                logging.info(f"Removed lock file: {self.lock_file_path}")
+            except Exception as e:
+                logging.error(f"Failed to remove lock file: {e}")
 
     def _create_parser(self) -> argparse.ArgumentParser:
         """Create the argument parser with all command options"""
@@ -73,6 +133,9 @@ class CLICommands:
         """Parse command line arguments and execute the appropriate command"""
         parsed_args = self.parser.parse_args(args)
 
+        # Create lock file before executing any command
+        self._create_lock_file()
+
         command_map = {
             'reprocess': self._handle_reprocess,
             'backfill': self._handle_backfill,
@@ -88,7 +151,11 @@ class CLICommands:
 
         handler = command_map.get(parsed_args.mode)
         if handler:
-            handler(parsed_args)
+            try:
+                handler(parsed_args)
+            finally:
+                # Always clean up lock file
+                self._remove_lock_file()
         else:
             print(f"Unknown mode: {parsed_args.mode}")
             sys.exit(1)

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "dev:vite": "vite",
+    "stop-dev": "node scripts/stop-dev.js",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.ts,.tsx",

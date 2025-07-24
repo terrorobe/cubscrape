@@ -37,6 +37,8 @@ export default [
         fetch: 'readonly',
         navigator: 'readonly',
         setTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
         requestAnimationFrame: 'readonly',
         require: 'readonly',
         URL: 'readonly',
@@ -61,7 +63,7 @@ export default [
       'vue/no-multiple-template-root': 'off',
 
       // General JavaScript rules
-      'no-console': 'warn',
+      'no-console': 'off', // Allow console statements in utility scripts
       'no-debugger': 'error',
       'no-unused-vars': 'error',
       'prefer-const': 'error',

@@ -1,5 +1,9 @@
 # Claude Development Notes
 
+## Important Development Practices
+
+- **Running Background Processes**: Use `nohup <command> > <logfile> 2>&1 &` for any long-running process (web servers, etc.) to prevent terminal blocking. Check with `tail <logfile>` to verify it started.
+
 ## Documentation Overview
 
 - **README.md** - Project overview, setup instructions, and usage
@@ -40,8 +44,27 @@ uv run mypy .
 1. **Initial setup**: `uv sync --extra dev`
 2. **Run scraper**: `cubscrape cron` or `uv run python -m scraper.cli_commands cron`
 3. **Add dependencies**: Edit `pyproject.toml` then run `uv sync`
-4. **Run linter**: `uv run ruff check --fix`
-5. **Type check**: `uv run mypy .`
+4. **Run linters**: 
+   - Python: `uv run ruff check --fix`
+   - Python types: `uv run mypy .`
+   - JavaScript/Vue: `npx eslint . --fix`
+
+## Web Development Environment
+
+### Commands
+- **Start dev server**: `npm run dev` (prevents multiple instances with lock file)
+- **Stop dev server**: `npm run stop-dev` or Ctrl+C
+- **Build**: `npm run build`
+
+### Lock File System
+- **Lock file**: `data/.dev-server.lock` prevents concurrent dev server instances
+- **Child process cleanup**: Automatically kills Vite when parent process dies
+- **Process monitoring**: Handles manual kills of either parent or child processes
+
+### Database Management
+- **Development**: Automatic database reloading when JSON files change via Vite HMR
+- **Production**: Timer-based checking every 10 minutes for database updates
+- **Status display**: Shows database generation time and last check time with relative timestamps
 
 ### Dependencies
 
