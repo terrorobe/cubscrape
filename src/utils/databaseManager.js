@@ -218,7 +218,7 @@ export class DatabaseManager {
     }
 
     try {
-      const gameCount = this.db.exec('SELECT COUNT(*) FROM games')[0]
+      const gameCount = this.db.exec('SELECT COUNT(*) FROM games WHERE is_absorbed = 0')[0]
         .values[0][0]
       const channelResults = this.db.exec(
         "SELECT COUNT(DISTINCT unique_channels) FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]'",

@@ -89,6 +89,7 @@ export default {
   setup() {
     const loading = ref(true)
     const error = ref(null)
+    const currentTime = ref(new Date())
     const filters = ref({
       releaseStatus: 'all',
       platform: 'all',
@@ -413,7 +414,7 @@ export default {
         return 'Unknown'
       }
       const date = new Date(timestamp)
-      const now = new Date()
+      const now = currentTime.value // Use reactive current time
       const diffMs = now - date
       const diffMins = Math.floor(diffMs / 60000)
       const diffHours = Math.floor(diffMs / 3600000)
@@ -713,6 +714,14 @@ export default {
       }
 
       document.addEventListener('keydown', handleKeydown)
+
+      // Update timestamps every minute
+      const timestampTimer = setInterval(() => {
+        currentTime.value = new Date()
+      }, 60000) // Update every minute
+
+      // Store timer reference for cleanup
+      window.timestampTimer = timestampTimer
     })
 
     onUnmounted(() => {
@@ -724,6 +733,12 @@ export default {
         if (!import.meta.hot) {
           databaseManager.destroy()
         }
+      }
+
+      // Cleanup timestamp timer
+      if (window.timestampTimer) {
+        clearInterval(window.timestampTimer)
+        window.timestampTimer = null
       }
 
       // Remove keyboard handler
