@@ -9,18 +9,31 @@ export default defineConfig({
     port: 5173,
     watch: {
       ignored: [
+        // Performance ignores
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/.git/**',
+
+        // Development files that don't affect webapp runtime
+        '**/scripts/**',
+        '**/eslint.config.js',
+        '**/package.json',
+        '**/package-lock.json',
+        '**/*.md',
+
+        // Python backend files
         '**/scraper/**',
         '**/.venv/**',
         '**/__pycache__/**',
         '**/.mypy_cache/**',
-        '**/node_modules/**',
-        '**/dist/**',
-        '**/.git/**',
-        '**/archive/**',
         '**/*.py',
         '**/*.pyc',
         '**/uv.lock',
         '**/pyproject.toml',
+
+        // Other non-webapp directories
+        '**/.github/**',
+        '**/archive/**',
       ],
     },
   },
