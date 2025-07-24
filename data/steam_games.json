@@ -3459,7 +3459,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/1de461fe2cb7121fa632b7b8ca950e5168c5c59d/header_alt_assets_1.jpg?t=1753365497",
-      "last_updated": "2025-07-25T00:35:06.087477",
+      "last_updated": "2025-07-25T00:42:51.866023",
       "name": "Let Them Trade",
       "positive_review_percentage": 96,
       "price_eur": "14,39\u20ac",
@@ -3468,7 +3468,7 @@
         "ByteRockers' Games"
       ],
       "release_date": "24 Jul, 2025",
-      "review_count": 26,
+      "review_count": 29,
       "review_summary": "Positive",
       "steam_app_id": "1313290",
       "steam_url": "https://store.steampowered.com/app/1313290",
@@ -22627,7 +22627,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2300320/header.jpg?t=1749803684",
-      "last_updated": "2025-07-22T03:14:12.024854",
+      "last_updated": "2025-07-25T00:42:55.141410",
       "name": "Farming Simulator 25",
       "positive_review_percentage": 83,
       "price_eur": "49,99\u20ac",
@@ -22635,11 +22635,11 @@
       "publishers": [
         "Giants Software"
       ],
-      "recent_review_count": 947,
+      "recent_review_count": 955,
       "recent_review_percentage": 85,
       "recent_review_summary": "Very Positive",
       "release_date": "12 Nov, 2024",
-      "review_count": 23015,
+      "review_count": 23080,
       "review_summary": "Very Positive",
       "steam_app_id": "2300320",
       "steam_url": "https://store.steampowered.com/app/2300320",
@@ -22648,8 +22648,8 @@
         "Farming Sim",
         "Realistic",
         "3D",
-        "First-Person",
         "Multiplayer",
+        "First-Person",
         "Time Management",
         "Immersive Sim",
         "Economy",
@@ -46740,7 +46740,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1753346011",
-      "last_updated": "2025-07-25T00:37:04.859500",
+      "last_updated": "2025-07-25T00:42:54.443207",
       "name": "Clutchtime\u2122: Basketball Deckbuilder",
       "positive_review_percentage": 100,
       "price_eur": "14,39\u20ac",
@@ -66939,6 +66939,51 @@
         "2D"
       ]
     },
+    "347940": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Smoodlez"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Indie",
+        "RPG"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347940/header.jpg?t=1752850640",
+      "last_updated": "2025-07-25T00:42:53.812875",
+      "name": "Forsaken Isle",
+      "positive_review_percentage": 68,
+      "price_eur": "10,61\u20ac",
+      "price_usd": "$10.79",
+      "publishers": [
+        "Smoodlez"
+      ],
+      "recent_review_count": 13,
+      "recent_review_percentage": 76,
+      "recent_review_summary": "Mostly Positive",
+      "release_date": "18 Jul, 2025",
+      "review_count": 416,
+      "review_summary": "Mixed",
+      "steam_app_id": "347940",
+      "steam_url": "https://store.steampowered.com/app/347940",
+      "tags": [
+        "Adventure",
+        "Survival",
+        "Pixel Graphics",
+        "Crafting",
+        "Action",
+        "Indie",
+        "RPG",
+        "Casual",
+        "Sandbox",
+        "Early Access"
+      ]
+    },
     "3479710": {
       "categories": [
         "Single-player",
@@ -70410,7 +70455,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3596700/1478a3b3ffb23c415b31c1323dc2079df1ce6e9f/header.jpg?t=1752489746",
-      "last_updated": "2025-07-22T03:08:21.725170",
+      "last_updated": "2025-07-25T00:42:52.844804",
       "name": "TerraTech Legion",
       "planned_release_date": "Coming soon",
       "publishers": [
