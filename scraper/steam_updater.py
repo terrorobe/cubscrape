@@ -229,33 +229,19 @@ class SteamDataUpdater:
             videos_data = self.data_manager.load_videos_data(channel)
             if videos_data and 'videos' in videos_data:
                 for video in videos_data['videos'].values():
-                    # Check old format (backward compatibility)
-                    if video.steam_app_id:
-                        steam_app_ids.add(video.steam_app_id)
+                    # Check multi-game format
+                    for game_ref in video.get('game_references', []):
+                        if game_ref.get('platform') == 'steam':
+                            steam_app_ids.add(game_ref['platform_id'])
 
-                        # Track latest video date for this game
-                        if video.published_at:
-                            try:
-                                video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
-                                if video.steam_app_id not in latest_video_dates or video_date > latest_video_dates[video.steam_app_id]:
-                                    latest_video_dates[video.steam_app_id] = video_date
-                            except ValueError:
-                                continue
-
-                    # Check new multi-game format
-                    if hasattr(video, 'game_references') and video.game_references:
-                        for game_ref in video.game_references:
-                            if game_ref.platform == 'steam':
-                                steam_app_ids.add(game_ref.platform_id)
-
-                                # Track latest video date for this game
-                                if video.published_at:
-                                    try:
-                                        video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
-                                        if game_ref.platform_id not in latest_video_dates or video_date > latest_video_dates[game_ref.platform_id]:
-                                            latest_video_dates[game_ref.platform_id] = video_date
-                                    except ValueError:
-                                        continue
+                            # Track latest video date for this game
+                            if video.get('published_at'):
+                                try:
+                                    video_date = datetime.fromisoformat(video['published_at'].replace('Z', '+00:00'))
+                                    if game_ref['platform_id'] not in latest_video_dates or video_date > latest_video_dates[game_ref['platform_id']]:
+                                        latest_video_dates[game_ref['platform_id']] = video_date
+                                except ValueError:
+                                    continue
 
 
         # Also collect Steam app IDs from other games data (Itch.io with Steam links)

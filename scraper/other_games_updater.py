@@ -152,15 +152,12 @@ class OtherGamesUpdater:
                 videos = channel_data.get('videos', {})
 
                 for video_data in videos.values():
-                    # Collect Itch.io URLs
-                    itch_url = video_data.itch_url
-                    if itch_url:
-                        urls['itch'].add(itch_url)
-
-                    # Collect CrazyGames URLs
-                    crazygames_url = video_data.crazygames_url
-                    if crazygames_url:
-                        urls['crazygames'].add(crazygames_url)
+                    # Collect game URLs from multi-game references
+                    for game_ref in video_data.get('game_references', []):
+                        if game_ref.get('platform') == 'itch':
+                            urls['itch'].add(game_ref['platform_id'])
+                        elif game_ref.get('platform') == 'crazygames':
+                            urls['crazygames'].add(game_ref['platform_id'])
 
             except Exception as e:
                 logging.error(f"Error loading channel {channel_id}: {e}")

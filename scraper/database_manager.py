@@ -186,6 +186,9 @@ class DatabaseManager:
             # Insert video records (with deduplication)
             for video in game.get('videos', []):
                 video_id = video.get('video_id')
+                if not video_id or game_id is None:
+                    continue
+                    
                 video_game_pair = (video_id, game_id)
 
                 # Skip if this video-game pair has already been inserted

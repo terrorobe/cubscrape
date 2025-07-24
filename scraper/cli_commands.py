@@ -14,14 +14,11 @@ import sys
 from pathlib import Path
 
 from .config_manager import ConfigManager
-from .data_manager import DataManager
 from .database_manager import DatabaseManager
 from .game_unifier import load_all_unified_games
-from .models import VideoGameReference
 from .other_games_updater import OtherGamesUpdater
 from .scraper import YouTubeSteamScraper
 from .steam_updater import SteamDataUpdater
-from .utils import extract_all_game_links
 
 
 class CLICommands:
@@ -175,25 +172,7 @@ class CLICommands:
 
     def _handle_reprocess(self, args: argparse.Namespace) -> None:
         """Handle reprocess command"""
-        if args.all_channels:
-            # Multi-game conversion mode: process all channels
-            project_root = self._get_project_root()
-            config_manager = ConfigManager(project_root)
-            channels = config_manager.get_channels()
-
-            enabled_channels = [ch for ch in channels if config_manager.is_channel_enabled(ch)]
-            logging.info(f"Multi-game conversion: processing all {len(enabled_channels)} enabled channels")
-
-            total_converted = 0
-            for channel_id in enabled_channels:
-                logging.info(f"Converting channel: {channel_id}")
-                converted_count = self._reprocess_channel_for_multi_game(channel_id)
-                total_converted += converted_count
-                logging.info(f"✅ Converted {converted_count} videos in {channel_id}")
-
-            logging.info(f"✅ Multi-game conversion completed for all channels. Total videos converted: {total_converted}")
-
-        elif args.channel:
+        if args.channel:
             # Single channel reprocess mode
             scraper = YouTubeSteamScraper(args.channel)
 
@@ -393,61 +372,6 @@ class CLICommands:
 
         logging.info(f"Fetch videos completed. Total new videos: {total_new_videos}")
 
-    def _reprocess_channel_for_multi_game(self, channel_id: str) -> int:
-        """Reprocess all videos in a channel with multi-game conversion logic"""
-        project_root = self._get_project_root()
-        data_manager = DataManager(project_root)
-
-        # Load videos data for this channel
-        videos_data = data_manager.load_videos_data(channel_id)
-        converted_count = 0
-
-        for video_data in videos_data['videos'].values():
-            # Extract multiple games from description using new logic
-            game_references = extract_all_game_links(video_data.description)
-
-            # Convert existing single-game fields to new format (preserving inference metadata)
-            if not game_references:
-                if video_data.steam_app_id:
-                    game_references.append(VideoGameReference(
-                        platform='steam',
-                        platform_id=video_data.steam_app_id,
-                        inferred=getattr(video_data, 'inferred_game', False),
-                        youtube_detected_matched=getattr(video_data, 'youtube_detected_matched', False)
-                    ))
-                elif video_data.itch_url:
-                    game_references.append(VideoGameReference(
-                        platform='itch',
-                        platform_id=video_data.itch_url,
-                        inferred=getattr(video_data, 'inferred_game', False),
-                        youtube_detected_matched=getattr(video_data, 'youtube_detected_matched', False)
-                    ))
-                elif video_data.crazygames_url:
-                    game_references.append(VideoGameReference(
-                        platform='crazygames',
-                        platform_id=video_data.crazygames_url,
-                        inferred=getattr(video_data, 'inferred_game', False),
-                        youtube_detected_matched=getattr(video_data, 'youtube_detected_matched', False)
-                    ))
-
-            # Update video data with new game_references array
-            video_data.game_references = game_references
-
-            # Clean up backward compatibility fields but preserve video-level inference metadata
-            # Remove single-game fields
-            video_data.steam_app_id = None
-            video_data.itch_url = None
-            video_data.crazygames_url = None
-            video_data.itch_is_demo = False  # Set to default instead of deleting
-            video_data.inferred_game = False  # Set to default instead of deleting
-            video_data.youtube_detected_matched = False  # Set to default instead of deleting
-            # Keep: inference_reason, youtube_detected_game (video-level metadata)
-
-            converted_count += 1
-
-        # Save updated video data using DataManager
-        data_manager.save_videos_data(videos_data, channel_id)
-        return converted_count
 
     def _handle_refresh_steam(self, args: argparse.Namespace) -> None:
         """Handle refresh-steam command - only refresh Steam game data"""

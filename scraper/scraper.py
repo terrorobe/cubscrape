@@ -119,19 +119,22 @@ class YouTubeSteamScraper:
 
     def _should_process_video_for_inference(self, video: dict) -> str | None:
         """Determine if video needs processing for game inference"""
-        # Case 1: No game data at all
-        if not video.get('steam_app_id') and not video.get('itch_url') and not video.get('crazygames_url'):
+        # Case 1: No game references at all
+        game_references = video.get('game_references', [])
+        if not game_references:
             return "no_game_data"
 
-        # Case 2: Has steam_app_id but it's missing from our database
-        steam_app_id = video.get('steam_app_id')
-        if steam_app_id:
-            game_data = self.steam_data.get('games', {}).get(steam_app_id)
-            if not game_data:
-                return "missing_steam_game"
-            # Case 3: Has steam_app_id but it points to an unresolved stub
-            if game_data.is_stub and not game_data.resolved_to:
-                return "stub_entry"
+        # Case 2: Has Steam references but they're missing from our database
+        for game_ref in game_references:
+            if game_ref.get('platform') == 'steam':
+                steam_app_id = game_ref.get('platform_id')
+                if steam_app_id:
+                    game_data = self.steam_data.get('games', {}).get(steam_app_id)
+                    if not game_data:
+                        return "missing_steam_game"
+                    # Case 3: Has Steam reference but it points to an unresolved stub
+                    if game_data.is_stub and not game_data.resolved_to:
+                        return "stub_entry"
 
         return None
 

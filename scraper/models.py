@@ -24,17 +24,9 @@ class VideoData:
     description: str
     published_at: str
     thumbnail: str = ""
-    steam_app_id: str | None = None
-    itch_url: str | None = None
-    itch_is_demo: bool = False
-    crazygames_url: str | None = None
     youtube_detected_game: str | None = None
-    youtube_detected_matched: bool = False
-    inferred_game: bool = False
     inference_reason: str | None = None
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
-
-    # New multi-game support
     game_references: list[VideoGameReference] = field(default_factory=list)
 
 

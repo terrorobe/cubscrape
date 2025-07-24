@@ -135,14 +135,7 @@ class VideoProcessor:
                             title=full_video.get('title', ''),
                             description=full_video.get('description', ''),
                             published_at=full_video.get('published_at', ''),
-                            thumbnail=full_video.get('thumbnail', ''),
-                            steam_app_id=None,
-                            itch_url=None,
-                            itch_is_demo=False,
-                            crazygames_url=None,
-                            youtube_detected_game=None,
-                            youtube_detected_matched=False,
-                            inferred_game=False
+                            thumbnail=full_video.get('thumbnail', '')
                         )
                         # Process video with game link extraction
                         video_data = self.process_video_game_links(video_obj)
@@ -211,8 +204,6 @@ class VideoProcessor:
                         )
                         video_data = replace(
                             video_data,
-                            youtube_detected_matched=True,
-                            inferred_game=True,
                             game_references=[inferred_ref]
                         )
                         logging.info(f"  Matched to Steam: {steam_match['name']} (App ID: {steam_match['app_id']}, confidence: {steam_match['confidence']:.2f})")
@@ -237,22 +228,16 @@ class VideoProcessor:
             date_str = video_date if video_date else 'No date'
             logging.info(f"Reprocessing: {video_data.title} ({date_str})")
 
-            # Store original data for comparison
-            original_steam_id = video_data.steam_app_id
-            original_itch_url = video_data.itch_url
-            original_itch_is_demo = video_data.itch_is_demo
-            original_crazygames_url = video_data.crazygames_url
+            # Store original game references for comparison
+            original_game_refs = video_data.game_references.copy()
 
             # Reprocess with current logic
             updated_video_data = self.process_video_game_links(video_data)
 
-            # Check if anything changed
-            if (updated_video_data.steam_app_id != original_steam_id or
-                updated_video_data.itch_url != original_itch_url or
-                updated_video_data.itch_is_demo != original_itch_is_demo or
-                updated_video_data.crazygames_url != original_crazygames_url):
+            # Check if game references changed
+            if updated_video_data.game_references != original_game_refs:
                 updated_count += 1
-                logging.info("  Updated game links for video")
+                logging.info("  Updated game references for video")
 
             # Update the video data
             videos_data['videos'][video_id] = updated_video_data

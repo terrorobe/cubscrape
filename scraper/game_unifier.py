@@ -347,35 +347,11 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
         }
 
         # Handle new multi-game format
-        if video.get('game_references'):
-            for game_ref in video['game_references']:
-                target_game_key = find_game_for_reference(game_ref)
-                if target_game_key and target_game_key in unified_games:
-                    unified_games[target_game_key]['videos'].append(video_info)
-        else:
-            # Fallback to single-game fields for backward compatibility
-            game_keys_to_process = []
-
-            if video.get('steam_app_id'):
-                steam_ref = {'platform': 'steam', 'platform_id': video['steam_app_id']}
-                target_game_key = find_game_for_reference(steam_ref)
-                if target_game_key:
-                    game_keys_to_process.append(target_game_key)
-            elif video.get('itch_url'):
-                itch_ref = {'platform': 'itch', 'platform_id': video['itch_url']}
-                target_game_key = find_game_for_reference(itch_ref)
-                if target_game_key:
-                    game_keys_to_process.append(target_game_key)
-            elif video.get('crazygames_url'):
-                cg_ref = {'platform': 'crazygames', 'platform_id': video['crazygames_url']}
-                target_game_key = find_game_for_reference(cg_ref)
-                if target_game_key:
-                    game_keys_to_process.append(target_game_key)
-
-            # Add video to all matching games
-            for game_key in game_keys_to_process:
-                if game_key in unified_games:
-                    unified_games[game_key]['videos'].append(video_info)
+        # Process game references (all videos now use multi-game format)
+        for game_ref in video.get('game_references', []):
+            target_game_key = find_game_for_reference(game_ref)
+            if target_game_key and target_game_key in unified_games:
+                unified_games[target_game_key]['videos'].append(video_info)
 
     # Update video counts
     for game in unified_games.values():
