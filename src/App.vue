@@ -391,9 +391,15 @@ export default {
 
     const loadGames = async () => {
       try {
-        await loadDatabase()
+        // Check if database is already loaded (from HMR preservation)
+        if (!databaseManager.isLoaded()) {
+          await loadDatabase()
+        } else {
+          // Reuse existing database
+          db = databaseManager.getDatabase()
+        }
 
-        // Set up listener for database updates
+        // Set up listener for database updates (safe to call multiple times)
         databaseManager.addUpdateListener(onDatabaseUpdate)
 
         loadChannelsAndTags(db)
@@ -662,7 +668,11 @@ export default {
       // Cleanup database manager
       if (databaseManager.isLoaded()) {
         databaseManager.removeUpdateListener(onDatabaseUpdate)
-        databaseManager.destroy()
+
+        // Only destroy if not in HMR mode
+        if (!import.meta.hot) {
+          databaseManager.destroy()
+        }
       }
 
       // Remove keyboard handler
@@ -689,5 +699,10 @@ export default {
       clearHighlight,
     }
   },
+}
+
+// HMR support - accept module updates
+if (import.meta.hot) {
+  import.meta.hot.accept()
 }
 </script>

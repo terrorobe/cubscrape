@@ -234,5 +234,31 @@ export class DatabaseManager {
   }
 }
 
-// Create singleton instance
-export const databaseManager = new DatabaseManager()
+// Create HMR-safe singleton instance
+let _databaseManager
+
+if (import.meta.hot && window.__databaseManager) {
+  // Reuse existing instance during HMR
+  _databaseManager = window.__databaseManager
+} else {
+  // Create new instance
+  _databaseManager = new DatabaseManager()
+
+  // Store globally for HMR persistence
+  if (typeof window !== 'undefined') {
+    window.__databaseManager = _databaseManager
+  }
+}
+
+// HMR support
+if (import.meta.hot) {
+  import.meta.hot.accept()
+
+  // Preserve the instance across HMR updates
+  import.meta.hot.dispose(() => {
+    // Don't destroy the database manager on HMR
+    // It will be reused by the new module
+  })
+}
+
+export const databaseManager = _databaseManager
