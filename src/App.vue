@@ -173,13 +173,18 @@ export default {
       // Platform filter
       if (filterValues.platform && filterValues.platform !== 'all') {
         if (filterValues.platform === 'itch') {
+          // Special handling for itch filter: show both itch games and absorbed itch games
           query +=
-            " AND (platform = ? OR (platform = 'steam' AND itch_url IS NOT NULL))"
+            " AND ((platform = ? AND is_absorbed = 0) OR (platform = 'steam' AND itch_url IS NOT NULL) OR (platform = 'itch' AND is_absorbed = 1))"
           params.push(filterValues.platform)
         } else {
-          query += ' AND platform = ?'
+          // For steam/crazygames: exclude absorbed games by default
+          query += ' AND platform = ? AND is_absorbed = 0'
           params.push(filterValues.platform)
         }
+      } else {
+        // Default filter: exclude absorbed games when showing all platforms
+        query += ' AND is_absorbed = 0'
       }
 
       // Release status filter
@@ -252,6 +257,11 @@ export default {
 
       if (results.length > 0) {
         const processedGames = []
+
+        // First pass: collect all games and build a lookup for parent data resolution
+        const allGameData = []
+        const parentGameLookup = new Map()
+
         results[0].values.forEach((row) => {
           const columns = results[0].columns
           const gameData = {}
@@ -260,6 +270,16 @@ export default {
             gameData[col] = row[index]
           })
 
+          allGameData.push(gameData)
+
+          // Build parent lookup for absorbed games
+          if (!gameData.is_absorbed) {
+            parentGameLookup.set(gameData.game_key, gameData)
+          }
+        })
+
+        // Second pass: process games and resolve parent data for absorbed games
+        allGameData.forEach((gameData) => {
           // Parse JSON columns
           try {
             gameData.genres = JSON.parse(gameData.genres || '[]')
@@ -283,6 +303,35 @@ export default {
               : null
           } catch {
             gameData.display_links = null
+          }
+
+          // For absorbed games, supplement with parent game data where needed
+          if (gameData.is_absorbed && gameData.absorbed_into) {
+            const parentData = parentGameLookup.get(gameData.absorbed_into)
+            if (parentData) {
+              // Use parent's review data if absorbed game has insufficient data
+              if (
+                !gameData.review_summary ||
+                gameData.review_summary === 'No user reviews'
+              ) {
+                gameData.review_summary = parentData.review_summary
+                gameData.positive_review_percentage =
+                  parentData.positive_review_percentage
+                gameData.review_count = parentData.review_count
+                gameData.review_summary_priority =
+                  parentData.review_summary_priority
+              }
+
+              // Use parent's header image if absorbed game doesn't have one
+              if (!gameData.header_image && parentData.header_image) {
+                gameData.header_image = parentData.header_image
+              }
+
+              // Use parent's release date if absorbed game doesn't have one
+              if (!gameData.release_date && parentData.release_date) {
+                gameData.release_date = parentData.release_date
+              }
+            }
           }
 
           // Create game object matching the original data structure
@@ -323,6 +372,8 @@ export default {
             review_tooltip: gameData.review_tooltip,
             recent_review_percentage: gameData.recent_review_percentage,
             recent_review_count: gameData.recent_review_count,
+            is_absorbed: gameData.is_absorbed,
+            absorbed_into: gameData.absorbed_into,
           }
 
           processedGames.push(game)

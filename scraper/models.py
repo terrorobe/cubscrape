@@ -4,6 +4,16 @@ Data models for the YouTube Steam scraper
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Literal
+
+
+@dataclass
+class VideoGameReference:
+    """Represents a single game reference in a video"""
+    platform: Literal['steam', 'itch', 'crazygames']
+    platform_id: str  # app_id for Steam, URL for others
+    inferred: bool = False  # Whether this specific game reference was inferred
+    youtube_detected_matched: bool = False  # Whether this reference came from YouTube matching
 
 
 @dataclass
@@ -23,6 +33,9 @@ class VideoData:
     inferred_game: bool = False
     inference_reason: str | None = None
     last_updated: str = field(default_factory=lambda: datetime.now().isoformat())
+
+    # New multi-game support
+    game_references: list[VideoGameReference] = field(default_factory=list)
 
 
 @dataclass

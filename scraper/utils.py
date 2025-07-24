@@ -9,7 +9,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from .models import GameLinks
+from .models import GameLinks, VideoGameReference
 
 
 def extract_steam_app_id(url: str) -> str | None:
@@ -27,6 +27,104 @@ def extract_steam_app_id(url: str) -> str | None:
             return match.group(1)
 
     return None
+
+
+def extract_all_steam_app_ids(text: str) -> list[str]:
+    """Extract ALL Steam app IDs from text"""
+    steam_patterns = [
+        r'https?://store\.steampowered\.com/app/(\d+)',
+        r'https?://steam\.com/app/(\d+)',
+        r'https?://s\.team/a/(\d+)',
+        r'https?://store\.steampowered\.com/news/app/(\d+)'
+    ]
+
+    app_ids = []
+    seen = set()
+
+    for pattern in steam_patterns:
+        for match in re.finditer(pattern, text):
+            app_id = match.group(1)
+            if app_id not in seen:
+                seen.add(app_id)
+                app_ids.append(app_id)
+
+    return app_ids
+
+
+def extract_all_itch_urls(text: str) -> list[str]:
+    """Extract ALL Itch.io URLs from text"""
+    itch_patterns = [
+        r'https?://([^.]+)\.itch\.io/([^/\s]+)',
+        r'https?://itch\.io/games/([^/\s]+)'
+    ]
+
+    urls = []
+    seen = set()
+
+    for pattern in itch_patterns:
+        for match in re.finditer(pattern, text):
+            url = match.group(0)
+            if url not in seen:
+                seen.add(url)
+                urls.append(url)
+
+    return urls
+
+
+def extract_all_crazygames_urls(text: str) -> list[str]:
+    """Extract ALL CrazyGames URLs from text"""
+    crazygames_patterns = [
+        r'https?://www\.crazygames\.com/game/([^/\s]+)',
+        r'https?://crazygames\.com/game/([^/\s]+)'
+    ]
+
+    urls = []
+    seen = set()
+
+    for pattern in crazygames_patterns:
+        for match in re.finditer(pattern, text):
+            url = match.group(0)
+            if url not in seen:
+                seen.add(url)
+                urls.append(url)
+
+    return urls
+
+
+MAX_REFERENCES_PER_VIDEO = 100  # Configurable limit
+
+
+def extract_all_game_links(description: str) -> list[VideoGameReference]:
+    """Extract ALL game store links from video description"""
+    references = []
+
+    # Extract all Steam app IDs (Steam takes precedence)
+    steam_ids = extract_all_steam_app_ids(description)
+    references.extend([
+        VideoGameReference(platform='steam', platform_id=app_id)
+        for app_id in steam_ids
+    ])
+
+    # Extract all Itch.io URLs
+    itch_urls = extract_all_itch_urls(description)
+    references.extend([
+        VideoGameReference(platform='itch', platform_id=itch_url)
+        for itch_url in itch_urls
+    ])
+
+    # Extract all CrazyGames URLs
+    crazygames_urls = extract_all_crazygames_urls(description)
+    references.extend([
+        VideoGameReference(platform='crazygames', platform_id=cg_url)
+        for cg_url in crazygames_urls
+    ])
+
+    # Apply rate limiting
+    if len(references) > MAX_REFERENCES_PER_VIDEO:
+        # Use a logger if available, otherwise just truncate silently
+        references = references[:MAX_REFERENCES_PER_VIDEO]
+
+    return references
 
 
 def extract_game_links(description: str) -> GameLinks:

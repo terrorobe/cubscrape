@@ -132,8 +132,9 @@ class DatabaseManager:
                     insufficient_reviews, release_date, planned_release_date, release_date_sortable, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, developers, publishers,
-                    demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary,
+                    is_absorbed, absorbed_into
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -172,7 +173,9 @@ class DatabaseManager:
                 self._get_demo_steam_app_id(game),
                 self._get_demo_steam_url(game),
                 game.get('review_tooltip'),
-                game.get('is_inferred_summary', False)
+                game.get('is_inferred_summary', False),
+                game.get('is_absorbed', False),
+                game.get('absorbed_into')
             ))
 
             game_id = cursor.lastrowid

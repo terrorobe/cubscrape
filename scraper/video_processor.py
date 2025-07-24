@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Any
 
 from .models import VideoData
-from .utils import extract_game_links, extract_steam_app_id
+from .utils import extract_all_game_links
 
 
 class VideoProcessor:
@@ -176,48 +176,21 @@ class VideoProcessor:
 
     def process_video_game_links(self, video: VideoData) -> VideoData:
         """Extract and process game links from a video"""
-        # Extract game links from description
-        game_links = extract_game_links(video.description)
+        # Extract ALL game references from description using new multi-game logic
+        game_references = extract_all_game_links(video.description)
 
-        # Store video data with game links if found
+        # Store video data with game references
         video_data = VideoData(
             video_id=video.video_id,
             title=video.title,
             description=video.description,
             published_at=video.published_at,
             thumbnail=video.thumbnail,
-            steam_app_id=None,
-            itch_url=None,
-            itch_is_demo=False,  # Flag to indicate itch.io is demo/test version
-            crazygames_url=None,
-            youtube_detected_game=None,
-            youtube_detected_matched=False,
-            inferred_game=False
+            game_references=game_references
         )
 
-        # Priority: Steam > Itch.io > CrazyGames, but store all found links
-        if game_links.steam:
-            app_id = extract_steam_app_id(game_links.steam)
-            video_data = replace(video_data, steam_app_id=app_id)
-            # Store other platforms as secondary
-            if game_links.itch:
-                video_data = replace(video_data, itch_url=game_links.itch, itch_is_demo=True)
-            if game_links.crazygames:
-                video_data = replace(video_data, crazygames_url=game_links.crazygames)
-            logging.info(f"  Found Steam link: {game_links.steam}" +
-                        (f", Itch.io: {game_links.itch}" if game_links.itch else "") +
-                        (f", CrazyGames: {game_links.crazygames}" if game_links.crazygames else ""))
-        elif game_links.itch:
-            video_data = replace(video_data, itch_url=game_links.itch)
-            if game_links.crazygames:
-                video_data = replace(video_data, crazygames_url=game_links.crazygames)
-            logging.info(f"  Found Itch.io link: {game_links.itch}" +
-                        (f", CrazyGames: {game_links.crazygames}" if game_links.crazygames else ""))
-
-        elif game_links.crazygames:
-            video_data = replace(video_data, crazygames_url=game_links.crazygames)
-            logging.info(f"  Found CrazyGames link: {game_links.crazygames}")
-
+        if game_references:
+            logging.info(f"  Found {len(game_references)} game reference(s)")
         else:
             logging.info("  No game links found, trying YouTube detection...")
 
@@ -235,7 +208,20 @@ class VideoProcessor:
                 if not should_skip:
                     steam_match = self.game_inference.find_steam_match(detected_game, confidence_threshold=0.6)
                     if steam_match:
-                        video_data = replace(video_data, steam_app_id=steam_match['app_id'], youtube_detected_matched=True)
+                        # Create inferred game reference
+                        from .models import VideoGameReference
+                        inferred_ref = VideoGameReference(
+                            platform='steam',
+                            platform_id=steam_match['app_id'],
+                            inferred=True,
+                            youtube_detected_matched=True
+                        )
+                        video_data = replace(
+                            video_data,
+                            youtube_detected_matched=True,
+                            inferred_game=True,
+                            game_references=[inferred_ref]
+                        )
                         logging.info(f"  Matched to Steam: {steam_match['name']} (App ID: {steam_match['app_id']}, confidence: {steam_match['confidence']:.2f})")
                     else:
                         logging.info("  No confident Steam matches found for YouTube detected game")
