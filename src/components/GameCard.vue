@@ -32,6 +32,20 @@
           {{ game.name || 'Unknown Game' }}
         </h3>
 
+        <!-- Absorption Indicator -->
+        <div
+          v-if="game.is_absorbed"
+          class="mb-3 rounded-sm border border-yellow-300 bg-yellow-100 px-2 py-1"
+        >
+          <div class="text-xs font-medium text-yellow-800">
+            🔗 Also available on Steam
+          </div>
+          <div class="mt-0.5 text-xs text-yellow-700">
+            This {{ getPlatformName(game.platform).toLowerCase() }} game is also
+            released on Steam with enhanced features
+          </div>
+        </div>
+
         <!-- Game Meta -->
         <div class="mb-3 flex items-center justify-between gap-3">
           <!-- Rating -->
@@ -216,9 +230,21 @@
             Demo
           </a>
 
+          <!-- Absorbed game link to Steam parent -->
+          <a
+            v-if="game.is_absorbed && getSteamParentUrl(game)"
+            :href="getSteamParentUrl(game)"
+            target="_blank"
+            class="text-sm font-medium text-accent hover:underline"
+          >
+            Steam Version
+          </a>
+
           <!-- Cross-platform links -->
           <a
-            v-if="game.itch_url && game.platform !== 'itch'"
+            v-if="
+              game.itch_url && game.platform !== 'itch' && !game.is_absorbed
+            "
             :href="game.itch_url"
             target="_blank"
             class="text-sm text-accent hover:underline"
@@ -226,7 +252,11 @@
             Itch.io
           </a>
           <a
-            v-if="game.crazygames_url && game.platform !== 'crazygames'"
+            v-if="
+              game.crazygames_url &&
+              game.platform !== 'crazygames' &&
+              !game.is_absorbed
+            "
             :href="game.crazygames_url"
             target="_blank"
             class="text-sm text-accent hover:underline"
@@ -675,6 +705,15 @@ export default {
       return platform
     }
 
+    const getSteamParentUrl = (game) => {
+      // For absorbed games, construct Steam URL from absorbed_into key
+      if (game.is_absorbed && game.absorbed_into) {
+        // absorbed_into contains the steam app ID
+        return `https://store.steampowered.com/app/${game.absorbed_into}`
+      }
+      return null
+    }
+
     const handleCardClick = async (event) => {
       // Don't handle clicks on links, buttons, or video toggles
       if (
@@ -835,6 +874,7 @@ export default {
       getMainPlatformName,
       getDemoUrl,
       getPlatformName,
+      getSteamParentUrl,
     }
   },
 }

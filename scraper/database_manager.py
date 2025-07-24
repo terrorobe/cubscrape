@@ -105,6 +105,9 @@ class DatabaseManager:
     def _populate_games(self, conn: sqlite3.Connection, games_data: dict[str, Any]) -> None:
         cursor = conn.cursor()
 
+        # Track inserted video-game pairs to prevent duplicates
+        inserted_video_game_pairs: set[tuple[str, int]] = set()
+
         for game_key, game in games_data.items():
             # Generate review summary for non-Steam platforms
             review_summary = self._generate_review_summary(game)
@@ -132,8 +135,9 @@ class DatabaseManager:
                     insufficient_reviews, release_date, planned_release_date, release_date_sortable, header_image, steam_url, itch_url,
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, developers, publishers,
-                    demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary,
+                    is_absorbed, absorbed_into
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -172,13 +176,22 @@ class DatabaseManager:
                 self._get_demo_steam_app_id(game),
                 self._get_demo_steam_url(game),
                 game.get('review_tooltip'),
-                game.get('is_inferred_summary', False)
+                game.get('is_inferred_summary', False),
+                game.get('is_absorbed', False),
+                game.get('absorbed_into')
             ))
 
             game_id = cursor.lastrowid
 
-            # Insert video records
+            # Insert video records (with deduplication)
             for video in game.get('videos', []):
+                video_id = video.get('video_id')
+                video_game_pair = (video_id, game_id)
+
+                # Skip if this video-game pair has already been inserted
+                if video_game_pair in inserted_video_game_pairs:
+                    continue
+
                 cursor.execute('''
                     INSERT INTO game_videos (
                         game_id, video_id, video_title, video_date,
@@ -186,12 +199,15 @@ class DatabaseManager:
                     ) VALUES (?, ?, ?, ?, ?, ?)
                 ''', (
                     game_id,
-                    video.get('video_id'),
+                    video_id,
                     video.get('video_title'),
                     video.get('video_date'),
                     video.get('channel_name'),
                     video.get('published_at')
                 ))
+
+                # Track this pair as inserted
+                inserted_video_game_pairs.add(video_game_pair)
 
     def _generate_review_summary(self, game: dict[str, Any]) -> str | None:
         """Generate review summary for non-Steam platforms using Steam's thresholds"""

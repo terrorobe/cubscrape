@@ -7,7 +7,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from .models import OtherGameData, SteamGameData, VideoData
+from .models import OtherGameData, SteamGameData, VideoData, VideoGameReference
 from .utils import load_json, save_data
 
 
@@ -188,6 +188,16 @@ class DataManager:
 
     def _dict_to_video_data(self, video_dict: dict) -> VideoData:
         """Convert dictionary to VideoData object"""
+        # Handle game_references conversion
+        if 'game_references' in video_dict:
+            game_refs = []
+            for ref_dict in video_dict['game_references']:
+                if isinstance(ref_dict, dict):
+                    game_refs.append(VideoGameReference(**ref_dict))
+                else:
+                    game_refs.append(ref_dict)
+            video_dict['game_references'] = game_refs
+
         return VideoData(**video_dict)
 
     def _dict_to_steam_data(self, steam_dict: dict) -> SteamGameData:
@@ -198,6 +208,22 @@ class DataManager:
         """Convert dictionary to OtherGameData object"""
         return OtherGameData(**game_dict)
 
-    def _clean_dict_for_json(self, data_dict: dict) -> dict:
+    def _clean_dict_for_json(self, data_dict: dict) -> dict[str, Any]:
         """Remove None values and False boolean values to keep JSON clean"""
-        return {k: v for k, v in data_dict.items() if v is not None and v is not False}
+        cleaned: dict[str, Any] = {}
+        for k, v in data_dict.items():
+            if v is None or v is False:
+                continue
+            elif isinstance(v, dict):
+                cleaned[k] = self._clean_dict_for_json(v)
+            elif isinstance(v, list):
+                cleaned_list = []
+                for item in v:
+                    if isinstance(item, dict):
+                        cleaned_list.append(self._clean_dict_for_json(item))
+                    else:
+                        cleaned_list.append(item)
+                cleaned[k] = cleaned_list
+            else:
+                cleaned[k] = v
+        return cleaned

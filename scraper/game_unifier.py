@@ -53,6 +53,8 @@ def _create_fallback_game(game_key: str, game_data: Any, missing_ref_id: str | N
         'name': game_data.get('name', 'Unknown Game'),
         'videos': [],
         'video_count': 0,
+        'is_absorbed': False,
+        'absorbed_into': None,
         **game_data
     }
 
@@ -102,6 +104,8 @@ def _create_unified_game_entry(primary_key: str, primary_name: str, demo_id: str
         'platform': 'steam',
         'videos': [],
         'video_count': 0,
+        'is_absorbed': False,
+        'absorbed_into': None,
         # Use active data for display
         **active_data,
         # Store demo info for links
@@ -152,12 +156,9 @@ def _merge_itch_data_into_steam_game(steam_game: dict[str, Any], itch_data: Any)
         steam_game['release_date'] = itch_release
         steam_game['coming_soon'] = False
 
-    # Use Itch tags to supplement Steam tags (merge unique tags)
-    if itch_data.get('tags'):
-        steam_tags = set(steam_game.get('tags', []))
-        itch_tags = set(itch_data.get('tags', []))
-        merged_tags = list(steam_tags | itch_tags)  # Union of both tag sets
-        steam_game['tags'] = merged_tags[:20]  # Limit to 20 tags
+    # Keep Steam and Itch tags separate to preserve platform-specific ordering
+    # Steam tags maintain their semantic "Top 10" ordering
+    # Itch tags maintain their creator-defined ordering
 
     # Use Itch pricing info if available
     if itch_data.get('is_free') and not steam_game.get('price'):
@@ -276,7 +277,22 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
                         break
 
                 if absorbed:
-                    continue  # Skip this Itch game as it's part of a Steam game
+                    # Store absorbed Itch game instead of skipping it
+                    if game_data.get('platform') in ['itch', 'crazygames']:
+                        game_data['is_free'] = True
+
+                    unified_games[game_key] = {
+                        'game_key': game_key,
+                        'platform': game_data.get('platform', 'other'),
+                        'name': game_data.get('name', 'Unknown Game'),
+                        'videos': [],  # No direct videos - they belong to parent
+                        'video_count': 0,
+                        'is_absorbed': True,
+                        'absorbed_into': steam_game_key,
+                        **game_data  # Include all game data
+                    }
+                    other_games_added += 1
+                    continue
 
             # Mark Itch.io and CrazyGames as free
             if game_data.get('platform') in ['itch', 'crazygames']:
@@ -288,6 +304,8 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
                 'name': game_data.get('name', 'Unknown Game'),
                 'videos': [],
                 'video_count': 0,
+                'is_absorbed': False,
+                'absorbed_into': None,
                 **game_data  # Include all game data
             }
             other_games_added += 1
@@ -297,53 +315,67 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
         logging.info(f"Skipped {itch_absorbed} Itch games that are part of Steam games")
 
     # Then, process each video and add to existing game entries
-    for video_id, video in all_videos.items():
-        # Skip videos without game references
-        if not (video.get('steam_app_id') or video.get('itch_url') or video.get('crazygames_url')):
-            continue
+    def find_game_for_reference(game_ref: dict[str, Any]) -> str | None:
+        """Find the unified game key for a game reference"""
+        platform = game_ref.get('platform')
+        platform_id = game_ref.get('platform_id')
 
-        # Determine game key and platform
-        if video.get('steam_app_id'):
-            steam_app_id = video['steam_app_id']
-
+        if platform == 'steam':
             # Find the unified game entry for this Steam app ID
-            target_game_key = None
             for game_key, game_data in unified_games.items():
                 if (game_data.get('platform') == 'steam' and
-                    (game_key == steam_app_id or  # Direct match
-                     game_data.get('_demo_app_id') == steam_app_id or  # Demo video
-                     game_data.get('_full_game_app_id') == steam_app_id)):  # Full game video
-                        target_game_key = game_key
-                        break
-
-            if not target_game_key:
-                # This shouldn't happen with our unified creation, but handle it
-                continue
-
-            game_key = target_game_key
-
-        elif video.get('itch_url'):
-            itch_url = video['itch_url']
+                    (game_key == platform_id or  # Direct match
+                     game_data.get('_demo_app_id') == platform_id or  # Demo video
+                     game_data.get('_full_game_app_id') == platform_id)):  # Full game video
+                        return game_key
+        elif platform == 'itch':
             # Check if this Itch URL maps to a Steam game
-            game_key = itch_to_steam_mapping.get(itch_url, itch_url)
-        elif video.get('crazygames_url'):
-            game_key = video['crazygames_url']
-        else:
-            continue
+            return itch_to_steam_mapping.get(platform_id or '', platform_id)
+        elif platform == 'crazygames':
+            return platform_id
 
-        # Game should already exist from unified creation
-        if game_key not in unified_games:
-            continue
+        return None
 
-        # Add video to game
-        unified_games[game_key]['videos'].append({
+    for video_id, video in all_videos.items():
+        video_info = {
             'video_id': video_id,
             'video_title': video.get('title', ''),
             'video_date': video.get('published_at', ''),
             'video_url': f"https://www.youtube.com/watch?v={video_id}",
             'channel_name': video.get('channel_name', ''),
             'published_at': video.get('published_at', '')
-        })
+        }
+
+        # Handle new multi-game format
+        if video.get('game_references'):
+            for game_ref in video['game_references']:
+                target_game_key = find_game_for_reference(game_ref)
+                if target_game_key and target_game_key in unified_games:
+                    unified_games[target_game_key]['videos'].append(video_info)
+        else:
+            # Fallback to single-game fields for backward compatibility
+            game_keys_to_process = []
+
+            if video.get('steam_app_id'):
+                steam_ref = {'platform': 'steam', 'platform_id': video['steam_app_id']}
+                target_game_key = find_game_for_reference(steam_ref)
+                if target_game_key:
+                    game_keys_to_process.append(target_game_key)
+            elif video.get('itch_url'):
+                itch_ref = {'platform': 'itch', 'platform_id': video['itch_url']}
+                target_game_key = find_game_for_reference(itch_ref)
+                if target_game_key:
+                    game_keys_to_process.append(target_game_key)
+            elif video.get('crazygames_url'):
+                cg_ref = {'platform': 'crazygames', 'platform_id': video['crazygames_url']}
+                target_game_key = find_game_for_reference(cg_ref)
+                if target_game_key:
+                    game_keys_to_process.append(target_game_key)
+
+            # Add video to all matching games
+            for game_key in game_keys_to_process:
+                if game_key in unified_games:
+                    unified_games[game_key]['videos'].append(video_info)
 
     # Update video counts
     for game in unified_games.values():

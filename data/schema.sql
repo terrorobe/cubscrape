@@ -40,7 +40,9 @@ CREATE TABLE games (
     demo_steam_app_id TEXT,
     demo_steam_url TEXT,
     review_tooltip TEXT,   -- Supplementary review info for tooltip
-    is_inferred_summary BOOLEAN DEFAULT 0  -- Whether review summary is inferred from non-Steam data
+    is_inferred_summary BOOLEAN DEFAULT 0,  -- Whether review summary is inferred from non-Steam data
+    is_absorbed BOOLEAN DEFAULT 0,  -- Whether this game is absorbed into another game
+    absorbed_into TEXT  -- game_key of parent game (if absorbed)
 );
 
 CREATE TABLE game_videos (
@@ -52,6 +54,7 @@ CREATE TABLE game_videos (
     channel_name TEXT,
     published_at TEXT
 );
+
 
 -- Indexes for fast filtering
 CREATE INDEX idx_platform ON games(platform);
