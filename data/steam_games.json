@@ -2506,7 +2506,6 @@
         "Family Sharing"
       ],
       "coming_soon": true,
-      "demo_app_id": "3465460",
       "developers": [
         "Spaceflower"
       ],
@@ -2515,9 +2514,8 @@
         "Simulation",
         "Strategy"
       ],
-      "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/header.jpg?t=1753283829",
-      "last_updated": "2025-07-24T08:53:35.004465",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/header.jpg?t=1753358366",
+      "last_updated": "2025-07-24T15:03:12.406154",
       "name": "Let Them Trade",
       "publishers": [
         "ByteRockers' Games"
@@ -17631,16 +17629,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2225960/425f6fbdcab44710187348f88bf9a7ccf16ee193/header.jpg?t=1752744718",
       "is_early_access": true,
-      "last_updated": "2025-07-23T08:53:43.441069",
+      "last_updated": "2025-07-24T15:03:10.673503",
       "name": "Noobs Are Coming",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 93,
       "price_eur": "4,67\u20ac",
       "price_usd": "$4.79",
       "publishers": [
         "Overboy"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 197,
+      "review_count": 214,
       "review_summary": "Very Positive",
       "steam_app_id": "2225960",
       "steam_url": "https://store.steampowered.com/app/2225960",
@@ -33394,25 +33392,25 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/a6757865adf488b7a98e11d1197e0165cd412302/header_alt_assets_0.jpg?t=1753194703",
-      "last_updated": "2025-07-23T20:53:31.199545",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753900/a6757865adf488b7a98e11d1197e0165cd412302/header_alt_assets_0.jpg?t=1753351732",
+      "last_updated": "2025-07-24T15:03:09.857375",
       "name": "The King is Watching",
-      "positive_review_percentage": 83,
+      "positive_review_percentage": 82,
       "price_eur": "13,49\u20ac",
       "price_usd": "$13.49",
       "publishers": [
         "tinyBuild"
       ],
       "release_date": "21 Jul, 2025",
-      "review_count": 706,
+      "review_count": 898,
       "review_summary": "Very Positive",
       "steam_app_id": "2753900",
       "steam_url": "https://store.steampowered.com/app/2753900",
       "tags": [
         "RTS",
         "Dark Fantasy",
-        "Fantasy",
         "Roguelike",
+        "Fantasy",
         "Base Building",
         "Strategy",
         "Resource Management",
@@ -34662,16 +34660,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2795090/84435755794a3658df752b9ec7c63bb43ab7bd2b/header.jpg?t=1753289957",
       "is_early_access": true,
-      "last_updated": "2025-07-24T08:53:39.830364",
+      "last_updated": "2025-07-24T15:03:11.446567",
       "name": "MR FARMBOY",
-      "positive_review_percentage": 90,
+      "positive_review_percentage": 91,
       "price_eur": "7,67\u20ac",
       "price_usd": "$7.79",
       "publishers": [
         "mrdboy"
       ],
       "release_date": "23 Jul, 2025",
-      "review_count": 31,
+      "review_count": 35,
       "review_summary": "Positive",
       "steam_app_id": "2795090",
       "steam_url": "https://store.steampowered.com/app/2795090",
@@ -41696,7 +41694,6 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "3421020",
       "developers": [
         "Bigosaur"
@@ -41707,15 +41704,18 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1753311909",
-      "last_updated": "2025-07-24T08:53:35.993963",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1753346011",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-24T15:03:08.999851",
       "name": "Clutchtime\u2122: Basketball Deckbuilder",
+      "price_eur": "14,39\u20ac",
+      "price_usd": "$15.99",
       "publishers": [
         "Bigosaur"
       ],
       "release_date": "24 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 1,
+      "review_summary": "Need more reviews for score",
       "steam_app_id": "2995450",
       "steam_url": "https://store.steampowered.com/app/2995450",
       "tags": [
@@ -61059,48 +61059,19 @@
       ]
     },
     "3465460": {
-      "categories": [
-        "Single-player",
-        "Game demo"
-      ],
-      "developers": [
-        "Spaceflower"
-      ],
-      "full_game_app_id": "1313290",
-      "genres": [
-        "Simulation",
-        "Strategy"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3465460/bafbc3295610e9d43564f26940d3d7e62547da92/header_alt_assets_1.jpg?t=1752831511",
-      "is_demo": true,
-      "is_free": true,
-      "last_updated": "2025-07-18T20:53:20.158003",
-      "name": "Let Them Trade Demo",
-      "positive_review_percentage": 95,
-      "price_eur": "Free",
-      "publishers": [
-        "ByteRockers' Games"
-      ],
-      "recent_review_count": 28,
-      "recent_review_percentage": 85,
-      "recent_review_summary": "Very Positive",
-      "release_date": "8 May, 2025",
-      "review_count": 173,
-      "review_summary": "Very Positive",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-24T15:03:12.621956",
+      "name": "[FAILED FETCH] 3465460",
+      "publishers": [],
+      "release_date": "",
       "steam_app_id": "3465460",
       "steam_url": "https://store.steampowered.com/app/3465460",
-      "tags": [
-        "Strategy",
-        "City Builder",
-        "Simulation",
-        "Economy",
-        "Management",
-        "Medieval",
-        "Stylized",
-        "3D",
-        "Cute",
-        "Level Editor"
-      ]
+      "stub_reason": "Steam API fetch failed",
+      "tags": []
     },
     "3467600": {
       "categories": [
