@@ -28,8 +28,10 @@ resvg public/favicon.svg --width 180 --height 180 public/apple-touch-icon.png
 resvg public/favicon.svg --width 192 --height 192 public/android-chrome-192x192.png
 resvg public/favicon.svg --width 512 --height 512 public/android-chrome-512x512.png
 
-# Generate multi-size ICO file (fallback - may not preserve gradients perfectly)
-magick public/favicon.svg -define icon:auto-resize="16,32,48" public/favicon.ico
+# Generate multi-size ICO file (using resvg PNGs for better quality)
+resvg public/favicon.svg --width 32 --height 32 /tmp/favicon-32.png
+resvg public/favicon.svg --width 16 --height 16 /tmp/favicon-16.png
+magick /tmp/favicon-16.png /tmp/favicon-32.png public/favicon.ico
 ```
 
 ## Design Notes
@@ -41,8 +43,9 @@ magick public/favicon.svg -define icon:auto-resize="16,32,48" public/favicon.ico
 
 ## Quality Comparison
 
-- **resvg**: Excellent gradient rendering, subpixel antialiasing, recommended for all PNGs
-- **ImageMagick**: Poor gradient support, use only for ICO generation as fallback
+- **resvg**: Excellent gradient rendering, subpixel antialiasing, recommended for all formats
+- **resvg → ImageMagick ICO**: Generate PNGs with resvg first, then combine into ICO for best quality
+- **ImageMagick direct SVG**: Poor gradient support, avoid for primary generation
 - **Browser rendering**: SVG shows full gradient and dark mode support
 
 ## Testing
