@@ -335,10 +335,23 @@ export class DatabaseManager {
       const channelCount =
         channelResults.length > 0 ? channelResults[0].values[0][0] : 0
 
+      // Get data freshness from database metadata instead of HTTP requests
+      let dataModified = this.lastModified // fallback to database file mtime
+      try {
+        const metadataResult = this.db.exec(
+          "SELECT value FROM app_metadata WHERE key = 'data_last_modified'"
+        )
+        if (metadataResult.length > 0 && metadataResult[0].values.length > 0) {
+          dataModified = metadataResult[0].values[0][0]
+        }
+      } catch (error) {
+        console.debug('Could not read data_last_modified from metadata:', error)
+      }
+
       return {
         games: gameCount,
         channels: channelCount,
-        lastModified: this.lastModified,
+        lastModified: dataModified,
         lastCheckTime: this.lastCheckTime,
         isDevelopment: this.isDevelopment,
       }

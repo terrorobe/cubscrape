@@ -64,16 +64,20 @@ class DatabaseManager:
         # Get app version by running the version generation script
         app_version = self._get_app_version()
 
+        # Get newest data modification time from source files
+        data_modified = self._get_newest_data_modified()
+
         # Insert metadata
         metadata = [
             ('app_version', app_version),
-            ('database_created', self._get_current_timestamp())
+            ('database_created', self._get_current_timestamp()),
+            ('data_last_modified', data_modified)
         ]
 
         for key, value in metadata:
             cursor.execute('INSERT INTO app_metadata (key, value) VALUES (?, ?)', (key, value))
 
-        logging.info(f"Inserted app version {app_version} into database metadata")
+        logging.info(f"Inserted app version {app_version} and data timestamp {data_modified} into database metadata")
 
     def _get_app_version(self) -> str:
         """Get the current app version from the generated version file"""
@@ -96,6 +100,43 @@ class DatabaseManager:
         """Get current timestamp in ISO format"""
         from datetime import datetime
         return datetime.now().isoformat()
+
+    def _get_newest_data_modified(self) -> str:
+        """Get the newest modification time from JSON data source files"""
+        from datetime import datetime
+
+        try:
+            # Define data directory relative to this script
+            data_dir = Path(__file__).parent.parent / 'data'
+
+            # Find all JSON files in the data directory
+            json_files = list(data_dir.glob('*.json'))
+
+            if not json_files:
+                logging.warning("No JSON files found in data directory")
+                return self._get_current_timestamp()
+
+            newest_time = None
+            newest_file = None
+
+            for json_file in json_files:
+                if json_file.exists():
+                    mtime = json_file.stat().st_mtime
+                    if newest_time is None or mtime > newest_time:
+                        newest_time = mtime
+                        newest_file = json_file.name
+
+            if newest_time:
+                newest_datetime = datetime.fromtimestamp(newest_time)
+                logging.info(f"Newest data file: {newest_file} modified {newest_datetime.isoformat()}")
+                return newest_datetime.isoformat()
+            else:
+                logging.warning("Could not determine data modification time")
+                return self._get_current_timestamp()
+
+        except Exception as e:
+            logging.warning(f"Error getting data modification time: {e}")
+            return self._get_current_timestamp()
 
     def _convert_to_sortable_date_int(self, date_str: str) -> int | None:
         """Convert release dates to sortable YYYYMMDD integer format

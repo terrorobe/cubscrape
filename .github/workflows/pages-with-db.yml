@@ -68,13 +68,6 @@ jobs:
         run: |
           npm run build
 
-      - name: Copy database to dist
-        run: |
-          mkdir -p dist/data
-          cp data/games.db dist/data/
-          ls -la dist/
-          ls -la dist/data/
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
