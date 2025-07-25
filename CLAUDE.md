@@ -7,8 +7,9 @@
 ## Documentation Overview
 
 - **README.md** - Project overview, setup instructions, and usage
-- **ARCHITECTURE.md** - System architecture, data flow, and component design  
-- **IMPLEMENTATION_NOTES.md** - Detailed implementation notes and technical decisions
+- **docs/ARCHITECTURE.md** - System architecture, data flow, and component design  
+- **docs/IMPLEMENTATION_NOTES.md** - Detailed implementation notes and technical decisions
+- **docs/FAVICON.md** - Favicon generation and design documentation
 - **CLAUDE.md** - This file: Development environment and workflow notes
 
 ## Python Environment Setup
@@ -161,4 +162,10 @@ The project uses a custom ESLint configuration that enforces:
 - `grep` can give misleading results due to JSON structure complexity
 - **Example**: Use `jq '.games["2651220"]' data/steam_games.json` instead of `grep -A 20 "2651220" data/steam_games.json`
 - For finding games by name: `jq -r '.games | to_entries[] | select(.value.name | contains("Blacksmith")) | .key + ": " + .value.name' data/steam_games.json`
+
+### Favicon Management
+- **Source file**: `public/favicon.svg` with purple-to-blue gradient and optically-centered play triangle
+- **Regeneration**: Use `resvg` for high-quality PNG generation (preserves gradients)
+- **Documentation**: See `docs/FAVICON.md` for complete regeneration instructions
+- **Quality**: Always use `resvg` instead of ImageMagick for PNG conversion to maintain gradient quality
 
