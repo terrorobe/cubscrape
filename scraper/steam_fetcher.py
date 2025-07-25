@@ -75,6 +75,22 @@ class SteamDataFetcher(BaseFetcher):
                 # Create stub entry for failed API fetch
                 return self._create_stub_entry(app_id, steam_url, "Steam API fetch failed")
 
+            # Check if this is DLC or soundtrack - redirect to base game
+            app_type = api_data_eur.get('type', '').lower()
+            if app_type in ['dlc', 'music']:
+                fullgame = api_data_eur.get('fullgame')
+                if fullgame and fullgame.get('appid'):
+                    base_game_id = fullgame['appid']
+                    base_game_name = fullgame.get('name', 'Unknown Base Game')
+                    content_type = 'DLC' if app_type == 'dlc' else 'Soundtrack'
+                    logging.info(f"Redirecting {content_type} {app_id} to base game {base_game_id} ({base_game_name})")
+
+                    # Create stub entry for the DLC/soundtrack pointing to base game
+                    return self._create_stub_entry(app_id, steam_url, f"{content_type} redirected to base game", resolved_to=base_game_id)
+                else:
+                    # No base game found, treat as regular content
+                    logging.warning(f"Found {app_type} {app_id} but no base game information available")
+
             # Create initial game data from API
             game_data = self._parse_api_data(api_data_eur, app_id, steam_url)
 
@@ -492,12 +508,19 @@ class SteamDataFetcher(BaseFetcher):
                 setattr(game_data, key, value)
 
     def _create_stub_entry(self, app_id: str, steam_url: str, reason: str, resolved_to: str | None = None) -> SteamGameData:
-        """Create a stub entry for failed fetches to avoid retrying"""
+        """Create a stub entry for failed fetches or redirects"""
         logging.info(f"Creating stub entry for Steam app {app_id}: {reason}")
+
+        # Use different naming for redirects vs failures
+        if resolved_to:
+            name = f"[REDIRECT] {app_id} -> {resolved_to}"
+        else:
+            name = f"[FAILED FETCH] {app_id}"
+
         return SteamGameData(
             steam_app_id=app_id,
             steam_url=steam_url,
-            name=f"[FAILED FETCH] {app_id}",
+            name=name,
             is_stub=True,
             stub_reason=reason,
             resolved_to=resolved_to

@@ -3249,6 +3249,54 @@
         "Strategy RPG"
       ]
     },
+    "1284190": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Steam Achievements",
+        "Full controller support",
+        "Family Sharing"
+      ],
+      "demo_app_id": "1754850",
+      "developers": [
+        "Miju Games"
+      ],
+      "genres": [
+        "Adventure"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1284190/header.jpg?t=1748077331",
+      "last_updated": "2025-07-25T02:49:34.802243",
+      "name": "The Planet Crafter",
+      "positive_review_percentage": 96,
+      "price_eur": "23,99\u20ac",
+      "price_usd": "$23.99",
+      "publishers": [
+        "Miju Games"
+      ],
+      "recent_review_count": 1209,
+      "recent_review_percentage": 94,
+      "recent_review_summary": "Very Positive",
+      "release_date": "10 Apr, 2024",
+      "review_count": 53094,
+      "review_summary": "Overwhelmingly Positive",
+      "steam_app_id": "1284190",
+      "steam_url": "https://store.steampowered.com/app/1284190",
+      "tags": [
+        "Open World Survival Craft",
+        "Base Building",
+        "Survival",
+        "Online Co-Op",
+        "Co-op",
+        "Building",
+        "Crafting",
+        "Open World",
+        "Exploration",
+        "Space"
+      ]
+    },
     "1284730": {
       "categories": [
         "Single-player",
@@ -3658,7 +3706,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/1de461fe2cb7121fa632b7b8ca950e5168c5c59d/header_alt_assets_1.jpg?t=1753365497",
-      "last_updated": "2025-07-25T02:20:16.381298",
+      "last_updated": "2025-07-25T02:49:32.943557",
       "name": "Let Them Trade",
       "positive_review_percentage": 94,
       "price_eur": "14,39\u20ac",
@@ -10649,6 +10697,49 @@
         "Strategy"
       ]
     },
+    "1754850": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Partial Controller Support"
+      ],
+      "developers": [
+        "Miju Games"
+      ],
+      "full_game_app_id": "1284190",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1754850/header.jpg?t=1749033848",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-25T02:49:35.909019",
+      "name": "The Planet Crafter Demo",
+      "positive_review_percentage": 96,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Miju Games"
+      ],
+      "recent_review_count": 1209,
+      "recent_review_percentage": 94,
+      "recent_review_summary": "Very Positive",
+      "release_date": "20 Sep, 2021",
+      "review_count": 53094,
+      "review_summary": "Overwhelmingly Positive",
+      "steam_app_id": "1754850",
+      "steam_url": "https://store.steampowered.com/app/1754850",
+      "tags": [
+        "Open World Survival Craft",
+        "Base Building",
+        "Survival",
+        "Online Co-Op",
+        "Co-op",
+        "Building",
+        "Crafting",
+        "Open World",
+        "Exploration",
+        "Space"
+      ]
+    },
     "1763250": {
       "categories": [
         "Single-player",
@@ -13025,7 +13116,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1753197806",
       "is_early_access": true,
-      "last_updated": "2025-07-24T02:48:00.339008",
+      "last_updated": "2025-07-25T02:49:44.899594",
       "name": "UnderMine 2",
       "positive_review_percentage": 60,
       "price_eur": "17,55\u20ac",
@@ -13034,7 +13125,7 @@
         "Thorium"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 143,
+      "review_count": 189,
       "review_summary": "Mixed",
       "steam_app_id": "1869780",
       "steam_url": "https://store.steampowered.com/app/1869780",
@@ -17871,11 +17962,11 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2096860/header.jpg?t=1752511625",
-      "last_updated": "2025-07-24T02:47:58.415401",
+      "last_updated": "2025-07-25T02:49:38.877050",
       "name": "Reclaim The Sea",
       "positive_review_percentage": 85,
-      "price_eur": "9,43\u20ac",
-      "price_usd": "$9.59",
+      "price_eur": "11,79\u20ac",
+      "price_usd": "$11.99",
       "publishers": [
         "1LastGame",
         "indienova"
@@ -17984,9 +18075,9 @@
         "RPG",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2098160/header.jpg?t=1753187824",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2098160/header.jpg?t=1753388209",
       "is_early_access": true,
-      "last_updated": "2025-07-24T02:47:57.462104",
+      "last_updated": "2025-07-25T02:49:39.847181",
       "name": "Star Vortex",
       "publishers": [
         "Hunted Cow Games"
@@ -19603,9 +19694,9 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2144640/490cf79ed3dec8fa5eef65213a215b8350913d67/header_alt_assets_5.jpg?t=1753366767",
-      "last_updated": "2025-07-25T02:20:40.325282",
+      "last_updated": "2025-07-25T02:49:37.266160",
       "name": "Endzone 2",
-      "positive_review_percentage": 68,
+      "positive_review_percentage": 67,
       "price_eur": "12,49\u20ac",
       "price_usd": "$12.49",
       "publishers": [
@@ -19615,7 +19706,7 @@
       "recent_review_percentage": 61,
       "recent_review_summary": "Mixed",
       "release_date": "24 Jul, 2025",
-      "review_count": 552,
+      "review_count": 553,
       "review_summary": "Mixed",
       "steam_app_id": "2144640",
       "steam_url": "https://store.steampowered.com/app/2144640",
@@ -24978,58 +25069,20 @@
       ]
     },
     "2306620": {
-      "categories": [
-        "Single-player",
-        "Multi-player",
-        "PvP",
-        "Online PvP",
-        "Co-op",
-        "Online Co-op",
-        "Downloadable Content",
-        "Full controller support",
-        "Steam Cloud",
-        "Steam Leaderboards",
-        "Remote Play on Phone",
-        "Remote Play on Tablet",
-        "Remote Play on TV",
-        "Family Sharing"
-      ],
-      "developers": [
-        "Gearbox Software"
-      ],
-      "genres": [
-        "Action",
-        "Indie"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2306620/header.jpg?t=1750149470",
-      "last_updated": "2025-07-25T02:20:50.372728",
-      "name": "Risk of Rain 2: Seekers of the Storm",
-      "positive_review_percentage": 49,
-      "price_eur": "14,99\u20ac",
-      "price_usd": "$14.99",
-      "publishers": [
-        "Gearbox Publishing"
-      ],
-      "recent_review_count": 140,
-      "recent_review_percentage": 87,
-      "recent_review_summary": "Very Positive",
-      "release_date": "27 Aug, 2024",
-      "review_count": 11128,
-      "review_summary": "Mixed",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:16.682869",
+      "name": "[REDIRECT] 2306620 -> 632360",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "632360",
       "steam_app_id": "2306620",
       "steam_url": "https://store.steampowered.com/app/2306620",
-      "tags": [
-        "Action",
-        "Indie",
-        "Great Soundtrack",
-        "Action Roguelike",
-        "Third-Person Shooter",
-        "Multiplayer",
-        "Roguelike",
-        "Co-op",
-        "Looter Shooter",
-        "Singleplayer"
-      ]
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "2307170": {
       "categories": [
@@ -40505,60 +40558,20 @@
       ]
     },
     "2736340": {
-      "categories": [
-        "Single-player",
-        "Multi-player",
-        "Co-op",
-        "Online Co-op",
-        "Shared/Split Screen Co-op",
-        "Shared/Split Screen",
-        "Downloadable Content",
-        "Steam Achievements",
-        "Full controller support",
-        "Steam Cloud",
-        "Remote Play on Phone",
-        "Remote Play on Tablet",
-        "Remote Play on TV",
-        "Remote Play Together",
-        "Family Sharing"
-      ],
-      "developers": [
-        "Fury Studios"
-      ],
-      "genres": [
-        "Adventure",
-        "Indie",
-        "Simulation",
-        "Strategy"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2736340/header.jpg?t=1750768705",
-      "last_updated": "2025-07-19T08:53:06.196813",
-      "name": "Kingdom Two Crowns: Call of Olympus",
-      "positive_review_percentage": 64,
-      "price_eur": "7,99\u20ac",
-      "publishers": [
-        "Raw Fury"
-      ],
-      "recent_review_count": 20,
-      "recent_review_percentage": 85,
-      "recent_review_summary": "Very Positive",
-      "release_date": "8 Oct, 2024",
-      "review_count": 738,
-      "review_summary": "Mixed",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:17.001158",
+      "name": "[REDIRECT] 2736340 -> 701160",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "701160",
       "steam_app_id": "2736340",
       "steam_url": "https://store.steampowered.com/app/2736340",
-      "tags": [
-        "Simulation",
-        "Adventure",
-        "Atmospheric",
-        "Co-op",
-        "Multiplayer",
-        "Strategy",
-        "Controller",
-        "Tower Defense",
-        "Local Co-Op",
-        "Minimalist"
-      ]
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "2736690": {
       "categories": [
@@ -42683,6 +42696,53 @@
         "Singleplayer",
         "Action",
         "Roguelike"
+      ]
+    },
+    "2789460": {
+      "categories": [
+        "Single-player",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Hammer & Ravens"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "Simulation",
+        "Strategy",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2789460/1b0f34a587c2e42c2d06c29b0840a7db449a59c7/header_alt_assets_4.jpg?t=1752758806",
+      "is_early_access": true,
+      "last_updated": "2025-07-25T02:49:43.445772",
+      "name": "Ale Abbey - Monastery Brewery Tycoon",
+      "positive_review_percentage": 92,
+      "price_eur": "14,99\u20ac",
+      "price_usd": "$14.99",
+      "publishers": [
+        "Shiro Unlimited"
+      ],
+      "recent_review_count": 45,
+      "recent_review_percentage": 91,
+      "recent_review_summary": "Very Positive",
+      "release_date": "18 Feb, 2025",
+      "review_count": 566,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2789460",
+      "steam_url": "https://store.steampowered.com/app/2789460",
+      "tags": [
+        "Early Access",
+        "Management",
+        "Casual",
+        "Simulation",
+        "Strategy",
+        "Building",
+        "Capitalism",
+        "Colony Sim",
+        "Base Building",
+        "Medieval"
       ]
     },
     "2789810": {
@@ -45410,58 +45470,20 @@
       ]
     },
     "2857120": {
-      "categories": [
-        "Single-player",
-        "Downloadable Content",
-        "Steam Achievements",
-        "Full controller support",
-        "Steam Trading Cards",
-        "Steam Workshop",
-        "Custom Volume Controls",
-        "Adjustable Difficulty",
-        "Keyboard Only Option",
-        "Stereo Sound",
-        "Steam Cloud",
-        "Remote Play on TV",
-        "Family Sharing"
-      ],
-      "developers": [
-        "Videocult",
-        "Akupara Games"
-      ],
-      "genres": [
-        "Action",
-        "Adventure",
-        "Indie"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2857120/header.jpg?t=1751346729",
-      "last_updated": "2025-07-18T20:53:06.163667",
-      "name": "Rain World: The Watcher",
-      "positive_review_percentage": 69,
-      "price_eur": "14,79\u20ac",
-      "publishers": [
-        "Akupara Games"
-      ],
-      "recent_review_count": 106,
-      "recent_review_percentage": 71,
-      "recent_review_summary": "Mostly Positive",
-      "release_date": "28 Mar, 2025",
-      "review_count": 3093,
-      "review_summary": "Mixed",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:17.313867",
+      "name": "[REDIRECT] 2857120 -> 312520",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "312520",
       "steam_app_id": "2857120",
       "steam_url": "https://store.steampowered.com/app/2857120",
-      "tags": [
-        "Difficult",
-        "Atmospheric",
-        "Survival",
-        "Indie",
-        "Platformer",
-        "Pixel Graphics",
-        "Exploration",
-        "Adventure",
-        "2D",
-        "Open World"
-      ]
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "2858150": {
       "categories": [
@@ -46941,54 +46963,20 @@
       ]
     },
     "2900140": {
-      "categories": [
-        "Single-player",
-        "Multi-player",
-        "Co-op",
-        "Shared/Split Screen Co-op",
-        "Shared/Split Screen",
-        "Downloadable Content",
-        "Steam Achievements",
-        "Full controller support",
-        "Steam Cloud",
-        "Stats",
-        "Steam Leaderboards",
-        "Remote Play Together",
-        "Family Sharing"
-      ],
-      "developers": [
-        "OptizOnion"
-      ],
-      "genres": [
-        "Action",
-        "Casual",
-        "Indie",
-        "RPG"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2900140/header.jpg?t=1718989029",
-      "last_updated": "2025-07-25T00:34:36.705788",
-      "name": "Bounty of One - Panic in the Mines",
-      "positive_review_percentage": 81,
-      "price_eur": "2,99\u20ac",
-      "price_usd": "$2.99",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:17.635368",
+      "name": "[REDIRECT] 2900140 -> 1968730",
       "publishers": [],
-      "release_date": "21 Jun, 2024",
-      "review_count": 22,
-      "review_summary": "Positive",
+      "release_date": "",
+      "resolved_to": "1968730",
       "steam_app_id": "2900140",
       "steam_url": "https://store.steampowered.com/app/2900140",
-      "tags": [
-        "Top-Down Shooter",
-        "RPG",
-        "Arena Shooter",
-        "Score Attack",
-        "Colorful",
-        "Casual",
-        "Action",
-        "Action Roguelike",
-        "Bullet Hell",
-        "Singleplayer"
-      ]
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "290100": {
       "categories": [
@@ -50879,7 +50867,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1753346011",
-      "last_updated": "2025-07-25T02:19:43.026995",
+      "last_updated": "2025-07-25T02:49:36.564331",
       "name": "Clutchtime\u2122: Basketball Deckbuilder",
       "positive_review_percentage": 100,
       "price_eur": "14,39\u20ac",
@@ -52582,7 +52570,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3024040/6e854e906a4c5c2bdb74bbcc5828d10ea2714dba/header_alt_assets_0.jpg?t=1753292258",
-      "last_updated": "2025-07-24T02:48:06.696676",
+      "last_updated": "2025-07-25T02:49:44.209844",
       "name": "Stronghold Crusader: Definitive Edition",
       "positive_review_percentage": 90,
       "price_eur": "17,99\u20ac",
@@ -52591,7 +52579,7 @@
         "FireFly Studios"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 3058,
+      "review_count": 3196,
       "review_summary": "Very Positive",
       "steam_app_id": "3024040",
       "steam_url": "https://store.steampowered.com/app/3024040",
@@ -52603,8 +52591,8 @@
         "Sandbox",
         "Tower Defense",
         "Building",
-        "Economy",
         "Medieval",
+        "Economy",
         "War"
       ]
     },
@@ -56660,6 +56648,63 @@
         "RTS"
       ]
     },
+    "312520": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "PvP",
+        "Shared/Split Screen PvP",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Workshop",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Keyboard Only Option",
+        "Stereo Sound",
+        "Steam Cloud",
+        "Remote Play on TV",
+        "Remote Play Together",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Videocult"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312520/header.jpg?t=1751346684",
+      "last_updated": "2025-07-25T02:49:42.370319",
+      "name": "Rain World",
+      "positive_review_percentage": 94,
+      "price_eur": "12,25\u20ac",
+      "price_usd": "$12.49",
+      "publishers": [
+        "Akupara Games"
+      ],
+      "recent_review_count": 855,
+      "recent_review_percentage": 94,
+      "recent_review_summary": "Very Positive",
+      "release_date": "28 Mar, 2017",
+      "review_count": 35499,
+      "review_summary": "Very Positive",
+      "steam_app_id": "312520",
+      "steam_url": "https://store.steampowered.com/app/312520",
+      "tags": [
+        "Difficult",
+        "Atmospheric",
+        "Survival",
+        "Exploration",
+        "Indie",
+        "Pixel Graphics",
+        "Platformer",
+        "2D",
+        "Post-apocalyptic",
+        "Open World"
+      ]
+    },
     "3125890": {
       "categories": [
         "Single-player",
@@ -57695,46 +57740,20 @@
       ]
     },
     "3142540": {
-      "categories": [
-        "Single-player",
-        "Multi-player",
-        "Co-op",
-        "Online Co-op",
-        "Downloadable Content",
-        "Full controller support",
-        "Family Sharing"
-      ],
-      "developers": [
-        "Miju Games"
-      ],
-      "genres": [
-        "Adventure"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3142540/header.jpg?t=1750163559",
-      "last_updated": "2025-07-19T03:09:15.527190",
-      "name": "The Planet Crafter - Planet Humble",
-      "positive_review_percentage": 73,
-      "price_eur": "7,99\u20ac",
-      "publishers": [
-        "Miju Games"
-      ],
-      "recent_review_count": 24,
-      "recent_review_percentage": 62,
-      "recent_review_summary": "Mixed",
-      "release_date": "9 Oct, 2024",
-      "review_count": 746,
-      "review_summary": "Mostly Positive",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:17.954388",
+      "name": "[REDIRECT] 3142540 -> 1284190",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "1284190",
       "steam_app_id": "3142540",
       "steam_url": "https://store.steampowered.com/app/3142540",
-      "tags": [
-        "Adventure",
-        "Open World Survival Craft",
-        "Base Building",
-        "Survival",
-        "Co-op",
-        "Crafting",
-        "Exploration"
-      ]
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "3144250": {
       "categories": [
@@ -60775,53 +60794,20 @@
       "tags": []
     },
     "3210350": {
-      "categories": [
-        "Single-player",
-        "Downloadable Content",
-        "Steam Achievements",
-        "Full controller support",
-        "Steam Trading Cards",
-        "Steam Cloud",
-        "Remote Play Together",
-        "Family Sharing"
-      ],
-      "developers": [
-        "poncle"
-      ],
-      "genres": [
-        "Action",
-        "Casual",
-        "Indie",
-        "RPG"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3210350/header.jpg?t=1731510096",
-      "last_updated": "2025-07-19T03:09:05.685649",
-      "name": "Vampire Survivors: Ode to Castlevania",
-      "positive_review_percentage": 97,
-      "price_eur": "3,59\u20ac",
-      "publishers": [
-        "poncle"
-      ],
-      "recent_review_count": 17,
-      "recent_review_percentage": 88,
-      "recent_review_summary": "Very Positive",
-      "release_date": "31 Oct, 2024",
-      "review_count": 1628,
-      "review_summary": "Overwhelmingly Positive",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:18.271434",
+      "name": "[REDIRECT] 3210350 -> 1794680",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "1794680",
       "steam_app_id": "3210350",
       "steam_url": "https://store.steampowered.com/app/3210350",
-      "tags": [
-        "Action Roguelike",
-        "Bullet Hell",
-        "Pixel Graphics",
-        "Roguelite",
-        "Indie",
-        "2D",
-        "Vampire",
-        "Casual",
-        "Singleplayer",
-        "Action"
-      ]
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "3211750": {
       "categories": [
@@ -73224,26 +73210,19 @@
       ]
     },
     "3511880": {
-      "categories": [
-        "Additional High-Quality Audio"
-      ],
-      "developers": [
-        "Hammer & Ravens"
-      ],
+      "categories": [],
+      "developers": [],
       "genres": [],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3511880/header.jpg?t=1741957385",
-      "last_updated": "2025-07-25T02:20:20.635389",
-      "name": "Ale Abbey Soundtrack",
-      "price_eur": "4,99\u20ac",
-      "price_usd": "$4.99",
-      "publishers": [
-        "Shiro Unlimited"
-      ],
-      "release_date": "18 Feb, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:18.600453",
+      "name": "[REDIRECT] 3511880 -> 2789460",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "2789460",
       "steam_app_id": "3511880",
       "steam_url": "https://store.steampowered.com/app/3511880",
+      "stub_reason": "Soundtrack redirected to base game",
       "tags": []
     },
     "3512680": {
@@ -76231,16 +76210,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1752753077",
-      "last_updated": "2025-07-24T02:47:59.110862",
+      "last_updated": "2025-07-25T02:49:41.321946",
       "name": "Combo Overload",
-      "positive_review_percentage": 64,
-      "price_eur": "4,49\u20ac",
-      "price_usd": "$4.49",
+      "positive_review_percentage": 66,
+      "price_eur": "4,99\u20ac",
+      "price_usd": "$4.99",
       "publishers": [
         "AraragiAriel"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 14,
+      "review_count": 15,
       "review_summary": "Mixed",
       "steam_app_id": "3618590",
       "steam_url": "https://store.steampowered.com/app/3618590",
@@ -76656,48 +76635,20 @@
       ]
     },
     "3636780": {
-      "categories": [
-        "Single-player",
-        "Downloadable Content",
-        "Steam Achievements",
-        "Full controller support",
-        "Steam Trading Cards",
-        "Steam Cloud",
-        "Family Sharing"
-      ],
-      "developers": [
-        "Noxfall Studios"
-      ],
-      "genres": [
-        "Action",
-        "Adventure",
-        "Casual",
-        "Indie",
-        "RPG",
-        "Strategy"
-      ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3636780/b94585af9e4abe6ad164a02f0545bf0f5a23094a/header.jpg?t=1746896187",
-      "last_updated": "2025-07-23T03:08:16.124858",
-      "name": "Nordic Ashes: Remnants of Corruption",
-      "positive_review_percentage": 52,
-      "price_eur": "4,99\u20ac",
-      "price_usd": "$4.99",
-      "publishers": [
-        "Noxfall Studios"
-      ],
-      "release_date": "10 May, 2025",
-      "review_count": 97,
-      "review_summary": "Mixed",
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-25T02:48:18.914265",
+      "name": "[REDIRECT] 3636780 -> 2068280",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "2068280",
       "steam_app_id": "3636780",
       "steam_url": "https://store.steampowered.com/app/3636780",
-      "tags": [
-        "Strategy",
-        "Action",
-        "Adventure",
-        "RPG",
-        "Indie",
-        "Casual"
-      ]
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "3636910": {
       "categories": [
@@ -82424,6 +82375,66 @@
         "Sci-fi",
         "Top-Down",
         "Top-Down Shooter"
+      ]
+    },
+    "632360": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "PvP",
+        "Online PvP",
+        "Co-op",
+        "Online Co-op",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Adjustable Text Size",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Stereo Sound",
+        "Surround Sound",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Remote Play on Phone",
+        "Remote Play on Tablet",
+        "Remote Play on TV",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Hopoo Games"
+      ],
+      "genres": [
+        "Action",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/632360/header.jpg?t=1751308044",
+      "last_updated": "2025-07-25T02:49:33.974610",
+      "name": "Risk of Rain 2",
+      "positive_review_percentage": 93,
+      "price_eur": "24,99\u20ac",
+      "price_usd": "$24.99",
+      "publishers": [
+        "Gearbox Publishing"
+      ],
+      "recent_review_count": 2011,
+      "recent_review_percentage": 89,
+      "recent_review_summary": "Very Positive",
+      "release_date": "11 Aug, 2020",
+      "review_count": 215199,
+      "review_summary": "Very Positive",
+      "steam_app_id": "632360",
+      "steam_url": "https://store.steampowered.com/app/632360",
+      "tags": [
+        "Third-Person Shooter",
+        "Action Roguelike",
+        "Multiplayer",
+        "Co-op",
+        "Action",
+        "Roguelite",
+        "Roguelike",
+        "Looter Shooter",
+        "Loot",
+        "Online Co-Op"
       ]
     },
     "638510": {

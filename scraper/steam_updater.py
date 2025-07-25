@@ -266,6 +266,17 @@ class SteamDataUpdater:
         if other_steam_count > 0:
             logging.info(f"Added {other_steam_count} Steam games from other platforms")
 
+        # Collect resolved_to targets from stub entries that need fetching
+        missing_resolved_targets = set()
+        for stub_app_id, stub_game_data in self.steam_data['games'].items():
+            if stub_game_data.is_stub and stub_game_data.resolved_to and stub_game_data.resolved_to not in self.steam_data['games']:
+                missing_resolved_targets.add(stub_game_data.resolved_to)
+                logging.info(f"Found missing resolved target: {stub_app_id} -> {stub_game_data.resolved_to}")
+        # Add missing resolved targets to the fetch list
+        steam_app_ids.update(missing_resolved_targets)
+        if missing_resolved_targets:
+            logging.info(f"Added {len(missing_resolved_targets)} missing resolved targets to fetch list")
+
         logging.info(f"Found {len(steam_app_ids)} unique Steam games total")
 
         updates_done = 0
