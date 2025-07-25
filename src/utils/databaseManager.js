@@ -223,6 +223,8 @@ export class DatabaseManager {
         if (wasUpdated) {
           console.log('🔄 Database automatically updated in production')
         }
+        // Always notify listeners to update UI timestamps, even if no content changed
+        this.notifyListeners()
       } catch (error) {
         console.error('❌ Error checking for database updates:', error)
       }
