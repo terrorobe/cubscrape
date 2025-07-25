@@ -143,7 +143,9 @@ export default {
       releaseStatus: 'all',
       platform: 'all',
       rating: '0',
-      tag: '',
+      tag: '', // Legacy single tag for backward compatibility
+      selectedTags: [], // New multi-select tags
+      tagLogic: 'and', // 'and' or 'or'
       channel: '',
       sortBy: 'date',
       currency: 'eur',
@@ -180,22 +182,32 @@ export default {
       }
       channels.value = Array.from(channelSet).sort()
 
-      // Get all unique tags
+      // Get all unique tags with counts
       const tagResults = database.exec(
-        "SELECT DISTINCT tags FROM games WHERE tags IS NOT NULL AND tags != '[]'",
+        "SELECT tags FROM games WHERE tags IS NOT NULL AND tags != '[]' AND is_absorbed = 0",
       )
-      const tagSet = new Set()
+      const tagCounts = new Map()
       if (tagResults.length > 0) {
         tagResults[0].values.forEach((row) => {
           try {
             const tags = JSON.parse(row[0] || '[]')
-            tags.forEach((tag) => tagSet.add(tag))
+            tags.forEach((tag) => {
+              tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
+            })
           } catch {
             console.warn('Failed to parse tags:', row[0])
           }
         })
       }
-      allTags.value = Array.from(tagSet).sort()
+      
+      // Convert to sorted array of tag objects with counts
+      allTags.value = Array.from(tagCounts.entries())
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => {
+          // Sort by count (descending) then by name (ascending)
+          if (a.count !== b.count) return b.count - a.count
+          return a.name.localeCompare(b.name)
+        })
     }
 
     const filteredGames = ref([])
@@ -261,8 +273,21 @@ export default {
         }
       }
 
-      // Tag filter
-      if (filterValues.tag && filterValues.tag.trim()) {
+      // Tag filter - support both legacy single tag and new multi-tag
+      if (filterValues.selectedTags && filterValues.selectedTags.length > 0) {
+        // Multi-tag filtering with AND/OR logic
+        const tagConditions = filterValues.selectedTags.map(() => 'tags LIKE ?')
+        if (filterValues.tagLogic === 'or') {
+          query += ` AND (${tagConditions.join(' OR ')})`
+        } else {
+          // AND logic - each tag must be present
+          query += ` AND (${tagConditions.join(' AND ')})`
+        }
+        filterValues.selectedTags.forEach(tag => {
+          params.push(`%"${tag}"%`)
+        })
+      } else if (filterValues.tag && filterValues.tag.trim()) {
+        // Legacy single tag support for backward compatibility
         query += ' AND tags LIKE ?'
         params.push(`%"${filterValues.tag}"%`)
       }
@@ -729,7 +754,13 @@ export default {
         platform:
           filterValues.platform !== 'all' ? filterValues.platform : null,
         rating: filterValues.rating !== '0' ? filterValues.rating : null,
-        tag: filterValues.tag || null,
+        // Support both legacy single tag and new multi-tag format
+        tags: filterValues.selectedTags && filterValues.selectedTags.length > 0 
+          ? filterValues.selectedTags.join(',') 
+          : filterValues.tag || null,
+        tagLogic: filterValues.selectedTags && filterValues.selectedTags.length > 1 && filterValues.tagLogic !== 'and'
+          ? filterValues.tagLogic
+          : null,
         channel: filterValues.channel || null,
         sort: filterValues.sortBy !== 'date' ? filterValues.sortBy : null,
         currency:
@@ -766,8 +797,27 @@ export default {
         urlFilters.rating = urlParams.get('rating')
       }
 
-      if (urlParams.has('tag')) {
-        urlFilters.tag = urlParams.get('tag')
+      // Handle both new 'tags' parameter and legacy 'tag' parameter
+      if (urlParams.has('tags')) {
+        const tagsParam = urlParams.get('tags')
+        if (tagsParam && tagsParam.includes(',')) {
+          // Multi-tag format: "tag1,tag2,tag3"
+          urlFilters.selectedTags = tagsParam.split(',').filter(tag => tag.trim())
+          urlFilters.tag = '' // Clear legacy field
+        } else if (tagsParam) {
+          // Single tag in new format
+          urlFilters.selectedTags = [tagsParam]
+          urlFilters.tag = tagsParam // Keep for backward compatibility
+        }
+      } else if (urlParams.has('tag')) {
+        // Legacy single tag support
+        const tagParam = urlParams.get('tag')
+        urlFilters.tag = tagParam
+        urlFilters.selectedTags = tagParam ? [tagParam] : []
+      }
+
+      if (urlParams.has('tagLogic')) {
+        urlFilters.tagLogic = urlParams.get('tagLogic')
       }
 
       if (urlParams.has('channel')) {

@@ -46,19 +46,14 @@
         </select>
       </div>
 
-      <!-- Tag Filter -->
+      <!-- Tag Filter (Multi-Select) -->
       <div class="flex flex-col gap-1">
-        <label class="text-sm text-text-secondary">Tag:</label>
-        <select
-          v-model="localFilters.tag"
-          class="cursor-pointer rounded-sm border border-gray-600 bg-bg-card px-3 py-2 text-text-primary hover:border-accent"
-          @change="emitFiltersChanged"
-        >
-          <option value="">All Tags</option>
-          <option v-for="tag in tags" :key="tag" :value="tag">
-            {{ tag }}
-          </option>
-        </select>
+        <TagFilterMulti
+          :tags-with-counts="tags"
+          :initial-selected-tags="localFilters.selectedTags || []"
+          :initial-tag-logic="localFilters.tagLogic || 'and'"
+          @tags-changed="handleTagsChanged"
+        />
       </div>
 
       <!-- Channel Filter -->
@@ -111,9 +106,13 @@
 
 <script>
 import { reactive } from 'vue'
+import TagFilterMulti from './TagFilterMulti.vue'
 
 export default {
   name: 'GameFilters',
+  components: {
+    TagFilterMulti,
+  },
   props: {
     channels: {
       type: Array,
@@ -134,11 +133,26 @@ export default {
       releaseStatus: props.initialFilters.releaseStatus || 'all',
       platform: props.initialFilters.platform || 'all',
       rating: props.initialFilters.rating || '0',
+      // Legacy single tag support for backward compatibility
       tag: props.initialFilters.tag || '',
+      // New multi-tag support
+      selectedTags:
+        props.initialFilters.selectedTags ||
+        (props.initialFilters.tag ? [props.initialFilters.tag] : []),
+      tagLogic: props.initialFilters.tagLogic || 'and',
       channel: props.initialFilters.channel || '',
       sortBy: props.initialFilters.sortBy || 'date',
       currency: props.initialFilters.currency || 'eur',
     })
+
+    const handleTagsChanged = (tagData) => {
+      localFilters.selectedTags = tagData.selectedTags
+      localFilters.tagLogic = tagData.tagLogic
+      // Update legacy tag field for backward compatibility
+      localFilters.tag =
+        tagData.selectedTags.length === 1 ? tagData.selectedTags[0] : ''
+      emitFiltersChanged()
+    }
 
     const emitFiltersChanged = () => {
       emit('filters-changed', { ...localFilters })
@@ -156,6 +170,7 @@ export default {
 
     return {
       localFilters,
+      handleTagsChanged,
       emitFiltersChanged,
       formatChannelName,
     }
