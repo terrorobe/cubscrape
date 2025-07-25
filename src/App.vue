@@ -31,11 +31,11 @@
             <span>{{ databaseStatus.games }} total</span>
           </div>
           <div class="text-xs text-text-secondary/70">
-            <span v-if="databaseStatus.lastGenerated">
+            <span v-if="databaseStatus.lastGenerated" :title="formatExactTimestamp(databaseStatus.lastGenerated)">
               Database:
               {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
             </span>
-            <span v-if="databaseStatus.lastChecked && !isDevelopment">
+            <span v-if="databaseStatus.lastChecked && !isDevelopment" :title="formatExactTimestamp(databaseStatus.lastChecked)">
               • Last check: {{ formatTimestamp(databaseStatus.lastChecked) }}
             </span>
           </div>
@@ -433,6 +433,20 @@ export default {
       return date.toLocaleDateString()
     }
 
+    const formatExactTimestamp = (timestamp) => {
+      if (!timestamp) {
+        return 'Unknown'
+      }
+      const date = new Date(timestamp)
+      return date.toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    }
+
     const onDatabaseUpdate = (database) => {
       db = database
       loadChannelsAndTags(db)
@@ -761,6 +775,7 @@ export default {
       databaseStatus,
       isDevelopment,
       formatTimestamp,
+      formatExactTimestamp,
       updateFilters,
       clearHighlight,
     }
