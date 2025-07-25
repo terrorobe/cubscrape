@@ -368,7 +368,7 @@
     "https://ichbinhamma.itch.io/dwarves-glory-death-and-loot-demo": {
       "header_image": "https://img.itch.zone/aW1nLzE4MTE3NzM2LnBuZw==/original/5MI52z.png",
       "is_free": true,
-      "last_updated": "2025-07-25T15:08:56.236804",
+      "last_updated": "2025-07-25T21:00:05.418960",
       "name": "Dwarves: Glory, Death and Loot",
       "platform": "itch",
       "positive_review_percentage": 88,
@@ -930,6 +930,28 @@
         "Space"
       ],
       "url": "https://tundra-interactive.itch.io/void-war"
+    },
+    "https://ularis-badler.itch.io/archrebel": {
+      "header_image": "https://img.itch.zone/aW1nLzE2MzI4MDc0LnBuZw==/original/%2ByjNGF.png",
+      "is_free": true,
+      "last_updated": "2025-07-25T21:00:03.968585",
+      "name": "Archrebel Tactics (Demo)",
+      "platform": "itch",
+      "positive_review_percentage": 94,
+      "release_date": "",
+      "review_count": 24,
+      "steam_url": "",
+      "tags": [
+        "2D",
+        "Pixel Art",
+        "Retro",
+        "Sci-fi",
+        "Tactical",
+        "Turn-based",
+        "Turn-based Strategy",
+        "Unity"
+      ],
+      "url": "https://ularis-badler.itch.io/archrebel"
     },
     "https://www.crazygames.com/game/block-wall-destroyer": {
       "header_image": "https://imgs.crazygames.com/block-wall-destroyer_16x9/20250602093150/block-wall-destroyer_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
