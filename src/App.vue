@@ -2,9 +2,7 @@
   <div class="min-h-screen bg-bg-primary text-text-primary">
     <div class="container mx-auto max-w-7xl p-5">
       <header class="mb-10 text-center">
-        <h1 class="mb-2 text-4xl font-bold text-accent">
-          Curated Steam Games
-        </h1>
+        <h1 class="mb-2 text-4xl font-bold text-accent">Curated Steam Games</h1>
         <p class="text-lg text-text-secondary">
           Discovered from YouTube Gaming Channels
         </p>
