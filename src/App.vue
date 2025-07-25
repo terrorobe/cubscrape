@@ -36,7 +36,7 @@
               :title="
                 isDevelopment
                   ? 'Click to test version mismatch'
-                  : formatExactTimestamp(databaseStatus.lastGenerated)
+                  : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
               "
               :class="
                 isDevelopment ? 'cursor-pointer hover:text-text-primary' : ''
@@ -48,7 +48,7 @@
             </span>
             <span
               v-if="databaseStatus.lastChecked && !isDevelopment"
-              :title="formatExactTimestamp(databaseStatus.lastChecked)"
+              :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
             >
               • Last check: {{ formatTimestamp(databaseStatus.lastChecked) }}
             </span>
@@ -846,6 +846,7 @@ export default {
       highlightedGameId,
       databaseStatus,
       isDevelopment,
+      databaseManager,
       formatTimestamp,
       formatExactTimestamp,
       updateFilters,
