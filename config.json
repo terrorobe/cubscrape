@@ -41,5 +41,10 @@
       "enabled": true
     }
   },
-  "skip_steam_matching": ["League of Legends"]
+  "skip_steam_matching": ["League of Legends"],
+  "global_settings": {
+    "backfill_cutoff_date": "2024-01-01",
+    "backfill_max_videos": 100,
+    "cron_enable_backfill": true
+  }
 }

@@ -24,7 +24,7 @@ class SteamDataFetcher(BaseFetcher):
         }
         self.cookies = {'birthtime': '0', 'mature_content': '1'}
         self.max_retries = 10
-        self.base_delay = 1
+        self.base_delay = 16
 
     def _make_request_with_retry(self, url: str, request_type: str = "API", **kwargs: Any) -> requests.Response | None:
         """Make HTTP request with exponential backoff retry logic"""

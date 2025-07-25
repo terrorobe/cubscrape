@@ -86,51 +86,105 @@ class CLICommands:
 
     def _create_parser(self) -> argparse.ArgumentParser:
         """Create the argument parser with all command options"""
-        parser = argparse.ArgumentParser(description="YouTube to Steam game scraper")
+        parser = argparse.ArgumentParser(
+            prog='cubscrape',
+            description='YouTube gaming channel scraper with Steam integration',
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog='''
+Processing Modes:
+  backfill          Process historical videos for channels
+  cron              Daily run - process recent videos from all enabled channels
+  reprocess         Reprocess existing videos with current game detection logic
+  fetch-steam-apps  Fetch specific Steam app data by ID
+  data-quality      Analyze and report data quality issues
+  resolve-games     Find games for videos with missing/broken game data
+  build-db          Build SQLite database from JSON data
+  fetch-videos      Fetch new YouTube videos only (no game processing)
+  refresh-steam     Update Steam game data only
+  refresh-other     Update other platform games (Itch.io, CrazyGames) only
+
+Examples:
+  cubscrape cron                              # Process all channels (daily run)
+  cubscrape cron --enable-cron-backfill      # Include backfill in cron run
+  cubscrape backfill --channel dextag         # Backfill specific channel
+  cubscrape backfill --max-new 50             # Backfill all channels, max 50 videos each
+  cubscrape refresh-steam --max-steam-updates 100  # Update Steam data only
+  cubscrape fetch-steam-apps --app-id 12345   # Fetch specific Steam app
+  cubscrape data-quality                      # Run data quality checks
+            '''
+        )
+
+        # Simplified mode help that works better with argparse formatting
+        mode_help = 'Processing mode. Most common: cron (daily), backfill (historical), data-quality (analysis)'
+
         parser.add_argument(
             'mode',
             choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other'],
-            help='Processing mode: backfill (single channel), cron (all channels), reprocess (reprocess existing videos), fetch-steam-apps (fetch specific Steam apps), data-quality, resolve-games (find games for videos with missing/broken/stub game data), build-db, fetch-videos (only fetch new videos), refresh-steam (only refresh Steam data), or refresh-other (only refresh other games data)'
+            help=mode_help
         )
-        parser.add_argument(
+        # Channel selection options
+        channel_group = parser.add_argument_group('Channel Selection')
+        channel_group.add_argument(
             '--channel',
             type=str,
-            help='Channel ID for backfill/reprocess mode (optional for backfill - processes all channels if not specified)'
+            metavar='ID',
+            help='Channel ID (e.g., dextag, nookrium). If not specified, processes all enabled channels'
         )
-        parser.add_argument(
+        channel_group.add_argument(
             '--all-channels',
             action='store_true',
-            help='Process all channels for reprocess mode (multi-game conversion)'
+            help='Explicitly process all channels (for reprocess mode)'
         )
-        parser.add_argument(
+
+        # Processing limits
+        limits_group = parser.add_argument_group('Processing Limits')
+        limits_group.add_argument(
             '--max-new',
             type=int,
-            help='Maximum number of new videos to process'
+            metavar='N',
+            help='Maximum number of new videos to process per channel'
         )
-        parser.add_argument(
+        limits_group.add_argument(
             '--max-steam-updates',
             type=int,
+            metavar='N',
             help='Maximum number of Steam games to update'
         )
-        parser.add_argument(
+        limits_group.add_argument(
             '--max-other-updates',
             type=int,
+            metavar='N',
             help='Maximum number of other platform games to update'
         )
-        parser.add_argument(
+
+        # Special options
+        special_group = parser.add_argument_group('Special Options')
+        special_group.add_argument(
             '--force',
             action='store_true',
             help='Force update all games regardless of refresh intervals'
         )
-        parser.add_argument(
+        special_group.add_argument(
             '--app-id',
             type=str,
-            help='Steam app ID(s) to fetch (required for fetch-steam-apps mode). Can be a single ID or comma-separated list'
+            metavar='ID[,ID...]',
+            help='Steam app ID(s) to fetch (required for fetch-steam-apps mode)'
         )
-        parser.add_argument(
+        special_group.add_argument(
             '--cutoff-date',
             type=str,
-            help='Date cutoff for backfill mode (YYYY-MM-DD format) - only process videos after this date'
+            metavar='YYYY-MM-DD',
+            help='Only process videos published after this date (backfill mode)'
+        )
+        special_group.add_argument(
+            '--enable-cron-backfill',
+            action='store_true',
+            help='Enable backfill processing during cron run (overrides config setting)'
+        )
+        special_group.add_argument(
+            '--disable-cron-backfill',
+            action='store_true',
+            help='Disable backfill processing during cron run (overrides config setting)'
         )
         return parser
 
@@ -170,6 +224,111 @@ class CLICommands:
         script_dir = Path(__file__).resolve().parent
         return script_dir.parent
 
+    def _calculate_backfill_allocation(self, enabled_channels: list[str], total_budget: int) -> dict[str, int]:
+        """
+        Calculate video allocation per channel for cron backfill.
+
+        Distributes the total video budget across all channels with a minimum of 10 videos per channel.
+        If the budget can't provide 10 videos per channel, allocates what's available equally.
+
+        Args:
+            enabled_channels: List of enabled channel IDs
+            total_budget: Total number of videos to process across all channels
+
+        Returns:
+            Dictionary mapping channel_id -> number of videos to process
+        """
+        if not enabled_channels or total_budget <= 0:
+            return {}
+
+        num_channels = len(enabled_channels)
+        min_per_channel = 10
+
+        # If budget allows minimum allocation for all channels
+        if total_budget >= num_channels * min_per_channel:
+            # Distribute remaining budget after guaranteeing minimum
+            remaining_budget = total_budget - (num_channels * min_per_channel)
+            extra_per_channel = remaining_budget // num_channels
+            leftover = remaining_budget % num_channels
+
+            allocation = {}
+            for i, channel in enumerate(enabled_channels):
+                # Give minimum + equal share of extra + 1 more for first 'leftover' channels
+                videos = min_per_channel + extra_per_channel + (1 if i < leftover else 0)
+                allocation[channel] = videos
+        else:
+            # Not enough budget for minimum allocation, distribute equally
+            base_per_channel = total_budget // num_channels
+            leftover = total_budget % num_channels
+
+            allocation = {}
+            for i, channel in enumerate(enabled_channels):
+                # Give equal share + 1 more for first 'leftover' channels
+                videos = base_per_channel + (1 if i < leftover else 0)
+                allocation[channel] = videos
+
+        return allocation
+
+    def _get_channels_eligible_for_backfill(self, channels: list[str], cutoff_date: str | None) -> list[str]:
+        """
+        Filter channels to only include those that still have videos to backfill before the cutoff date.
+
+        Args:
+            channels: List of channel IDs to check
+            cutoff_date: Cutoff date in YYYY-MM-DD format, or None to include all channels
+
+        Returns:
+            List of channel IDs that have videos eligible for backfill (oldest video is after cutoff)
+        """
+        if not cutoff_date:
+            return channels
+
+        from datetime import datetime
+
+        from .data_manager import DataManager
+
+        cutoff_datetime = datetime.fromisoformat(cutoff_date + "T00:00:00")
+        eligible_channels = []
+
+        project_root = self._get_project_root()
+        data_manager = DataManager(project_root)
+
+        for channel_id in channels:
+            try:
+                videos_data = data_manager.load_videos_data(channel_id)
+                videos = videos_data.get('videos', {})
+
+                if not videos:
+                    # No videos means we can potentially backfill everything
+                    eligible_channels.append(channel_id)
+                    logging.info(f"Channel {channel_id} eligible for backfill (no videos yet)")
+                    continue
+
+                # Find the oldest video's publish date
+                oldest_date = None
+                for video in videos.values():
+                    try:
+                        video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
+                        if oldest_date is None or video_date < oldest_date:
+                            oldest_date = video_date
+                    except (ValueError, AttributeError):
+                        # Skip videos with invalid dates
+                        continue
+
+                # If oldest video is AFTER cutoff, we can still backfill more
+                if oldest_date and oldest_date >= cutoff_datetime:
+                    eligible_channels.append(channel_id)
+                    logging.info(f"Channel {channel_id} eligible for backfill (oldest video: {oldest_date.date()}, cutoff: {cutoff_date})")
+                else:
+                    logging.info(f"Channel {channel_id} not eligible for backfill (already scraped to {oldest_date.date() if oldest_date else 'unknown'}, cutoff: {cutoff_date})")
+
+            except Exception as e:
+                logging.warning(f"Error checking backfill eligibility for channel {channel_id}: {e}")
+                # Include channel if we can't determine eligibility
+                eligible_channels.append(channel_id)
+
+        return eligible_channels
+
     def _handle_reprocess(self, args: argparse.Namespace) -> None:
         """Handle reprocess command"""
         if args.channel:
@@ -192,6 +351,10 @@ class CLICommands:
         config_manager = ConfigManager(project_root)
         channels = config_manager.get_channels()
 
+        # Use global defaults if not specified via command line
+        max_new_videos = args.max_new or config_manager.get_backfill_max_videos()
+        cutoff_date = args.cutoff_date or config_manager.get_backfill_cutoff_date()
+
         if args.channel:
             # Single channel mode
             if not config_manager.validate_channel_exists(args.channel):
@@ -205,6 +368,12 @@ class CLICommands:
             channels_to_process = [ch for ch in channels if config_manager.is_channel_enabled(ch)]
             logging.info(f"Backfill mode: processing all enabled channels ({len(channels_to_process)} channels)")
 
+        # Log the settings being used
+        if max_new_videos:
+            logging.info(f"Using max videos per channel: {max_new_videos}")
+        if cutoff_date:
+            logging.info(f"Using cutoff date: {cutoff_date}")
+
         # Process each channel
         for channel_id in channels_to_process:
             logging.info(f"Processing channel: {channel_id}")
@@ -213,8 +382,8 @@ class CLICommands:
 
             scraper.process_videos(
                 channel_url,
-                max_new_videos=args.max_new,
-                cutoff_date=args.cutoff_date
+                max_new_videos=max_new_videos,
+                cutoff_date=cutoff_date
             )
 
         # Update other platform games first (may contain Steam links)
@@ -237,7 +406,7 @@ class CLICommands:
         config_manager = ConfigManager(project_root)
         channels = config_manager.get_channels()
 
-        # Process each enabled channel
+        # Process each enabled channel for recent videos
         enabled_channels = []
         for channel_id in channels:
             if not config_manager.is_channel_enabled(channel_id):
@@ -245,12 +414,56 @@ class CLICommands:
                 continue
 
             enabled_channels.append(channel_id)
-            logging.info(f"Cron mode: processing channel {channel_id}")
+            logging.info(f"Cron mode: processing recent videos for channel {channel_id}")
             scraper = YouTubeSteamScraper(channel_id)
 
             # Process recent videos only (smaller batch for cron) - fetch newest first
             channel_url = config_manager.get_channel_url(channel_id)
             scraper.process_videos(channel_url, max_new_videos=10, fetch_newest_first=True)
+
+        # Determine if backfill should run (command line overrides config)
+        enable_backfill = config_manager.get_cron_enable_backfill()
+        if args.enable_cron_backfill:
+            enable_backfill = True
+            logging.info("Backfill enabled via command line override")
+        elif args.disable_cron_backfill:
+            enable_backfill = False
+            logging.info("Backfill disabled via command line override")
+
+        # Optional backfill processing
+        if enable_backfill:
+            logging.info("Cron backfill is enabled - processing historical videos")
+
+            # Get backfill settings and filter eligible channels
+            cutoff_date = config_manager.get_backfill_cutoff_date()
+            eligible_channels = self._get_channels_eligible_for_backfill(enabled_channels, cutoff_date)
+
+            if not eligible_channels:
+                logging.info("No channels eligible for backfill (all have reached cutoff date)")
+            else:
+                logging.info(f"Found {len(eligible_channels)} channels eligible for backfill: {', '.join(eligible_channels)}")
+
+                total_budget = config_manager.get_cron_backfill_total_videos()
+                allocation = self._calculate_backfill_allocation(eligible_channels, total_budget)
+
+                if allocation:
+                    total_allocated = sum(allocation.values())
+                    logging.info(f"Backfill budget: {total_allocated} videos across {len(allocation)} channels")
+
+                    for channel_id, videos_to_process in allocation.items():
+                        logging.info(f"Cron backfill: processing {videos_to_process} videos for {channel_id}")
+                        scraper = YouTubeSteamScraper(channel_id)
+                        channel_url = config_manager.get_channel_url(channel_id)
+
+                        scraper.process_videos(
+                            channel_url,
+                            max_new_videos=videos_to_process,
+                            cutoff_date=cutoff_date
+                        )
+                else:
+                    logging.info("No videos allocated for backfill this run")
+        else:
+            logging.info("Cron backfill disabled")
 
         # Update other platform games first (may contain Steam links)
         if enabled_channels:

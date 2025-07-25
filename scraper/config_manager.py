@@ -94,3 +94,46 @@ class ConfigManager:
             )
 
         return skip_list
+
+    def get_global_settings(self) -> dict[str, Any]:
+        """Get global settings configuration"""
+        config = self.load_config()
+        global_settings = config.get('global_settings', {})
+
+        if not isinstance(global_settings, dict):
+            raise ValueError(
+                f"Invalid config: 'global_settings' must be a dict, got {type(global_settings).__name__}. "
+                f"Check your config.json file. Expected format: {{\"global_settings\": {{\"key\": \"value\"}}}}"
+            )
+
+        return global_settings
+
+    def get_backfill_cutoff_date(self) -> str | None:
+        """Get global backfill cutoff date"""
+        global_settings = self.get_global_settings()
+        cutoff_date = global_settings.get('backfill_cutoff_date')
+        return str(cutoff_date) if cutoff_date else None
+
+    def get_backfill_max_videos(self) -> int | None:
+        """Get global backfill max videos limit"""
+        global_settings = self.get_global_settings()
+        max_videos = global_settings.get('backfill_max_videos')
+        if max_videos is not None:
+            if not isinstance(max_videos, int) or max_videos <= 0:
+                raise ValueError(
+                    f"Invalid config: 'backfill_max_videos' must be a positive integer, got {max_videos}. "
+                    f"Check your config.json file."
+                )
+            return max_videos
+        return None
+
+    def get_cron_enable_backfill(self) -> bool:
+        """Get whether cron should include backfill processing"""
+        global_settings = self.get_global_settings()
+        enable_backfill = global_settings.get('cron_enable_backfill', False)
+        return bool(enable_backfill)
+
+    def get_cron_backfill_total_videos(self) -> int:
+        """Get total video budget for cron backfill runs (uses backfill_max_videos)"""
+        max_videos = self.get_backfill_max_videos()
+        return max_videos if max_videos is not None else 50
