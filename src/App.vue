@@ -2,7 +2,9 @@
   <div class="min-h-screen bg-bg-primary text-text-primary">
     <div class="container mx-auto max-w-7xl p-5">
       <header class="mb-10 text-center">
-        <h1 class="mb-2 text-4xl font-bold text-accent">Curated Steam Games</h1>
+        <h1 class="mb-2 text-4xl font-bold text-accent">
+          Curated Steam Games
+        </h1>
         <p class="text-lg text-text-secondary">
           Discovered from YouTube Gaming Channels
         </p>
@@ -31,13 +33,62 @@
             <span>{{ databaseStatus.games }} total</span>
           </div>
           <div class="text-xs text-text-secondary/70">
-            <span v-if="databaseStatus.lastGenerated" :title="formatExactTimestamp(databaseStatus.lastGenerated)">
+            <span
+              v-if="databaseStatus.lastGenerated"
+              :title="
+                isDevelopment
+                  ? 'Click to test version mismatch'
+                  : formatExactTimestamp(databaseStatus.lastGenerated)
+              "
+              :class="
+                isDevelopment ? 'cursor-pointer hover:text-text-primary' : ''
+              "
+              @click="isDevelopment ? testVersionMismatch() : null"
+            >
               Database:
               {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
             </span>
-            <span v-if="databaseStatus.lastChecked && !isDevelopment" :title="formatExactTimestamp(databaseStatus.lastChecked)">
+            <span
+              v-if="databaseStatus.lastChecked && !isDevelopment"
+              :title="formatExactTimestamp(databaseStatus.lastChecked)"
+            >
               • Last check: {{ formatTimestamp(databaseStatus.lastChecked) }}
             </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Version Mismatch Notification -->
+      <div
+        v-if="showVersionMismatch"
+        class="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-900/20"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🔄</span>
+            <div>
+              <h3 class="font-semibold text-amber-800 dark:text-amber-200">
+                New Version Available
+              </h3>
+              <p class="text-sm text-amber-700 dark:text-amber-300">
+                The app has been updated. Please reload to get the latest
+                features and fixes.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              @click="dismissVersionMismatch"
+              class="rounded-sm px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-800/50"
+            >
+              Dismiss
+            </button>
+            <button
+              @click="reloadApp"
+              class="rounded-sm bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
+            >
+              Reload Now
+            </button>
           </div>
         </div>
       </div>
@@ -110,6 +161,8 @@ export default {
       lastGenerated: null,
       lastChecked: null,
     })
+    const showVersionMismatch = ref(false)
+    const versionMismatchInfo = ref(null)
 
     const loadChannelsAndTags = (database) => {
       // Get all unique channels
@@ -443,7 +496,7 @@ export default {
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     }
 
@@ -453,6 +506,25 @@ export default {
       executeQuery(db)
       updateDatabaseStatus()
       console.log('🔄 UI updated with new database')
+    }
+
+    const onVersionMismatch = (versionInfo) => {
+      versionMismatchInfo.value = versionInfo
+      showVersionMismatch.value = true
+      console.warn('🔄 App version mismatch - reload recommended')
+    }
+
+    const reloadApp = () => {
+      window.location.reload()
+    }
+
+    const dismissVersionMismatch = () => {
+      showVersionMismatch.value = false
+    }
+
+    const testVersionMismatch = () => {
+      console.log('🧪 User clicked test version mismatch button')
+      databaseManager.testVersionMismatch()
     }
 
     const loadGames = async () => {
@@ -467,6 +539,7 @@ export default {
 
         // Set up listener for database updates (safe to call multiple times)
         databaseManager.addUpdateListener(onDatabaseUpdate)
+        databaseManager.addVersionMismatchListener(onVersionMismatch)
 
         loadChannelsAndTags(db)
         updateDatabaseStatus()
@@ -742,6 +815,7 @@ export default {
       // Cleanup database manager
       if (databaseManager.isLoaded()) {
         databaseManager.removeUpdateListener(onDatabaseUpdate)
+        databaseManager.removeVersionMismatchListener(onVersionMismatch)
 
         // Only destroy if not in HMR mode
         if (!import.meta.hot) {
@@ -778,6 +852,11 @@ export default {
       formatExactTimestamp,
       updateFilters,
       clearHighlight,
+      showVersionMismatch,
+      versionMismatchInfo,
+      reloadApp,
+      dismissVersionMismatch,
+      testVersionMismatch,
     }
   },
 }

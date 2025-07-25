@@ -18,6 +18,9 @@ export class DatabaseManager {
     this.isDevelopment = import.meta.env.DEV
     this.listeners = new Set()
     this.lastCheckTime = null
+    this.currentAppVersion = null
+    this.databaseAppVersion = null
+    this.versionMismatchListeners = new Set()
 
     // In production, check every 10 minutes
     this.PRODUCTION_CHECK_INTERVAL = 10 * 60 * 1000 // 10 minutes
@@ -33,7 +36,7 @@ export class DatabaseManager {
       locateFile: (file) => `https://sql.js.org/dist/${file}`,
     })
 
-    // Load initial database
+    // Load initial database (will cache currentAppVersion from database)
     await this.loadDatabase()
 
     // Set up automatic checking in production
@@ -49,6 +52,26 @@ export class DatabaseManager {
         await this.reloadDatabase()
       })
     }
+  }
+
+  /**
+   * Extract app version from database metadata
+   */
+  extractDatabaseAppVersion(db) {
+    try {
+      const result = db.exec(
+        "SELECT value FROM app_metadata WHERE key = 'app_version'",
+      )
+      if (result.length > 0 && result[0].values.length > 0) {
+        const version = result[0].values[0][0]
+        console.log('🗄️ Database app version:', version)
+        return version
+      }
+    } catch (error) {
+      console.warn('⚠️ Could not extract database version:', error)
+    }
+
+    return 'unknown'
   }
 
   /**
@@ -102,7 +125,60 @@ export class DatabaseManager {
         this.db.close()
       }
 
-      this.db = new this.SQL.Database(new Uint8Array(dbBuffer))
+      // Create temporary database instance to check version
+      const tempDb = new this.SQL.Database(new Uint8Array(dbBuffer))
+
+      // Extract version from the new database
+      const newDatabaseVersion = this.extractDatabaseAppVersion(tempDb)
+
+      // Handle initial load vs updates differently
+      if (!this.currentAppVersion) {
+        // Initial load: use database version as current version
+        this.currentAppVersion = newDatabaseVersion
+        console.log(
+          '📱 INITIAL LOAD: Set app version from database:',
+          this.currentAppVersion,
+        )
+      } else {
+        // Subsequent load: check compatibility
+        console.log('🔍 VERSION CHECK:', {
+          cached: this.currentAppVersion,
+          database: newDatabaseVersion,
+          compatible: this.currentAppVersion === newDatabaseVersion,
+        })
+
+        const isCompatible = this.currentAppVersion === newDatabaseVersion
+
+        if (!isCompatible) {
+          // Don't update the database, keep the old one
+          tempDb.close()
+          console.error('🚫 VERSION MISMATCH DETECTED:', {
+            current: this.currentAppVersion,
+            database: newDatabaseVersion,
+          })
+
+          // Stop checking since we'll never be compatible again
+          this.stopProductionChecking()
+          console.warn('🛑 Stopped database checking due to version mismatch')
+
+          // Notify about version mismatch
+          console.log('📢 Notifying version mismatch listeners...')
+          this.notifyVersionMismatchListeners({
+            currentVersion: this.currentAppVersion,
+            databaseVersion: newDatabaseVersion,
+          })
+
+          return false
+        }
+      }
+
+      // Close existing database if present
+      if (this.db) {
+        this.db.close()
+      }
+
+      this.db = tempDb
+      this.databaseAppVersion = newDatabaseVersion
       this.lastModified = lastModified
       this.lastETag = etag
 
@@ -183,6 +259,20 @@ export class DatabaseManager {
   }
 
   /**
+   * Add listener for version mismatches
+   */
+  addVersionMismatchListener(callback) {
+    this.versionMismatchListeners.add(callback)
+  }
+
+  /**
+   * Remove listener for version mismatches
+   */
+  removeVersionMismatchListener(callback) {
+    this.versionMismatchListeners.delete(callback)
+  }
+
+  /**
    * Notify all listeners that database has been updated
    */
   notifyListeners() {
@@ -191,6 +281,22 @@ export class DatabaseManager {
         callback(this.db)
       } catch (error) {
         console.error('❌ Error in database update listener:', error)
+      }
+    })
+  }
+
+  /**
+   * Notify all listeners about version mismatch
+   */
+  notifyVersionMismatchListeners() {
+    this.versionMismatchListeners.forEach((callback) => {
+      try {
+        callback({
+          currentVersion: this.currentAppVersion,
+          databaseVersion: this.databaseAppVersion,
+        })
+      } catch (error) {
+        console.error('❌ Error in version mismatch listener:', error)
       }
     })
   }
@@ -218,8 +324,9 @@ export class DatabaseManager {
     }
 
     try {
-      const gameCount = this.db.exec('SELECT COUNT(*) FROM games WHERE is_absorbed = 0')[0]
-        .values[0][0]
+      const gameCount = this.db.exec(
+        'SELECT COUNT(*) FROM games WHERE is_absorbed = 0',
+      )[0].values[0][0]
       const channelResults = this.db.exec(
         "SELECT COUNT(DISTINCT unique_channels) FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]'",
       )
@@ -240,6 +347,30 @@ export class DatabaseManager {
   }
 
   /**
+   * Force a version mismatch test (development only)
+   */
+  async testVersionMismatch() {
+    if (!this.isDevelopment) {
+      return
+    }
+
+    console.log('🧪 TESTING VERSION MISMATCH')
+    console.log('Current cached version:', this.currentAppVersion)
+
+    // Manually trigger a version mismatch by pretending database has different version
+    const fakeVersion = 'test-mismatch-version'
+    console.log('Simulating database with version:', fakeVersion)
+
+    if (this.currentAppVersion !== fakeVersion) {
+      console.log('📢 Triggering version mismatch notification...')
+      this.notifyVersionMismatchListeners({
+        currentVersion: this.currentAppVersion,
+        databaseVersion: fakeVersion,
+      })
+    }
+  }
+
+  /**
    * Cleanup resources
    */
   destroy() {
@@ -251,6 +382,7 @@ export class DatabaseManager {
     }
 
     this.listeners.clear()
+    this.versionMismatchListeners.clear()
 
     if (window.gameDatabase === this.db) {
       delete window.gameDatabase

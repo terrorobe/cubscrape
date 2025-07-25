@@ -6,7 +6,7 @@
     "dev": "node scripts/dev.js",
     "dev:vite": "vite",
     "stop-dev": "node scripts/stop-dev.js",
-    "build": "vite build",
+    "build": "node scripts/generate-app-version.js && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.ts,.tsx --fix",
@@ -15,6 +15,7 @@
     "build-db": "uv run cubscrape build-db"
   },
   "dependencies": {
+    "glob": "^11.0.3",
     "sql.js": "^1.11.0",
     "vue": "^3.5.18"
   },

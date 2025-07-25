@@ -35,6 +35,9 @@ class DatabaseManager:
             # Populate with data
             self._populate_games(conn, games_data)
 
+            # Insert app version metadata
+            self._populate_metadata(conn)
+
             # Ensure all data is written to disk
             conn.commit()
             conn.close()
@@ -53,6 +56,46 @@ class DatabaseManager:
 
             # Re-raise the original exception
             raise RuntimeError(f"Failed to create database: {e}") from e
+
+    def _populate_metadata(self, conn: sqlite3.Connection) -> None:
+        """Populate metadata table with app version and other info"""
+        cursor = conn.cursor()
+
+        # Get app version by running the version generation script
+        app_version = self._get_app_version()
+
+        # Insert metadata
+        metadata = [
+            ('app_version', app_version),
+            ('database_created', self._get_current_timestamp())
+        ]
+
+        for key, value in metadata:
+            cursor.execute('INSERT INTO app_metadata (key, value) VALUES (?, ?)', (key, value))
+
+        logging.info(f"Inserted app version {app_version} into database metadata")
+
+    def _get_app_version(self) -> str:
+        """Get the current app version from the generated version file"""
+        try:
+            version_file = Path(__file__).parent.parent / 'public' / 'app-version.json'
+            if version_file.exists():
+                with version_file.open() as f:
+                    version_data = json.loads(f.read())
+                    version = version_data.get('version', 'unknown')
+                    return str(version)
+            else:
+                logging.warning("App version file not found. Run 'npm run build' first.")
+
+        except Exception as e:
+            logging.warning(f"Failed to read app version: {e}")
+
+        return 'unknown'
+
+    def _get_current_timestamp(self) -> str:
+        """Get current timestamp in ISO format"""
+        from datetime import datetime
+        return datetime.now().isoformat()
 
     def _convert_to_sortable_date_int(self, date_str: str) -> int | None:
         """Convert release dates to sortable YYYYMMDD integer format

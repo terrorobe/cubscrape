@@ -1,6 +1,12 @@
 -- Games Database Schema
 -- Single source of truth for database structure
 
+-- Metadata table for app version tracking
+CREATE TABLE app_metadata (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
 CREATE TABLE games (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     game_key TEXT UNIQUE NOT NULL,
