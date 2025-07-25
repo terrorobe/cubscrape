@@ -23,6 +23,6 @@
   <!-- Circle background -->
   <circle cx="16" cy="16" r="15" class="play-circle"/>
   
-  <!-- Play triangle -->
-  <polygon points="12,10 12,22 22,16" class="play-triangle"/>
+  <!-- Play triangle - fine-tuned positioning slightly more to the right -->
+  <polygon points="11.5,9 11.5,23 23.5,16" class="play-triangle"/>
 </svg>
