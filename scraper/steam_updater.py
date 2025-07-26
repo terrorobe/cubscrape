@@ -3,7 +3,6 @@ Steam Data Updater - Orchestrates Steam game updates across multiple channels
 """
 import logging
 import re
-from dataclasses import replace
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -389,9 +388,10 @@ class SteamDataUpdater:
             old_data = self.steam_data['games'].get(app_id)
 
             # Update with timestamp and Itch URL if provided
-            steam_data = replace(steam_data,
-                                last_updated=datetime.now().isoformat(),
-                                itch_url=itch_url)
+            steam_data = steam_data.model_copy(update={
+                'last_updated': datetime.now().isoformat(),
+                'itch_url': itch_url
+            })
             self.steam_data['games'][app_id] = steam_data
 
             # Check if a demo became stubbed and clean up main game reference
@@ -407,10 +407,11 @@ class SteamDataUpdater:
                     main_game = self.steam_data['games'][main_game_id]
                     if main_game.demo_app_id == app_id:
                         # Remove the demo reference from the main game
-                        updated_main_game = replace(main_game,
-                                                   demo_app_id=None,
-                                                   has_demo=False,
-                                                   last_updated=datetime.now().isoformat())
+                        updated_main_game = main_game.model_copy(update={
+                            'demo_app_id': None,
+                            'has_demo': False,
+                            'last_updated': datetime.now().isoformat()
+                        })
                         self.steam_data['games'][main_game_id] = updated_main_game
                         logging.info(f"  Cleaned up demo reference {app_id} from main game {main_game_id}")
             if itch_url:
@@ -477,7 +478,7 @@ class SteamDataUpdater:
             existing_app_data = self.steam_data['games'].get(app_id)
             app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True, existing_data=existing_app_data)
             if app_data:
-                app_data = replace(app_data, last_updated=datetime.now().isoformat())
+                app_data = app_data.model_copy(update={'last_updated': datetime.now().isoformat()})
                 self.steam_data['games'][app_id] = app_data
                 GameUpdateLogger.log_game_update_success(app_data.name, additional_info=app_type)
                 return True

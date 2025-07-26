@@ -5,7 +5,6 @@ YouTube Channel Video Scraper with Steam Game Data Integration
 
 import json
 import logging
-from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 
@@ -212,7 +211,7 @@ class YouTubeSteamScraper:
                             steam_url = f"https://store.steampowered.com/app/{missing_app_id}"
                             steam_data = self.fetch_steam_data(steam_url)
                             if steam_data:
-                                steam_data = replace(steam_data, last_updated=datetime.now().isoformat())
+                                steam_data = steam_data.model_copy(update={'last_updated': datetime.now().isoformat()})
                                 self.steam_data['games'][missing_app_id] = steam_data
                                 print(f"      ✅ Successfully fetched: {steam_data.name}")
                                 missing_resolved += 1
@@ -328,7 +327,7 @@ class YouTubeSteamScraper:
                         steam_url = f"https://store.steampowered.com/app/{app_id}"
                         steam_data = self.fetch_steam_data(steam_url)
                         if steam_data:
-                            steam_data = replace(steam_data, last_updated=datetime.now().isoformat())
+                            steam_data = steam_data.model_copy(update={'last_updated': datetime.now().isoformat()})
                             self.steam_data['games'][app_id] = steam_data
                             print(f"      📊 Fetched game metadata: {steam_data.name}")
                     except Exception as e:

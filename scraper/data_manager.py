@@ -3,7 +3,6 @@ Data management utilities for the YouTube Steam scraper
 """
 
 import logging
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any, TypedDict
 
@@ -116,8 +115,8 @@ class DataManager:
         videos_dict = {}
         for video_id, video_data in videos_data['videos'].items():
             if isinstance(video_data, VideoData):
-                video_dict = asdict(video_data)
-                # Remove None values and False boolean values to keep JSON clean
+                video_dict = video_data.model_dump(exclude_none=True)
+                # Remove False boolean values to keep JSON clean
                 video_dict = self._clean_dict_for_json(video_dict)
                 videos_dict[video_id] = video_dict
             else:
@@ -136,8 +135,8 @@ class DataManager:
         games_dict = {}
         for app_id, game_data in steam_data['games'].items():
             if isinstance(game_data, SteamGameData):
-                game_dict = asdict(game_data)
-                # Remove None values and False boolean values to keep JSON clean
+                game_dict = game_data.model_dump(exclude_none=True)
+                # Remove False boolean values to keep JSON clean
                 game_dict = self._clean_dict_for_json(game_dict)
                 games_dict[app_id] = game_dict
             else:
@@ -156,8 +155,8 @@ class DataManager:
         games_dict = {}
         for game_id, game_data in other_games_data['games'].items():
             if isinstance(game_data, OtherGameData):
-                game_dict = asdict(game_data)
-                # Remove None values and False boolean values to keep JSON clean
+                game_dict = game_data.model_dump(exclude_none=True)
+                # Remove False boolean values to keep JSON clean
                 game_dict = self._clean_dict_for_json(game_dict)
                 games_dict[game_id] = game_dict
             else:

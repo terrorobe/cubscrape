@@ -6,7 +6,6 @@ and video metadata management.
 """
 
 import logging
-from dataclasses import replace
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
@@ -176,7 +175,7 @@ class VideoProcessor:
         game_references = extract_all_game_links(video.description)
 
         # Store video data with game references (preserve all existing fields)
-        video_data = replace(video, game_references=game_references)
+        video_data = video.model_copy(update={'game_references': game_references})
 
         if game_references:
             logging.info(f"  Found {len(game_references)} game reference(s)")
@@ -187,7 +186,7 @@ class VideoProcessor:
             detected_game = self.youtube_extractor.extract_youtube_detected_game(video.video_id)
             if detected_game:
                 logging.info(f"  YouTube detected game: {detected_game}")
-                video_data = replace(video_data, youtube_detected_game=detected_game)
+                video_data = video_data.model_copy(update={'youtube_detected_game': detected_game})
 
                 # Check if this game should skip Steam matching
                 skip_games = self.config_manager.get_skip_steam_matching_games()
@@ -205,10 +204,9 @@ class VideoProcessor:
                             inferred=True,
                             youtube_detected_matched=True
                         )
-                        video_data = replace(
-                            video_data,
-                            game_references=[inferred_ref]
-                        )
+                        video_data = video_data.model_copy(update={
+                            'game_references': [inferred_ref]
+                        })
                         logging.info(f"  Matched to Steam: {steam_match['name']} (App ID: {steam_match['app_id']}, confidence: {steam_match['confidence']:.2f})")
                     else:
                         logging.info("  No confident Steam matches found for YouTube detected game")
