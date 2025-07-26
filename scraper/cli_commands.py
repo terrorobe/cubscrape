@@ -419,20 +419,29 @@ Examples:
         config_manager = ConfigManager(project_root)
         channels = config_manager.get_channels()
 
-        # Process each enabled channel for recent videos
+        # Process each enabled channel for recent videos (collect without saving)
         enabled_channels = []
+        scrapers_to_save = []
         for channel_id in channels:
             if not config_manager.is_channel_enabled(channel_id):
                 logging.info(f"Skipping disabled channel: {channel_id}")
                 continue
 
             enabled_channels.append(channel_id)
-            logging.info(f"Cron mode: processing recent videos for channel {channel_id}")
+            logging.info(f"Processing channel @{channel_id} (cron mode)")
             scraper = YouTubeSteamScraper(channel_id)
 
             # Process recent videos only (smaller batch for cron) - fetch newest first
+            # Use process_videos_no_save to avoid saving before Steam updates
             channel_url = config_manager.get_channel_url(channel_id)
-            scraper.process_videos(channel_url, max_new_videos=10, fetch_newest_first=True)
+            new_videos_processed = scraper.video_processor.process_videos(
+                scraper.videos_data, channel_url, max_new_videos=10,
+                fetch_newest_first=True, cutoff_date=None
+            )
+            logging.info(f"Completed: {new_videos_processed} new videos processed")
+
+            # Collect scraper for later saving
+            scrapers_to_save.append(scraper)
 
         # Determine if backfill should run (command line overrides config)
         enable_backfill = config_manager.get_cron_enable_backfill()
@@ -468,11 +477,15 @@ Examples:
                         scraper = YouTubeSteamScraper(channel_id)
                         channel_url = config_manager.get_channel_url(channel_id)
 
-                        scraper.process_videos(
-                            channel_url,
-                            max_new_videos=videos_to_process,
-                            cutoff_date=cutoff_date
+                        # Process backfill videos without saving
+                        new_videos_processed = scraper.video_processor.process_videos(
+                            scraper.videos_data, channel_url, max_new_videos=videos_to_process,
+                            fetch_newest_first=False, cutoff_date=cutoff_date
                         )
+                        logging.info(f"Completed: {new_videos_processed} new videos processed")
+
+                        # Add to scrapers to save later
+                        scrapers_to_save.append(scraper)
                 else:
                     logging.info("No videos allocated for backfill this run")
         else:
@@ -500,6 +513,10 @@ Examples:
             if 'error' not in stats:
                 logging.info(f"Auto-linking results: {stats['approved_links']} new links, "
                            f"{stats['conflicting_links_removed']} conflicts resolved")
+
+        # Save all video data after Steam updates are complete
+        for scraper in scrapers_to_save:
+            scraper.save_videos()
 
     def _handle_fetch_steam_apps(self, args: argparse.Namespace) -> None:
         """Handle fetch-steam-apps command"""

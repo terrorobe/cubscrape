@@ -25,6 +25,21 @@ class ValidationError:
     severity: str = "error"  # "error", "warning", "info"
 
 
+@dataclass
+class ValidationContext:
+    """Contains pre-loaded data for validation to avoid race conditions"""
+    steam_data: SteamDataDict | None = None
+    other_games_data: OtherGamesDataDict | None = None
+    videos_data: dict[str, VideosDataDict] | None = None
+
+    def has_all_data(self, channel_ids: list[str]) -> bool:
+        """Check if context contains all required data"""
+        return (self.steam_data is not None and
+                self.other_games_data is not None and
+                self.videos_data is not None and
+                all(cid in self.videos_data for cid in channel_ids))
+
+
 class ReferenceValidator:
     """Validates cross-references and data integrity across all game data"""
 
@@ -32,20 +47,32 @@ class ReferenceValidator:
         self.data_manager = data_manager
         self.errors: list[ValidationError] = []
 
-    def validate_all(self, channel_ids: list[str]) -> list[ValidationError]:
-        """Run comprehensive validation across all data"""
+    def validate_all(self, channel_ids: list[str],
+                    context: ValidationContext | None = None) -> list[ValidationError]:
+        """Run comprehensive validation with optional pre-loaded context"""
         self.errors.clear()
 
-        # Load all data
-        steam_data = self.data_manager.load_steam_data()
-        other_games_data = self.data_manager.load_other_games_data()
-        videos_data = {}
-        for channel_id in channel_ids:
-            videos_data[channel_id] = self.data_manager.load_videos_data(channel_id)
-
-        logging.info("Running comprehensive reference validation...")
+        if context and context.has_all_data(channel_ids):
+            # Use pre-loaded data from context
+            steam_data = context.steam_data
+            other_games_data = context.other_games_data
+            videos_data = context.videos_data
+            logging.debug("Running comprehensive reference validation using provided context...")
+        else:
+            # Fall back to loading from disk
+            steam_data = self.data_manager.load_steam_data()
+            other_games_data = self.data_manager.load_other_games_data()
+            videos_data = {}
+            for channel_id in channel_ids:
+                videos_data[channel_id] = self.data_manager.load_videos_data(channel_id)
+            logging.debug("Running comprehensive reference validation loading from disk...")
 
         # Run all validation checks
+        # At this point, all data should be loaded (either from context or disk)
+        assert steam_data is not None
+        assert other_games_data is not None
+        assert videos_data is not None
+
         self._validate_steam_cross_references(steam_data)
         self._validate_steam_business_logic(steam_data)
         self._validate_cross_platform_symmetry(steam_data, other_games_data)
@@ -55,13 +82,13 @@ class ReferenceValidator:
         # Log summary
         errors = [e for e in self.errors if e.severity == "error"]
         warnings = [e for e in self.errors if e.severity == "warning"]
-        logging.info(f"Validation complete: {len(errors)} errors, {len(warnings)} warnings")
+        logging.debug(f"Validation complete: {len(errors)} errors, {len(warnings)} warnings")
 
         return self.errors
 
     def _validate_steam_cross_references(self, steam_data: SteamDataDict) -> None:
         """Validate bidirectional demo-game relationships in Steam data"""
-        logging.info("Validating Steam cross-references...")
+        logging.debug("Validating Steam cross-references...")
 
         games = steam_data['games']
 
@@ -111,7 +138,7 @@ class ReferenceValidator:
 
     def _validate_steam_business_logic(self, steam_data: SteamDataDict) -> None:
         """Validate business logic rules for Steam games"""
-        logging.info("Validating Steam business logic...")
+        logging.debug("Validating Steam business logic...")
 
         games = steam_data['games']
 
@@ -318,7 +345,7 @@ class ReferenceValidator:
 
     def _validate_cross_platform_symmetry(self, steam_data: SteamDataDict, other_games_data: OtherGamesDataDict) -> None:
         """Validate symmetry between Steam itch_url and Itch steam_url"""
-        logging.info("Validating cross-platform symmetry...")
+        logging.debug("Validating cross-platform symmetry...")
 
         steam_games = steam_data['games']
         other_games = other_games_data['games']
@@ -391,7 +418,7 @@ class ReferenceValidator:
 
     def _validate_resolution_chains(self, steam_data: SteamDataDict, other_games_data: OtherGamesDataDict) -> None:
         """Validate resolution chains are not circular and targets exist"""
-        logging.info("Validating resolution chains...")
+        logging.debug("Validating resolution chains...")
 
         # Validate Steam resolution chains
         steam_games = steam_data['games']
@@ -456,7 +483,7 @@ class ReferenceValidator:
     def _validate_video_references(self, videos_data: dict[str, VideosDataDict],
                                  steam_data: SteamDataDict, other_games_data: OtherGamesDataDict) -> None:
         """Validate video game references exist in corresponding game files"""
-        logging.info("Validating video game references...")
+        logging.debug("Validating video game references...")
 
         steam_games = steam_data['games']
         other_games = other_games_data['games']

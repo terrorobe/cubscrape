@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypedDict
 
 if TYPE_CHECKING:
-    from .reference_validator import ReferenceValidator
+    from .reference_validator import ReferenceValidator, ValidationContext
 
 from .models import OtherGameData, SteamGameData, VideoData, VideoGameReference
 from .utils import load_json, save_data
@@ -59,8 +59,9 @@ class DataManager:
             self._validator = ReferenceValidator(self)
         return self._validator
 
-    def _run_validation_if_enabled(self, channel_ids: list[str] | None = None) -> bool:
-        """Run validation if enabled. Returns True if validation passes or is disabled."""
+    def _run_validation_if_enabled(self, channel_ids: list[str] | None = None,
+                                  context: 'ValidationContext | None' = None) -> bool:
+        """Run validation with optional pre-loaded context. Returns True if validation passes or is disabled."""
         if not self.validate_on_save:
             return True
 
@@ -77,7 +78,7 @@ class DataManager:
 
         try:
             validator = self._get_validator()
-            errors = validator.validate_all(channel_ids)
+            errors = validator.validate_all(channel_ids, context)
             validation_errors = [e for e in errors if e.severity == "error"]
 
             if validation_errors:
@@ -174,8 +175,17 @@ class DataManager:
             'videos': videos_dict
         }
 
-        # Run validation before saving
-        if not self._run_validation_if_enabled([channel_id]):
+        # Create validation context with current data
+        from .reference_validator import ValidationContext
+        videos_data_dict = {channel_id: videos_data}
+        context = ValidationContext(
+            steam_data=self.load_steam_data(),
+            other_games_data=self.load_other_games_data(),
+            videos_data=videos_data_dict
+        )
+
+        # Run validation before saving using context
+        if not self._run_validation_if_enabled([channel_id], context=context):
             raise ValueError("Data validation failed - save operation aborted")
 
         save_data(data_to_save, videos_file)
@@ -199,8 +209,29 @@ class DataManager:
             'games': games_dict
         }
 
-        # Run validation before saving
-        if not self._run_validation_if_enabled():
+        # Create validation context with current in-memory data
+        from .reference_validator import ValidationContext
+
+        # Load all videos data for complete validation context
+        try:
+            from .config_manager import ConfigManager
+            config_manager = ConfigManager(self.project_root)
+            channels = config_manager.get_channels()
+            videos_data_dict = {}
+            for channel_id in channels:
+                videos_data_dict[channel_id] = self.load_videos_data(channel_id)
+        except Exception as e:
+            logging.warning(f"Could not load all videos data for validation context: {e}")
+            videos_data_dict = {}
+
+        context = ValidationContext(
+            steam_data=steam_data,
+            other_games_data=self.load_other_games_data(),
+            videos_data=videos_data_dict
+        )
+
+        # Run validation before saving using context
+        if not self._run_validation_if_enabled(context=context):
             raise ValueError("Data validation failed - save operation aborted")
 
         save_data(data_to_save, steam_file)

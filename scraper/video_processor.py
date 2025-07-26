@@ -29,7 +29,7 @@ class VideoProcessor:
     def process_videos(self, videos_data: "VideosDataDict", channel_url: str, max_new_videos: int | None = None,
                       fetch_newest_first: bool = False, cutoff_date: str | None = None) -> int:
         """Process YouTube videos only"""
-        logging.info(f"Processing videos from channel: {channel_url}")
+        logging.debug(f"Processing videos from channel: {channel_url}")
 
         if not max_new_videos:
             max_new_videos = 50
@@ -54,7 +54,7 @@ class VideoProcessor:
         # Smart starting position: if we have videos and not fetching newest first, start from a reasonable offset
         if fetch_newest_first:
             smart_start_offset = 0  # Start from beginning (newest videos)
-            logging.info("Fetching newest videos first (cron mode)")
+            logging.debug("Fetching newest videos first (cron mode)")
         else:
             smart_start_offset = max(0, len(known_video_ids) - 10) if known_video_ids else 0
             if smart_start_offset > 0:
@@ -66,7 +66,7 @@ class VideoProcessor:
             # Calculate how many videos to skip (based on total fetched so far)
             skip_count = videos_fetched_total
 
-            logging.info(f"Fetching {batch_size} video IDs starting from position {skip_count + 1}")
+            logging.debug(f"Fetching {batch_size} video IDs starting from position {skip_count + 1}")
 
             # Fetch videos with offset (lightweight - just IDs and basic info)
             videos = self.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
@@ -97,10 +97,10 @@ class VideoProcessor:
 
             if not new_videos_in_batch:
                 consecutive_known_batches += 1
-                logging.info("No new videos in this batch, continuing deeper into channel history")
+                logging.debug("No new videos in this batch, continuing deeper into channel history")
                 # If we've had 3 consecutive batches with no new videos, we're likely caught up
                 if consecutive_known_batches >= 3:
-                    logging.info("Hit 3 consecutive batches with no new videos, stopping search")
+                    logging.debug("Hit 3 consecutive batches with no new videos, stopping search")
                     break
                 continue
 
@@ -119,17 +119,6 @@ class VideoProcessor:
                     if full_video:
                         video_date = full_video.get('published_at', '')[:10] if full_video.get('published_at') else 'Unknown'
 
-                        # Check cutoff date if provided
-                        if cutoff_datetime and video_date != 'Unknown':
-                            try:
-                                video_datetime = datetime.strptime(video_date, '%Y-%m-%d')
-                                if video_datetime < cutoff_datetime:
-                                    logging.info(f"Reached cutoff date. Stopping processing at video: {full_video.get('title', 'Unknown Title')} ({video_date})")
-                                    cutoff_reached = True
-                                    break
-                            except ValueError:
-                                logging.warning(f"Could not parse video date: {video_date}")
-
                         logging.info(f"Processing: {full_video.get('title', 'Unknown Title')} ({video_date})")
                         # Convert dict to VideoData object for processing
                         video_obj = VideoData(
@@ -146,6 +135,17 @@ class VideoProcessor:
                         known_video_ids.add(video_id)  # Add to our tracking set
                         new_videos_processed += 1
                         batch_new_count += 1
+
+                        # Check cutoff date AFTER processing and saving the video
+                        if cutoff_datetime and video_date != 'Unknown':
+                            try:
+                                video_datetime = datetime.strptime(video_date, '%Y-%m-%d')
+                                if video_datetime < cutoff_datetime:
+                                    logging.info(f"Reached cutoff date. Stopping processing after saving video: {full_video.get('title', 'Unknown Title')} ({video_date})")
+                                    cutoff_reached = True
+                                    break
+                            except ValueError:
+                                logging.warning(f"Could not parse video date: {video_date}")
                     else:
                         # Only warn if it's not an expected skip (members-only, private, etc.)
                         if not is_expected_skip:
@@ -159,14 +159,14 @@ class VideoProcessor:
             # Treat batches with no successfully processed videos the same as empty batches
             if batch_new_count == 0:
                 consecutive_known_batches += 1
-                logging.info("No videos successfully processed in this batch, treating as empty batch")
+                logging.debug("No videos successfully processed in this batch, treating as empty batch")
                 if consecutive_known_batches >= 3:
-                    logging.info("Hit 3 consecutive unproductive batches, stopping search")
+                    logging.debug("Hit 3 consecutive unproductive batches, stopping search")
                     break
             else:
                 consecutive_known_batches = 0
 
-        logging.info(f"Video processing complete. Processed {new_videos_processed} new videos.")
+        logging.info(f"Completed: {new_videos_processed} new videos processed")
         return new_videos_processed
 
     def process_video_game_links(self, video: VideoData) -> VideoData:

@@ -67,10 +67,10 @@ class GameUpdateLogger:
         entity_type = "app" if platform == "steam" else "game"
 
         if days_ago is not None:
-            logging.info(f"Skipping {platform} {entity_type} ({game_name}) - updated {days_ago} days ago, {interval_name} refresh{release_part}")
+            logging.debug(f"Skipping {platform} {entity_type} ({game_name}) - updated {days_ago} days ago, {interval_name} refresh{release_part}")
         else:
             skip_reason = reason or update_info
-            logging.info(f"Skipping {platform} {entity_type} ({game_name}) - {skip_reason}")
+            logging.debug(f"Skipping {platform} {entity_type} ({game_name}) - {skip_reason}")
 
     @staticmethod
     def log_game_update_start(platform: str, game_name: str, last_updated_str: str | None,
