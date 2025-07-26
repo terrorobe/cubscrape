@@ -1,0 +1,249 @@
+<template>
+  <div class="space-y-4">
+    <!-- Search -->
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-secondary"
+        >Search Channels</label
+      >
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="Type to search channels..."
+        class="focus:ring-opacity-50 w-full rounded-lg border border-gray-600 bg-bg-card p-3 text-text-primary placeholder-text-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:outline-none"
+      />
+    </div>
+
+    <!-- Selected Channels -->
+    <div v-if="selectedChannels.length > 0">
+      <label class="mb-2 block text-sm font-medium text-text-secondary">
+        Selected Channels ({{ selectedChannels.length }})
+      </label>
+      <div class="space-y-2">
+        <div
+          v-for="channel in selectedChannels"
+          :key="`selected-${channel}`"
+          class="flex items-center justify-between rounded-lg bg-accent p-3"
+        >
+          <span class="font-medium text-white">{{
+            formatChannelName(channel)
+          }}</span>
+          <button
+            @click="toggleChannel(channel)"
+            class="hover:bg-opacity-20 active:bg-opacity-30 rounded-full p-1 text-white transition-colors hover:bg-white active:bg-white"
+          >
+            <svg
+              class="size-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Channels -->
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-secondary">
+        Available Channels ({{ filteredAvailableChannels.length }})
+      </label>
+
+      <!-- Clear button for search -->
+      <div v-if="searchQuery" class="mb-2">
+        <button
+          @click="searchQuery = ''"
+          class="text-sm text-accent hover:text-accent-hover"
+        >
+          Clear search
+        </button>
+      </div>
+
+      <!-- No results message -->
+      <div
+        v-if="filteredAvailableChannels.length === 0"
+        class="py-4 text-center text-text-secondary"
+      >
+        <p v-if="searchQuery">No channels found matching "{{ searchQuery }}"</p>
+        <p v-else>All channels are selected</p>
+      </div>
+
+      <!-- Channel list -->
+      <div v-else class="max-h-64 space-y-1 overflow-y-auto">
+        <button
+          v-for="channel in filteredAvailableChannels"
+          :key="`available-${channel.name}`"
+          @click="toggleChannel(channel.name)"
+          class="flex w-full items-center justify-between rounded-lg bg-bg-card p-3 text-left text-text-primary transition-colors hover:bg-bg-primary active:bg-bg-primary"
+        >
+          <span class="font-medium">{{ formatChannelName(channel.name) }}</span>
+          <span class="text-sm text-text-secondary"
+            >{{ channel.count }} game{{ channel.count !== 1 ? 's' : '' }}</span
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="space-y-2 border-t border-gray-600 pt-4">
+      <!-- Select Popular Channels -->
+      <button
+        v-if="selectedChannels.length === 0 && popularChannels.length > 0"
+        @click="selectPopularChannels"
+        class="w-full rounded-lg border border-accent px-4 py-3 text-accent transition-colors hover:bg-accent hover:text-white"
+      >
+        Select Top {{ Math.min(5, popularChannels.length) }} Channels
+      </button>
+
+      <!-- Clear All -->
+      <button
+        v-if="selectedChannels.length > 0"
+        @click="clearAllChannels"
+        class="w-full rounded-lg border border-gray-600 px-4 py-3 text-text-secondary transition-colors hover:border-accent hover:text-accent"
+      >
+        Clear All Channels
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref, computed, watch } from 'vue'
+
+export default {
+  name: 'MobileChannelFilter',
+  props: {
+    channelsWithCounts: {
+      type: Array,
+      default: () => [],
+    },
+    initialSelectedChannels: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  emits: ['channels-changed'],
+  setup(props, { emit }) {
+    const selectedChannels = ref([...props.initialSelectedChannels])
+    const searchQuery = ref('')
+
+    const popularChannels = computed(() => {
+      return props.channelsWithCounts
+        .filter((channel) => !selectedChannels.value.includes(channel.name))
+        .slice(0, 5)
+    })
+
+    const filteredAvailableChannels = computed(() => {
+      const available = props.channelsWithCounts.filter(
+        (channel) => !selectedChannels.value.includes(channel.name),
+      )
+
+      if (!searchQuery.value) {
+        return available
+      }
+
+      const query = searchQuery.value.toLowerCase()
+      return available.filter((channel) => {
+        const formattedName = formatChannelName(channel.name).toLowerCase()
+        return (
+          formattedName.includes(query) ||
+          channel.name.toLowerCase().includes(query)
+        )
+      })
+    })
+
+    const formatChannelName = (channel) => {
+      if (!channel || typeof channel !== 'string') {
+        return 'Unknown Channel'
+      }
+      return channel
+        .replace(/^videos-/, '')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (l) => l.toUpperCase())
+    }
+
+    const toggleChannel = (channelName) => {
+      const index = selectedChannels.value.indexOf(channelName)
+      if (index > -1) {
+        selectedChannels.value.splice(index, 1)
+      } else {
+        selectedChannels.value.push(channelName)
+      }
+      emitChange()
+    }
+
+    const selectPopularChannels = () => {
+      const channelsToAdd = popularChannels.value.slice(0, 5).map((c) => c.name)
+      selectedChannels.value = [...selectedChannels.value, ...channelsToAdd]
+      emitChange()
+    }
+
+    const clearAllChannels = () => {
+      selectedChannels.value = []
+      emitChange()
+    }
+
+    const emitChange = () => {
+      emit('channels-changed', {
+        selectedChannels: [...selectedChannels.value],
+      })
+    }
+
+    // Watch for prop changes
+    watch(
+      () => props.initialSelectedChannels,
+      (newChannels) => {
+        selectedChannels.value = [...newChannels]
+      },
+      { deep: true },
+    )
+
+    return {
+      selectedChannels,
+      searchQuery,
+      popularChannels,
+      filteredAvailableChannels,
+      formatChannelName,
+      toggleChannel,
+      selectPopularChannels,
+      clearAllChannels,
+    }
+  },
+}
+</script>
+
+<style scoped>
+/* Custom scrollbar for channel list */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: theme('colors.bg.primary');
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: theme('colors.text.secondary');
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.text.primary');
+}
+
+/* Active states for better touch feedback */
+.active\:bg-bg-primary:active {
+  background-color: theme('colors.bg.primary');
+}
+
+.active\:bg-white:active {
+  background-color: white;
+}
+</style>

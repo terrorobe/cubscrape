@@ -7,6 +7,8 @@
   --color-text-primary: #e0e0e0;
   --color-text-secondary: #b0b0b0;
   --color-accent: #66c0f4;
+  --color-accent-hover: #5ab3e8;
+  --color-accent-active: #4da6dc;
   --color-positive: #4caf50;
   --color-mixed: #ffc107;
   --color-negative: #f44336;
@@ -18,4 +20,33 @@ body {
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  /* Prevent body scroll when modal is open */
+  body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+  
+  /* Smooth scrolling for mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Touch target improvements */
+  button, 
+  input[type="radio"],
+  input[type="checkbox"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better touch feedback */
+  button:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
 }

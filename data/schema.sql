@@ -17,8 +17,8 @@ CREATE TABLE games (
     is_early_access BOOLEAN DEFAULT 0,
     is_demo BOOLEAN DEFAULT 0,
     is_free BOOLEAN DEFAULT 0,
-    price_eur TEXT,
-    price_usd TEXT,
+    price_eur REAL,
+    price_usd REAL,
     price_final REAL,
     positive_review_percentage INTEGER,
     review_count INTEGER,
@@ -70,3 +70,27 @@ CREATE INDEX idx_review_priority ON games(review_summary_priority);
 CREATE INDEX idx_release_date_sortable ON games(release_date_sortable);
 CREATE INDEX idx_game_videos ON game_videos(game_id);
 CREATE INDEX idx_channel_videos ON game_videos(channel_name);
+
+-- Performance indexes for multi-filtering patterns
+CREATE INDEX idx_absorbed_platform ON games(is_absorbed, platform);
+CREATE INDEX idx_latest_video_date ON games(latest_video_date);
+CREATE INDEX idx_video_count ON games(video_count);
+CREATE INDEX idx_price_filters ON games(is_free, price_final);
+CREATE INDEX idx_price_eur ON games(price_eur);
+CREATE INDEX idx_price_usd ON games(price_usd);
+CREATE INDEX idx_multi_platform ON games(steam_url, itch_url, crazygames_url);
+
+-- Composite indexes for common filter combinations
+CREATE INDEX idx_platform_absorbed_rating ON games(platform, is_absorbed, positive_review_percentage);
+CREATE INDEX idx_absorbed_video_date ON games(is_absorbed, latest_video_date);
+CREATE INDEX idx_hidden_gems ON games(positive_review_percentage, video_count, review_count) WHERE positive_review_percentage >= 80;
+
+-- Indexes for sorting performance
+CREATE INDEX idx_sort_rating_priority ON games(review_summary_priority, positive_review_percentage, review_count);
+CREATE INDEX idx_sort_date_name ON games(latest_video_date, name);
+CREATE INDEX idx_sort_release_date ON games(release_date_sortable, name);
+
+-- Game videos performance indexes
+CREATE INDEX idx_video_date ON game_videos(video_date);
+CREATE INDEX idx_game_video_date ON game_videos(game_id, video_date);
+CREATE INDEX idx_channel_video_date ON game_videos(channel_name, video_date);

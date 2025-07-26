@@ -209,6 +209,10 @@ class DatabaseManager:
             if is_released:
                 sortable_date = self._convert_to_sortable_date_int(game.get('release_date', ''))
 
+            # Clean price values - convert to numeric or None for free games
+            cleaned_price_eur = None if game.get('is_free') else self._clean_price_value(game.get('price_eur'))
+            cleaned_price_usd = None if game.get('is_free') else self._clean_price_value(game.get('price_usd'))
+
             # Insert game record
             cursor.execute('''
                 INSERT INTO games (
@@ -231,8 +235,8 @@ class DatabaseManager:
                 game.get('is_early_access', False),
                 game.get('is_demo', False),
                 game.get('is_free', False),
-                None if game.get('is_free') else game.get('price_eur'),
-                None if game.get('is_free') else game.get('price_usd'),
+                cleaned_price_eur,
+                cleaned_price_usd,
                 self._extract_price_final(game),
                 percentage,
                 game.get('review_count', 0),
@@ -331,26 +335,38 @@ class DatabaseManager:
 
         return priorities.get(review_summary, 99)
 
+    def _clean_price_value(self, price_str: str | None) -> float | None:
+        """Clean and convert price string to numeric value, returning None for free/missing prices"""
+        if not price_str:
+            return None
+
+        # Handle free games - return None for numeric fields when free
+        if isinstance(price_str, str) and price_str.lower() in ['free', 'free to play']:
+            return None
+
+        # Extract numeric value from price string like "16,79€", "$19.99", "19.99", etc.
+        # First try to match decimal numbers (with comma or period as decimal separator)
+        match = re.search(r'(\d+)[,.](\d+)', str(price_str))
+        if match:
+            return float(f"{match.group(1)}.{match.group(2)}")
+
+        # Then try to match whole numbers
+        match = re.search(r'(\d+)', str(price_str))
+        if match:
+            return float(match.group(1))
+
+        return None
+
     def _extract_price_final(self, game: dict[str, Any]) -> float:
-        """Extract numeric price for filtering"""
+        """Extract numeric price for filtering - always returns a float (0.0 for free games)"""
         if game.get('is_free'):
             return 0.0
 
         # Try EUR price first, then USD
         price = game.get('price_eur', '') or game.get('price_usd', '')
-        if not price:
-            return 0.0
+        cleaned_price = self._clean_price_value(price)
 
-        # Extract numeric value from price string like "16,79€" or "$19.99"
-        match = re.search(r'(\d+)[,.](\d+)', price)
-        if match:
-            return float(f"{match.group(1)}.{match.group(2)}")
-
-        match = re.search(r'(\d+)', price)
-        if match:
-            return float(match.group(1))
-
-        return 0.0
+        return cleaned_price if cleaned_price is not None else 0.0
 
     def _get_latest_video_date(self, game: dict[str, Any]) -> str | None:
         """Get the most recent video date for this game"""

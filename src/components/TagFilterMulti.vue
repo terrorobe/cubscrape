@@ -133,7 +133,7 @@
       >
         <div class="max-h-64 overflow-y-auto">
           <label
-            v-for="tag in filteredTags.slice(0, 50)"
+            v-for="tag in visibleFilteredTags"
             :key="tag.name"
             class="flex cursor-pointer items-center gap-3 rounded-sm p-2 transition-colors hover:bg-bg-secondary"
             @click="toggleTag(tag.name)"
@@ -155,6 +155,23 @@
               ></div>
             </div>
           </label>
+
+          <!-- Load More Button -->
+          <div
+            v-if="hasMoreTags && !searchQuery"
+            class="border-t border-gray-600 p-2"
+          >
+            <button
+              @click="loadMoreTags"
+              :disabled="isLoadingTags"
+              class="w-full rounded-sm bg-bg-secondary p-2 text-sm text-text-secondary transition-colors hover:bg-accent/10 hover:text-accent disabled:opacity-50"
+            >
+              <span v-if="isLoadingTags">Loading...</span>
+              <span v-else
+                >Load More Tags ({{ remainingTagCount }} remaining)</span
+              >
+            </button>
+          </div>
         </div>
 
         <!-- Quick Actions Footer -->
@@ -170,8 +187,8 @@
               Select Popular Tags
             </button>
             <span class="text-text-secondary">
-              {{ Math.min(filteredTags.length, 50) }} of
-              {{ tagsWithCounts.length }} tags shown
+              {{ visibleFilteredTags.length }} of {{ filteredTags.length }} tags
+              shown
             </span>
           </div>
         </div>
@@ -219,6 +236,7 @@
 
 <script>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { useProgressiveOptions } from '../composables/useProgressiveOptions.js'
 
 export default {
   name: 'TagFilterMulti',
@@ -309,6 +327,20 @@ export default {
         })
     })
 
+    // Progressive loading for tags
+    const {
+      visibleOptions: visibleFilteredTags,
+      isLoading: isLoadingTags,
+      hasMore: hasMoreTags,
+      loadMore: loadMoreTags,
+      updateSearch: updateTagSearch,
+    } = useProgressiveOptions(filteredTags, 20, 15)
+
+    // Additional computed properties for UI
+    const remainingTagCount = computed(() => {
+      return filteredTags.value.length - visibleFilteredTags.value.length
+    })
+
     // Preview text for result count
     const previewText = computed(() => {
       if (selectedTags.value.length === 0) {
@@ -378,9 +410,14 @@ export default {
     }
 
     const filterTags = () => {
-      // The filtering is handled by the computed property
-      // This function exists for potential future enhancements
+      // Update the progressive loading search
+      updateTagSearch(searchQuery.value)
     }
+
+    // Watch for search changes to update progressive loading
+    watch(searchQuery, (newQuery) => {
+      updateTagSearch(newQuery)
+    })
 
     const emitFiltersChanged = () => {
       emit('tags-changed', {
@@ -436,6 +473,10 @@ export default {
       tagLogic,
       popularTags,
       filteredTags,
+      visibleFilteredTags,
+      isLoadingTags,
+      hasMoreTags,
+      remainingTagCount,
       previewText,
       logicExplanation,
       toggleTag,
@@ -444,6 +485,7 @@ export default {
       clearSearch,
       selectPopularTags,
       filterTags,
+      loadMoreTags,
       emitFiltersChanged,
     }
   },

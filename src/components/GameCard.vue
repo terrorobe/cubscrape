@@ -28,9 +28,19 @@
     <div class="flex min-h-0 flex-1 flex-col p-4">
       <div class="flex-1">
         <!-- Game Title -->
-        <h3 class="mb-3 line-clamp-2 overflow-hidden text-xl font-semibold">
-          {{ game.name || 'Unknown Game' }}
-        </h3>
+        <div class="mb-3 flex items-start gap-2">
+          <h3 class="line-clamp-2 flex-1 overflow-hidden text-xl font-semibold">
+            {{ game.name || 'Unknown Game' }}
+          </h3>
+          <!-- Hidden Gem Indicator -->
+          <span
+            v-if="isHiddenGem"
+            title="Hidden Gem: High quality game (80%+ rating) with limited video coverage (1-3 videos) and sufficient reviews (50+)"
+            class="shrink-0 text-lg"
+          >
+            💎
+          </span>
+        </div>
 
         <!-- Absorption Indicator -->
         <div
@@ -210,7 +220,22 @@
 
       <!-- Game Footer -->
       <div class="mt-auto flex items-center justify-between pt-3">
-        <div class="flex gap-3">
+        <div class="flex items-center gap-3">
+          <!-- Platform availability indicators -->
+          <div
+            v-if="availablePlatforms.length > 1"
+            class="flex items-center gap-1.5"
+          >
+            <span
+              v-for="platform in availablePlatforms"
+              :key="platform.name"
+              :title="`Available on ${platform.displayName}`"
+              class="inline-flex size-6 items-center justify-center rounded-sm bg-bg-secondary text-xs font-medium text-text-secondary"
+            >
+              {{ platform.icon }}
+            </span>
+          </div>
+
           <!-- Main platform link -->
           <a
             :href="getMainPlatformUrl(game)"
@@ -288,7 +313,7 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 export default {
   name: 'GameCard',
@@ -313,6 +338,50 @@ export default {
     const copyFeedback = ref(false)
     const showCopyOverlay = ref(false)
     const highlightFading = ref(false)
+
+    // Check if game qualifies as a hidden gem
+    const isHiddenGem = computed(() => {
+      return (
+        props.game.positive_review_percentage >= 80 &&
+        props.game.video_count >= 1 &&
+        props.game.video_count <= 3 &&
+        props.game.review_count >= 50
+      )
+    })
+
+    // Compute available platforms
+    const availablePlatforms = computed(() => {
+      const platforms = []
+
+      if (props.game.steam_url && !props.game.is_absorbed) {
+        platforms.push({
+          name: 'steam',
+          displayName: 'Steam',
+          icon: 'S',
+          url: props.game.steam_url,
+        })
+      }
+
+      if (props.game.itch_url) {
+        platforms.push({
+          name: 'itch',
+          displayName: 'Itch.io',
+          icon: 'I',
+          url: props.game.itch_url,
+        })
+      }
+
+      if (props.game.crazygames_url) {
+        platforms.push({
+          name: 'crazygames',
+          displayName: 'CrazyGames',
+          icon: 'C',
+          url: props.game.crazygames_url,
+        })
+      }
+
+      return platforms
+    })
 
     const toggleVideos = async (gameId) => {
       if (showingVideos.value[gameId]) {
@@ -853,6 +922,8 @@ export default {
       copyFeedback,
       showCopyOverlay,
       highlightFading,
+      isHiddenGem,
+      availablePlatforms,
       toggleVideos,
       handleCardClick,
       slugifyForFragment,

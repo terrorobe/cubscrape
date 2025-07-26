@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter State Visualization Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#1a1a1a',
+                        'bg-secondary': '#252525',
+                        'bg-card': '#2a2a2a',
+                        'text-primary': '#e0e0e0',
+                        'text-secondary': '#b0b0b0',
+                        'accent': '#66c0f4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .filter-tag {
+            transition: all 0.2s ease;
+        }
+        .filter-tag:hover {
+            transform: translateY(-1px);
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #66c0f4 0%, #4a9eff 100%);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .count-animation {
+            animation: countUpdate 0.5s ease-out;
+        }
+        @keyframes countUpdate {
+            0% { transform: scale(1.2); color: #66c0f4; }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-bg-primary text-text-primary font-sans">
+    <div class="max-w-7xl mx-auto p-6">
+        <h1 class="text-3xl font-bold text-accent mb-8">Filter State Visualization Components</h1>
+        
+        <!-- Applied Filters Bar -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Applied Filters Bar</h2>
+            
+            <!-- Desktop Version -->
+            <div class="bg-bg-secondary rounded-lg p-5 mb-4">
+                <h3 class="text-sm font-medium text-text-secondary mb-3">Desktop Layout</h3>
+                
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="font-medium">Active Filters</span>
+                        <span class="bg-accent text-bg-primary px-2 py-1 rounded-full text-xs font-bold">5</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-text-secondary">1,234 games found</span>
+                        <button class="text-accent text-sm hover:underline transition-colors">Clear All</button>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <div class="filter-tag bg-accent/20 text-accent px-3 py-2 rounded-full text-sm flex items-center gap-2 slide-in">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>Indie</span>
+                        <button class="text-accent/70 hover:text-accent text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-accent/20">×</button>
+                    </div>
+                    <div class="filter-tag bg-accent/20 text-accent px-3 py-2 rounded-full text-sm flex items-center gap-2 slide-in">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>Puzzle</span>
+                        <button class="text-accent/70 hover:text-accent text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-accent/20">×</button>
+                    </div>
+                    <div class="filter-tag bg-accent/20 text-accent px-3 py-2 rounded-full text-sm flex items-center gap-2 slide-in">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        <span>Retro Gaming</span>
+                        <button class="text-accent/70 hover:text-accent text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-accent/20">×</button>
+                    </div>
+                    <div class="filter-tag bg-accent/20 text-accent px-3 py-2 rounded-full text-sm flex items-center gap-2 slide-in">
+                        <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                        <span>Last 30 days</span>
+                        <button class="text-accent/70 hover:text-accent text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-accent/20">×</button>
+                    </div>
+                    <div class="filter-tag bg-accent/20 text-accent px-3 py-2 rounded-full text-sm flex items-center gap-2 slide-in">
+                        <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                        <span>Steam</span>
+                        <button class="text-accent/70 hover:text-accent text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-accent/20">×</button>
+                    </div>
+                    
+                    <!-- Add Filter Button -->
+                    <button class="bg-bg-card border border-gray-600 px-3 py-2 rounded-full text-sm flex items-center gap-2 hover:border-accent transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        <span>Add Filter</span>
+                    </button>
+                </div>
+                
+                <!-- Filter Logic Indicator -->
+                <div class="mt-4 p-3 bg-bg-card rounded border border-gray-600">
+                    <div class="text-xs text-text-secondary">
+                        <strong>Logic:</strong> Tags (Indie AND Puzzle) • Channels (Any) • Time (Last 30 days) • Platform (Steam)
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Version -->
+            <div class="bg-bg-secondary rounded-lg p-4">
+                <h3 class="text-sm font-medium text-text-secondary mb-3">Mobile Layout</h3>
+                
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium text-sm">Filters</span>
+                        <span class="bg-accent text-bg-primary px-2 py-1 rounded-full text-xs font-bold">5</span>
+                    </div>
+                    <button class="text-accent text-sm">Edit</button>
+                </div>
+                
+                <div class="flex gap-2 overflow-x-auto pb-2" style="scrollbar-width: none;">
+                    <div class="bg-accent/20 text-accent px-3 py-1.5 rounded-full text-sm whitespace-nowrap flex items-center gap-1">
+                        Indie <button class="text-accent/70">×</button>
+                    </div>
+                    <div class="bg-accent/20 text-accent px-3 py-1.5 rounded-full text-sm whitespace-nowrap flex items-center gap-1">
+                        Puzzle <button class="text-accent/70">×</button>
+                    </div>
+                    <div class="bg-accent/20 text-accent px-3 py-1.5 rounded-full text-sm whitespace-nowrap flex items-center gap-1">
+                        Retro Gaming <button class="text-accent/70">×</button>
+                    </div>
+                    <div class="bg-accent/20 text-accent px-3 py-1.5 rounded-full text-sm whitespace-nowrap flex items-center gap-1">
+                        30 days <button class="text-accent/70">×</button>
+                    </div>
+                    <div class="bg-accent/20 text-accent px-3 py-1.5 rounded-full text-sm whitespace-nowrap flex items-center gap-1">
+                        Steam <button class="text-accent/70">×</button>
+                    </div>
+                </div>
+                
+                <div class="mt-3 text-xs text-text-secondary text-center">
+                    1,234 games match these filters
+                </div>
+            </div>
+        </section>
+        
+        <!-- Result Counts and Loading States -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Result Counts & Loading States</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Live Count Update -->
+                <div class="bg-bg-secondary rounded-lg p-4">
+                    <h3 class="text-sm font-medium text-text-secondary mb-3">Live Updates</h3>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-accent count-animation" id="live-count">1,234</div>
+                        <div class="text-sm text-text-secondary">games found</div>
+                        <div class="mt-2 text-xs text-green-400">Updated now</div>
+                    </div>
+                </div>
+                
+                <!-- Loading State -->
+                <div class="bg-bg-secondary rounded-lg p-4">
+                    <h3 class="text-sm font-medium text-text-secondary mb-3">Loading</h3>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-text-secondary pulse-animation">---</div>
+                        <div class="text-sm text-text-secondary">searching...</div>
+                        <div class="mt-2">
+                            <div class="w-full bg-gray-600 rounded-full h-1">
+                                <div class="progress-bar h-1 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- No Results -->
+                <div class="bg-bg-secondary rounded-lg p-4">
+                    <h3 class="text-sm font-medium text-text-secondary mb-3">No Results</h3>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-red-400">0</div>
+                        <div class="text-sm text-text-secondary">games found</div>
+                        <button class="mt-2 text-xs text-accent hover:underline">Adjust filters</button>
+                    </div>
+                </div>
+                
+                <!-- Large Dataset -->
+                <div class="bg-bg-secondary rounded-lg p-4">
+                    <h3 class="text-sm font-medium text-text-secondary mb-3">Large Dataset</h3>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-accent">12,847</div>
+                        <div class="text-sm text-text-secondary">games found</div>
+                        <div class="mt-2 text-xs text-yellow-400">Consider filtering</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Filter Performance Indicators -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Performance Indicators</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Search Speed -->
+                <div class="bg-bg-secondary rounded-lg p-5">
+                    <h3 class="font-medium mb-4">Search Performance</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Search Time:</span>
+                            <span class="text-sm font-medium text-green-400">0.12s</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Database Size:</span>
+                            <span class="text-sm font-medium">12,847 games</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Indexed Fields:</span>
+                            <span class="text-sm font-medium text-green-400">8/8</span>
+                        </div>
+                        
+                        <!-- Performance Bar -->
+                        <div class="mt-3">
+                            <div class="flex justify-between text-xs text-text-secondary mb-1">
+                                <span>Performance</span>
+                                <span>Excellent</span>
+                            </div>
+                            <div class="w-full bg-gray-600 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Complexity -->
+                <div class="bg-bg-secondary rounded-lg p-5">
+                    <h3 class="font-medium mb-4">Filter Complexity</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Active Filters:</span>
+                            <span class="text-sm font-medium text-accent">5</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Logic Operations:</span>
+                            <span class="text-sm font-medium">3 AND, 1 OR</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Efficiency:</span>
+                            <span class="text-sm font-medium text-yellow-400">Good</span>
+                        </div>
+                        
+                        <!-- Complexity Bar -->
+                        <div class="mt-3">
+                            <div class="flex justify-between text-xs text-text-secondary mb-1">
+                                <span>Complexity</span>
+                                <span>Moderate</span>
+                            </div>
+                            <div class="w-full bg-gray-600 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Result Quality -->
+                <div class="bg-bg-secondary rounded-lg p-5">
+                    <h3 class="font-medium mb-4">Result Quality</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Match Precision:</span>
+                            <span class="text-sm font-medium text-green-400">98.5%</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">Coverage:</span>
+                            <span class="text-sm font-medium">9.6% of catalog</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-text-secondary">False Positives:</span>
+                            <span class="text-sm font-medium text-green-400">< 2%</span>
+                        </div>
+                        
+                        <!-- Quality Bar -->
+                        <div class="mt-3">
+                            <div class="flex justify-between text-xs text-text-secondary mb-1">
+                                <span>Quality</span>
+                                <span>High</span>
+                            </div>
+                            <div class="w-full bg-gray-600 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 88%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Filter Suggestions & Smart Recommendations -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Smart Recommendations</h2>
+            
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Related Filters -->
+                <div class="bg-bg-secondary rounded-lg p-5">
+                    <h3 class="font-medium mb-4">Related Filters</h3>
+                    <div class="text-sm text-text-secondary mb-4">
+                        Based on your current selection, you might also like:
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-bg-card rounded-lg border border-gray-600 hover:border-accent transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span class="text-sm">Retro Gaming</span>
+                                <span class="text-xs text-text-secondary">Popular with Indie + Puzzle</span>
+                            </div>
+                            <button class="text-accent text-xs hover:underline">Add</button>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-bg-card rounded-lg border border-gray-600 hover:border-accent transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <span class="text-sm">2D Platformer</span>
+                                <span class="text-xs text-text-secondary">73% overlap</span>
+                            </div>
+                            <button class="text-accent text-xs hover:underline">Add</button>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-bg-card rounded-lg border border-gray-600 hover:border-accent transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                <span class="text-sm">Last 90 days</span>
+                                <span class="text-xs text-text-secondary">Broader time range</span>
+                            </div>
+                            <button class="text-accent text-xs hover:underline">Replace</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Optimization -->
+                <div class="bg-bg-secondary rounded-lg p-5">
+                    <h3 class="font-medium mb-4">Filter Optimization</h3>
+                    <div class="text-sm text-text-secondary mb-4">
+                        Suggestions to improve your search:
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-yellow-900/20 rounded-lg border border-yellow-600/30">
+                            <div class="flex items-start gap-3">
+                                <svg class="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div class="flex-1">
+                                    <div class="text-sm font-medium text-yellow-400">Too specific?</div>
+                                    <div class="text-xs text-text-secondary mt-1">
+                                        Your current filters return only 1,234 games. Consider removing one filter to see more options.
+                                    </div>
+                                    <button class="text-xs text-accent mt-2 hover:underline">Suggest alternatives</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
+                            <div class="flex items-start gap-3">
+                                <svg class="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                                <div class="flex-1">
+                                    <div class="text-sm font-medium text-blue-400">Smart tip</div>
+                                    <div class="text-xs text-text-secondary mt-1">
+                                        Try "OR" logic for tags to discover more games that match either Indie OR Puzzle genres.
+                                    </div>
+                                    <button class="text-xs text-accent mt-2 hover:underline">Switch to OR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Filter History & Presets -->
+        <section>
+            <h2 class="text-xl font-semibold mb-4">Filter History & Presets</h2>
+            
+            <div class="bg-bg-secondary rounded-lg p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-medium">Recent Searches</h3>
+                    <button class="text-accent text-sm hover:underline">Save Current</button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Saved Search 1 -->
+                    <div class="bg-bg-card rounded-lg p-4 border border-gray-600 hover:border-accent transition-colors cursor-pointer">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="font-medium text-sm">Indie Puzzles</div>
+                            <button class="text-text-secondary hover:text-text-primary">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="text-xs text-text-secondary mb-3">
+                            Indie + Puzzle • Last 30 days • Steam
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-accent">1,234 games</span>
+                            <span class="text-xs text-text-secondary">2 days ago</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Saved Search 2 -->
+                    <div class="bg-bg-card rounded-lg p-4 border border-gray-600 hover:border-accent transition-colors cursor-pointer">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="font-medium text-sm">Action RPGs</div>
+                            <button class="text-text-secondary hover:text-text-primary">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="text-xs text-text-secondary mb-3">
+                            Action + RPG • 80%+ Rating • All platforms
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-accent">456 games</span>
+                            <span class="text-xs text-text-secondary">1 week ago</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Saved Search 3 -->
+                    <div class="bg-bg-card rounded-lg p-4 border border-gray-600 hover:border-accent transition-colors cursor-pointer">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="font-medium text-sm">Retro Reviews</div>
+                            <button class="text-text-secondary hover:text-text-primary">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="text-xs text-text-secondary mb-3">
+                            Retro Gaming • Last 90 days • All tags
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-accent">789 games</span>
+                            <span class="text-xs text-text-secondary">2 weeks ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // Simulate live count updates
+        let currentCount = 1234;
+        const countElement = document.getElementById('live-count');
+        
+        function updateCount() {
+            const variation = Math.floor(Math.random() * 20) - 10; // ±10 variation
+            currentCount = Math.max(0, currentCount + variation);
+            countElement.textContent = currentCount.toLocaleString();
+            countElement.classList.add('count-animation');
+            
+            setTimeout(() => {
+                countElement.classList.remove('count-animation');
+            }, 500);
+        }
+        
+        // Update count every 3 seconds for demo
+        setInterval(updateCount, 3000);
+        
+        // Add click handlers for filter tags
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            const removeBtn = tag.querySelector('button');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    tag.style.opacity = '0';
+                    tag.style.transform = 'translateX(-20px)';
+                    setTimeout(() => {
+                        tag.remove();
+                        updateCount(); // Simulate count update when filter removed
+                    }, 200);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

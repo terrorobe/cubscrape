@@ -44,6 +44,10 @@ export default [
         URL: 'readonly',
         URLSearchParams: 'readonly',
         process: 'readonly', // For Node.js scripts
+        localStorage: 'readonly',
+        confirm: 'readonly',
+        Blob: 'readonly',
+        FileReader: 'readonly',
       },
     },
     settings: {
