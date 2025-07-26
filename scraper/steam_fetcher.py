@@ -232,13 +232,10 @@ class SteamDataFetcher(BaseFetcher):
         result: dict[str, Any] = {}
 
         # Check if this IS a demo first
-        name_from_api = app_data.get('name', '') if app_data else ''
         categories_from_api = [c.get('description', '') for c in app_data.get('categories', [])] if app_data else []
 
+        # Steam categories are 100% reliable for demo detection
         is_demo = any('demo' in cat.lower() for cat in categories_from_api)
-        if not is_demo:
-            name = name_from_api.lower()
-            is_demo = 'demo' in name or 'Demo' in page_text[:2000]
         result['is_demo'] = is_demo
 
         # If this is a demo, try to find the full game

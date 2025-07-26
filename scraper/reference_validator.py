@@ -6,6 +6,10 @@ Validates relationships and consistency across all data models and JSON files.
 
 import logging
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .models import SteamGameData
 
 from .data_manager import DataManager, OtherGamesDataDict, SteamDataDict, VideosDataDict
 from .models import VideoData
@@ -95,7 +99,8 @@ class ReferenceValidator:
                     ))
                 else:
                     full_game = games[game.full_game_app_id]
-                    if full_game.demo_app_id != app_id:
+                    # Skip bidirectionality check for self-referencing demos (standalone demos)
+                    if game.full_game_app_id != app_id and full_game.demo_app_id != app_id:
                         self.errors.append(ValidationError(
                             error_type="broken_full_game_bidirectionality",
                             message=f"Full game '{game.full_game_app_id}' demo_app_id is '{full_game.demo_app_id}', expected '{app_id}'",
@@ -168,6 +173,148 @@ class ReferenceValidator:
                     entity_type="steam_game",
                     severity="warning"
                 ))
+
+            # Validate internal demo field consistency
+            self._validate_demo_field_consistency(app_id, game)
+
+    def _validate_demo_field_consistency(self, app_id: str, game: 'SteamGameData') -> None:
+        """Validate that demo-related fields within a single game are consistent"""
+
+        # Rule 1: has_demo=True requires demo_app_id to be set
+        if game.has_demo and not game.demo_app_id:
+            self.errors.append(ValidationError(
+                error_type="has_demo_missing_demo_app_id",
+                message="Game has has_demo=True but demo_app_id is None/empty",
+                entity_id=app_id,
+                entity_type="steam_game",
+                severity="error"
+            ))
+
+        # Rule 2: demo_app_id set requires has_demo=True
+        if game.demo_app_id and not game.has_demo:
+            self.errors.append(ValidationError(
+                error_type="demo_app_id_missing_has_demo",
+                message="Game has demo_app_id but has_demo is not True",
+                entity_id=app_id,
+                entity_type="steam_game",
+                severity="error"
+            ))
+
+        # Rule 3: is_demo=True is mutually exclusive with has_demo and demo_app_id
+        if game.is_demo:
+            if game.has_demo:
+                self.errors.append(ValidationError(
+                    error_type="demo_has_has_demo_flag",
+                    message="Demo game (is_demo=True) should not have has_demo=True",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+            if game.demo_app_id:
+                self.errors.append(ValidationError(
+                    error_type="demo_has_demo_app_id",
+                    message="Demo game (is_demo=True) should not have demo_app_id",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+        # Rule 4: is_demo=True requires full_game_app_id
+        if game.is_demo and not game.full_game_app_id:
+            self.errors.append(ValidationError(
+                error_type="demo_missing_full_game_app_id",
+                message="Demo game (is_demo=True) must have full_game_app_id",
+                entity_id=app_id,
+                entity_type="steam_game",
+                severity="error"
+            ))
+
+        # Rule 5: full_game_app_id should only be set for demos
+        if game.full_game_app_id and not game.is_demo:
+            self.errors.append(ValidationError(
+                error_type="non_demo_has_full_game_app_id",
+                message="Non-demo game should not have full_game_app_id",
+                entity_id=app_id,
+                entity_type="steam_game",
+                severity="error"
+            ))
+
+        # Rule 6: full_game_app_id should be valid if set
+        if game.full_game_app_id:
+            # Check format - should be numeric Steam app ID
+            if not game.full_game_app_id.isdigit():
+                self.errors.append(ValidationError(
+                    error_type="invalid_full_game_app_id_format",
+                    message=f"full_game_app_id '{game.full_game_app_id}' must be numeric Steam app ID",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+            # Check it's not empty string
+            if game.full_game_app_id.strip() == "":
+                self.errors.append(ValidationError(
+                    error_type="empty_full_game_app_id",
+                    message="full_game_app_id cannot be empty string",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+        # Rule 7: demo_app_id should be valid if set
+        if game.demo_app_id:
+            # Check format - should be numeric Steam app ID
+            if not game.demo_app_id.isdigit():
+                self.errors.append(ValidationError(
+                    error_type="invalid_demo_app_id_format",
+                    message=f"demo_app_id '{game.demo_app_id}' must be numeric Steam app ID",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+            # Check it's not empty string
+            if game.demo_app_id.strip() == "":
+                self.errors.append(ValidationError(
+                    error_type="empty_demo_app_id",
+                    message="demo_app_id cannot be empty string",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+            # Check it's not the same as the game itself (prevent self-referencing demos)
+            if game.demo_app_id == app_id and not game.is_demo:
+                self.errors.append(ValidationError(
+                    error_type="self_referencing_demo_app_id",
+                    message="Full game cannot reference itself as its own demo",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+        # Rule 8: Validate logical consistency for self-referencing cases
+        if game.full_game_app_id == app_id and not game.is_demo:
+                self.errors.append(ValidationError(
+                    error_type="self_referencing_non_demo",
+                    message="Game references itself as full_game but is not marked as demo",
+                    entity_id=app_id,
+                    entity_type="steam_game",
+                    severity="error"
+                ))
+
+        # Rule 9: Demos should not reference themselves as full games unless standalone
+        if game.is_demo and game.full_game_app_id == app_id:
+            # This could be a standalone demo - check if there's evidence of a separate full game
+            # For now, this is a warning since standalone demos might legitimately self-reference
+            self.errors.append(ValidationError(
+                error_type="potentially_standalone_demo",
+                message="Demo references itself as full game - verify if this is a standalone demo",
+                entity_id=app_id,
+                entity_type="steam_game",
+                severity="warning"
+            ))
 
     def _validate_cross_platform_symmetry(self, steam_data: SteamDataDict, other_games_data: OtherGamesDataDict) -> None:
         """Validate symmetry between Steam itch_url and Itch steam_url"""

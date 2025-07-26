@@ -4,7 +4,10 @@ Data management utilities for the YouTube Steam scraper
 
 import logging
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
+
+if TYPE_CHECKING:
+    from .reference_validator import ReferenceValidator
 
 from .models import OtherGameData, SteamGameData, VideoData, VideoGameReference
 from .utils import load_json, save_data
@@ -31,9 +34,11 @@ class OtherGamesDataDict(TypedDict):
 class DataManager:
     """Handles loading, saving, and managing data files"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root: Path, validate_on_save: bool = True):
         self.project_root = project_root
         self.data_dir = project_root / 'data'
+        self.validate_on_save = validate_on_save
+        self._validator: ReferenceValidator | None = None  # Lazy-loaded to avoid circular imports
 
     def get_videos_file_path(self, channel_id: str) -> Path:
         """Get path to videos data file for a channel"""
@@ -46,6 +51,49 @@ class DataManager:
     def get_other_games_file_path(self) -> Path:
         """Get path to other games data file"""
         return self.data_dir / 'other_games.json'
+
+    def _get_validator(self) -> 'ReferenceValidator':
+        """Lazy-load validator to avoid circular imports"""
+        if self._validator is None:
+            from .reference_validator import ReferenceValidator
+            self._validator = ReferenceValidator(self)
+        return self._validator
+
+    def _run_validation_if_enabled(self, channel_ids: list[str] | None = None) -> bool:
+        """Run validation if enabled. Returns True if validation passes or is disabled."""
+        if not self.validate_on_save:
+            return True
+
+        if channel_ids is None:
+            # Try to discover channel IDs
+            try:
+                from .config_manager import ConfigManager
+                config_manager = ConfigManager(self.project_root)
+                channels = config_manager.get_channels()
+                channel_ids = list(channels.keys())
+            except Exception as e:
+                logging.warning(f"Could not load channel IDs for validation: {e}")
+                return True  # Don't fail save due to config issues
+
+        try:
+            validator = self._get_validator()
+            errors = validator.validate_all(channel_ids)
+            validation_errors = [e for e in errors if e.severity == "error"]
+
+            if validation_errors:
+                logging.error(f"Validation failed with {len(validation_errors)} errors:")
+                for error in validation_errors[:5]:  # Show first 5 errors
+                    logging.error(f"  • [{error.entity_type}:{error.entity_id}] {error.error_type}: {error.message}")
+                if len(validation_errors) > 5:
+                    logging.error(f"  ... and {len(validation_errors) - 5} more errors")
+                logging.error("Save operation aborted due to validation failures. Run 'cubscrape validate' for full report.")
+                return False
+            else:
+                logging.debug("Validation passed")
+                return True
+        except Exception as e:
+            logging.warning(f"Validation failed due to error: {e}")
+            return True  # Don't fail save due to validation system issues
 
     def load_videos_data(self, channel_id: str) -> VideosDataDict:
         """Load and convert video data for a channel"""
@@ -125,6 +173,11 @@ class DataManager:
         data_to_save = {
             'videos': videos_dict
         }
+
+        # Run validation before saving
+        if not self._run_validation_if_enabled([channel_id]):
+            raise ValueError("Data validation failed - save operation aborted")
+
         save_data(data_to_save, videos_file)
 
     def save_steam_data(self, steam_data: SteamDataDict) -> None:
@@ -145,6 +198,11 @@ class DataManager:
         data_to_save = {
             'games': games_dict
         }
+
+        # Run validation before saving
+        if not self._run_validation_if_enabled():
+            raise ValueError("Data validation failed - save operation aborted")
+
         save_data(data_to_save, steam_file)
 
     def save_other_games_data(self, other_games_data: OtherGamesDataDict) -> None:
@@ -165,6 +223,11 @@ class DataManager:
         data_to_save = {
             'games': games_dict
         }
+
+        # Run validation before saving
+        if not self._run_validation_if_enabled():
+            raise ValueError("Data validation failed - save operation aborted")
+
         save_data(data_to_save, other_games_file)
 
     def _ensure_video_data(self, data: Any, video_id: str = "unknown") -> VideoData:
