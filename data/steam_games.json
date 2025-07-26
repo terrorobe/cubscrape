@@ -4096,7 +4096,6 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "demo_app_id": "449960",
       "developers": [
         "Thing Trunk"
       ],
@@ -4106,7 +4105,6 @@
         "RPG",
         "Strategy"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1201540/header.jpg?t=1732633592",
       "last_updated": "2025-07-11T23:01:57.435985",
       "name": "HELLCARD",
@@ -8581,13 +8579,11 @@
         "Full controller support",
         "Steam Cloud"
       ],
-      "demo_app_id": "1439770",
       "developers": [
         "TrampolineTales"
       ],
       "full_game_app_id": "1404850",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1439770/header.jpg?t=1726487143",
       "is_demo": true,
       "is_free": true,
@@ -11979,12 +11975,10 @@
       "developers": [
         "Be-Rad Entertainment"
       ],
-      "full_game_app_id": "1600910",
       "genres": [
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1600910/header.jpg?t=1726817438",
-      "is_demo": true,
       "last_updated": "2025-07-22T16:45:47.041440",
       "name": "Demon's Mirror",
       "positive_review_percentage": 86,
@@ -20162,13 +20156,11 @@
         "Game demo",
         "Full controller support"
       ],
-      "demo_app_id": "1898520",
       "developers": [
         "Vilius Prakapas"
       ],
       "full_game_app_id": "1418390",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1898520/header.jpg?t=1722167356",
       "is_demo": true,
       "is_free": true,
@@ -23021,32 +23013,30 @@
         "Steam Cloud",
         "Family Sharing"
       ],
+      "demo_app_id": "2104590",
       "developers": [
         "Xendra"
       ],
-      "full_game_app_id": "2007530",
       "genres": [
         "Action",
         "Casual",
         "Indie",
         "Early Access"
       ],
+      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2007530/header.jpg?t=1739172747",
-      "is_demo": true,
       "is_early_access": true,
-      "last_updated": "2025-07-11T01:02:22.560490",
+      "last_updated": "2025-07-26T21:56:41.610189",
       "name": "Spellbook Demonslayers",
-      "positive_review_percentage": 77,
-      "price_eur": "4,99\u20ac",
+      "positive_review_percentage": 76,
+      "price_eur": "3,74\u20ac",
+      "price_usd": "$3.74",
       "publishers": [
         "Xendra",
         "Erabit"
       ],
-      "recent_review_count": 12,
-      "recent_review_percentage": 41,
-      "recent_review_summary": "Mixed",
       "release_date": "2 Nov, 2022",
-      "review_count": 1222,
+      "review_count": 1223,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2007530",
       "steam_url": "https://store.steampowered.com/app/2007530",
@@ -23681,7 +23671,6 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "demo_app_id": "2007530",
       "developers": [
         "Terapoly"
       ],
@@ -23689,7 +23678,6 @@
         "Action",
         "Casual"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2024230/header.jpg?t=1686241538",
       "last_updated": "2025-07-11T01:02:21.789016",
       "name": "Project Lazarus",
@@ -24371,13 +24359,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "2064760",
       "developers": [
         "Mystrigger"
       ],
       "full_game_app_id": "2064610",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2064760/header.jpg?t=1740112952",
       "is_demo": true,
       "is_free": true,
@@ -26084,6 +26070,52 @@
         "Controller"
       ]
     },
+    "2104590": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Partial Controller Support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Xendra"
+      ],
+      "full_game_app_id": "2007530",
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2104590/header.jpg?t=1729059822",
+      "insufficient_reviews": true,
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-26T21:52:56.417736",
+      "name": "Spellbook Demonslayers Demo",
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Xendra",
+        "Erabit"
+      ],
+      "release_date": "2 Oct, 2022",
+      "review_count": 6,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "2104590",
+      "steam_url": "https://store.steampowered.com/app/2104590",
+      "tags": [
+        "Bullet Hell",
+        "Action Roguelike",
+        "RPG",
+        "Action",
+        "Roguelite",
+        "Action RPG",
+        "Roguelike",
+        "Twin Stick Shooter",
+        "Hack and Slash",
+        "Score Attack"
+      ]
+    },
     "2104880": {
       "categories": [
         "Single-player",
@@ -26755,13 +26787,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "2119150",
       "developers": [
         "ArrowSoftGames"
       ],
       "full_game_app_id": "1960270",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2119150/header.jpg?t=1660746328",
       "is_demo": true,
       "is_free": true,
@@ -33575,13 +33605,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "2286210",
       "developers": [
         "Bibamus"
       ],
       "full_game_app_id": "2131290",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2286210/2171ad5fcbbea963d91103a225f0a79dbfc2460e/header.jpg?t=1747068303",
       "is_demo": true,
       "is_free": true,
@@ -35086,13 +35114,11 @@
         "Full controller support",
         "Remote Play Together"
       ],
-      "demo_app_id": "2312680",
       "developers": [
         "Pastagames"
       ],
       "full_game_app_id": "1661630",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2312680/header.jpg?t=1702035339",
       "is_demo": true,
       "is_free": true,
@@ -38821,13 +38847,11 @@
       "developers": [
         "Graverobber Foundation"
       ],
-      "full_game_app_id": "2395150",
       "genres": [
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2395150/header.jpg?t=1720517016",
-      "is_demo": true,
-      "last_updated": "2025-07-26T03:20:32.514310",
+      "last_updated": "2025-07-26T21:52:57.314838",
       "name": "Demon Lord Reincarnation",
       "positive_review_percentage": 67,
       "price_eur": "7,79\u20ac",
@@ -41182,13 +41206,11 @@
         "Steam Achievements",
         "Full controller support"
       ],
-      "demo_app_id": "2442600",
       "developers": [
         "Knifes"
       ],
       "full_game_app_id": "2294130",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2442600/header.jpg?t=1684577063",
       "is_demo": true,
       "is_free": true,
@@ -41928,6 +41950,22 @@
         "Deckbuilding",
         "Roguelike Deckbuilder"
       ]
+    },
+    "2454660": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-26T21:52:57.605127",
+      "name": "[REDIRECT] 2454660 -> 2395150",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "2395150",
+      "steam_app_id": "2454660",
+      "steam_url": "https://store.steampowered.com/app/2454660",
+      "stub_reason": "Soundtrack redirected to base game",
+      "tags": []
     },
     "2454700": {
       "categories": [
@@ -44105,13 +44143,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "2491610",
       "developers": [
         "5minlab Corp."
       ],
       "full_game_app_id": "2441270",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2491610/header.jpg?t=1747392997",
       "is_demo": true,
       "is_free": true,
@@ -47297,6 +47333,53 @@
         "Horror"
       ]
     },
+    "2564320": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2964010",
+      "developers": [
+        "5minlab Corp."
+      ],
+      "genres": [
+        "Simulation",
+        "Strategy",
+        "Early Access"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2564320/header.jpg?t=1747372379",
+      "is_early_access": true,
+      "last_updated": "2025-07-26T22:07:58.633276",
+      "name": "Private Military Manager: Tactical Auto Battler",
+      "positive_review_percentage": 70,
+      "price_eur": "5,85\u20ac",
+      "price_usd": "$5.99",
+      "publishers": [
+        "5minlab Corp.",
+        "KRAFTON, Inc."
+      ],
+      "recent_review_count": 32,
+      "recent_review_percentage": 46,
+      "recent_review_summary": "Mixed",
+      "release_date": "27 Apr, 2025",
+      "review_count": 237,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "2564320",
+      "steam_url": "https://store.steampowered.com/app/2564320",
+      "tags": [
+        "Management",
+        "Strategy",
+        "Simulation",
+        "Tactical",
+        "Auto Battler",
+        "Time Management",
+        "Economy",
+        "Turn-Based Tactics",
+        "PvE",
+        "Military"
+      ]
+    },
     "2564520": {
       "categories": [
         "Single-player",
@@ -47741,13 +47824,11 @@
         "Game demo",
         "Full controller support"
       ],
-      "demo_app_id": "2575650",
       "developers": [
         "Tuatara Games"
       ],
       "full_game_app_id": "2050800",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2575650/header.jpg?t=1742866536",
       "is_demo": true,
       "is_free": true,
@@ -50880,13 +50961,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "2654380",
       "developers": [
         "BlackLight"
       ],
       "full_game_app_id": "2453360",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2654380/header.jpg?t=1721187365",
       "is_demo": true,
       "is_free": true,
@@ -51951,13 +52030,11 @@
         "Game demo",
         "Partial Controller Support"
       ],
-      "demo_app_id": "2674940",
       "developers": [
         "Magical Beast Games"
       ],
       "full_game_app_id": "2401090",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2674940/header.jpg?t=1701367797",
       "is_demo": true,
       "is_free": true,
@@ -52594,13 +52671,11 @@
         "Partial Controller Support",
         "Steam Cloud"
       ],
-      "demo_app_id": "2694400",
       "developers": [
         "simonschreibt"
       ],
       "full_game_app_id": "2657850",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694400/103a4b1e1fd02d8441109e53a1409a10f9abb1b0/header.jpg?t=1746215077",
       "is_demo": true,
       "is_free": true,
@@ -58970,7 +59045,7 @@
       "developers": [
         "All Parts Connected"
       ],
-      "full_game_app_id": "2825840",
+      "full_game_app_id": "2706020",
       "genres": [
         "Indie",
         "Simulation",
@@ -59404,13 +59479,11 @@
         "Game demo",
         "Steam Cloud"
       ],
-      "demo_app_id": "2833080",
       "developers": [
         "tann"
       ],
       "full_game_app_id": "1775490",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2833080/header.jpg?t=1710948726",
       "is_demo": true,
       "is_free": true,
@@ -63381,13 +63454,11 @@
       "categories": [
         "Game demo"
       ],
-      "demo_app_id": "2920360",
       "developers": [
         "Maticolotto"
       ],
       "full_game_app_id": "2864890",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2920360/header.jpg?t=1712701730",
       "is_demo": true,
       "is_free": true,
@@ -65351,7 +65422,7 @@
       "developers": [
         "5minlab Corp."
       ],
-      "full_game_app_id": "2964010",
+      "full_game_app_id": "2564320",
       "genres": [
         "Simulation",
         "Strategy"
@@ -65873,13 +65944,11 @@
         "Full controller support",
         "Remote Play Together"
       ],
-      "demo_app_id": "2977600",
       "developers": [
         "Owlshiete"
       ],
       "full_game_app_id": "2821880",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2977600/header.jpg?t=1727870122",
       "is_demo": true,
       "is_free": true,
@@ -69234,7 +69303,7 @@
       "developers": [
         "NLB.DEV"
       ],
-      "full_game_app_id": "3029290",
+      "full_game_app_id": "3003120",
       "genres": [
         "Action",
         "Indie"
@@ -69680,14 +69749,12 @@
       "developers": [
         "Massive Hug"
       ],
-      "full_game_app_id": "3039910",
       "genres": [
         "Action",
         "Indie",
         "Early Access"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1752822372",
-      "is_demo": true,
       "is_early_access": true,
       "last_updated": "2025-07-26T03:15:23.879135",
       "name": "Demon Hunt",
@@ -70870,13 +70937,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "3064460",
       "developers": [
         "Lost Tower Games"
       ],
       "full_game_app_id": "3037800",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3064460/header.jpg?t=1722204911",
       "is_demo": true,
       "is_early_access": true,
@@ -72998,7 +73063,7 @@
       "developers": [
         "Kasur Games"
       ],
-      "full_game_app_id": "3110460",
+      "full_game_app_id": "3017330",
       "genres": [
         "Adventure",
         "Indie",
@@ -74837,13 +74902,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "3145080",
       "developers": [
         "Lasse Zacho Malver"
       ],
       "full_game_app_id": "2481640",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3145080/header.jpg?t=1730199503",
       "is_demo": true,
       "is_free": true,
@@ -81351,13 +81414,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "3276490",
       "developers": [
         "Sova Games"
       ],
       "full_game_app_id": "3161400",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3276490/header.jpg?t=1740228887",
       "is_demo": true,
       "is_free": true,
@@ -81931,7 +81992,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "demo_app_id": "2395150",
       "developers": [
         "Graverobber Foundation"
       ],
@@ -81939,7 +81999,6 @@
         "Casual",
         "RPG"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3293490/header.jpg?t=1741468011",
       "last_updated": "2025-07-26T03:20:31.414193",
       "name": "Dragon Ruins II",
@@ -82534,13 +82593,11 @@
       "categories": [
         "Game demo"
       ],
-      "demo_app_id": "3314150",
       "developers": [
         "Arkhipov Pavel"
       ],
       "full_game_app_id": "3249770",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3314150/header.jpg?t=1731256757",
       "is_demo": true,
       "is_free": true,
@@ -88376,6 +88433,7 @@
         "Family Sharing"
       ],
       "coming_soon": true,
+      "demo_app_id": "3514970",
       "developers": [
         "Mini Fun Games"
       ],
@@ -88387,6 +88445,7 @@
         "Simulation",
         "Strategy"
       ],
+      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3456800/header.jpg?t=1753111943",
       "last_updated": "2025-07-22T03:14:13.004366",
       "name": "Rock Crusher",
@@ -88623,13 +88682,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "3462500",
       "developers": [
         "Cuddle Monster Games"
       ],
       "full_game_app_id": "2467850",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3462500/header.jpg?t=1739801978",
       "is_demo": true,
       "is_free": true,
@@ -90658,13 +90715,11 @@
         "Game demo",
         "Full controller support"
       ],
-      "demo_app_id": "3508890",
       "developers": [
         "Guilloteam"
       ],
       "full_game_app_id": "3310000",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3508890/header.jpg?t=1747131153",
       "is_demo": true,
       "is_free": true,
@@ -90916,13 +90971,11 @@
         "Playable without Timed Input",
         "Save Anytime"
       ],
-      "demo_app_id": "3514970",
       "developers": [
         "Mini Fun Games"
       ],
       "full_game_app_id": "3456800",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3514970/9f4560194d4482e2c6f772524428107443e0df94/header.jpg?t=1748426429",
       "is_demo": true,
       "is_free": true,
@@ -91171,13 +91224,11 @@
         "Steam Leaderboards",
         "Steam Timeline"
       ],
-      "demo_app_id": "3520070",
       "developers": [
         "Vedinad"
       ],
       "full_game_app_id": "3405340",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3520070/header.jpg?t=1740476284",
       "is_demo": true,
       "is_free": true,
@@ -91661,13 +91712,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "3536620",
       "developers": [
         "LittleBigEars Games"
       ],
       "full_game_app_id": "3495250",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3536620/header.jpg?t=1740603764",
       "is_demo": true,
       "is_free": true,
@@ -95376,13 +95425,11 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "3684230",
       "developers": [
         "Moonshine Muffin"
       ],
       "full_game_app_id": "3669370",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3684230/bbc640fded3d562c47afcd3c4fd2d24ee4594240/header.jpg?t=1748268323",
       "is_demo": true,
       "is_free": true,
@@ -95993,13 +96040,11 @@
         "Custom Volume Controls",
         "Playable without Timed Input"
       ],
-      "demo_app_id": "3700260",
       "developers": [
         "RetroAction Games"
       ],
       "full_game_app_id": "3658250",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3700260/429c4fa741f484e098904df362543b1d87e6266a/header.jpg?t=1746080917",
       "is_demo": true,
       "is_free": true,
@@ -96912,7 +96957,7 @@
       "developers": [
         "Unwise"
       ],
-      "full_game_app_id": "3724990",
+      "full_game_app_id": "3525890",
       "genres": [
         "Casual",
         "Indie",
@@ -98461,13 +98506,11 @@
         "Game demo",
         "Playable without Timed Input"
       ],
-      "demo_app_id": "3821770",
       "developers": [
         "Glass Gecko Games"
       ],
       "full_game_app_id": "3198890",
       "genres": [],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3821770/bbfb5114e3eba752c28b065eadd8a758133fe85c/header.jpg?t=1750340961",
       "is_demo": true,
       "is_free": true,
@@ -99326,10 +99369,10 @@
         "Remote Play on TV",
         "Family Sharing"
       ],
+      "demo_app_id": "529980",
       "developers": [
         "Thing Trunk"
       ],
-      "full_game_app_id": "449960",
       "genres": [
         "Action",
         "Adventure",
@@ -99337,17 +99380,18 @@
         "Indie",
         "RPG"
       ],
+      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/449960/header.jpg?t=1700648328",
-      "is_demo": true,
-      "last_updated": "2025-07-11T23:02:01.756900",
+      "last_updated": "2025-07-26T21:53:02.236814",
       "name": "Book of Demons",
       "positive_review_percentage": 91,
       "price_eur": "22,99\u20ac",
+      "price_usd": "$24.99",
       "publishers": [
         "Thing Trunk"
       ],
       "release_date": "13 Dec, 2018",
-      "review_count": 8048,
+      "review_count": 8045,
       "review_summary": "Very Positive",
       "steam_app_id": "449960",
       "steam_url": "https://store.steampowered.com/app/449960",
@@ -100159,6 +100203,56 @@
         "Resource Management",
         "Sandbox",
         "Exploration"
+      ]
+    },
+    "529980": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Stats"
+      ],
+      "developers": [
+        "Thing Trunk"
+      ],
+      "full_game_app_id": "449960",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Casual",
+        "Indie",
+        "RPG"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/529980/header.jpg?t=1493217034",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-26T21:53:07.166464",
+      "name": "Book of Demons Demo",
+      "positive_review_percentage": 91,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Thing Trunk"
+      ],
+      "release_date": "27 Oct, 2016",
+      "review_count": 8045,
+      "review_summary": "Very Positive",
+      "steam_app_id": "529980",
+      "steam_url": "https://store.steampowered.com/app/529980",
+      "tags": [
+        "Dungeon Crawler",
+        "Roguelike Deckbuilder",
+        "Hack and Slash",
+        "RPG",
+        "Deckbuilding",
+        "Singleplayer",
+        "Isometric",
+        "Action RPG",
+        "Dark Fantasy",
+        "Fantasy"
       ]
     },
     "537800": {
@@ -102981,7 +103075,6 @@
         "Single-player",
         "Game demo"
       ],
-      "demo_app_id": "809910",
       "developers": [
         "Doble Punch Games",
         "tenacious718"
@@ -102991,7 +103084,6 @@
         "Action",
         "Strategy"
       ],
-      "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/809910/header.jpg?t=1524621567",
       "is_demo": true,
       "is_free": true,
