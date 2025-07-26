@@ -1,13 +1,13 @@
 <template>
-  <div class="flex flex-col gap-1">
-    <label class="text-sm text-text-secondary">Channels:</label>
+  <div class="space-y-3">
+    <h3 class="text-sm font-semibold text-text-primary">Channels</h3>
 
     <!-- Selected Channels Display -->
     <div v-if="selectedChannels.length > 0" class="mb-3">
       <div class="mb-2 flex items-center justify-between">
-        <span class="text-sm font-medium"
-          >Selected Channels ({{ selectedChannels.length }})</span
-        >
+        <span class="text-sm font-medium text-text-primary">
+          Selected ({{ selectedChannels.length }})
+        </span>
         <button
           @click="clearAllChannels"
           class="text-sm text-accent hover:underline"
@@ -15,18 +15,16 @@
           Clear All
         </button>
       </div>
-      <div
-        class="flex min-h-[3rem] flex-wrap gap-2 rounded-sm border border-gray-600 bg-bg-card p-3"
-      >
+      <div class="flex flex-wrap gap-1">
         <span
           v-for="channel in selectedChannels"
           :key="channel"
-          class="flex items-center gap-2 rounded-full bg-accent/20 px-3 py-1.5 text-sm text-accent"
+          class="flex items-center gap-1 rounded-full bg-accent/20 px-2 py-1 text-xs text-accent"
         >
           {{ formatChannelName(channel) }}
           <button
             @click="removeChannel(channel)"
-            class="flex size-4 items-center justify-center rounded-full text-xs text-accent/70 transition-colors hover:bg-accent/20 hover:text-accent"
+            class="flex size-3 items-center justify-center rounded-full text-accent/70 hover:bg-accent/30 hover:text-accent"
           >
             ×
           </button>
@@ -35,15 +33,14 @@
     </div>
 
     <!-- Search Input -->
-    <div class="relative mb-2">
+    <div class="relative">
       <input
         ref="searchInput"
         type="text"
         v-model="searchQuery"
         placeholder="Search channels..."
-        class="w-full rounded-sm border border-gray-600 bg-bg-card px-4 py-2 pl-10 text-sm transition-colors hover:border-accent focus:border-accent focus:outline-none"
+        class="w-full rounded-sm border border-gray-600 bg-bg-primary px-3 py-2 pl-9 text-sm text-text-primary placeholder-text-secondary hover:border-accent focus:border-accent focus:outline-none"
         @focus="showDropdown = true"
-        @input="filterChannels"
       />
       <svg
         class="pointer-events-none absolute top-2.5 left-3 size-4 text-text-secondary"
@@ -56,143 +53,100 @@
           stroke-linejoin="round"
           stroke-width="2"
           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        ></path>
+        />
       </svg>
       <button
         v-if="searchQuery"
         @click="clearSearch"
-        class="absolute top-2.5 right-3 size-4 text-text-secondary transition-colors hover:text-text-primary"
+        class="absolute top-2.5 right-3 size-4 text-text-secondary hover:text-text-primary"
       >
         ×
       </button>
     </div>
 
-    <!-- Channel Grid/List Display -->
-    <div class="mb-2">
-      <!-- Desktop: Grid layout for larger screens -->
-      <div class="hidden grid-cols-2 gap-3 sm:grid lg:grid-cols-4">
-        <label
-          v-for="channel in filteredChannels"
-          :key="channel.name"
-          :class="[
-            'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-all hover:border-accent/50',
-            selectedChannels.includes(channel.name)
-              ? 'border-accent/50 bg-accent/10'
-              : 'border-gray-600 bg-bg-card hover:bg-bg-secondary',
-          ]"
-          @click="toggleChannel(channel.name)"
-        >
-          <input
-            type="checkbox"
-            :checked="selectedChannels.includes(channel.name)"
-            @click.stop
-            @change="toggleChannel(channel.name)"
-            class="text-accent focus:ring-accent"
-          />
-          <div class="min-w-0 flex-1">
-            <div class="mb-1 flex items-center gap-2">
-              <div
-                class="size-3 shrink-0 rounded-full"
-                :class="getChannelColor(channel.name)"
-              ></div>
-              <span class="truncate text-sm font-medium">{{
-                formatChannelName(channel.name)
-              }}</span>
-            </div>
-            <div class="text-xs text-text-secondary">
-              {{ channel.count }} games
-            </div>
-          </div>
-        </label>
-      </div>
-
-      <!-- Mobile: List layout for smaller screens -->
-      <div class="space-y-2 sm:hidden">
-        <label
-          v-for="channel in filteredChannels"
-          :key="channel.name"
-          :class="[
-            'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-all hover:border-accent/50',
-            selectedChannels.includes(channel.name)
-              ? 'border-accent/50 bg-accent/10'
-              : 'border-gray-600 bg-bg-card hover:bg-bg-secondary',
-          ]"
-          @click="toggleChannel(channel.name)"
-        >
-          <input
-            type="checkbox"
-            :checked="selectedChannels.includes(channel.name)"
-            @click.stop
-            @change="toggleChannel(channel.name)"
-            class="text-accent focus:ring-accent"
-          />
-          <div
-            class="size-3 shrink-0 rounded-full"
-            :class="getChannelColor(channel.name)"
-          ></div>
-          <div class="min-w-0 flex-1">
-            <span class="text-sm font-medium">{{
-              formatChannelName(channel.name)
-            }}</span>
-            <span class="ml-2 text-xs text-text-secondary"
-              >({{ channel.count }} games)</span
-            >
-          </div>
-        </label>
-      </div>
-    </div>
-
-    <!-- Quick Select Actions -->
-    <div v-if="!searchQuery && channelsWithCounts.length > 0" class="mb-2">
-      <div class="flex flex-wrap gap-2 text-sm">
-        <button @click="selectAllChannels" class="text-accent hover:underline">
-          Select All
-        </button>
-        <span class="text-text-secondary">•</span>
-        <button
-          @click="selectPopularChannels"
-          class="text-accent hover:underline"
-        >
-          Select Top 4
-        </button>
-      </div>
-    </div>
-
-    <!-- Result Preview -->
+    <!-- Quick Actions -->
     <div
-      v-if="selectedChannels.length > 0"
-      class="mt-2 rounded-sm border border-gray-600 bg-bg-card p-3"
+      v-if="!searchQuery && channelsWithCounts.length > 0"
+      class="flex gap-2 text-xs"
     >
-      <div class="text-sm text-text-secondary">
-        <div class="flex items-center justify-between">
-          <span>Filter Preview:</span>
-          <span class="font-medium text-accent">{{ previewText }}</span>
+      <button @click="selectAllChannels" class="text-accent hover:underline">
+        Select All
+      </button>
+      <span class="text-text-secondary">•</span>
+      <button
+        @click="selectPopularChannels"
+        class="text-accent hover:underline"
+      >
+        Top 4
+      </button>
+    </div>
+
+    <!-- Channel List (Simplified for Sidebar) -->
+    <div class="space-y-1">
+      <label
+        v-for="channel in visibleChannels"
+        :key="channel.name"
+        class="flex cursor-pointer items-center gap-2 rounded-sm border border-transparent p-2 text-sm transition-colors hover:border-accent/30 hover:bg-accent/5"
+        :class="{
+          'border-accent/50 bg-accent/10': selectedChannels.includes(
+            channel.name,
+          ),
+        }"
+        @click="toggleChannel(channel.name)"
+      >
+        <input
+          type="checkbox"
+          :checked="selectedChannels.includes(channel.name)"
+          @click.stop
+          @change="toggleChannel(channel.name)"
+          class="size-4 rounded-sm border-gray-600 text-accent focus:ring-accent focus:ring-offset-0"
+        />
+        <div
+          class="size-2 shrink-0 rounded-full"
+          :class="getChannelColor(channel.name)"
+        />
+        <div class="min-w-0 flex-1">
+          <div class="truncate text-text-primary">
+            {{ formatChannelName(channel.name) }}
+          </div>
+          <div class="text-xs text-text-secondary">
+            {{ channel.count }} games
+          </div>
         </div>
-        <div class="mt-1 text-xs">
-          {{ logicExplanation }}
-        </div>
-      </div>
+      </label>
+    </div>
+
+    <!-- Show More/Less Button -->
+    <div
+      v-if="filteredChannels.length > initialShowCount && !searchQuery"
+      class="text-center"
+    >
+      <button
+        @click="toggleShowAll"
+        class="text-sm text-accent hover:underline"
+      >
+        {{
+          showAll
+            ? 'Show Less'
+            : `Show ${filteredChannels.length - initialShowCount} More`
+        }}
+      </button>
     </div>
 
     <!-- Empty State -->
     <div
-      v-if="channelsWithCounts.length === 0"
-      class="py-8 text-center text-text-secondary"
+      v-if="filteredChannels.length === 0 && searchQuery"
+      class="py-4 text-center text-sm text-text-secondary"
     >
-      <svg
-        class="mx-auto mb-3 size-12 opacity-50"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-        ></path>
-      </svg>
-      <div class="text-sm">No channels available</div>
+      No channels found for "{{ searchQuery }}"
+    </div>
+
+    <!-- Overall Empty State -->
+    <div
+      v-if="channelsWithCounts.length === 0"
+      class="py-6 text-center text-sm text-text-secondary"
+    >
+      No channels available
     </div>
   </div>
 </template>
@@ -218,6 +172,8 @@ export default {
     const searchQuery = ref('')
     const showDropdown = ref(false)
     const selectedChannels = ref([...props.initialSelectedChannels])
+    const showAll = ref(false)
+    const initialShowCount = 5
 
     // Define consistent colors for channels
     const channelColors = {
@@ -234,14 +190,6 @@ export default {
     const getChannelColor = (channelName) => {
       return channelColors[channelName] || 'bg-gray-500'
     }
-
-    // Top channels by game count (for quick select)
-    const popularChannels = computed(() => {
-      return props.channelsWithCounts
-        .slice()
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 4)
-    })
 
     // Filtered channels based on search query
     const filteredChannels = computed(() => {
@@ -261,44 +209,23 @@ export default {
             channel.name.toLowerCase().includes(query)
           )
         })
-        .sort((a, b) => {
-          // Exact matches first
-          const aFormatted = formatChannelName(a.name).toLowerCase()
-          const bFormatted = formatChannelName(b.name).toLowerCase()
-          const aExact = aFormatted === query
-          const bExact = bFormatted === query
-          if (aExact && !bExact) {
-            return -1
-          }
-          if (!aExact && bExact) {
-            return 1
-          }
-
-          // Then by popularity
-          return b.count - a.count
-        })
+        .sort((a, b) => b.count - a.count)
     })
 
-    // Preview text for result count
-    const previewText = computed(() => {
-      if (selectedChannels.value.length === 0) {
-        return ''
+    // Visible channels (with show more/less functionality)
+    const visibleChannels = computed(() => {
+      if (searchQuery.value.trim() || showAll.value) {
+        return filteredChannels.value
       }
-      if (selectedChannels.value.length === 1) {
-        return `Games from ${formatChannelName(selectedChannels.value[0])}`
-      }
-
-      return `${selectedChannels.value.length} channels selected`
+      return filteredChannels.value.slice(0, initialShowCount)
     })
 
-    // Logic explanation
-    const logicExplanation = computed(() => {
-      if (selectedChannels.value.length <= 1) {
-        return ''
-      }
-
-      const count = selectedChannels.value.length
-      return `Games featured by any of the ${count} selected channels`
+    // Top channels by game count (for quick select)
+    const popularChannels = computed(() => {
+      return props.channelsWithCounts
+        .slice()
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 4)
     })
 
     const toggleChannel = (channelName) => {
@@ -340,16 +267,15 @@ export default {
       emitFiltersChanged()
     }
 
+    const toggleShowAll = () => {
+      showAll.value = !showAll.value
+    }
+
     const clearSearch = () => {
       searchQuery.value = ''
       if (searchInput.value) {
         searchInput.value.focus()
       }
-    }
-
-    const filterChannels = () => {
-      // The filtering is handled by the computed property
-      // This function exists for potential future enhancements
     }
 
     const formatChannelName = (channel) => {
@@ -398,17 +324,17 @@ export default {
       searchQuery,
       showDropdown,
       selectedChannels,
+      showAll,
       popularChannels,
       filteredChannels,
-      previewText,
-      logicExplanation,
+      visibleChannels,
       toggleChannel,
       removeChannel,
       clearAllChannels,
       selectAllChannels,
       selectPopularChannels,
+      toggleShowAll,
       clearSearch,
-      filterChannels,
       formatChannelName,
       getChannelColor,
       emitFiltersChanged,

@@ -86,7 +86,7 @@
       </div>
 
       <!-- Tab Content -->
-      <div class="max-h-96 overflow-y-auto p-4">
+      <div class="overflow-y-auto p-4" style="max-height: 70vh">
         <!-- Presets Tab -->
         <div v-if="activeTab === 'presets'">
           <MobileFilterPresets

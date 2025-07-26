@@ -54,85 +54,107 @@
   </div>
 
   <!-- Desktop Filter Interface -->
-  <div class="mb-8 hidden rounded-lg bg-bg-secondary p-5 md:block">
-    <div class="flex flex-wrap items-center gap-5">
-      <!-- Release Status Filter -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-text-secondary">Release Status:</label>
-        <select
-          v-model="localFilters.releaseStatus"
-          class="cursor-pointer rounded-sm border border-gray-600 bg-bg-card px-3 py-2 text-text-primary hover:border-accent"
-          @change="debouncedEmitFiltersChanged"
-        >
-          <option value="all">All Games</option>
-          <option value="released">Released Only</option>
-          <option value="early-access">Early Access</option>
-          <option value="coming-soon">Coming Soon</option>
-        </select>
-      </div>
+  <div class="hidden space-y-4 md:block">
+    <!-- Applied Filters Summary (Integrated) -->
+    <AppliedFiltersBar
+      :filters="localFilters"
+      :game-count="gameCount"
+      @remove-filter="handleRemoveFilter"
+      @clear-all-filters="handleClearAllFilters"
+    />
 
-      <!-- Platform Filter -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-text-secondary">Platform:</label>
-        <select
-          v-model="localFilters.platform"
-          class="cursor-pointer rounded-sm border border-gray-600 bg-bg-card px-3 py-2 text-text-primary hover:border-accent"
-          @change="debouncedEmitFiltersChanged"
-        >
-          <option value="all">All Platforms</option>
-          <option value="steam">Steam</option>
-          <option value="itch">Itch.io</option>
-          <option value="crazygames">CrazyGames</option>
-        </select>
-      </div>
-
-      <!-- Cross-Platform Filter -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-text-secondary">Cross-Platform:</label>
-        <div class="flex items-center gap-2">
-          <input
-            id="crossPlatform"
-            v-model="localFilters.crossPlatform"
-            type="checkbox"
-            class="size-4 cursor-pointer rounded-sm border-gray-600 bg-bg-card text-accent focus:ring-accent focus:ring-offset-0"
-            @change="debouncedEmitFiltersChanged"
-          />
-          <label
-            for="crossPlatform"
-            class="cursor-pointer text-sm text-text-primary"
+    <!-- Basic Filters Section -->
+    <CollapsibleSection
+      title="Basic Filters"
+      :active-count="basicFiltersCount"
+      :default-expanded="true"
+    >
+      <div class="space-y-4">
+        <!-- Release Status Filter -->
+        <div>
+          <label class="mb-1 block text-sm text-text-secondary"
+            >Release Status:</label
           >
-            Multi-platform only
-          </label>
+          <select
+            v-model="localFilters.releaseStatus"
+            class="w-full cursor-pointer rounded-sm border border-gray-600 bg-bg-primary px-3 py-2 text-text-primary hover:border-accent focus:border-accent focus:outline-none"
+            @change="debouncedEmitFiltersChanged"
+          >
+            <option value="all">All Games</option>
+            <option value="released">Released Only</option>
+            <option value="early-access">Early Access</option>
+            <option value="coming-soon">Coming Soon</option>
+          </select>
+        </div>
+
+        <!-- Platform Filter -->
+        <div>
+          <label class="mb-1 block text-sm text-text-secondary"
+            >Platform:</label
+          >
+          <select
+            v-model="localFilters.platform"
+            class="w-full cursor-pointer rounded-sm border border-gray-600 bg-bg-primary px-3 py-2 text-text-primary hover:border-accent focus:border-accent focus:outline-none"
+            @change="debouncedEmitFiltersChanged"
+          >
+            <option value="all">All Platforms</option>
+            <option value="steam">Steam</option>
+            <option value="itch">Itch.io</option>
+            <option value="crazygames">CrazyGames</option>
+          </select>
+        </div>
+
+        <!-- Cross-Platform & Hidden Gems Checkboxes -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <input
+              id="crossPlatform"
+              v-model="localFilters.crossPlatform"
+              type="checkbox"
+              class="size-4 cursor-pointer rounded-sm border-gray-600 text-accent focus:ring-accent focus:ring-offset-0"
+              @change="debouncedEmitFiltersChanged"
+            />
+            <label
+              for="crossPlatform"
+              class="cursor-pointer text-sm text-text-primary"
+            >
+              Multi-platform only
+            </label>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input
+              id="hiddenGems"
+              v-model="localFilters.hiddenGems"
+              type="checkbox"
+              class="size-4 cursor-pointer rounded-sm border-gray-600 text-accent focus:ring-accent focus:ring-offset-0"
+              @change="debouncedEmitFiltersChanged"
+            />
+            <label
+              for="hiddenGems"
+              class="cursor-pointer text-sm text-text-primary"
+              title="High quality games (80%+ rating) with limited video coverage (1-3 videos) and sufficient reviews (50+)"
+            >
+              Hidden Gems
+            </label>
+          </div>
         </div>
       </div>
+    </CollapsibleSection>
 
-      <!-- Hidden Gems Filter -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-text-secondary">Hidden Gems:</label>
-        <div class="flex items-center gap-2">
-          <input
-            id="hiddenGems"
-            v-model="localFilters.hiddenGems"
-            type="checkbox"
-            class="size-4 cursor-pointer rounded-sm border-gray-600 bg-bg-card text-accent focus:ring-accent focus:ring-offset-0"
-            @change="debouncedEmitFiltersChanged"
-          />
-          <label
-            for="hiddenGems"
-            class="cursor-pointer text-sm text-text-primary"
-            title="High quality games (80%+ rating) with limited video coverage (1-3 videos) and sufficient reviews (50+)"
-          >
-            Quality, low coverage
-          </label>
-        </div>
-      </div>
-
-      <!-- Rating Filter -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-text-secondary">Minimum Rating:</label>
+    <!-- Rating Section -->
+    <CollapsibleSection
+      title="Rating"
+      :active-count="ratingFiltersCount"
+      :default-expanded="false"
+    >
+      <div>
+        <label class="mb-1 block text-sm text-text-secondary"
+          >Minimum Rating:</label
+        >
         <select
           v-model="localFilters.rating"
-          class="cursor-pointer rounded-sm border border-gray-600 bg-bg-card px-3 py-2 text-text-primary hover:border-accent"
+          class="w-full cursor-pointer rounded-sm border border-gray-600 bg-bg-primary px-3 py-2 text-text-primary hover:border-accent focus:border-accent focus:outline-none"
           @change="debouncedEmitFiltersChanged"
         >
           <option value="0">All Ratings</option>
@@ -141,72 +163,121 @@
           <option value="90">90%+ Positive</option>
         </select>
       </div>
+    </CollapsibleSection>
 
-      <!-- Tag Filter (Multi-Select) -->
-      <div class="flex flex-col gap-1">
-        <TagFilterMulti
-          :tags-with-counts="tags"
-          :initial-selected-tags="localFilters.selectedTags || []"
-          :initial-tag-logic="localFilters.tagLogic || 'and'"
-          @tags-changed="handleTagsChanged"
-        />
-      </div>
+    <!-- Tag Filter Section -->
+    <CollapsibleSection
+      title="Tags"
+      :active-count="tagsCount"
+      :default-expanded="false"
+    >
+      <TagFilterMulti
+        :tags-with-counts="tags"
+        :initial-selected-tags="localFilters.selectedTags || []"
+        :initial-tag-logic="localFilters.tagLogic || 'and'"
+        @tags-changed="handleTagsChanged"
+      />
+    </CollapsibleSection>
 
-      <!-- Channel Filter (Multi-Select) -->
-      <div class="flex flex-col gap-1">
-        <ChannelFilterMulti
-          :channels-with-counts="channelsWithCounts"
-          :initial-selected-channels="localFilters.selectedChannels || []"
-          @channels-changed="handleChannelsChanged"
-        />
-      </div>
+    <!-- Channel Filter Section -->
+    <CollapsibleSection
+      title="Channels"
+      :active-count="channelsCount"
+      :default-expanded="false"
+    >
+      <ChannelFilterMulti
+        :channels-with-counts="channelsWithCounts"
+        :initial-selected-channels="localFilters.selectedChannels || []"
+        @channels-changed="handleChannelsChanged"
+      />
+    </CollapsibleSection>
 
-      <!-- Advanced Sort Filter -->
-      <div class="flex flex-col gap-1">
-        <SortingOptions
-          :initial-sort="localFilters.sortBy"
-          :contextual-filters="localFilters"
-          @sort-changed="handleSortChanged"
-        />
-      </div>
+    <!-- Time Filter Section -->
+    <CollapsibleSection
+      title="Time Filter"
+      :active-count="timeFilterCount"
+      :default-expanded="false"
+    >
+      <TimeFilterSimple
+        :initial-time-filter="localFilters.timeFilter || {}"
+        @time-filter-changed="handleTimeFilterChanged"
+      />
+    </CollapsibleSection>
 
-      <!-- Currency Filter -->
-      <div class="flex flex-col gap-1">
-        <label class="text-sm text-text-secondary">Currency:</label>
+    <!-- Price Filter Section -->
+    <CollapsibleSection
+      title="Price Filter"
+      :active-count="priceFilterCount"
+      :default-expanded="false"
+    >
+      <PriceFilter
+        :currency="localFilters.currency"
+        :initial-price-filter="localFilters.priceFilter || {}"
+        :game-stats="gameStats"
+        @price-filter-changed="handlePriceFilterChanged"
+      />
+    </CollapsibleSection>
+
+    <!-- Sorting Section -->
+    <CollapsibleSection
+      title="Sort By"
+      :active-count="sortingCount"
+      :default-expanded="false"
+    >
+      <SortingOptions
+        :initial-sort="localFilters.sortBy"
+        :contextual-filters="localFilters"
+        @sort-changed="handleSortChanged"
+      />
+    </CollapsibleSection>
+
+    <!-- Settings Section -->
+    <CollapsibleSection
+      title="Settings"
+      :active-count="currencyCount"
+      :default-expanded="false"
+    >
+      <div>
+        <label class="mb-1 block text-sm text-text-secondary">Currency:</label>
         <select
           v-model="localFilters.currency"
-          class="cursor-pointer rounded-sm border border-gray-600 bg-bg-card px-3 py-2 text-text-primary hover:border-accent"
+          class="w-full cursor-pointer rounded-sm border border-gray-600 bg-bg-primary px-3 py-2 text-text-primary hover:border-accent focus:border-accent focus:outline-none"
           @change="debouncedEmitFiltersChanged"
         >
           <option value="eur">EUR (€)</option>
           <option value="usd">USD ($)</option>
         </select>
       </div>
+    </CollapsibleSection>
 
-      <!-- Time Filter -->
-      <div class="flex flex-col gap-1">
-        <TimeFilterSimple
-          :initial-time-filter="localFilters.timeFilter || {}"
-          @time-filter-changed="handleTimeFilterChanged"
-        />
-      </div>
+    <!-- Filter Presets Section -->
+    <CollapsibleSection
+      title="Filter Presets"
+      :active-count="0"
+      :default-expanded="false"
+    >
+      <FilterPresets
+        :current-filters="localFilters"
+        @apply-preset="handleApplyPreset"
+      />
+    </CollapsibleSection>
 
-      <!-- Price Filter -->
-      <div class="flex flex-col gap-1">
-        <PriceFilter
-          :currency="localFilters.currency"
-          :initial-price-filter="localFilters.priceFilter || {}"
-          :game-stats="gameStats"
-          @price-filter-changed="handlePriceFilterChanged"
-        />
-      </div>
-
-      <!-- Filter Presets -->
-      <div class="flex flex-col gap-1">
-        <FilterPresets
-          :current-filters="localFilters"
-          @apply-preset="handleApplyPreset"
-        />
+    <!-- Sidebar Footer -->
+    <div class="border-t border-gray-600 pt-4">
+      <div class="flex gap-2">
+        <button
+          @click="handleClearAllFilters"
+          class="flex-1 rounded-sm border border-gray-500 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
+          :disabled="activeFilterCount === 0"
+        >
+          Reset All
+        </button>
+        <button
+          class="flex-1 rounded-sm bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+          title="Export current filter results (feature coming soon)"
+        >
+          Export
+        </button>
       </div>
     </div>
   </div>
@@ -215,6 +286,7 @@
 <script>
 import { reactive, computed, ref, onUnmounted } from 'vue'
 import { useDebouncedFilters } from '../composables/useDebouncedFilters.js'
+import CollapsibleSection from './CollapsibleSection.vue'
 import TagFilterMulti from './TagFilterMulti.vue'
 import ChannelFilterMulti from './ChannelFilterMulti.vue'
 import TimeFilterSimple from './TimeFilterSimple.vue'
@@ -227,6 +299,7 @@ import FilterPresets from './FilterPresets.vue'
 export default {
   name: 'GameFilters',
   components: {
+    CollapsibleSection,
     TagFilterMulti,
     ChannelFilterMulti,
     TimeFilterSimple,
@@ -356,6 +429,61 @@ export default {
         count++
       }
       return count
+    })
+
+    // Section-specific active filter counts for badges
+    const basicFiltersCount = computed(() => {
+      let count = 0
+      if (localFilters.releaseStatus !== 'all') {
+        count++
+      }
+      if (localFilters.platform !== 'all') {
+        count++
+      }
+      if (localFilters.crossPlatform) {
+        count++
+      }
+      if (localFilters.hiddenGems) {
+        count++
+      }
+      return count
+    })
+
+    const ratingFiltersCount = computed(() => {
+      return localFilters.rating !== '0' ? 1 : 0
+    })
+
+    const tagsCount = computed(() => {
+      return localFilters.selectedTags.length > 0
+        ? localFilters.selectedTags.length
+        : 0
+    })
+
+    const channelsCount = computed(() => {
+      return localFilters.selectedChannels.length > 0
+        ? localFilters.selectedChannels.length
+        : 0
+    })
+
+    const sortingCount = computed(() => {
+      return localFilters.sortBy !== 'date' || localFilters.sortSpec ? 1 : 0
+    })
+
+    const timeFilterCount = computed(() => {
+      return localFilters.timeFilter && localFilters.timeFilter.type ? 1 : 0
+    })
+
+    const priceFilterCount = computed(() => {
+      return localFilters.priceFilter &&
+        (localFilters.priceFilter.minPrice > 0 ||
+          localFilters.priceFilter.maxPrice < 70 ||
+          !localFilters.priceFilter.includeFree)
+        ? 1
+        : 0
+    })
+
+    const currencyCount = computed(() => {
+      return localFilters.currency !== 'eur' ? 1 : 0
     })
 
     const handleTagsChanged = (tagData) => {
@@ -512,6 +640,14 @@ export default {
       showMobileModal,
       localFilters,
       activeFilterCount,
+      basicFiltersCount,
+      ratingFiltersCount,
+      tagsCount,
+      channelsCount,
+      sortingCount,
+      timeFilterCount,
+      priceFilterCount,
+      currencyCount,
       handleTagsChanged,
       handleChannelsChanged,
       handleTimeFilterChanged,

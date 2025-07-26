@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-3">
-    <label class="text-sm text-text-secondary">Time Filter:</label>
+    <h3 class="text-sm font-semibold text-text-primary">Time Filter</h3>
 
     <!-- Filter Type Selection -->
     <div class="space-y-2">

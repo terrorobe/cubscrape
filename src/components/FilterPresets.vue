@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col gap-1">
-    <label class="text-sm text-text-secondary">Filter Presets:</label>
+  <div class="space-y-3">
+    <h3 class="text-sm font-semibold text-text-primary">Filter Presets</h3>
 
     <!-- Preset Dropdown -->
     <div class="relative">

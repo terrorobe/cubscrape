@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col gap-1">
-    <label class="flex items-center gap-2 text-sm text-text-secondary">
-      Sort By:
+  <div class="space-y-3">
+    <div class="flex items-center gap-2">
+      <h3 class="text-sm font-semibold text-text-primary">Sort By</h3>
       <button
         v-if="showAdvancedToggle"
         @click="toggleAdvancedMode"
@@ -14,7 +14,7 @@
       >
         {{ isAdvancedMode ? 'Simple' : 'Advanced' }}
       </button>
-    </label>
+    </div>
 
     <!-- Simple Mode: Traditional single-criteria sorting -->
     <div v-if="!isAdvancedMode" class="flex flex-col gap-2">

@@ -1,12 +1,9 @@
 <template>
-  <div class="flex flex-col gap-1">
-    <label class="text-sm text-text-secondary">Tags:</label>
+  <div class="space-y-3">
+    <h3 class="text-sm font-semibold text-text-primary">Tags</h3>
 
     <!-- Logic Toggle -->
-    <div
-      v-if="selectedTags.length > 1"
-      class="mb-3 rounded-lg border border-gray-600 bg-bg-card p-3"
-    >
+    <div class="mb-3 rounded-lg border border-gray-600 bg-bg-card p-3">
       <div class="mb-2 flex items-center justify-between">
         <span class="text-sm font-medium">Selection Logic</span>
         <span class="text-xs text-text-secondary">How tags are combined</span>

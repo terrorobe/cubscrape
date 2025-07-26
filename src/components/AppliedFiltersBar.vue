@@ -39,44 +39,62 @@
       </div>
     </div>
 
-    <!-- Desktop: Wrapped display -->
-    <div class="hidden flex-wrap items-center gap-2 md:flex">
-      <span class="text-sm font-medium text-text-secondary">
-        Active Filters ({{ appliedFilters.length }}):
-      </span>
-
-      <div class="flex flex-wrap gap-2">
-        <button
-          v-for="filter in appliedFilters"
-          :key="filter.key"
-          @click="removeFilter(filter)"
-          class="flex items-center gap-2 rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-        >
-          <span>{{ filter.label }}</span>
-          <svg
-            class="size-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+    <!-- Desktop: Card-style sidebar display -->
+    <div class="hidden md:block">
+      <div class="rounded-lg border border-gray-600 bg-bg-card p-4">
+        <div class="mb-3 flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-text-primary">
+            Active Filters
+          </h3>
+          <span
+            class="flex size-6 items-center justify-center rounded-full bg-accent text-xs font-medium text-white"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
-        </button>
-      </div>
+            {{ appliedFilters.length }}
+          </span>
+        </div>
 
-      <!-- Clear all button -->
-      <button
-        v-if="appliedFilters.length > 0"
-        @click="clearAllFilters"
-        class="rounded-full border border-gray-500 px-3 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
-      >
-        Clear All
-      </button>
+        <!-- Results Count Preview -->
+        <div
+          v-if="gameCount !== undefined"
+          class="mb-3 text-sm text-text-secondary"
+        >
+          {{ gameCount }} games found
+        </div>
+
+        <div v-if="appliedFilters.length > 0" class="space-y-2">
+          <button
+            v-for="filter in appliedFilters"
+            :key="filter.key"
+            @click="removeFilter(filter)"
+            class="flex w-full items-center justify-between rounded-sm bg-accent/10 px-3 py-2 text-sm transition-colors hover:bg-accent/20"
+          >
+            <span class="truncate text-text-primary">{{ filter.label }}</span>
+            <svg
+              class="size-4 shrink-0 text-text-secondary hover:text-accent"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Clear all button -->
+          <button
+            @click="clearAllFilters"
+            class="mt-2 w-full rounded-sm border border-gray-500 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
+          >
+            Clear All Filters
+          </button>
+        </div>
+
+        <div v-else class="text-sm text-text-secondary">No active filters</div>
+      </div>
     </div>
   </div>
 </template>
@@ -90,6 +108,10 @@ export default {
     filters: {
       type: Object,
       required: true,
+    },
+    gameCount: {
+      type: Number,
+      default: undefined,
     },
   },
   emits: ['remove-filter', 'clear-all-filters'],

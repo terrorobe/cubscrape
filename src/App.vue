@@ -8,129 +8,162 @@
         </p>
       </header>
 
-      <GameFilters
-        :channels="channels"
-        :channels-with-counts="channelsWithCounts"
-        :tags="allTags"
-        :initial-filters="filters"
-        :game-count="filteredGames.length"
-        :game-stats="gameStats"
-        @filters-changed="updateFilters"
-      />
-
-      <div class="relative mb-5 text-text-secondary">
-        <!-- Centered content - Sort indicator and game count -->
-        <div class="flex flex-col items-center gap-2">
-          <!-- Sort Indicator -->
-          <SortIndicator
-            :sort-by="filters.sortBy"
-            :sort-spec="filters.sortSpec"
-            :game-count="filteredGames.length"
-          />
-
-          <!-- Game count - Hidden on mobile (shown in filter button) -->
-          <div class="hidden text-center md:block">
-            <span>{{ filteredGames.length }} games found</span>
+      <!-- Desktop Layout: Sidebar + Main Content -->
+      <div class="flex gap-6">
+        <!-- Desktop Sidebar (hidden on mobile) -->
+        <div class="hidden w-80 shrink-0 md:block">
+          <div class="sticky top-6 space-y-6">
+            <GameFilters
+              :channels="channels"
+              :channels-with-counts="channelsWithCounts"
+              :tags="allTags"
+              :initial-filters="filters"
+              :game-count="filteredGames.length"
+              :game-stats="gameStats"
+              @filters-changed="updateFilters"
+            />
           </div>
         </div>
 
-        <!-- Database Status - Absolute positioned to right -->
-        <div class="absolute top-0 right-0 flex items-center gap-4 text-sm">
-          <div class="flex items-center gap-2">
-            <span
-              class="size-2 rounded-full"
-              :class="databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'"
-            ></span>
-            <span>{{ databaseStatus.games }} total</span>
+        <!-- Main Content Area -->
+        <div class="flex-1">
+          <!-- Mobile Filters (shown only on mobile) -->
+          <div class="mb-6 md:hidden">
+            <GameFilters
+              :channels="channels"
+              :channels-with-counts="channelsWithCounts"
+              :tags="allTags"
+              :initial-filters="filters"
+              :game-count="filteredGames.length"
+              :game-stats="gameStats"
+              @filters-changed="updateFilters"
+            />
           </div>
-          <div class="text-xs text-text-secondary/70">
-            <span
-              v-if="databaseStatus.lastGenerated"
-              :title="
-                isDevelopment
-                  ? 'Click to test version mismatch'
-                  : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
-              "
-              :class="
-                isDevelopment ? 'cursor-pointer hover:text-text-primary' : ''
-              "
-              @click="isDevelopment ? testVersionMismatch() : null"
-            >
-              Database:
-              {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
-            </span>
-            <span
-              v-if="databaseStatus.lastChecked && !isDevelopment"
-              :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
-            >
-              • Last check: {{ formatTimestamp(databaseStatus.lastChecked) }}
-            </span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Version Mismatch Notification -->
-      <div
-        v-if="showVersionMismatch"
-        class="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-900/20"
-      >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🔄</span>
-            <div>
-              <h3 class="font-semibold text-amber-800 dark:text-amber-200">
-                New Version Available
-              </h3>
-              <p class="text-sm text-amber-700 dark:text-amber-300">
-                The app has been updated. Please reload to get the latest
-                features and fixes.
-              </p>
+          <!-- Sort & Status Info -->
+          <div class="relative mb-5 text-text-secondary">
+            <!-- Centered content - Sort indicator and game count -->
+            <div class="flex flex-col items-center gap-2 md:items-start">
+              <!-- Sort Indicator -->
+              <SortIndicator
+                :sort-by="filters.sortBy"
+                :sort-spec="filters.sortSpec"
+                :game-count="filteredGames.length"
+              />
+
+              <!-- Game count -->
+              <div class="hidden text-center md:block md:text-left">
+                <span>{{ filteredGames.length }} games found</span>
+              </div>
+            </div>
+
+            <!-- Database Status - Absolute positioned to right -->
+            <div class="absolute top-0 right-0 flex items-center gap-4 text-sm">
+              <div class="flex items-center gap-2">
+                <span
+                  class="size-2 rounded-full"
+                  :class="
+                    databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
+                  "
+                ></span>
+                <span>{{ databaseStatus.games }} total</span>
+              </div>
+              <div class="text-xs text-text-secondary/70">
+                <span
+                  v-if="databaseStatus.lastGenerated"
+                  :title="
+                    isDevelopment
+                      ? 'Click to test version mismatch'
+                      : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
+                  "
+                  :class="
+                    isDevelopment
+                      ? 'cursor-pointer hover:text-text-primary'
+                      : ''
+                  "
+                  @click="isDevelopment ? testVersionMismatch() : null"
+                >
+                  Database:
+                  {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
+                </span>
+                <span
+                  v-if="databaseStatus.lastChecked && !isDevelopment"
+                  :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
+                >
+                  • Last check:
+                  {{ formatTimestamp(databaseStatus.lastChecked) }}
+                </span>
+              </div>
             </div>
           </div>
-          <div class="flex gap-2">
-            <button
-              @click="dismissVersionMismatch"
-              class="rounded-sm px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-800/50"
-            >
-              Dismiss
-            </button>
-            <button
-              @click="reloadApp"
-              class="rounded-sm bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
-            >
-              Reload Now
-            </button>
+
+          <!-- Version Mismatch Notification -->
+          <div
+            v-if="showVersionMismatch"
+            class="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-900/20"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">🔄</span>
+                <div>
+                  <h3 class="font-semibold text-amber-800 dark:text-amber-200">
+                    New Version Available
+                  </h3>
+                  <p class="text-sm text-amber-700 dark:text-amber-300">
+                    The app has been updated. Please reload to get the latest
+                    features and fixes.
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button
+                  @click="dismissVersionMismatch"
+                  class="rounded-sm px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-800/50"
+                >
+                  Dismiss
+                </button>
+                <button
+                  @click="reloadApp"
+                  class="rounded-sm bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
+                >
+                  Reload Now
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Game Grid -->
+          <div
+            class="grid gap-5"
+            style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"
+          >
+            <GameCard
+              v-for="game in filteredGames"
+              :key="game.id"
+              :game="game"
+              :currency="filters.currency"
+              :is-highlighted="highlightedGameId === game.id"
+              @click="clearHighlight"
+            />
+          </div>
+
+          <!-- Loading/Error States -->
+          <div v-if="loading" class="py-10 text-center text-text-secondary">
+            Loading games...
+          </div>
+
+          <div v-if="error" class="py-10 text-center text-red-500">
+            Error loading games: {{ error }}
+          </div>
+
+          <!-- No Results State -->
+          <div
+            v-if="!loading && !error && filteredGames.length === 0"
+            class="py-10 text-center text-text-secondary"
+          >
+            No games found matching your criteria.
           </div>
         </div>
-      </div>
-
-      <div
-        class="grid gap-5"
-        style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"
-      >
-        <GameCard
-          v-for="game in filteredGames"
-          :key="game.id"
-          :game="game"
-          :currency="filters.currency"
-          :is-highlighted="highlightedGameId === game.id"
-          @click="clearHighlight"
-        />
-      </div>
-
-      <div v-if="loading" class="py-10 text-center text-text-secondary">
-        Loading games...
-      </div>
-
-      <div v-if="error" class="py-10 text-center text-red-500">
-        Error loading games: {{ error }}
-      </div>
-
-      <div
-        v-if="!loading && !error && filteredGames.length === 0"
-        class="py-10 text-center text-text-secondary"
-      >
-        No games found matching your criteria.
       </div>
     </div>
   </div>
