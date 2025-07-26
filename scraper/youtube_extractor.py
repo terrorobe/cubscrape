@@ -55,7 +55,7 @@ class YouTubeExtractor:
 
         with yt_dlp.YoutubeDL(ydl_opts_lightweight) as ydl:
             try:
-                logging.info(f"Fetching lightweight data from {channel_url}")
+                logging.debug(f"Fetching lightweight data from {channel_url}")
                 info = ydl.extract_info(channel_url, download=False)
 
                 if 'entries' in info:
