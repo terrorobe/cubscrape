@@ -102,6 +102,7 @@ Processing Modes:
   fetch-videos      Fetch new YouTube videos only (no game processing)
   refresh-steam     Update Steam game data only
   refresh-other     Update other platform games (Itch.io, CrazyGames) only
+  steam-changes     Analyze changes in steam_games.json over git history
 
 Examples:
   cubscrape cron                              # Process all channels (daily run)
@@ -111,6 +112,7 @@ Examples:
   cubscrape refresh-steam --max-steam-updates 100  # Update Steam data only
   cubscrape fetch-steam-apps --app-id 12345   # Fetch specific Steam app
   cubscrape data-quality                      # Run data quality checks
+  cubscrape steam-changes --since "3 days ago" # Show Steam game changes
             '''
         )
 
@@ -119,7 +121,7 @@ Examples:
 
         parser.add_argument(
             'mode',
-            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other'],
+            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other', 'steam-changes'],
             help=mode_help
         )
         # Channel selection options
@@ -186,6 +188,12 @@ Examples:
             action='store_true',
             help='Disable backfill processing during cron run (overrides config setting)'
         )
+        special_group.add_argument(
+            '--since',
+            type=str,
+            metavar='DATE',
+            help='Date cutoff for steam-changes (e.g., "3 days ago", "2024-01-01", "1 week ago")'
+        )
         return parser
 
     def parse_and_execute(self, args: list[str] | None = None) -> None:
@@ -205,7 +213,8 @@ Examples:
             'build-db': self._handle_build_db,
             'fetch-videos': self._handle_fetch_videos,
             'refresh-steam': self._handle_refresh_steam,
-            'refresh-other': self._handle_refresh_other
+            'refresh-other': self._handle_refresh_other,
+            'steam-changes': self._handle_steam_changes
         }
 
         handler = command_map.get(parsed_args.mode)
@@ -611,6 +620,17 @@ Examples:
         logging.info("Refreshing other games data (Itch.io, CrazyGames)")
         other_games_updater = OtherGamesUpdater()
         other_games_updater.update_all_other_games(force_update=args.force)
+
+    def _handle_steam_changes(self, args: argparse.Namespace) -> None:
+        """Handle steam-changes command - analyze changes in steam_games.json"""
+        from .steam_changes import SteamChangesAnalyzer
+
+        project_root = self._get_project_root()
+        analyzer = SteamChangesAnalyzer(project_root)
+
+        # Use default of "1 week ago" if not specified
+        since_date = args.since or "1 week ago"
+        analyzer.analyze_changes(since_date)
 
 
 def main() -> None:
