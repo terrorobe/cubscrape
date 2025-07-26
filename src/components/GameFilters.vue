@@ -1,10 +1,12 @@
 <template>
-  <!-- Applied Filters Bar (Mobile & Desktop) -->
-  <AppliedFiltersBar
-    :filters="localFilters"
-    @remove-filter="handleRemoveFilter"
-    @clear-all-filters="handleClearAllFilters"
-  />
+  <!-- Applied Filters Bar (Mobile only - desktop version is rendered below) -->
+  <div class="md:hidden">
+    <AppliedFiltersBar
+      :filters="localFilters"
+      @remove-filter="handleRemoveFilter"
+      @clear-all-filters="handleClearAllFilters"
+    />
+  </div>
 
   <!-- Mobile Filter Interface -->
   <div class="md:hidden">
@@ -55,12 +57,13 @@
 
   <!-- Desktop Filter Interface -->
   <div class="hidden space-y-4 md:block">
-    <!-- Applied Filters Summary (Integrated) -->
+    <!-- Applied Filters Summary -->
     <AppliedFiltersBar
       :filters="localFilters"
       :game-count="gameCount"
       @remove-filter="handleRemoveFilter"
       @clear-all-filters="handleClearAllFilters"
+      @height-change="handleActiveFiltersHeightChange"
     />
 
     <!-- Basic Filters Section -->
@@ -284,7 +287,7 @@
 </template>
 
 <script>
-import { reactive, computed, ref, onUnmounted } from 'vue'
+import { reactive, computed, ref, onUnmounted, nextTick } from 'vue'
 import { useDebouncedFilters } from '../composables/useDebouncedFilters.js'
 import CollapsibleSection from './CollapsibleSection.vue'
 import TagFilterMulti from './TagFilterMulti.vue'
@@ -527,77 +530,102 @@ export default {
       debouncedEmitFiltersChanged()
     }
 
-    const handleRemoveFilter = (filterInfo) => {
-      switch (filterInfo.type) {
-        case 'releaseStatus':
-          localFilters.releaseStatus = filterInfo.value
-          break
-        case 'platform':
-          localFilters.platform = filterInfo.value
-          break
-        case 'rating':
-          localFilters.rating = filterInfo.value
-          break
-        case 'crossPlatform':
-          localFilters.crossPlatform = filterInfo.value
-          break
-        case 'hiddenGems':
-          localFilters.hiddenGems = filterInfo.value
-          break
-        case 'tags':
-          localFilters.selectedTags = filterInfo.value
-          localFilters.tag = ''
-          break
-        case 'channels':
-          localFilters.selectedChannels = filterInfo.value
-          localFilters.channel = ''
-          break
-        case 'sortBy':
-          localFilters.sortBy = filterInfo.value
-          localFilters.sortSpec = null
-          break
-        case 'currency':
-          localFilters.currency = filterInfo.value
-          break
-        case 'timeFilter':
-          localFilters.timeFilter = filterInfo.value
-          break
-        case 'priceFilter':
-          localFilters.priceFilter = filterInfo.value
-          break
+    // Helper to preserve scroll position when filters change
+    const preserveScrollPosition = (callback) => {
+      // Find the sidebar scroll container
+      const scrollContainer = document.querySelector('.sidebar-scroll')
+      if (!scrollContainer) {
+        callback()
+        return
       }
-      // Remove operations should be immediate
-      immediateEmitFiltersChanged()
+
+      // Save current scroll position
+      const scrollTop = scrollContainer.scrollTop
+
+      // Execute the callback
+      callback()
+
+      // Restore scroll position after DOM update
+      nextTick(() => {
+        scrollContainer.scrollTop = scrollTop
+      })
+    }
+
+    const handleRemoveFilter = (filterInfo) => {
+      preserveScrollPosition(() => {
+        switch (filterInfo.type) {
+          case 'releaseStatus':
+            localFilters.releaseStatus = filterInfo.value
+            break
+          case 'platform':
+            localFilters.platform = filterInfo.value
+            break
+          case 'rating':
+            localFilters.rating = filterInfo.value
+            break
+          case 'crossPlatform':
+            localFilters.crossPlatform = filterInfo.value
+            break
+          case 'hiddenGems':
+            localFilters.hiddenGems = filterInfo.value
+            break
+          case 'tags':
+            localFilters.selectedTags = filterInfo.value
+            localFilters.tag = ''
+            break
+          case 'channels':
+            localFilters.selectedChannels = filterInfo.value
+            localFilters.channel = ''
+            break
+          case 'sortBy':
+            localFilters.sortBy = filterInfo.value
+            localFilters.sortSpec = null
+            break
+          case 'currency':
+            localFilters.currency = filterInfo.value
+            break
+          case 'timeFilter':
+            localFilters.timeFilter = filterInfo.value
+            break
+          case 'priceFilter':
+            localFilters.priceFilter = filterInfo.value
+            break
+        }
+        // Remove operations should be immediate
+        immediateEmitFiltersChanged()
+      })
     }
 
     const handleClearAllFilters = () => {
-      localFilters.releaseStatus = 'all'
-      localFilters.platform = 'all'
-      localFilters.rating = '0'
-      localFilters.crossPlatform = false
-      localFilters.hiddenGems = false
-      localFilters.tag = ''
-      localFilters.selectedTags = []
-      localFilters.tagLogic = 'and'
-      localFilters.channel = ''
-      localFilters.selectedChannels = []
-      localFilters.sortBy = 'date'
-      localFilters.sortSpec = null
-      localFilters.currency = 'eur'
-      localFilters.timeFilter = {
-        type: null,
-        preset: null,
-        startDate: null,
-        endDate: null,
-        smartLogic: null,
-      }
-      localFilters.priceFilter = {
-        minPrice: 0,
-        maxPrice: 70,
-        includeFree: true,
-      }
-      // Clear all should be immediate
-      immediateEmitFiltersChanged()
+      preserveScrollPosition(() => {
+        localFilters.releaseStatus = 'all'
+        localFilters.platform = 'all'
+        localFilters.rating = '0'
+        localFilters.crossPlatform = false
+        localFilters.hiddenGems = false
+        localFilters.tag = ''
+        localFilters.selectedTags = []
+        localFilters.tagLogic = 'and'
+        localFilters.channel = ''
+        localFilters.selectedChannels = []
+        localFilters.sortBy = 'date'
+        localFilters.sortSpec = null
+        localFilters.currency = 'eur'
+        localFilters.timeFilter = {
+          type: null,
+          preset: null,
+          startDate: null,
+          endDate: null,
+          smartLogic: null,
+        }
+        localFilters.priceFilter = {
+          minPrice: 0,
+          maxPrice: 70,
+          includeFree: true,
+        }
+        // Clear all should be immediate
+        immediateEmitFiltersChanged()
+      })
     }
 
     const handleApplyPreset = (presetFilters) => {

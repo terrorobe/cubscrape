@@ -39,12 +39,16 @@
     </div>
 
     <!-- Preset Selection -->
-    <div v-if="selectedType" class="space-y-2">
+    <div
+      class="space-y-2"
+      :class="{ 'pointer-events-none opacity-0': !selectedType }"
+    >
       <label class="text-sm text-text-secondary">Time Range:</label>
       <select
         v-model="selectedPreset"
         class="w-full rounded-sm border border-gray-600 bg-bg-card px-3 py-2 text-text-primary"
         @change="handleChange"
+        :disabled="!selectedType"
       >
         <option value="">Select a time range...</option>
         <option value="last-week">Last Week</option>

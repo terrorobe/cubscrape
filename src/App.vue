@@ -12,7 +12,10 @@
       <div class="flex gap-6">
         <!-- Desktop Sidebar (hidden on mobile) -->
         <div class="hidden w-80 shrink-0 md:block">
-          <div class="sticky top-6 space-y-6">
+          <div
+            class="sidebar-scroll sticky top-6 max-h-[calc(100vh-3rem)] space-y-6 overflow-y-auto pr-2"
+            ref="sidebarScroll"
+          >
             <GameFilters
               :channels="channels"
               :channels-with-counts="channelsWithCounts"

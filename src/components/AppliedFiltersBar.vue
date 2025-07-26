@@ -41,7 +41,9 @@
 
     <!-- Desktop: Card-style sidebar display -->
     <div class="hidden md:block">
-      <div class="rounded-lg border border-gray-600 bg-bg-card p-4">
+      <div
+        class="rounded-lg border border-gray-600 bg-bg-card p-4 transition-all duration-300 ease-in-out"
+      >
         <div class="mb-3 flex items-center justify-between">
           <h3 class="text-sm font-semibold text-text-primary">
             Active Filters
@@ -61,7 +63,10 @@
           {{ gameCount }} games found
         </div>
 
-        <div v-if="appliedFilters.length > 0" class="space-y-2">
+        <div
+          v-if="appliedFilters.length > 0"
+          class="space-y-2 transition-all duration-300"
+        >
           <button
             v-for="filter in appliedFilters"
             :key="filter.key"
