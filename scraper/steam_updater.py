@@ -5,8 +5,12 @@ import logging
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from dateutil.parser import parse as dateutil_parse
+
+if TYPE_CHECKING:
+    from .scraper import YouTubeSteamScraper
 
 from .data_manager import DataManager, SteamDataDict
 from .models import SteamGameData
@@ -210,38 +214,51 @@ class SteamDataUpdater:
 
         return extract_steam_app_id(steam_url)
 
-    def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None) -> None:
+    def _collect_steam_app_ids_from_videos(self, videos_dict: dict, steam_app_ids: set,
+                                         latest_video_dates: dict[str, datetime]) -> None:
+        """Helper method to collect Steam app IDs from a videos dictionary"""
+        for video in videos_dict.values():
+            # Check multi-game format
+            for game_ref in video.game_references:
+                if game_ref.platform == 'steam':
+                    steam_app_ids.add(game_ref.platform_id)
+
+                    # Track latest video date for this game
+                    if video.published_at:
+                        try:
+                            video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
+                            if game_ref.platform_id not in latest_video_dates or video_date > latest_video_dates[game_ref.platform_id]:
+                                latest_video_dates[game_ref.platform_id] = video_date
+                        except ValueError:
+                            continue
+
+    def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None,
+                                     pending_scrapers: list['YouTubeSteamScraper'] | None = None) -> None:
         """
         Update Steam data for all games referenced in the specified channels.
 
         Args:
             channels: List of channel names to process
             max_updates: Maximum number of games to update (None for all)
+            pending_scrapers: List of scrapers with in-memory video data to include
         """
         logging.info("Updating Steam data using age-based refresh intervals")
 
         # Collect all Steam app IDs from all channels and build latest video date cache
-        steam_app_ids = set()
+        steam_app_ids: set[str] = set()
         latest_video_dates: dict[str, datetime] = {}  # app_id -> latest datetime
 
+        # First, collect from saved video data
         for channel in channels:
             videos_data = self.data_manager.load_videos_data(channel)
             if videos_data and 'videos' in videos_data:
-                for video in videos_data['videos'].values():
-                    # Check multi-game format
-                    for game_ref in video.game_references:
-                        if game_ref.platform == 'steam':
-                            steam_app_ids.add(game_ref.platform_id)
+                self._collect_steam_app_ids_from_videos(videos_data['videos'], steam_app_ids, latest_video_dates)
 
-                            # Track latest video date for this game
-                            if video.published_at:
-                                try:
-                                    video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
-                                    if game_ref.platform_id not in latest_video_dates or video_date > latest_video_dates[game_ref.platform_id]:
-                                        latest_video_dates[game_ref.platform_id] = video_date
-                                except ValueError:
-                                    continue
-
+        # Second, collect from pending in-memory scrapers
+        if pending_scrapers:
+            for scraper in pending_scrapers:
+                if scraper.videos_data and 'videos' in scraper.videos_data:
+                    self._collect_steam_app_ids_from_videos(scraper.videos_data['videos'], steam_app_ids, latest_video_dates)
 
         # Also collect Steam app IDs from other games data (Itch.io with Steam links)
         # Track mapping of Steam app IDs to their Itch URLs

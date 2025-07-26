@@ -387,17 +387,22 @@ Examples:
         if cutoff_date:
             logging.info(f"Using cutoff date: {cutoff_date}")
 
-        # Process each channel
+        # Process each channel (collect without saving)
+        scrapers_to_save = []
         for channel_id in channels_to_process:
             logging.info(f"Processing channel: {channel_id}")
             scraper = YouTubeSteamScraper(channel_id)
             channel_url = config_manager.get_channel_url(channel_id)
 
-            scraper.process_videos(
-                channel_url,
-                max_new_videos=max_new_videos,
-                cutoff_date=cutoff_date
+            # Process videos without saving
+            new_videos_processed = scraper.video_processor.process_videos(
+                scraper.videos_data, channel_url, max_new_videos=max_new_videos,
+                fetch_newest_first=False, cutoff_date=cutoff_date
             )
+            logging.info(f"Completed: {new_videos_processed} new videos processed")
+
+            # Collect scraper for later saving
+            scrapers_to_save.append(scraper)
 
         # Update other platform games first (may contain Steam links)
         other_games_updater = OtherGamesUpdater()
@@ -410,8 +415,13 @@ Examples:
         steam_updater = SteamDataUpdater()
         steam_updater.update_all_games_from_channels(
             channels_to_process,
-            max_updates=args.max_steam_updates
+            max_updates=args.max_steam_updates,
+            pending_scrapers=scrapers_to_save
         )
+
+        # Save all video data after Steam updates are complete
+        for scraper in scrapers_to_save:
+            scraper.save_videos()
 
     def _handle_cron(self, args: argparse.Namespace) -> None:
         """Handle cron command"""
@@ -503,7 +513,8 @@ Examples:
             steam_updater = SteamDataUpdater()
             steam_updater.update_all_games_from_channels(
                 enabled_channels,
-                max_updates=args.max_steam_updates
+                max_updates=args.max_steam_updates,
+                pending_scrapers=scrapers_to_save
             )
 
             # Run cross-platform auto-linking after all updates

@@ -2964,6 +2964,54 @@
         "Sandbox"
       ]
     },
+    "1145350": {
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Captions available",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Supergiant Games"
+      ],
+      "genres": [
+        "Action",
+        "Indie",
+        "RPG",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145350/1aaa69012e49f17ed2d26fe1e104c294dce15373/header.jpg?t=1752529824",
+      "is_early_access": true,
+      "last_updated": "2025-07-26T23:36:41.496690",
+      "name": "Hades II",
+      "positive_review_percentage": 94,
+      "price_eur": "28,99\u20ac",
+      "price_usd": "$29.99",
+      "publishers": [
+        "Supergiant Games"
+      ],
+      "recent_review_count": 1557,
+      "recent_review_percentage": 92,
+      "recent_review_summary": "Very Positive",
+      "release_date": "6 May, 2024",
+      "review_count": 62576,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1145350",
+      "steam_url": "https://store.steampowered.com/app/1145350",
+      "tags": [
+        "Action",
+        "Roguelike",
+        "Roguelite",
+        "Hack and Slash",
+        "RPG",
+        "Action Roguelike",
+        "Mythology",
+        "Dungeon Crawler",
+        "Action RPG",
+        "Isometric"
+      ]
+    },
     "1147860": {
       "categories": [
         "Single-player",
@@ -31243,7 +31291,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2209140/b539e3bbe1caa3cfea59dcf1e2aa989e8523085a/header.jpg?t=1753444799",
       "is_early_access": true,
-      "last_updated": "2025-07-26T22:52:43.522406",
+      "last_updated": "2025-07-26T23:28:13.582723",
       "name": "Ascent of Ashes",
       "positive_review_percentage": 57,
       "price_eur": "14,79\u20ac",
@@ -59295,16 +59343,16 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2797650/header.jpg?t=1753466433",
-      "last_updated": "2025-07-26T22:52:52.059269",
+      "last_updated": "2025-07-26T23:50:02.827759",
       "name": "Pip My Dice",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 92,
       "price_eur": "9,17\u20ac",
       "price_usd": "$9.34",
       "publishers": [
         "Diving Swan Games"
       ],
       "release_date": "25 Jul, 2025",
-      "review_count": 12,
+      "review_count": 13,
       "review_summary": "Positive",
       "steam_app_id": "2797650",
       "steam_url": "https://store.steampowered.com/app/2797650",
@@ -63216,6 +63264,48 @@
         "Singleplayer",
         "Stealth",
         "Open World"
+      ]
+    },
+    "2870280": {
+      "categories": [
+        "Single-player",
+        "Full controller support"
+      ],
+      "developers": [
+        "Bounce Back Games"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Free To Play"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2870280/header.jpg?t=1738122170",
+      "is_free": true,
+      "last_updated": "2025-07-26T23:45:23.645732",
+      "name": "Pogo Rogue",
+      "positive_review_percentage": 92,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Bounce Back Games"
+      ],
+      "release_date": "20 Nov, 2024",
+      "review_count": 198,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2870280",
+      "steam_url": "https://store.steampowered.com/app/2870280",
+      "tags": [
+        "Roguelike",
+        "Platformer",
+        "Procedural Generation",
+        "Pixel Graphics",
+        "Action Roguelike",
+        "Action",
+        "Difficult",
+        "2D Platformer",
+        "Precision Platformer",
+        "Roguelite"
       ]
     },
     "2870430": {
