@@ -127,7 +127,11 @@ export default {
       }
 
       // Generate date range for preset
-      if (selectedType.value && selectedPreset.value && selectedPreset.value !== 'custom') {
+      if (
+        selectedType.value &&
+        selectedPreset.value &&
+        selectedPreset.value !== 'custom'
+      ) {
         const ranges = {
           'last-week': 7,
           'last-month': 30,

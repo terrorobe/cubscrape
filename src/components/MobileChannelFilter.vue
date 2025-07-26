@@ -9,7 +9,7 @@
         v-model="searchQuery"
         type="text"
         placeholder="Type to search channels..."
-        class="focus:ring-opacity-50 w-full rounded-lg border border-gray-600 bg-bg-card p-3 text-text-primary placeholder-text-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:outline-none"
+        class="w-full rounded-lg border border-gray-600 bg-bg-card p-3 text-text-primary placeholder-text-secondary focus:border-accent focus:ring-2 focus:ring-accent/50 focus:outline-none"
       />
     </div>
 
@@ -29,7 +29,7 @@
           }}</span>
           <button
             @click="toggleChannel(channel)"
-            class="hover:bg-opacity-20 active:bg-opacity-30 rounded-full p-1 text-white transition-colors hover:bg-white active:bg-white"
+            class="rounded-full p-1 text-white transition-colors hover:bg-white/20 active:bg-white/30"
           >
             <svg
               class="size-4"

@@ -30,7 +30,7 @@
         <span>Filters</span>
         <span
           v-if="activeFilterCount > 0"
-          class="bg-opacity-20 rounded-full bg-white px-2 py-0.5 text-xs"
+          class="rounded-full bg-white/20 px-2 py-0.5 text-xs"
         >
           {{ activeFilterCount }}
         </span>

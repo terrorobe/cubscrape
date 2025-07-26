@@ -2,7 +2,7 @@
   <!-- Backdrop -->
   <div
     v-if="isOpen"
-    class="bg-opacity-50 fixed inset-0 z-40 bg-black transition-opacity duration-300"
+    class="fixed inset-0 z-40 bg-black/50 transition-opacity duration-300"
     :class="{ 'opacity-100': isAnimating, 'opacity-0': !isAnimating }"
     @click="closeModal"
   ></div>

@@ -39,6 +39,7 @@ export default [
         setTimeout: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
+        clearTimeout: 'readonly',
         requestAnimationFrame: 'readonly',
         require: 'readonly',
         URL: 'readonly',

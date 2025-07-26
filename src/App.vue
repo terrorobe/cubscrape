@@ -830,11 +830,11 @@ export default {
         })
 
         const results = db.exec(query, params)
-        return processQueryResults(results, db)
+        return processQueryResults(results)
       })
     }
 
-    const processQueryResults = (results, db) => {
+    const processQueryResults = (results) => {
       if (results.length > 0) {
         const processedGames = []
 

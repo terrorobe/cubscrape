@@ -96,7 +96,7 @@
                 :key="preset.id"
                 @click="applyPreset(preset)"
                 class="w-full px-3 py-2 text-left transition-colors hover:bg-bg-secondary focus:bg-bg-secondary focus:outline-none"
-                :class="{ 'bg-opacity-20 bg-accent': isCurrentPreset(preset) }"
+                :class="{ 'bg-accent/20': isCurrentPreset(preset) }"
               >
                 <div class="flex items-center justify-between">
                   <div class="min-w-0 flex-1">
@@ -111,7 +111,7 @@
                     <span
                       v-for="tag in preset.tags.slice(0, 2)"
                       :key="tag"
-                      class="bg-opacity-20 rounded-sm bg-accent px-1.5 py-0.5 text-xs text-accent"
+                      class="rounded-sm bg-accent/20 px-1.5 py-0.5 text-xs text-accent"
                     >
                       {{ tag }}
                     </span>
@@ -143,7 +143,7 @@
                 v-for="preset in filteredUserPresets"
                 :key="preset.id"
                 class="flex items-center transition-colors hover:bg-bg-secondary"
-                :class="{ 'bg-opacity-20 bg-accent': isCurrentPreset(preset) }"
+                :class="{ 'bg-accent/20': isCurrentPreset(preset) }"
               >
                 <button
                   @click="applyPreset(preset)"
@@ -237,7 +237,7 @@
     <!-- Save Preset Dialog -->
     <div
       v-if="showSaveDialog"
-      class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       @click.self="showSaveDialog = false"
     >
       <div class="w-full max-w-md rounded-lg bg-bg-card p-6 shadow-xl">
@@ -308,7 +308,7 @@
     <!-- Import Dialog -->
     <div
       v-if="showImportDialog"
-      class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       @click.self="showImportDialog = false"
     >
       <div class="w-full max-w-md rounded-lg bg-bg-card p-6 shadow-xl">

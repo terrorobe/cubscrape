@@ -40,7 +40,7 @@
         v-model="searchQuery"
         type="text"
         placeholder="Type to search tags..."
-        class="focus:ring-opacity-50 w-full rounded-lg border border-gray-600 bg-bg-card p-3 text-text-primary placeholder-text-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:outline-none"
+        class="w-full rounded-lg border border-gray-600 bg-bg-card p-3 text-text-primary placeholder-text-secondary focus:border-accent focus:ring-2 focus:ring-accent/50 focus:outline-none"
       />
     </div>
 

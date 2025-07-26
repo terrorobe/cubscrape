@@ -39,7 +39,7 @@
           @input="handleChange"
         />
       </div>
-      
+
       <div>
         <label class="mb-2 block text-sm text-text-secondary">
           Maximum Price: {{ formatPrice(localMaxPrice) }}
@@ -76,7 +76,9 @@
       <label class="text-sm text-text-secondary">Manual Entry:</label>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="mb-1 block text-xs text-text-secondary">Min {{ currency.toUpperCase() }}:</label>
+          <label class="mb-1 block text-xs text-text-secondary"
+            >Min {{ currency.toUpperCase() }}:</label
+          >
           <input
             v-model.number="localMinPrice"
             type="number"
@@ -88,7 +90,9 @@
           />
         </div>
         <div>
-          <label class="mb-1 block text-xs text-text-secondary">Max {{ currency.toUpperCase() }}:</label>
+          <label class="mb-1 block text-xs text-text-secondary"
+            >Max {{ currency.toUpperCase() }}:</label
+          >
           <input
             v-model.number="localMaxPrice"
             type="number"
@@ -113,7 +117,7 @@
 </template>
 
 <script>
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 
 export default {
   name: 'MobilePriceFilter',
@@ -147,24 +151,32 @@ export default {
     ]
 
     const formatPrice = (price) => {
-      if (price === 0) return 'Free'
+      if (price === 0) {
+        return 'Free'
+      }
       const symbol = props.currency === 'usd' ? '$' : '€'
       return `${symbol}${price}`
     }
 
     const getCurrentFilterDescription = () => {
-      if (localMinPrice.value === 0 && localMaxPrice.value === 70 && localIncludeFree.value) {
+      if (
+        localMinPrice.value === 0 &&
+        localMaxPrice.value === 70 &&
+        localIncludeFree.value
+      ) {
         return 'All prices (including free)'
       }
-      
+
       if (localMinPrice.value === 0 && localMaxPrice.value === 0) {
         return 'Free games only'
       }
-      
+
       const minStr = formatPrice(localMinPrice.value)
       const maxStr = formatPrice(localMaxPrice.value)
-      const freeNote = localIncludeFree.value ? ' (including free)' : ' (excluding free)'
-      
+      const freeNote = localIncludeFree.value
+        ? ' (including free)'
+        : ' (excluding free)'
+
       return `${minStr} to ${maxStr}${freeNote}`
     }
 

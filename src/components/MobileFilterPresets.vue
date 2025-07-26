@@ -1,10 +1,7 @@
 <template>
   <div class="space-y-4">
     <!-- Current Preset Indicator -->
-    <div
-      v-if="currentPresetName"
-      class="bg-opacity-20 rounded-sm bg-accent p-3"
-    >
+    <div v-if="currentPresetName" class="rounded-sm bg-accent/20 p-3">
       <div class="flex items-center gap-2">
         <svg
           class="size-4 text-accent"
@@ -66,7 +63,7 @@
           @click="applyPreset(preset)"
           class="w-full rounded-sm border border-gray-600 bg-bg-primary p-3 text-left transition-colors hover:bg-bg-secondary"
           :class="{
-            'bg-opacity-10 border-accent bg-accent': isCurrentPreset(preset),
+            'border-accent bg-accent/10': isCurrentPreset(preset),
           }"
         >
           <div class="flex items-start justify-between gap-2">
@@ -80,7 +77,7 @@
               <span
                 v-for="tag in preset.tags.slice(0, 2)"
                 :key="tag"
-                class="bg-opacity-20 rounded-sm bg-accent px-1.5 py-0.5 text-xs text-accent"
+                class="rounded-sm bg-accent/20 px-1.5 py-0.5 text-xs text-accent"
               >
                 {{ tag }}
               </span>
@@ -112,7 +109,7 @@
           :key="preset.id"
           class="overflow-hidden rounded-sm border border-gray-600 bg-bg-primary"
           :class="{
-            'bg-opacity-10 border-accent bg-accent': isCurrentPreset(preset),
+            'border-accent bg-accent/10': isCurrentPreset(preset),
           }"
         >
           <button
@@ -186,7 +183,7 @@
     <!-- Save Preset Dialog -->
     <div
       v-if="showSaveDialog"
-      class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       @click.self="showSaveDialog = false"
     >
       <div class="w-full max-w-sm rounded-lg bg-bg-card p-4 shadow-xl">
@@ -241,7 +238,7 @@
     <!-- Import Dialog -->
     <div
       v-if="showImportDialog"
-      class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       @click.self="showImportDialog = false"
     >
       <div class="w-full max-w-sm rounded-lg bg-bg-card p-4 shadow-xl">

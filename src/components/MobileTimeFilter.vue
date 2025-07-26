@@ -98,7 +98,10 @@
     </div>
 
     <!-- Current Selection Display -->
-    <div v-if="selectedType" class="rounded-sm border border-gray-600 bg-bg-card p-3">
+    <div
+      v-if="selectedType"
+      class="rounded-sm border border-gray-600 bg-bg-card p-3"
+    >
       <div class="text-xs text-text-secondary">Current Filter:</div>
       <div class="text-sm text-text-primary">
         {{ getFilterDescription() }}
@@ -133,16 +136,19 @@ export default {
     const customEndDate = ref(props.initialTimeFilter.endDate || '')
 
     const getFilterDescription = () => {
-      if (!selectedType.value) return 'No filter applied'
-      
-      const typeLabel = selectedType.value === 'video' ? 'Video Date' : 'Release Date'
-      
+      if (!selectedType.value) {
+        return 'No filter applied'
+      }
+
+      const typeLabel =
+        selectedType.value === 'video' ? 'Video Date' : 'Release Date'
+
       if (selectedPreset.value === 'custom') {
         const start = customStartDate.value || 'Not set'
         const end = customEndDate.value || 'Not set'
         return `${typeLabel}: ${start} to ${end}`
       }
-      
+
       if (selectedPreset.value) {
         const presetLabels = {
           'last-week': 'Last Week',
@@ -153,17 +159,19 @@ export default {
         }
         return `${typeLabel}: ${presetLabels[selectedPreset.value] || selectedPreset.value}`
       }
-      
+
       if (selectedSmartFilter.value) {
         const smartLabels = {
           'recently-released': 'Recently Released Games',
           'new-discoveries': 'New Game Discoveries',
-          'trending': 'Trending Games',
+          trending: 'Trending Games',
           'hidden-gems-time': 'Time-based Hidden Gems',
         }
-        return smartLabels[selectedSmartFilter.value] || selectedSmartFilter.value
+        return (
+          smartLabels[selectedSmartFilter.value] || selectedSmartFilter.value
+        )
       }
-      
+
       return `${typeLabel} filter selected`
     }
 
@@ -177,7 +185,11 @@ export default {
       }
 
       // Generate date range for preset
-      if (selectedType.value && selectedPreset.value && selectedPreset.value !== 'custom') {
+      if (
+        selectedType.value &&
+        selectedPreset.value &&
+        selectedPreset.value !== 'custom'
+      ) {
         const ranges = {
           'last-week': 7,
           'last-month': 30,

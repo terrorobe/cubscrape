@@ -10,18 +10,30 @@ export function useProgressiveOptions(
   initialLoadCount = 20,
   loadMoreCount = 10,
 ) {
-  const currentLoadCount = ref(Math.min(initialLoadCount, allOptions.length))
+  // Handle reactive refs and ensure we always have an array
+  const getOptionsArray = () => {
+    const options =
+      typeof allOptions === 'function'
+        ? allOptions()
+        : (allOptions?.value ?? allOptions)
+    return Array.isArray(options) ? options : []
+  }
+
+  const currentLoadCount = ref(
+    Math.min(initialLoadCount, getOptionsArray().length),
+  )
   const searchQuery = ref('')
   const isLoading = ref(false)
 
   // Visible options based on current load count and search
   const visibleOptions = computed(() => {
-    let options = allOptions.slice(0, currentLoadCount.value)
+    const optionsArray = getOptionsArray()
+    let options = optionsArray.slice(0, currentLoadCount.value)
 
     // If searching, show all matching options
     if (searchQuery.value.trim()) {
       const query = searchQuery.value.toLowerCase()
-      options = allOptions.filter((option) =>
+      options = optionsArray.filter((option) =>
         option.name.toLowerCase().includes(query),
       )
     }
@@ -31,10 +43,11 @@ export function useProgressiveOptions(
 
   // Whether there are more options to load
   const hasMore = computed(() => {
+    const optionsArray = getOptionsArray()
     if (searchQuery.value.trim()) {
       return false // When searching, show all results
     }
-    return currentLoadCount.value < allOptions.length
+    return currentLoadCount.value < optionsArray.length
   })
 
   // Load more options
@@ -44,9 +57,10 @@ export function useProgressiveOptions(
 
       // Simulate async loading with a small delay for UX
       setTimeout(() => {
+        const optionsArray = getOptionsArray()
         currentLoadCount.value = Math.min(
           currentLoadCount.value + loadMoreCount,
-          allOptions.length,
+          optionsArray.length,
         )
         isLoading.value = false
       }, 50)
@@ -55,7 +69,8 @@ export function useProgressiveOptions(
 
   // Reset to initial load count
   const reset = () => {
-    currentLoadCount.value = Math.min(initialLoadCount, allOptions.length)
+    const optionsArray = getOptionsArray()
+    currentLoadCount.value = Math.min(initialLoadCount, optionsArray.length)
     searchQuery.value = ''
   }
 
@@ -65,12 +80,15 @@ export function useProgressiveOptions(
   }
 
   // Get option statistics
-  const optionStats = computed(() => ({
-    visible: visibleOptions.value.length,
-    total: allOptions.length,
-    loaded: currentLoadCount.value,
-    hasMore: hasMore.value,
-  }))
+  const optionStats = computed(() => {
+    const optionsArray = getOptionsArray()
+    return {
+      visible: visibleOptions.value.length,
+      total: optionsArray.length,
+      loaded: currentLoadCount.value,
+      hasMore: hasMore.value,
+    }
+  })
 
   return {
     visibleOptions,
