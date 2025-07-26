@@ -28,7 +28,7 @@ class SteamDataUpdater:
     def __init__(self) -> None:
         self.data_manager = DataManager(Path.cwd())
         self.steam_data: SteamDataDict = self.data_manager.load_steam_data()
-        self.steam_fetcher = SteamDataFetcher()
+        self.steam_fetcher = SteamDataFetcher(self.data_manager)
 
     def _save_steam_data(self) -> None:
         """Save Steam data to file"""
@@ -367,7 +367,8 @@ class SteamDataUpdater:
                 fetch_usd = True
 
             # Fetch the main app using SteamDataFetcher
-            steam_data = self.steam_fetcher.fetch_data(steam_url, fetch_usd=fetch_usd)
+            existing_game_data = self.steam_data['games'].get(app_id) if app_id in self.steam_data['games'] else None
+            steam_data = self.steam_fetcher.fetch_data(steam_url, fetch_usd=fetch_usd, existing_data=existing_game_data)
             if not steam_data:
                 GameUpdateLogger.log_game_update_failure(app_id, "steam")
                 return False
@@ -377,7 +378,7 @@ class SteamDataUpdater:
                 existing_data = self.steam_data['games'][app_id]
                 if existing_data.price_eur != steam_data.price_eur:
                     # EUR price changed, fetch USD too
-                    steam_data_with_usd = self.steam_fetcher.fetch_data(steam_url, fetch_usd=True)
+                    steam_data_with_usd = self.steam_fetcher.fetch_data(steam_url, fetch_usd=True, existing_data=existing_data)
                     if steam_data_with_usd:
                         steam_data.price_usd = steam_data_with_usd.price_usd
                 else:
@@ -392,6 +393,26 @@ class SteamDataUpdater:
                                 last_updated=datetime.now().isoformat(),
                                 itch_url=itch_url)
             self.steam_data['games'][app_id] = steam_data
+
+            # Check if a demo became stubbed and clean up main game reference
+            if (steam_data.is_stub and
+                old_data and
+                old_data.is_demo and
+                old_data.full_game_app_id and
+                not old_data.is_stub):
+
+                # Demo was working but is now stubbed - clean up main game reference
+                main_game_id = old_data.full_game_app_id
+                if main_game_id in self.steam_data['games']:
+                    main_game = self.steam_data['games'][main_game_id]
+                    if main_game.demo_app_id == app_id:
+                        # Remove the demo reference from the main game
+                        updated_main_game = replace(main_game,
+                                                   demo_app_id=None,
+                                                   has_demo=False,
+                                                   last_updated=datetime.now().isoformat())
+                        self.steam_data['games'][main_game_id] = updated_main_game
+                        logging.info(f"  Cleaned up demo reference {app_id} from main game {main_game_id}")
             if itch_url:
                 GameUpdateLogger.log_game_update_success(steam_data.name, additional_info="with Itch.io link")
             else:
@@ -453,7 +474,8 @@ class SteamDataUpdater:
         try:
             app_url = f"https://store.steampowered.com/app/{app_id}"
             # Always fetch both prices for related apps
-            app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True)
+            existing_app_data = self.steam_data['games'].get(app_id)
+            app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True, existing_data=existing_app_data)
             if app_data:
                 app_data = replace(app_data, last_updated=datetime.now().isoformat())
                 self.steam_data['games'][app_id] = app_data

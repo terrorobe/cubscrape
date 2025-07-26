@@ -36,7 +36,7 @@ class OtherGamesUpdater:
         self.data_manager = DataManager(project_root)
         self.config_manager = ConfigManager(project_root)
         self.other_games_data = self.data_manager.load_other_games_data()
-        self.itch_fetcher = ItchDataFetcher()
+        self.itch_fetcher = ItchDataFetcher(self.data_manager)
         self.crazygames_fetcher = CrazyGamesDataFetcher()
 
         # Check for required Itch.io authentication

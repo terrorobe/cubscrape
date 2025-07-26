@@ -43,7 +43,7 @@ class YouTubeSteamScraper:
         self.channel_id = channel_id
 
         # Initialize Steam fetcher
-        self.steam_fetcher = SteamDataFetcher()
+        self.steam_fetcher = SteamDataFetcher(self.data_manager)
 
         # Initialize video processor
         self.video_processor = VideoProcessor(
