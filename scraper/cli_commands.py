@@ -17,6 +17,7 @@ from .config_manager import ConfigManager
 from .database_manager import DatabaseManager
 from .game_unifier import load_all_unified_games
 from .other_games_updater import OtherGamesUpdater
+from .reference_validator import ReferenceValidator
 from .scraper import YouTubeSteamScraper
 from .steam_updater import SteamDataUpdater
 
@@ -103,6 +104,7 @@ Processing Modes:
   refresh-steam     Update Steam game data only
   refresh-other     Update other platform games (Itch.io, CrazyGames) only
   steam-changes     Analyze changes in steam_games.json over git history
+  validate          Validate cross-references and data integrity across all data
 
 Examples:
   cubscrape cron                              # Process all channels (daily run)
@@ -113,6 +115,7 @@ Examples:
   cubscrape fetch-steam-apps --app-id 12345   # Fetch specific Steam app
   cubscrape data-quality                      # Run data quality checks
   cubscrape steam-changes --since "3 days ago" # Show Steam game changes
+  cubscrape validate                          # Validate all data references
             '''
         )
 
@@ -121,7 +124,7 @@ Examples:
 
         parser.add_argument(
             'mode',
-            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other', 'steam-changes'],
+            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other', 'steam-changes', 'validate'],
             help=mode_help
         )
         # Channel selection options
@@ -214,7 +217,8 @@ Examples:
             'fetch-videos': self._handle_fetch_videos,
             'refresh-steam': self._handle_refresh_steam,
             'refresh-other': self._handle_refresh_other,
-            'steam-changes': self._handle_steam_changes
+            'steam-changes': self._handle_steam_changes,
+            'validate': self._handle_validate
         }
 
         handler = command_map.get(parsed_args.mode)
@@ -631,6 +635,36 @@ Examples:
         # Use default of "1 week ago" if not specified
         since_date = args.since or "1 week ago"
         analyzer.analyze_changes(since_date)
+
+    def _handle_validate(self, _args: argparse.Namespace) -> None:
+        """Handle validate command - validate cross-references and data integrity"""
+        from .data_manager import DataManager
+
+        logging.info("Running comprehensive data validation...")
+
+        # Initialize data manager and validator
+        project_root = self._get_project_root()
+        data_manager = DataManager(project_root)
+        validator = ReferenceValidator(data_manager)
+
+        # Get all channel IDs from config
+        config_manager = ConfigManager(project_root)
+        all_channels = config_manager.get_channels()
+        channel_ids = list(all_channels.keys())
+
+        # Run validation
+        validation_errors = validator.validate_all(channel_ids)
+
+        # Print report
+        validator.print_validation_report()
+
+        # Exit with error code if there are validation errors
+        errors = [e for e in validation_errors if e.severity == "error"]
+        if errors:
+            logging.error(f"Validation failed with {len(errors)} errors")
+            sys.exit(1)
+        else:
+            logging.info("All validation checks passed!")
 
 
 def main() -> None:
