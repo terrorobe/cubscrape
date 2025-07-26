@@ -5,10 +5,13 @@ Steam data fetching and parsing functionality
 import logging
 import re
 import time
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import requests
 from bs4 import BeautifulSoup
+
+if TYPE_CHECKING:
+    from .data_manager import DataManager
 
 from .base_fetcher import BaseFetcher
 from .models import SteamGameData
@@ -18,13 +21,14 @@ from .utils import extract_steam_app_id, is_valid_date_string
 class SteamDataFetcher(BaseFetcher):
     """Handles fetching and parsing Steam game data"""
 
-    def __init__(self) -> None:
+    def __init__(self, data_manager: 'DataManager | None' = None) -> None:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         self.cookies = {'birthtime': '0', 'mature_content': '1'}
         self.max_retries = 10
         self.base_delay = 16
+        self.data_manager = data_manager
 
     def _make_request_with_retry(self, url: str, request_type: str = "API", **kwargs: Any) -> requests.Response | None:
         """Make HTTP request with exponential backoff retry logic"""
@@ -61,7 +65,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return None
 
-    def fetch_data(self, steam_url: str, fetch_usd: bool = False) -> SteamGameData | None:
+    def fetch_data(self, steam_url: str, fetch_usd: bool = False, existing_data: 'SteamGameData | None' = None) -> SteamGameData | None:
         """Fetch complete game data from Steam with EUR by default"""
         try:
             app_id = extract_steam_app_id(steam_url)
@@ -72,8 +76,12 @@ class SteamDataFetcher(BaseFetcher):
             # First, get basic data from Steam API with EUR (Austria)
             api_data_eur = self._fetch_api_data(app_id, 'at')
             if not api_data_eur:
-                # Create stub entry for failed API fetch
-                return self._create_stub_entry(app_id, steam_url, "Steam API fetch failed")
+                # Only create stub entry if the app is referenced by videos
+                if self.data_manager and self.data_manager.is_game_referenced_by_videos('steam', app_id):
+                    return self._create_stub_entry(app_id, steam_url, "Steam API fetch failed", existing_data=existing_data)
+                else:
+                    logging.info(f"Skipping stub creation for {app_id} - not referenced by any videos")
+                    return None
 
             # Check if this is DLC or soundtrack - redirect to base game
             app_type = api_data_eur.get('type', '').lower()
@@ -86,7 +94,7 @@ class SteamDataFetcher(BaseFetcher):
                     logging.info(f"Redirecting {content_type} {app_id} to base game {base_game_id} ({base_game_name})")
 
                     # Create stub entry for the DLC/soundtrack pointing to base game
-                    return self._create_stub_entry(app_id, steam_url, f"{content_type} redirected to base game", resolved_to=base_game_id)
+                    return self._create_stub_entry(app_id, steam_url, f"{content_type} redirected to base game", resolved_to=base_game_id, existing_data=existing_data)
                 else:
                     # No base game found, treat as regular content
                     logging.warning(f"Found {app_type} {app_id} but no base game information available")
@@ -112,7 +120,12 @@ class SteamDataFetcher(BaseFetcher):
             logging.error(f"Error fetching Steam data for {steam_url}: {e}")
             app_id = extract_steam_app_id(steam_url)
             if app_id:
-                return self._create_stub_entry(app_id, steam_url, f"Exception: {e!s}")
+                # Only create stub entry if the app is referenced by videos
+                if self.data_manager and self.data_manager.is_game_referenced_by_videos('steam', app_id):
+                    return self._create_stub_entry(app_id, steam_url, f"Exception: {e!s}", existing_data=existing_data)
+                else:
+                    logging.info(f"Skipping stub creation for {app_id} - not referenced by any videos")
+                    return None
             return None
 
     def _fetch_api_data(self, app_id: str, country_code: str = 'at') -> dict | None:
@@ -507,8 +520,8 @@ class SteamDataFetcher(BaseFetcher):
             if hasattr(game_data, key):
                 setattr(game_data, key, value)
 
-    def _create_stub_entry(self, app_id: str, steam_url: str, reason: str, resolved_to: str | None = None) -> SteamGameData:
-        """Create a stub entry for failed fetches or redirects"""
+    def _create_stub_entry(self, app_id: str, steam_url: str, reason: str, resolved_to: str | None = None, existing_data: 'SteamGameData | None' = None) -> SteamGameData:
+        """Create a stub entry for failed fetches or redirects, preserving relationship fields from existing data"""
         logging.info(f"Creating stub entry for Steam app {app_id}: {reason}")
 
         # Use different naming for redirects vs failures
@@ -517,11 +530,31 @@ class SteamDataFetcher(BaseFetcher):
         else:
             name = f"[FAILED FETCH] {app_id}"
 
+        # Preserve relationship fields from existing data if available
+        preserved_full_game_app_id = existing_data.full_game_app_id if existing_data else None
+        preserved_demo_app_id = existing_data.demo_app_id if existing_data else None
+        preserved_is_demo = existing_data.is_demo if existing_data else False
+        preserved_itch_url = existing_data.itch_url if existing_data else None
+        preserved_is_free = existing_data.is_free if existing_data else False
+
+        # For failed demo fetches, set resolved_to to the main game (following existing pattern)
+        if not resolved_to and existing_data and existing_data.is_demo and existing_data.full_game_app_id:
+            resolved_to = existing_data.full_game_app_id
+            # Update the name to indicate the demo was removed
+            if reason == "Steam API fetch failed":
+                name = f"[REMOVED] {existing_data.name}" if existing_data.name and not existing_data.name.startswith('[') else name
+
         return SteamGameData(
             steam_app_id=app_id,
             steam_url=steam_url,
             name=name,
             is_stub=True,
             stub_reason=reason,
-            resolved_to=resolved_to
+            resolved_to=resolved_to,
+            # Preserve important relationship and stable data
+            full_game_app_id=preserved_full_game_app_id,
+            demo_app_id=preserved_demo_app_id,
+            is_demo=preserved_is_demo,
+            itch_url=preserved_itch_url,
+            is_free=preserved_is_free
         )

@@ -245,3 +245,29 @@ class DataManager:
             else:
                 cleaned[k] = v
         return cleaned
+
+    def is_game_referenced_by_videos(self, platform: str, platform_id: str) -> bool:
+        """Check if a game (by platform and ID) is referenced by any video across all channels"""
+        video_files = list(self.project_root.glob("data/videos-*.json"))
+
+        for video_file in video_files:
+            try:
+                videos_data = load_json(video_file, {})
+                videos = videos_data.get('videos', {})
+
+                for video_data in videos.values():
+                    game_references = video_data.get('game_references', [])
+                    for ref in game_references:
+                        if (ref.get('platform') == platform and
+                            ref.get('platform_id') == platform_id):
+                            return True
+
+            except Exception as e:
+                logging.warning(f"Error checking video references in {video_file}: {e}")
+                continue
+
+        return False
+
+    def is_steam_app_referenced_by_videos(self, app_id: str) -> bool:
+        """Check if a Steam app ID is referenced by any video across all channels (legacy compatibility)"""
+        return self.is_game_referenced_by_videos('steam', app_id)

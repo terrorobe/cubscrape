@@ -5,9 +5,13 @@ Itch.io data fetching and parsing functionality
 import logging
 import os
 import re
+from typing import TYPE_CHECKING
 
 import requests
 from bs4 import BeautifulSoup
+
+if TYPE_CHECKING:
+    from .data_manager import DataManager
 
 from .base_fetcher import BaseFetcher
 from .models import OtherGameData
@@ -17,10 +21,11 @@ from .utils import calculate_name_similarity, extract_steam_app_id, load_env_fil
 class ItchDataFetcher(BaseFetcher):
     """Handles fetching and parsing Itch.io game data"""
 
-    def __init__(self) -> None:
+    def __init__(self, data_manager: 'DataManager | None' = None) -> None:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
+        self.data_manager = data_manager
 
         # Load .env file if ITCH_COOKIES is not already set
         if 'ITCH_COOKIES' not in os.environ:
@@ -37,16 +42,24 @@ class ItchDataFetcher(BaseFetcher):
         try:
             response = requests.get(itch_url, headers=self.headers)
             if response.status_code != 200:
-                # Create stub entry for failed HTTP requests
-                return self._create_stub_entry(itch_url, f"HTTP {response.status_code}")
+                # Only create stub entry if the game is referenced by videos
+                if self.data_manager and self.data_manager.is_game_referenced_by_videos('itch', itch_url):
+                    return self._create_stub_entry(itch_url, f"HTTP {response.status_code}")
+                else:
+                    logging.info(f"Skipping stub creation for {itch_url} - not referenced by any videos")
+                    return None
 
             soup = BeautifulSoup(response.content, 'lxml')
 
             # Try to extract name to validate page content
             name = self._extract_name(soup)
             if not name:
-                # Create stub entry if we can't extract basic game data
-                return self._create_stub_entry(itch_url, "No game name found")
+                # Only create stub entry if the game is referenced by videos
+                if self.data_manager and self.data_manager.is_game_referenced_by_videos('itch', itch_url):
+                    return self._create_stub_entry(itch_url, "No game name found")
+                else:
+                    logging.info(f"Skipping stub creation for {itch_url} - not referenced by any videos")
+                    return None
 
             # Create base game data
             game_data = OtherGameData(
@@ -75,7 +88,12 @@ class ItchDataFetcher(BaseFetcher):
 
         except Exception as e:
             logging.error(f"Error fetching itch.io data for {itch_url}: {e}")
-            return self._create_stub_entry(itch_url, f"Exception: {e!s}")
+            # Only create stub entry if the game is referenced by videos
+            if self.data_manager and self.data_manager.is_game_referenced_by_videos('itch', itch_url):
+                return self._create_stub_entry(itch_url, f"Exception: {e!s}")
+            else:
+                logging.info(f"Skipping stub creation for {itch_url} - not referenced by any videos")
+                return None
 
     def _extract_name(self, soup: BeautifulSoup) -> str:
         """Extract game name from page"""
