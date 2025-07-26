@@ -368,11 +368,11 @@
     "https://ichbinhamma.itch.io/dwarves-glory-death-and-loot-demo": {
       "header_image": "https://img.itch.zone/aW1nLzE4MTE3NzM2LnBuZw==/original/5MI52z.png",
       "is_free": true,
-      "last_updated": "2025-07-26T15:06:32.953902",
+      "last_updated": "2025-07-26T20:14:07.000423",
       "name": "Dwarves: Glory, Death and Loot",
       "platform": "itch",
       "positive_review_percentage": 88,
-      "release_date": "",
+      "release_date": "30 August 2022",
       "review_count": 101,
       "steam_url": "https://store.steampowered.com/app/2205850",
       "tags": [
@@ -767,14 +767,38 @@
       ],
       "url": "https://shattered-pixel.itch.io/shattered-pixel-dungeon"
     },
+    "https://simex.itch.io/hollowspire": {
+      "header_image": "https://img.itch.zone/aW1nLzIwNjE4NzAyLnBuZw==/original/ZJVX7V.png",
+      "is_free": true,
+      "last_updated": "2025-07-26T20:14:05.752041",
+      "name": "Hollowspire",
+      "platform": "itch",
+      "positive_review_percentage": 88,
+      "release_date": "07 April 2025",
+      "review_count": 296,
+      "steam_url": "https://store.steampowered.com/app/2739970",
+      "tags": [
+        "Cartoon",
+        "Casual",
+        "chill",
+        "Clicker",
+        "Crafting",
+        "Creepy",
+        "Cute",
+        "Hand-drawn",
+        "Idle",
+        "Ludum Dare 57"
+      ],
+      "url": "https://simex.itch.io/hollowspire"
+    },
     "https://slurmmackenzie.itch.io/the-time-intern": {
       "header_image": "https://img.itch.zone/aW1nLzE5MjQwMTEyLnBuZw==/original/wveoXT.png",
       "is_free": true,
-      "last_updated": "2025-07-26T15:06:33.703974",
+      "last_updated": "2025-07-26T20:14:07.983939",
       "name": "The Time Intern",
       "platform": "itch",
       "positive_review_percentage": 88,
-      "release_date": "",
+      "release_date": "03 January 2025",
       "review_count": 22,
       "steam_url": "",
       "tags": [
@@ -952,11 +976,11 @@
     "https://ularis-badler.itch.io/archrebel": {
       "header_image": "https://img.itch.zone/aW1nLzE2MzI4MDc0LnBuZw==/original/%2ByjNGF.png",
       "is_free": true,
-      "last_updated": "2025-07-26T15:06:35.351767",
+      "last_updated": "2025-07-26T20:14:09.355663",
       "name": "Archrebel Tactics (Demo)",
       "platform": "itch",
       "positive_review_percentage": 94,
-      "release_date": "",
+      "release_date": "14 June 2024",
       "review_count": 24,
       "steam_url": "",
       "tags": [
