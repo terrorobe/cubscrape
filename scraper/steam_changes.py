@@ -11,6 +11,7 @@ import subprocess
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 
 class SteamChangesAnalyzer:
@@ -161,29 +162,66 @@ class SteamChangesAnalyzer:
                 continue
 
             game_changes = []
+            price_changes = {}
+            review_changes = {}
 
-            # Check each field
-            for field in ['name', 'release_date', 'price', 'discount', 'tags', 'description']:
+            # Check all fields except stub fields, last_updated, and header_image
+            fields_to_check = [
+                'name', 'release_date', 'price', 'discount', 'tags', 'description',
+                'steam_url', 'is_free', 'coming_soon', 'genres', 'categories',
+                'developers', 'publishers', 'price_eur', 'price_usd',
+                'has_demo', 'demo_app_id', 'is_demo', 'full_game_app_id', 'is_early_access',
+                'positive_review_percentage', 'review_count', 'review_summary',
+                'recent_review_percentage', 'recent_review_count', 'recent_review_summary',
+                'insufficient_reviews', 'planned_release_date', 'itch_url'
+            ]
+
+            price_fields = ['price', 'price_eur', 'price_usd', 'discount', 'is_free']
+            review_fields = ['positive_review_percentage', 'review_count', 'review_summary',
+                           'recent_review_percentage', 'recent_review_count', 'recent_review_summary']
+
+            for field in fields_to_check:
                 old_val = old_game.get(field)
                 new_val = new_game.get(field)
 
                 if old_val != new_val:
-                    if field == 'tags':
-                        # Handle tags specially - combine into one entry
-                        old_tags = set(old_val) if old_val else set()
-                        new_tags = set(new_val) if new_val else set()
-                        added_tags = new_tags - old_tags
-                        removed_tags = old_tags - new_tags
+                    if field in ['tags', 'genres', 'categories', 'developers', 'publishers']:
+                        # Handle list fields specially - combine into one entry
+                        old_items = set(old_val) if old_val else set()
+                        new_items = set(new_val) if new_val else set()
+                        added_items = new_items - old_items
+                        removed_items = old_items - new_items
 
-                        if added_tags or removed_tags:
-                            tag_parts = []
-                            if added_tags:
-                                tag_parts.append(f"+[{', '.join(sorted(added_tags))}]")
-                            if removed_tags:
-                                tag_parts.append(f"-[{', '.join(sorted(removed_tags))}]")
-                            game_changes.append(f"tags: {' '.join(tag_parts)}")
+                        if added_items or removed_items:
+                            item_parts = []
+                            if added_items:
+                                item_parts.append(f"+[{', '.join(sorted(added_items))}]")
+                            if removed_items:
+                                item_parts.append(f"-[{', '.join(sorted(removed_items))}]")
+                            game_changes.append(f"{field}: {' '.join(item_parts)}")
+                    elif field in price_fields:
+                        # Collect price changes
+                        old_str = str(old_val) if old_val is not None else "null"
+                        new_str = str(new_val) if new_val is not None else "null"
+                        price_changes[field] = (old_str, new_str)
+                    elif field in review_fields:
+                        # Collect review changes
+                        if field in ['positive_review_percentage', 'review_count',
+                                   'recent_review_percentage', 'recent_review_count'] and old_val is not None and new_val is not None:
+                            try:
+                                old_num = int(old_val)
+                                new_num = int(new_val)
+                                delta = new_num - old_num
+                                sign = '+' if delta > 0 else ''
+                                # Store just the raw value and delta - formatting will be done later
+                                review_changes[field] = (new_num, f"({sign}{delta})")
+                            except (ValueError, TypeError):
+                                review_changes[field] = (old_val, f"→ {new_val}")
+                        else:
+                            review_changes[field] = (old_val, f"→ {new_val}")
                     else:
-                        # Truncate long values
+                        # Other fields remain as individual changes
+                        # Truncate long values for other fields
                         old_str = str(old_val) if old_val is not None else "null"
                         new_str = str(new_val) if new_val is not None else "null"
 
@@ -194,13 +232,64 @@ class SteamChangesAnalyzer:
 
                         game_changes.append(f"{field}: {old_str} → {new_str}")
 
+            # Add consolidated price changes
+            if price_changes:
+                price_parts = []
+                for field, (old_val, new_val) in price_changes.items():
+                    # Format with arrow for later coloring
+                    if field == 'price_eur':
+                        price_parts.append(f"EUR: {old_val} → {new_val}")
+                    elif field == 'price_usd':
+                        price_parts.append(f"USD: {old_val} → {new_val}")
+                    elif field == 'is_free':
+                        price_parts.append(f"free: {old_val} → {new_val}")
+                    elif field == 'discount':
+                        price_parts.append(f"discount: {old_val} → {new_val}")
+                    else:
+                        price_parts.append(f"{field}: {old_val} → {new_val}")
+                game_changes.append(f"PRICE: {', '.join(price_parts)}")
+
+            # Add consolidated review changes
+            if review_changes:
+                review_parts = []
+                # Order matters for readability
+                review_order = ['positive_review_percentage', 'review_count', 'recent_review_percentage',
+                              'recent_review_count', 'review_summary', 'recent_review_summary']
+                for field in review_order:
+                    if field in review_changes:
+                        value_tuple = review_changes[field]
+                        if isinstance(value_tuple, tuple):
+                            value, delta = value_tuple  # type: ignore[assignment]
+                            if field == 'positive_review_percentage':
+                                review_parts.append(f"overall%: {value} {delta}")
+                            elif field == 'review_count':
+                                review_parts.append(f"overall№: {value} {delta}")
+                            elif field == 'recent_review_percentage':
+                                review_parts.append(f"recent%: {value} {delta}")
+                            elif field == 'recent_review_count':
+                                review_parts.append(f"recent№: {value} {delta}")
+                            else:
+                                # For summary fields that don't have numeric deltas
+                                review_parts.append(f"{field.replace('_', '-')}: {value} {delta}")
+                        else:
+                            # Fallback for old format
+                            if field == 'review_summary':
+                                review_parts.append(f"summary: {value_tuple}")
+                            elif field == 'recent_review_summary':
+                                review_parts.append(f"recent-summary: {value_tuple}")
+                game_changes.append(f"REVIEWS: {', '.join(review_parts)}")
+
             if game_changes:
                 changes.extend(f"CHANGED\t{game_id}\t{new_name}\t{change}" for change in game_changes)
 
         return changes
 
     def analyze_changes(self, since_date: str = "1 week ago") -> None:
-        """Analyze and print changes in steam_games.json since the given date."""
+        """Analyze and print changes in steam_games.json since the given date.
+
+        Args:
+            since_date: Date to analyze changes from
+        """
         print(f"Analyzing changes since: {since_date}")
         print("-" * 80)
 
@@ -304,19 +393,89 @@ class SteamChangesAnalyzer:
                                 print(f"    {game_id:<10} {name}")
                         else:  # CHANGED
                             game_id, name, change_desc = parts
-                            # Color the arrow in change descriptions
-                            colored_desc = change_desc.replace(' → ', f' {self.colors["cyan"]}→{self.colors["reset"]} ')
 
-                            # Special coloring for tag changes
-                            if change_desc.startswith('tags:'):
-                                # Color + tags green and - tags red
+                            # Extract field name and rest of description
+                            if ':' in change_desc:
+                                field_name, rest = change_desc.split(':', 1)
+
+                                # Color code field names by category
+                                field_colors = {
+                                    # Consolidated fields
+                                    'PRICE': self.colors['green'],
+                                    'REVIEWS': self.colors['blue'],
+
+                                    # Review fields - blue
+                                    'positive_review_percentage': self.colors['blue'],
+                                    'review_count': self.colors['blue'],
+                                    'review_summary': self.colors['blue'],
+                                    'recent_review_percentage': self.colors['blue'],
+                                    'recent_review_count': self.colors['blue'],
+                                    'recent_review_summary': self.colors['blue'],
+                                    'insufficient_reviews': self.colors['blue'],
+
+                                    # Price fields - green
+                                    'price': self.colors['green'],
+                                    'price_eur': self.colors['green'],
+                                    'price_usd': self.colors['green'],
+                                    'discount': self.colors['green'],
+                                    'is_free': self.colors['green'],
+
+                                    # List fields - yellow
+                                    'tags': self.colors['yellow'],
+                                    'genres': self.colors['yellow'],
+                                    'categories': self.colors['yellow'],
+                                    'developers': self.colors['yellow'],
+                                    'publishers': self.colors['yellow'],
+
+                                    # Release/demo fields - cyan
+                                    'release_date': self.colors['cyan'],
+                                    'coming_soon': self.colors['cyan'],
+                                    'planned_release_date': self.colors['cyan'],
+                                    'has_demo': self.colors['cyan'],
+                                    'demo_app_id': self.colors['cyan'],
+                                    'is_demo': self.colors['cyan'],
+                                    'full_game_app_id': self.colors['cyan'],
+                                    'is_early_access': self.colors['cyan'],
+                                }
+
+                                field_color = field_colors.get(field_name, '')  # No color for other fields
+                                colored_desc = f"{field_color}{field_name}{self.colors['reset']}:{rest}"
+                            else:
+                                colored_desc = change_desc
+
+                            # Special handling for consolidated fields
+                            if field_name == 'PRICE':
+                                # Color individual currency labels
+                                colored_desc = colored_desc.replace('EUR:', f'{self.colors["bold"]}EUR:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('USD:', f'{self.colors["bold"]}USD:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('free:', f'{self.colors["bold"]}free:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('discount:', f'{self.colors["bold"]}discount:{self.colors["reset"]}')
+                            elif field_name == 'REVIEWS':
+                                # Color review labels and highlight positive/negative changes
+                                colored_desc = colored_desc.replace('overall%:', f'{self.colors["bold"]}overall%:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('overall№:', f'{self.colors["bold"]}overall№:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('recent%:', f'{self.colors["bold"]}recent%:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('recent№:', f'{self.colors["bold"]}recent№:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('summary:', f'{self.colors["bold"]}summary:{self.colors["reset"]}')
+                                colored_desc = colored_desc.replace('recent-summary:', f'{self.colors["bold"]}recent-summary:{self.colors["reset"]}')
+
+                                # Color positive deltas green and negative deltas red
+                                import re
+                                # Match patterns like (+123) or (-45)
+                                colored_desc = re.sub(r'\(\+(\d+)\)', rf'({self.colors["green"]}+\1{self.colors["reset"]})', colored_desc)
+                                colored_desc = re.sub(r'\((-\d+)\)', rf'({self.colors["red"]}\1{self.colors["reset"]})', colored_desc)
+
+                            # Color the arrow in change descriptions
+                            colored_desc = colored_desc.replace(' → ', f' {self.colors["cyan"]}→{self.colors["reset"]} ')
+
+                            # Special coloring for list field changes (tags, genres, categories, etc.)
+                            if any(f"{field_color}{field}" in colored_desc for field in ['tags', 'genres', 'categories', 'developers', 'publishers'] for field_color in [self.colors['yellow']]):
+                                # Color + items green and - items red
                                 colored_desc = colored_desc.replace('+[', f'{self.colors["green"]}+[')
                                 colored_desc = colored_desc.replace('] -[', f']{self.colors["reset"]} {self.colors["red"]}-[')
                                 colored_desc = colored_desc.replace(']', f']{self.colors["reset"]}')
                                 # Make sure standalone brackets get reset too
-                                if colored_desc.endswith(f']{self.colors["reset"]}'):
-                                    pass  # Already handled
-                                else:
+                                if not colored_desc.endswith(f'{self.colors["reset"]}'):
                                     colored_desc += self.colors["reset"]
 
                             print(f"    {game_id:<10} {name:<40} {colored_desc}")
