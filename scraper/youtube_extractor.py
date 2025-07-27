@@ -6,9 +6,10 @@ import json
 import logging
 import re
 from datetime import datetime
+from typing import Any
 
 import requests
-import yt_dlp  # type: ignore
+import yt_dlp
 
 
 class YouTubeExtractor:
@@ -38,7 +39,7 @@ class YouTubeExtractor:
                     logging.error(f"yt-dlp: {msg}")
         return QuietLogger()
 
-    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict]:
+    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict[str, Any]]:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
         videos = []
 
@@ -58,26 +59,34 @@ class YouTubeExtractor:
                 logging.debug(f"Fetching lightweight data from {channel_url}")
                 info = ydl.extract_info(channel_url, download=False)
 
-                if 'entries' in info:
+                if info and 'entries' in info:
                     entries = info['entries']
+                elif info:
+                    entries = [info]
                 else:
-                    entries = [info] if info else []
+                    entries = []
 
                 # Process entries - just extract basic info
                 for entry in entries:
                     if not entry:
                         continue
 
+                    if not isinstance(entry, dict):
+                        continue
+
                     video_id = entry.get('id')
                     if not video_id:
                         continue
 
+                    timestamp = entry.get('timestamp')
+                    published_at = None
+                    if timestamp and isinstance(timestamp, int | float) and timestamp > 0:
+                        published_at = datetime.fromtimestamp(timestamp).isoformat()
+
                     videos.append({
                         'video_id': video_id,
                         'title': entry.get('title', ''),
-                        'published_at': datetime.fromtimestamp(
-                            entry.get('timestamp', 0)
-                        ).isoformat() if entry.get('timestamp') and entry.get('timestamp') > 0 else None,
+                        'published_at': published_at,
                         'thumbnail': entry.get('thumbnail', '')
                     })
 
@@ -86,7 +95,7 @@ class YouTubeExtractor:
 
         return videos
 
-    def get_full_video_metadata(self, video_id: str) -> tuple[dict | None, bool]:
+    def get_full_video_metadata(self, video_id: str) -> tuple[dict[str, Any] | None, bool]:
         """Fetch full metadata for a specific video
 
         Returns: (metadata_dict, is_expected_skip)
@@ -98,15 +107,21 @@ class YouTubeExtractor:
             with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
                 video_info = ydl.extract_info(video_url, download=False)
 
-                return {
-                    'video_id': video_id,
-                    'title': video_info.get('title', ''),
-                    'description': video_info.get('description', ''),
-                    'published_at': datetime.fromtimestamp(
-                        video_info.get('timestamp', 0)
-                    ).isoformat() if video_info.get('timestamp') else '',
-                    'thumbnail': video_info.get('thumbnail', '')
-                }, False
+                if video_info:
+                    timestamp = video_info.get('timestamp')
+                    published_at = ''
+                    if timestamp and isinstance(timestamp, int | float):
+                        published_at = datetime.fromtimestamp(timestamp).isoformat()
+
+                    return {
+                        'video_id': video_id,
+                        'title': video_info.get('title', ''),
+                        'description': video_info.get('description', ''),
+                        'published_at': published_at,
+                        'thumbnail': video_info.get('thumbnail', '')
+                    }, False
+                else:
+                    return None, False
         except Exception as e:
             error_msg = str(e)
             if "members-only content" in error_msg or "This video is available to this channel's members" in error_msg:

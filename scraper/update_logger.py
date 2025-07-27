@@ -88,7 +88,7 @@ class GameUpdateLogger:
             identifier: Optional identifier (app_id for Steam, URL for others)
             release_info: Optional release date information
         """
-        days_ago, update_info = GameUpdateLogger.calculate_days_since_update(last_updated_str)
+        _, update_info = GameUpdateLogger.calculate_days_since_update(last_updated_str)
         interval_name = GameUpdateLogger.get_interval_name(refresh_interval_days)
 
         # Build identifier part

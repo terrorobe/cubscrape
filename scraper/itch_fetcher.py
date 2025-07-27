@@ -231,7 +231,7 @@ class ItchDataFetcher(BaseFetcher):
             logging.debug(f"Error verifying Steam game name for {steam_url}: {e}")
             return False
 
-    def _extract_tags(self, soup: BeautifulSoup) -> list:
+    def _extract_tags(self, soup: BeautifulSoup) -> list[str]:
         """Extract tags from Itch.io page"""
         tags = []
 
@@ -271,7 +271,7 @@ class ItchDataFetcher(BaseFetcher):
 
         return tags[:10]  # Limit to 10 tags total
 
-    def _extract_rating(self, soup: BeautifulSoup) -> dict | None:
+    def _extract_rating(self, soup: BeautifulSoup) -> dict[str, int] | None:
         """Extract rating information from Itch.io page"""
         # Get rating (itch uses 5-star system, convert to 0-100)
         rating_elem = soup.select_one('.aggregate_rating') or soup.select_one('.star_value')

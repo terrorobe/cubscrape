@@ -71,7 +71,7 @@ class SteamDataUpdater:
             return self._interval_for_days_until_release(days_until_release, release_info)
         else:
             # For released games, use flexible parsing
-            parsed_date, granularity = self._parse_steam_date(release_info)
+            parsed_date, _ = self._parse_steam_date(release_info)
             if parsed_date:
                 age_days = (datetime.now() - parsed_date).days
                 return self._interval_for_age(age_days)
@@ -86,7 +86,7 @@ class SteamDataUpdater:
         now = datetime.now()
 
         # Use new flexible parsing with granularity detection
-        parsed_date, granularity = self._parse_steam_date(release_info)
+        parsed_date, _ = self._parse_steam_date(release_info)
 
         if parsed_date:
             return (parsed_date - now).days

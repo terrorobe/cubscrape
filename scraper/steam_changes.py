@@ -11,6 +11,7 @@ import subprocess
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 
 class SteamChangesAnalyzer:
@@ -62,7 +63,7 @@ class SteamChangesAnalyzer:
 
         return commits
 
-    def get_file_at_commit(self, commit_hash: str) -> dict | None:
+    def get_file_at_commit(self, commit_hash: str) -> dict[str, Any] | None:
         """Get steam_games.json content at specific commit."""
         relative_path = self.steam_games_path.relative_to(self.project_root)
         cmd = ["git", "show", f"{commit_hash}:{relative_path}"]
@@ -78,7 +79,7 @@ class SteamChangesAnalyzer:
             return None
 
         try:
-            data: dict = json.loads(result.stdout)
+            data: dict[str, Any] = json.loads(result.stdout)
             return data
         except json.JSONDecodeError:
             return None
@@ -95,7 +96,7 @@ class SteamChangesAnalyzer:
             return match.group(1), match.group(2)
         return None, None
 
-    def compare_games(self, old_data: dict | None, new_data: dict | None) -> list[str]:
+    def compare_games(self, old_data: dict[str, Any] | None, new_data: dict[str, Any] | None) -> list[str]:
         """Compare two versions of steam_games.json and return changes."""
         changes = []
 
@@ -258,7 +259,7 @@ class SteamChangesAnalyzer:
                     if field in review_changes:
                         value_tuple = review_changes[field]
                         if isinstance(value_tuple, tuple):
-                            value, delta = value_tuple  # type: ignore[assignment]
+                            value, delta = value_tuple
                             if field == 'positive_review_percentage':
                                 review_parts.append(f"overall%: {value} {delta}")
                             elif field == 'review_count':
@@ -394,6 +395,7 @@ class SteamChangesAnalyzer:
                             game_id, name, change_desc = parts
 
                             # Extract field name and rest of description
+                            field_name = None
                             if ':' in change_desc:
                                 field_name, rest = change_desc.split(':', 1)
 

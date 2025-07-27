@@ -242,7 +242,7 @@ def load_json(filepath: str | Path, default: dict[str, Any]) -> dict[str, Any]:
     return default
 
 
-def save_data(data_dict: dict, file_path: str | Path) -> None:
+def save_data(data_dict: dict[str, Any], file_path: str | Path) -> None:
     """Save data to JSON file atomically"""
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)
