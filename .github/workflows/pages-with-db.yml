@@ -55,18 +55,20 @@ jobs:
         run: |
           npm ci
 
+      - name: Build Vue application
+        run: |
+          npm run build
+
       - name: Generate SQLite database
         run: |
+          # Database generation must happen AFTER Vue build to include app version metadata
+          # The database includes mtime from the built app files for version tracking
           uv run cubscrape build-db
 
       - name: Verify database creation
         run: |
           ls -la data/
           file data/games.db
-
-      - name: Build Vue application
-        run: |
-          npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
