@@ -408,7 +408,8 @@ Examples:
         other_games_updater = OtherGamesUpdater()
         other_games_updater.update_games_from_channels(
             channels_to_process,
-            max_updates=args.max_other_updates
+            max_updates=args.max_other_updates,
+            pending_scrapers=scrapers_to_save
         )
 
         # Update Steam data using SteamDataUpdater
@@ -506,7 +507,8 @@ Examples:
             other_games_updater = OtherGamesUpdater()
             other_games_updater.update_games_from_channels(
                 enabled_channels,
-                max_updates=args.max_other_updates
+                max_updates=args.max_other_updates,
+                pending_scrapers=scrapers_to_save
             )
 
             # Update Steam data once for all enabled channels

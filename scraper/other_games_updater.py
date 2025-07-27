@@ -8,6 +8,7 @@ similar to the Steam updater approach.
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 from dateutil.parser import parse as dateutil_parse
 
@@ -16,7 +17,11 @@ from .crazygames_fetcher import CrazyGamesDataFetcher
 from .data_manager import DataManager
 from .itch_fetcher import ItchDataFetcher
 from .models import OtherGameData
+from .unified_data_collector import UnifiedDataCollector
 from .update_logger import GameUpdateLogger
+
+if TYPE_CHECKING:
+    from .scraper import YouTubeSteamScraper
 
 
 class OtherGamesUpdater:
@@ -38,6 +43,7 @@ class OtherGamesUpdater:
         self.other_games_data = self.data_manager.load_other_games_data()
         self.itch_fetcher = ItchDataFetcher(self.data_manager)
         self.crazygames_fetcher = CrazyGamesDataFetcher()
+        self.data_collector = UnifiedDataCollector(self.data_manager)
 
         # Check for required Itch.io authentication
         self._validate_itch_authentication()
@@ -138,31 +144,32 @@ class OtherGamesUpdater:
         except (ValueError, TypeError):
             return True, "invalid last_updated date"
 
-    def _collect_urls_from_channels(self, channel_ids: list[str]) -> dict[str, set[str]]:
+    def _collect_urls_from_unified_data(self, all_videos_data: dict[str, Any]) -> dict[str, set[str]]:
         """
-        Collect all Itch.io and CrazyGames URLs from the specified channels.
+        Collect all Itch.io and CrazyGames URLs from unified video data.
+
+        Args:
+            all_videos_data: Unified video data from UnifiedDataCollector (guaranteed Pydantic models)
 
         Returns dict with 'itch' and 'crazygames' keys containing sets of URLs.
         """
         urls: dict[str, set[str]] = {'itch': set(), 'crazygames': set()}
 
-        for channel_id in channel_ids:
-            try:
-                channel_data = self.data_manager.load_videos_data(channel_id)
-                videos = channel_data.get('videos', {})
+        total_videos = 0
+        for channel_data in all_videos_data.values():
+            videos = channel_data.get('videos', {})
+            total_videos += len(videos)
 
-                for video_data in videos.values():
-                    # Collect game URLs from multi-game references
-                    for game_ref in video_data.game_references:
-                        if game_ref.platform == 'itch':
-                            urls['itch'].add(game_ref.platform_id)
-                        elif game_ref.platform == 'crazygames':
-                            urls['crazygames'].add(game_ref.platform_id)
+            # All video data is guaranteed to be VideoData objects by UnifiedDataCollector
+            for video_data in videos.values():
+                for game_ref in video_data.game_references:
+                    # Clean, type-safe access - no runtime type checking needed
+                    if game_ref.platform == 'itch' and game_ref.platform_id:
+                        urls['itch'].add(game_ref.platform_id)
+                    elif game_ref.platform == 'crazygames' and game_ref.platform_id:
+                        urls['crazygames'].add(game_ref.platform_id)
 
-            except Exception as e:
-                logging.error(f"Error loading channel {channel_id}: {e}")
-
-        logging.info(f"Collected {len(urls['itch'])} Itch.io URLs and {len(urls['crazygames'])} CrazyGames URLs from {len(channel_ids)} channels")
+        logging.info(f"Collected {len(urls['itch'])} Itch.io URLs and {len(urls['crazygames'])} CrazyGames URLs from {total_videos} videos")
         return urls
 
     def _fetch_game_data(self, url: str, platform: str) -> OtherGameData | None:
@@ -179,13 +186,15 @@ class OtherGamesUpdater:
             logging.error(f"Error fetching {platform} game {url}: {e}")
             return None
 
-    def update_games_from_channels(self, channel_ids: list[str], max_updates: int | None = None) -> int:
+    def update_games_from_channels(self, channel_ids: list[str], max_updates: int | None = None,
+                                   pending_scrapers: list['YouTubeSteamScraper'] | None = None) -> int:
         """
         Update other platform games referenced in the specified channels.
 
         Args:
             channel_ids: List of channel IDs to process
             max_updates: Maximum number of games to update (None for no limit)
+            pending_scrapers: List of scrapers with in-memory video data to include
 
         Returns:
             Number of games successfully updated
@@ -194,8 +203,9 @@ class OtherGamesUpdater:
             logging.warning("No channels provided for other games update")
             return 0
 
-        # Collect all URLs from channels
-        collected_urls = self._collect_urls_from_channels(channel_ids)
+        # Collect all URLs from unified data source (both saved and pending)
+        all_videos_data = self.data_collector.collect_all_videos_data(channel_ids, pending_scrapers)
+        collected_urls = self._collect_urls_from_unified_data(all_videos_data)
         all_urls = set()
         all_urls.update(collected_urls['itch'])
         all_urls.update(collected_urls['crazygames'])
