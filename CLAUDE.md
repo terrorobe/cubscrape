@@ -155,6 +155,11 @@ The project uses a custom ESLint configuration that enforces:
 - **Best practices**: Prefer const over let, require curly braces for conditionals
 - **Code style**: 4-space indentation, single quotes, semicolons required
 
+## Production Deployment
+
+- **GitHub Pages URL**: https://terrorobe.github.io/cubscrape/
+- **Database compression**: GitHub Pages automatically serves `games.db` with gzip (3MB → ~655KB)
+
 ## Development Issues
 
 ### JSON Data Analysis
