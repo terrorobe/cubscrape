@@ -128,7 +128,7 @@ class SteamDataFetcher(BaseFetcher):
                     return None
             return None
 
-    def _fetch_api_data(self, app_id: str, country_code: str = 'at') -> dict | None:
+    def _fetch_api_data(self, app_id: str, country_code: str = 'at') -> dict[str, Any] | None:
         """Fetch basic data from Steam API with country code and retry logic"""
         api_url = f"https://store.steampowered.com/api/appdetails?appids={app_id}&cc={country_code}"
 
@@ -162,7 +162,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return app_data
 
-    def _parse_api_data(self, app_data: dict, app_id: str, steam_url: str) -> SteamGameData:
+    def _parse_api_data(self, app_data: dict[str, Any], app_id: str, steam_url: str) -> SteamGameData:
         """Parse API data into SteamGameData object"""
         return SteamGameData(
             steam_app_id=app_id,
@@ -179,7 +179,7 @@ class SteamDataFetcher(BaseFetcher):
             header_image=app_data.get('header_image', '')
         )
 
-    def _get_price(self, app_data: dict) -> str | None:
+    def _get_price(self, app_data: dict[str, Any]) -> str | None:
         """Extract price information"""
         if app_data.get('is_free'):
             return "Free"
@@ -191,7 +191,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return None
 
-    def _fetch_store_page_data(self, steam_url: str, app_data: dict | None = None) -> dict:
+    def _fetch_store_page_data(self, steam_url: str, app_data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Scrape additional data from Steam store page with retry logic"""
         response = self._make_request_with_retry(
             steam_url,
@@ -217,7 +217,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return result
 
-    def _extract_tags(self, soup: BeautifulSoup) -> dict:
+    def _extract_tags(self, soup: BeautifulSoup) -> dict[str, Any]:
         """Extract Steam tags"""
         tags = []
         tag_elements = soup.select('a.app_tag')
@@ -227,7 +227,7 @@ class SteamDataFetcher(BaseFetcher):
                 tags.append(tag_text)
         return {'tags': tags}
 
-    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict | None = None) -> dict[str, Any]:
+    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Extract demo-related information"""
         result: dict[str, Any] = {}
 
@@ -254,12 +254,12 @@ class SteamDataFetcher(BaseFetcher):
 
         return result
 
-    def _extract_early_access(self, soup: BeautifulSoup) -> dict:
+    def _extract_early_access(self, soup: BeautifulSoup) -> dict[str, Any]:
         """Extract early access information"""
         early_access = soup.find('div', class_='early_access_header')
         return {'is_early_access': early_access is not None}
 
-    def _extract_review_data(self, page_text: str) -> dict:
+    def _extract_review_data(self, page_text: str) -> dict[str, Any]:
         """Extract review data from page text"""
         result = {}
 
@@ -311,7 +311,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return result
 
-    def _extract_insufficient_reviews(self, page_text: str, result: dict) -> None:
+    def _extract_insufficient_reviews(self, page_text: str, result: dict[str, Any]) -> None:
         """Extract information about insufficient or missing reviews"""
         insufficient_review_patterns = [
             r'Need more user reviews to generate a score.*?(\d+)\s*user review',
@@ -337,7 +337,7 @@ class SteamDataFetcher(BaseFetcher):
                 'review_summary': 'No user reviews'
             })
 
-    def _extract_release_info(self, soup: BeautifulSoup, page_text: str, app_data: dict | None = None) -> dict:
+    def _extract_release_info(self, soup: BeautifulSoup, page_text: str, app_data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Extract release date information for coming soon games"""
         result = {}
 
@@ -511,7 +511,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return None
 
-    def _merge_store_data(self, game_data: SteamGameData, store_data: dict) -> None:
+    def _merge_store_data(self, game_data: SteamGameData, store_data: dict[str, Any]) -> None:
         """Merge store page data into game data object"""
         for key, value in store_data.items():
             if hasattr(game_data, key):

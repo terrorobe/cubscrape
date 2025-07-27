@@ -7,7 +7,8 @@ to eliminate mypy errors and reduce code duplication.
 
 from typing import Any
 
-from bs4 import BeautifulSoup, NavigableString, PageElement, Tag
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString, PageElement
 
 
 class BaseFetcher:

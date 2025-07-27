@@ -5,6 +5,7 @@ CrazyGames data fetching and parsing functionality
 import json
 import logging
 import re
+from typing import Any
 
 import requests
 from bs4 import BeautifulSoup
@@ -84,7 +85,7 @@ class CrazyGamesDataFetcher(BaseFetcher):
 
         return ""
 
-    def _extract_tags(self, soup: BeautifulSoup) -> list:
+    def _extract_tags(self, soup: BeautifulSoup) -> list[str]:
         """Extract tags from CrazyGames page"""
         tags = []
 
@@ -101,7 +102,7 @@ class CrazyGamesDataFetcher(BaseFetcher):
 
         return tags
 
-    def _extract_rating(self, soup: BeautifulSoup, page_text: str) -> dict | None:
+    def _extract_rating(self, soup: BeautifulSoup, page_text: str) -> dict[str, int] | None:
         """Extract rating information from CrazyGames page"""
         # Look for rating in structured data (JSON-LD)
         rating_data = self._extract_rating_from_json_ld(soup)
@@ -111,7 +112,7 @@ class CrazyGamesDataFetcher(BaseFetcher):
         # Fallback: Look for rating in page text using regex patterns
         return self._extract_rating_from_text(page_text)
 
-    def _extract_rating_from_json_ld(self, soup: BeautifulSoup) -> dict | None:
+    def _extract_rating_from_json_ld(self, soup: BeautifulSoup) -> dict[str, int] | None:
         """Extract rating from JSON-LD structured data"""
         script_tags = soup.find_all('script', type='application/ld+json')
         for script in script_tags:
@@ -143,7 +144,7 @@ class CrazyGamesDataFetcher(BaseFetcher):
 
         return None
 
-    def _parse_aggregate_rating(self, aggregate_rating: dict) -> dict:
+    def _parse_aggregate_rating(self, aggregate_rating: dict[str, Any]) -> dict[str, int]:
         """Parse aggregate rating data"""
         rating_value = float(aggregate_rating['ratingValue'])
         best_rating = float(aggregate_rating.get('bestRating', 10))
@@ -159,7 +160,7 @@ class CrazyGamesDataFetcher(BaseFetcher):
         logging.info(f"Found rating in JSON-LD: {rating_value}/{best_rating} = {percentage}%")
         return result
 
-    def _extract_rating_from_text(self, page_text: str) -> dict | None:
+    def _extract_rating_from_text(self, page_text: str) -> dict[str, int] | None:
         """Extract rating from page text using regex patterns"""
         # Pattern for "X.X / 10" or "X.X out of 10" ratings
         rating_patterns = [

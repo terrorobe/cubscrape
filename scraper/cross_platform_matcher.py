@@ -44,7 +44,7 @@ class CrossPlatformMatcher:
 
         return normalized
 
-    def find_exact_name_matches(self, steam_games: dict, other_games: dict) -> list[tuple[str, str, str]]:
+    def find_exact_name_matches(self, steam_games: dict[str, Any], other_games: dict[str, Any]) -> list[tuple[str, str, str]]:
         """Find exact name matches between Steam and other platform games
 
         Returns:
@@ -72,7 +72,7 @@ class CrossPlatformMatcher:
 
         return matches
 
-    def apply_precedence_rules(self, steam_games: dict, matches: list[tuple[str, str, str]]) -> dict[str, str]:
+    def apply_precedence_rules(self, steam_games: dict[str, Any], matches: list[tuple[str, str, str]]) -> dict[str, str]:
         """Apply precedence rules to determine which games should be linked
 
         Rules:
@@ -84,7 +84,7 @@ class CrossPlatformMatcher:
             Dict mapping other_game_url -> steam_app_id for approved links
         """
         approved_links = {}
-        steam_game_matches: dict[str, list] = {}  # Group matches by Steam app ID
+        steam_game_matches: dict[str, list[tuple[str, str]]] = {}  # Group matches by Steam app ID
 
         # Group matches by Steam app ID
         for steam_app_id, other_game_url, platform in matches:

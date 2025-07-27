@@ -37,7 +37,7 @@ uv run python -m scraper.cli_commands cron
 
 # Development tools
 uv run ruff check
-uv run mypy .
+uv run basedpyright
 ```
 
 ### Development Workflow
@@ -47,7 +47,7 @@ uv run mypy .
 3. **Add dependencies**: Edit `pyproject.toml` then run `uv sync`
 4. **Run linters**: 
    - Python: `uv run ruff check --fix`
-   - Python types: `uv run mypy .`
+   - Python types: `uv run basedpyright`
    - JavaScript/Vue: `npx eslint . --fix`
 
 ## Web Development Environment
@@ -77,7 +77,7 @@ uv run mypy .
 
 **Development dependencies** (in `[project.optional-dependencies.dev]`):
 - ruff - Python linter and formatter
-- mypy - Static type checker
+- basedpyright - Static type checker (fork of Pyright with additional features)
 
 ### Notes
 - Always commit `uv.lock` for reproducible builds

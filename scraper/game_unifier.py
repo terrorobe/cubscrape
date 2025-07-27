@@ -264,9 +264,11 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
             if game_data.get('platform') == 'itch' and game_data.get('steam_url'):
                 # Check if any Steam game has this Itch URL
                 absorbed = False
+                absorbed_into_key = None
                 for steam_game_key, steam_game in unified_games.items():
                     if steam_game.get('platform') == 'steam' and steam_game.get('itch_url') == game_key:
                         absorbed = True
+                        absorbed_into_key = steam_game_key
                         itch_absorbed += 1
 
                         # Map Itch URL to Steam game key for video processing
@@ -288,7 +290,7 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
                         'videos': [],  # No direct videos - they belong to parent
                         'video_count': 0,
                         'is_absorbed': True,
-                        'absorbed_into': steam_game_key,
+                        'absorbed_into': absorbed_into_key,
                         **game_data  # Include all game data
                     }
                     other_games_added += 1

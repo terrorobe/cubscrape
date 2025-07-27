@@ -297,7 +297,7 @@ class DataManager:
         else:
             raise TypeError(f"Expected dict or OtherGameData for {game_id}, got {type(data).__name__}. Data: {data}")
 
-    def _dict_to_video_data(self, video_dict: dict) -> VideoData:
+    def _dict_to_video_data(self, video_dict: dict[str, Any]) -> VideoData:
         """Convert dictionary to VideoData object"""
         # Handle game_references conversion
         if 'game_references' in video_dict:
@@ -311,15 +311,15 @@ class DataManager:
 
         return VideoData(**video_dict)
 
-    def _dict_to_steam_data(self, steam_dict: dict) -> SteamGameData:
+    def _dict_to_steam_data(self, steam_dict: dict[str, Any]) -> SteamGameData:
         """Convert dictionary to SteamGameData object"""
         return SteamGameData(**steam_dict)
 
-    def _dict_to_other_game_data(self, game_dict: dict) -> OtherGameData:
+    def _dict_to_other_game_data(self, game_dict: dict[str, Any]) -> OtherGameData:
         """Convert dictionary to OtherGameData object"""
         return OtherGameData(**game_dict)
 
-    def _clean_dict_for_json(self, data_dict: dict) -> dict[str, Any]:
+    def _clean_dict_for_json(self, data_dict: dict[str, Any]) -> dict[str, Any]:
         """Remove None values and False boolean values to keep JSON clean"""
         cleaned: dict[str, Any] = {}
         for k, v in data_dict.items():

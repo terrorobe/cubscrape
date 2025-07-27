@@ -7,6 +7,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from .config_manager import ConfigManager
 from .data_manager import DataManager
@@ -84,7 +85,7 @@ class YouTubeSteamScraper:
         self.save_videos()
         return updated_count
 
-    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict]:
+    def get_channel_videos_lightweight(self, channel_url: str, skip_count: int, batch_size: int) -> list[dict[str, Any]]:
         """Fetch lightweight video info (just IDs and titles) from YouTube channel"""
         return self.video_processor.get_channel_videos_lightweight(channel_url, skip_count, batch_size)
 
@@ -94,7 +95,7 @@ class YouTubeSteamScraper:
         return self.video_processor.process_video_game_links(video)
 
 
-    def check_data_quality(self, channels_config: dict) -> int:
+    def check_data_quality(self, channels_config: dict[str, Any]) -> int:
         """Check data quality across all channels and games"""
         # Get the directory of this script, then build paths relative to project root
         script_dir = Path(__file__).resolve().parent
@@ -103,20 +104,20 @@ class YouTubeSteamScraper:
         quality_checker = DataQualityChecker(project_root, self.steam_data, self.other_games_data)
         return quality_checker.check_data_quality(channels_config)
 
-    def search_steam_games(self, query: str) -> list[dict]:
+    def search_steam_games(self, query: str) -> list[dict[str, Any]]:
         """Search Steam for games by name"""
         return self.game_inference.search_steam_games(query)
 
-    def find_steam_match(self, game_name: str, confidence_threshold: float = 0.5) -> dict | None:
+    def find_steam_match(self, game_name: str, confidence_threshold: float = 0.5) -> dict[str, Any] | None:
         """Find best Steam match for a game name with confidence scoring"""
         return self.game_inference.find_steam_match(game_name, confidence_threshold)
 
-    def find_steam_match_interactive(self, game_name: str, confidence_threshold: float = 0.5) -> dict | None:
+    def find_steam_match_interactive(self, game_name: str, confidence_threshold: float = 0.5) -> dict[str, Any] | None:
         """Find Steam match with interactive prompting for low confidence results"""
         return self.game_inference.find_steam_match_interactive(game_name, confidence_threshold)
 
 
-    def _should_process_video_for_inference(self, video: dict) -> str | None:
+    def _should_process_video_for_inference(self, video: dict[str, Any]) -> str | None:
         """Determine if video needs processing for game inference"""
         # Case 1: No game references at all
         game_references = video.get('game_references', [])
@@ -141,7 +142,7 @@ class YouTubeSteamScraper:
         """Check if Steam app is still available"""
         return self.game_inference.check_steam_availability(app_id)
 
-    def resolve_games(self, channels_config: dict) -> int:
+    def resolve_games(self, channels_config: dict[str, Any]) -> int:
         """Resolve games for videos with missing, broken, or stub game data"""
         print("\n" + "="*80)
         print("GAME RESOLUTION FOR VIDEOS")

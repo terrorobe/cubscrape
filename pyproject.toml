@@ -22,7 +22,7 @@ cubscrape = "scraper.cli_commands:main"
 [project.optional-dependencies]
 dev = [
     "ruff>=0.8.4",
-    "mypy>=1.13.0",
+    "basedpyright>=1.22.1",
     "types-requests>=2.31.0",
     "types-python-dateutil>=2.8.19",
     "lxml-stubs>=0.5.1",
@@ -108,39 +108,46 @@ skip-magic-trailing-comma = false
 # Automatically detect line ending
 line-ending = "auto"
 
-[tool.mypy]
-# Require type annotations
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-
-# Warn about redundant constructs
-warn_redundant_casts = true
-warn_unused_ignores = true
-
-# Error on missing imports
-strict_optional = true
-warn_return_any = true
-
-# Check untyped definitions
-check_untyped_defs = true
+[tool.basedpyright]
+# Type checking mode
+typeCheckingMode = "standard"
 
 # Platform configuration
-python_version = "3.12"
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
 
-# Follow imports and check them
-follow_imports = "normal"
+# Strict type checking options
+strictListInference = true
+strictDictionaryInference = true
+strictSetInference = true
+analyzeUnannotatedFunctions = true
+strictParameterNoneValue = true
 
-# Show error codes
-show_error_codes = true
+# Report settings - matching mypy's behavior
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportMissingTypeArgument = true
+reportIncompatibleMethodOverride = true
+reportIncompatibleVariableOverride = true
+reportAssertAlwaysTrue = "warning"
+reportUnnecessaryTypeIgnoreComment = true
+reportUnusedImport = true
+reportUnusedVariable = true
+reportDuplicateImport = true
 
-# Exclude common directories
+# Include/exclude paths
+include = ["scraper"]
 exclude = [
-    "build/",
-    "dist/",
-    ".venv/",
-    "venv/",
-    "node_modules/",
+    "**/__pycache__",
+    ".venv",
+    "venv",
+    "node_modules",
+    "build",
+    "dist",
 ]
+
+# Use strict inference for better type checking
+useLibraryCodeForTypes = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["scraper"]
