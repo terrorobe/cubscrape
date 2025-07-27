@@ -236,7 +236,7 @@ class DataManager:
 
         save_data(data_to_save, steam_file)
 
-    def save_other_games_data(self, other_games_data: OtherGamesDataDict) -> None:
+    def save_other_games_data(self, other_games_data: OtherGamesDataDict, pending_steam_data: 'SteamDataDict | None' = None) -> None:
         """Save other games data to JSON file"""
         other_games_file = self.get_other_games_file_path()
 
@@ -255,8 +255,29 @@ class DataManager:
             'games': games_dict
         }
 
-        # Run validation before saving
-        if not self._run_validation_if_enabled():
+        # Create validation context with current data
+        from .reference_validator import ValidationContext
+
+        # Load all videos data for validation context
+        try:
+            from .config_manager import ConfigManager
+            config_manager = ConfigManager(self.project_root)
+            channels = config_manager.get_channels()
+            videos_data_dict = {}
+            for channel_id in channels:
+                videos_data_dict[channel_id] = self.load_videos_data(channel_id)
+        except Exception as e:
+            logging.warning(f"Could not load all videos data for validation context: {e}")
+            videos_data_dict = {}
+
+        context = ValidationContext(
+            steam_data=pending_steam_data or self.load_steam_data(),
+            other_games_data=other_games_data,  # Use in-memory data
+            videos_data=videos_data_dict
+        )
+
+        # Run validation before saving using context
+        if not self._run_validation_if_enabled(context=context):
             raise ValueError("Data validation failed - save operation aborted")
 
         save_data(data_to_save, other_games_file)

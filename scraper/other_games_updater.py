@@ -14,7 +14,7 @@ from dateutil.parser import parse as dateutil_parse
 
 from .config_manager import ConfigManager
 from .crazygames_fetcher import CrazyGamesDataFetcher
-from .data_manager import DataManager
+from .data_manager import DataManager, SteamDataDict
 from .itch_fetcher import ItchDataFetcher
 from .models import OtherGameData
 from .unified_data_collector import UnifiedDataCollector
@@ -45,6 +45,10 @@ class OtherGamesUpdater:
         self.crazygames_fetcher = CrazyGamesDataFetcher()
         self.data_collector = UnifiedDataCollector(self.data_manager)
 
+        # Deferred save support
+        self.has_pending_updates = False
+        self.pending_update_count = 0
+
         # Check for required Itch.io authentication
         self._validate_itch_authentication()
 
@@ -70,9 +74,37 @@ class OtherGamesUpdater:
 
         logging.info("Itch.io authentication validated successfully")
 
-    def _save_other_games_data(self) -> None:
+    def _save_other_games_data(self, force: bool = False, pending_steam_data: 'SteamDataDict | None' = None) -> None:
         """Save other games data to file"""
-        self.data_manager.save_other_games_data(self.other_games_data)
+        if self.has_pending_updates and not force:
+            logging.debug("Deferring other games save until Steam updates complete")
+            return
+
+        self.data_manager.save_other_games_data(self.other_games_data, pending_steam_data)
+        self.has_pending_updates = False
+        self.pending_update_count = 0
+
+    def enable_deferred_save(self) -> None:
+        """Enable deferred save mode - updates will be accumulated but not saved until save_pending_updates() is called"""
+        self.has_pending_updates = True
+        logging.debug("Enabled deferred save mode for other games updates")
+
+    def save_pending_updates(self, pending_steam_data: 'SteamDataDict | None' = None) -> None:
+        """Save any pending updates that were deferred"""
+        if self.has_pending_updates and self.pending_update_count > 0:
+            self._save_other_games_data(force=True, pending_steam_data=pending_steam_data)
+            logging.info(f"Saved {self.pending_update_count} pending other games updates")
+        elif self.has_pending_updates:
+            logging.debug("No pending other games updates to save")
+            self.has_pending_updates = False
+
+    def discard_pending_updates(self) -> None:
+        """Discard any pending updates and reload from disk"""
+        if self.has_pending_updates:
+            self.other_games_data = self.data_manager.load_other_games_data()
+            self.has_pending_updates = False
+            self.pending_update_count = 0
+            logging.info("Discarded pending other games updates and reloaded from disk")
 
     def _get_release_date_info(self, game_data: OtherGameData) -> str:
         """Get formatted release date information for logging"""
@@ -284,6 +316,10 @@ class OtherGamesUpdater:
                 self.other_games_data['games'][url] = game_data
                 updated_count += 1
 
+                # Track pending updates for deferred save
+                if self.has_pending_updates:
+                    self.pending_update_count += 1
+
                 GameUpdateLogger.log_game_update_success(game_data.name)
             else:
                 GameUpdateLogger.log_game_update_failure(url, platform)
@@ -291,7 +327,10 @@ class OtherGamesUpdater:
         # Save data if any updates were made
         if updated_count > 0:
             self._save_other_games_data()
-            logging.info(f"Other games update completed. Updated {updated_count}/{len(games_to_update)} games")
+            if self.has_pending_updates:
+                logging.info(f"Other games update completed. Updated {updated_count}/{len(games_to_update)} games (deferred save)")
+            else:
+                logging.info(f"Other games update completed. Updated {updated_count}/{len(games_to_update)} games")
         else:
             logging.info("No other platform games were successfully updated")
 

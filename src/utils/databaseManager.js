@@ -339,7 +339,7 @@ export class DatabaseManager {
       let dataModified = this.lastModified // fallback to database file mtime
       try {
         const metadataResult = this.db.exec(
-          "SELECT value FROM app_metadata WHERE key = 'data_last_modified'"
+          "SELECT value FROM app_metadata WHERE key = 'data_last_modified'",
         )
         if (metadataResult.length > 0 && metadataResult[0].values.length > 0) {
           dataModified = metadataResult[0].values[0][0]

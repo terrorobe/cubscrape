@@ -197,11 +197,24 @@ Examples:
             metavar='DATE',
             help='Date cutoff for steam-changes (e.g., "3 days ago", "2024-01-01", "1 week ago")'
         )
+        special_group.add_argument(
+            '--log-level',
+            type=str,
+            choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+            default='INFO',
+            metavar='LEVEL',
+            help='Set logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)'
+        )
         return parser
 
     def parse_and_execute(self, args: list[str] | None = None) -> None:
         """Parse command line arguments and execute the appropriate command"""
         parsed_args = self.parser.parse_args(args)
+
+        # Configure logging level
+        import logging
+        log_level = getattr(logging, parsed_args.log_level.upper())
+        logging.getLogger().setLevel(log_level)
 
         # Create lock file before executing any command
         self._create_lock_file()
@@ -406,19 +419,36 @@ Examples:
 
         # Update other platform games first (may contain Steam links)
         other_games_updater = OtherGamesUpdater()
-        other_games_updater.update_games_from_channels(
-            channels_to_process,
-            max_updates=args.max_other_updates,
-            pending_scrapers=scrapers_to_save
-        )
-
-        # Update Steam data using SteamDataUpdater
         steam_updater = SteamDataUpdater()
-        steam_updater.update_all_games_from_channels(
-            channels_to_process,
-            max_updates=args.max_steam_updates,
-            pending_scrapers=scrapers_to_save
-        )
+
+        # Enable deferred save to prevent validation errors during cross-platform reference setup
+        other_games_updater.enable_deferred_save()
+        steam_updater.enable_deferred_save()
+
+        try:
+            other_games_updater.update_games_from_channels(
+                channels_to_process,
+                max_updates=args.max_other_updates,
+                pending_scrapers=scrapers_to_save
+            )
+
+            # Update Steam data using SteamDataUpdater (establishes cross-platform references)
+            steam_updater.update_all_games_from_channels(
+                channels_to_process,
+                max_updates=args.max_steam_updates,
+                pending_scrapers=scrapers_to_save,
+                pending_other_games_data=other_games_updater.other_games_data
+            )
+
+            # Save other games data first, then Steam data to maintain validation consistency
+            other_games_updater.save_pending_updates(pending_steam_data=steam_updater.steam_data)
+            steam_updater.save_pending_updates()
+
+        except Exception:
+            # Discard pending updates on error to avoid inconsistent state
+            other_games_updater.discard_pending_updates()
+            steam_updater.discard_pending_updates()
+            raise
 
         # Save all video data after Steam updates are complete
         for scraper in scrapers_to_save:
@@ -505,27 +535,44 @@ Examples:
         # Update other platform games first (may contain Steam links)
         if enabled_channels:
             other_games_updater = OtherGamesUpdater()
-            other_games_updater.update_games_from_channels(
-                enabled_channels,
-                max_updates=args.max_other_updates,
-                pending_scrapers=scrapers_to_save
-            )
-
-            # Update Steam data once for all enabled channels
             steam_updater = SteamDataUpdater()
-            steam_updater.update_all_games_from_channels(
-                enabled_channels,
-                max_updates=args.max_steam_updates,
-                pending_scrapers=scrapers_to_save
-            )
 
-            # Run cross-platform auto-linking after all updates
-            logging.info("Running cross-platform auto-linking")
-            from .cross_platform_matcher import run_cross_platform_matching
-            stats = run_cross_platform_matching(project_root)
-            if 'error' not in stats:
-                logging.info(f"Auto-linking results: {stats['approved_links']} new links, "
-                           f"{stats['conflicting_links_removed']} conflicts resolved")
+            # Enable deferred save to prevent validation errors during cross-platform reference setup
+            other_games_updater.enable_deferred_save()
+            steam_updater.enable_deferred_save()
+
+            try:
+                other_games_updater.update_games_from_channels(
+                    enabled_channels,
+                    max_updates=args.max_other_updates,
+                    pending_scrapers=scrapers_to_save
+                )
+
+                # Update Steam data once for all enabled channels (establishes cross-platform references)
+                steam_updater.update_all_games_from_channels(
+                    enabled_channels,
+                    max_updates=args.max_steam_updates,
+                    pending_scrapers=scrapers_to_save,
+                    pending_other_games_data=other_games_updater.other_games_data
+                )
+
+                # Save other games data first, then Steam data to maintain validation consistency
+                other_games_updater.save_pending_updates(pending_steam_data=steam_updater.steam_data)
+                steam_updater.save_pending_updates()
+
+                # Run cross-platform auto-linking after all updates
+                logging.info("Running cross-platform auto-linking")
+                from .cross_platform_matcher import run_cross_platform_matching
+                stats = run_cross_platform_matching(project_root)
+                if 'error' not in stats:
+                    logging.info(f"Auto-linking results: {stats['approved_links']} new links, "
+                               f"{stats['conflicting_links_removed']} conflicts resolved")
+
+            except Exception:
+                # Discard pending updates on error to avoid inconsistent state
+                other_games_updater.discard_pending_updates()
+                steam_updater.discard_pending_updates()
+                raise
 
         # Save all video data after Steam updates are complete
         for scraper in scrapers_to_save:

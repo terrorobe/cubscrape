@@ -231,6 +231,7 @@ class ItchDataFetcher(BaseFetcher):
             logging.debug(f"Error verifying Steam game name for {steam_url}: {e}")
             return False
 
+
     def _extract_tags(self, soup: BeautifulSoup) -> list[str]:
         """Extract tags from Itch.io page"""
         tags = []

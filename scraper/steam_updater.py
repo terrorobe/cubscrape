@@ -12,7 +12,7 @@ from dateutil.parser import parse as dateutil_parse
 if TYPE_CHECKING:
     from .scraper import YouTubeSteamScraper
 
-from .data_manager import DataManager, SteamDataDict
+from .data_manager import DataManager, OtherGamesDataDict, SteamDataDict
 from .models import SteamGameData
 from .steam_fetcher import SteamDataFetcher
 from .unified_data_collector import UnifiedDataCollector
@@ -35,9 +35,36 @@ class SteamDataUpdater:
         self.steam_fetcher = SteamDataFetcher(self.data_manager)
         self.data_collector = UnifiedDataCollector(self.data_manager)
 
-    def _save_steam_data(self) -> None:
+        # Deferred save support
+        self.has_pending_updates = False
+
+    def _save_steam_data(self, force: bool = False) -> None:
         """Save Steam data to file"""
+        if self.has_pending_updates and not force:
+            logging.debug("Deferring Steam save until other games data is saved")
+            return
+
         self.data_manager.save_steam_data(self.steam_data)
+        self.has_pending_updates = False
+
+    def enable_deferred_save(self) -> None:
+        """Enable deferred save mode - updates will be accumulated but not saved until save_pending_updates() is called"""
+        self.has_pending_updates = True
+        logging.debug("Enabled deferred save mode for Steam updates")
+
+    def save_pending_updates(self) -> None:
+        """Save any pending updates that were deferred"""
+        if self.has_pending_updates:
+            self._save_steam_data(force=True)
+            self.has_pending_updates = False
+            logging.debug("Saved pending Steam updates")
+
+    def discard_pending_updates(self) -> None:
+        """Discard any pending updates and reload from disk"""
+        if self.has_pending_updates:
+            self.steam_data = self.data_manager.load_steam_data()
+            self.has_pending_updates = False
+            logging.info("Discarded pending Steam updates and reloaded from disk")
 
 
     def _get_release_date_info(self, game_data: SteamGameData) -> str:
@@ -242,7 +269,8 @@ class SteamDataUpdater:
         logging.info(f"Collected Steam app IDs from {total_videos} videos across {len(all_videos_data)} channels")
 
     def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None,
-                                     pending_scrapers: list['YouTubeSteamScraper'] | None = None) -> None:
+                                     pending_scrapers: list['YouTubeSteamScraper'] | None = None,
+                                     pending_other_games_data: 'OtherGamesDataDict | None' = None) -> None:
         """
         Update Steam data for all games referenced in the specified channels.
 
@@ -250,6 +278,7 @@ class SteamDataUpdater:
             channels: List of channel names to process
             max_updates: Maximum number of games to update (None for all)
             pending_scrapers: List of scrapers with in-memory video data to include
+            pending_other_games_data: In-memory other games data to use instead of loading from disk
         """
         logging.info("Updating Steam data using age-based refresh intervals")
 
@@ -264,7 +293,15 @@ class SteamDataUpdater:
         # Also collect Steam app IDs from other games data (Itch.io with Steam links)
         # Track mapping of Steam app IDs to their Itch URLs
         steam_to_itch_urls = {}  # app_id -> itch_url
-        other_games_data = self.data_manager.load_other_games_data()
+
+        # Use pending other games data if provided, otherwise load from disk
+        if pending_other_games_data:
+            other_games_data = pending_other_games_data
+            logging.info(f"Using pending other games data with {len(other_games_data.get('games', {}))} games for Steam link collection")
+        else:
+            other_games_data = self.data_manager.load_other_games_data()
+            logging.debug("Loading other games data from disk")
+
         other_steam_count = 0
         if other_games_data and 'games' in other_games_data:
             for itch_url, game_data in other_games_data['games'].items():
@@ -279,6 +316,7 @@ class SteamDataUpdater:
                     # Track the Itch URL for this Steam game
                     if app_id and game_data.platform == 'itch':
                         steam_to_itch_urls[app_id] = itch_url
+
 
         if other_steam_count > 0:
             logging.info(f"Added {other_steam_count} Steam games from other platforms")
@@ -311,8 +349,14 @@ class SteamDataUpdater:
             if app_id in self.steam_data['games']:
                 steam_game_data: SteamGameData = self.steam_data['games'][app_id]
 
+                # Check for missing cross-platform reference
+                related_itch_url = steam_to_itch_urls.get(app_id)
+                if related_itch_url and not steam_game_data.itch_url:
+                    should_update = True
+                    update_reason = "missing itch_url cross-reference"
+
                 # Check for overdue release trigger
-                if self._is_overdue_release(steam_game_data):
+                elif self._is_overdue_release(steam_game_data):
                     should_update = True
                     update_reason = "overdue release"
 
