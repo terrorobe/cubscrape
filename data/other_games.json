@@ -432,6 +432,27 @@
       ],
       "url": "https://jameskelly.itch.io/what-lurks-below"
     },
+    "https://johanpeitz.itch.io/orb-of-aeternum": {
+      "header_image": "https://img.itch.zone/aW1nLzE1NTM1MDMxLnBuZw==/original/c8DRrl.png",
+      "is_free": true,
+      "last_updated": "2025-07-27T16:13:01.834129",
+      "name": "Orb of Aeternum",
+      "platform": "itch",
+      "positive_review_percentage": 100,
+      "release_date": "29 March 2024",
+      "review_count": 8,
+      "steam_url": "https://store.steampowered.com/app/2887890",
+      "tags": [
+        "Dungeon Crawler",
+        "PICO-8",
+        "Pixel Art",
+        "Retro",
+        "Tactical",
+        "Top-Down",
+        "Tower Defense"
+      ],
+      "url": "https://johanpeitz.itch.io/orb-of-aeternum"
+    },
     "https://juanggz.itch.io/spartan-survivors": {
       "header_image": "https://img.itch.zone/aW1nLzIxMzY0MTc4LnBuZw==/original/MlZx%2Fl.png",
       "is_free": true,
@@ -1078,6 +1099,28 @@
         "Collect"
       ],
       "url": "https://www.crazygames.com/game/mini-crushers"
+    },
+    "https://www.crazygames.com/game/stick-war": {
+      "header_image": "https://imgs.crazygames.com/games/stick-war/cover-1659084995039.jpg?metadata=none&quality=60&width=1200&height=630&fit=crop",
+      "is_free": true,
+      "last_updated": "2025-07-27T16:13:02.050084",
+      "name": "Stick War",
+      "platform": "crazygames",
+      "positive_review_percentage": 93,
+      "release_date": "",
+      "review_count": 220384,
+      "steam_url": "",
+      "tags": [
+        "Action",
+        "Defense",
+        "Building",
+        "Strategy",
+        "War",
+        "Stickman",
+        "Sword",
+        "Flash"
+      ],
+      "url": "https://www.crazygames.com/game/stick-war"
     },
     "https://www.crazygames.com/game/stone-grass-mowing-simulator": {
       "header_image": "https://imgs.crazygames.com/stone-grass-mowing-simulator_16x9/20250410062107/stone-grass-mowing-simulator_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
