@@ -5,7 +5,7 @@ import logging
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from dateutil.parser import parse as dateutil_parse
 
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 from .data_manager import DataManager, SteamDataDict
 from .models import SteamGameData
 from .steam_fetcher import SteamDataFetcher
+from .unified_data_collector import UnifiedDataCollector
 from .update_logger import GameUpdateLogger
 from .utils import extract_steam_app_id
 
@@ -32,6 +33,7 @@ class SteamDataUpdater:
         self.data_manager = DataManager(Path.cwd())
         self.steam_data: SteamDataDict = self.data_manager.load_steam_data()
         self.steam_fetcher = SteamDataFetcher(self.data_manager)
+        self.data_collector = UnifiedDataCollector(self.data_manager)
 
     def _save_steam_data(self) -> None:
         """Save Steam data to file"""
@@ -214,23 +216,30 @@ class SteamDataUpdater:
 
         return extract_steam_app_id(steam_url)
 
-    def _collect_steam_app_ids_from_videos(self, videos_dict: dict, steam_app_ids: set,
-                                         latest_video_dates: dict[str, datetime]) -> None:
-        """Helper method to collect Steam app IDs from a videos dictionary"""
-        for video in videos_dict.values():
-            # Check multi-game format
-            for game_ref in video.game_references:
-                if game_ref.platform == 'steam':
-                    steam_app_ids.add(game_ref.platform_id)
+    def _collect_steam_app_ids_from_unified_data(self, all_videos_data: dict[str, Any], steam_app_ids: set[str],
+                                               latest_video_dates: dict[str, datetime]) -> None:
+        """Helper method to collect Steam app IDs from unified video data"""
+        total_videos = 0
+        for channel_data in all_videos_data.values():
+            videos = channel_data.get('videos', {})
+            total_videos += len(videos)
 
-                    # Track latest video date for this game
-                    if video.published_at:
-                        try:
-                            video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
-                            if game_ref.platform_id not in latest_video_dates or video_date > latest_video_dates[game_ref.platform_id]:
-                                latest_video_dates[game_ref.platform_id] = video_date
-                        except ValueError:
-                            continue
+            # All video data is guaranteed to be VideoData objects by UnifiedDataCollector
+            for video in videos.values():
+                for game_ref in video.game_references:
+                    if game_ref.platform == 'steam':
+                        steam_app_ids.add(game_ref.platform_id)
+
+                        # Track latest video date for this game
+                        if video.published_at:
+                            try:
+                                video_date = datetime.fromisoformat(video.published_at.replace('Z', '+00:00'))
+                                if game_ref.platform_id not in latest_video_dates or video_date > latest_video_dates[game_ref.platform_id]:
+                                    latest_video_dates[game_ref.platform_id] = video_date
+                            except ValueError:
+                                continue
+
+        logging.info(f"Collected Steam app IDs from {total_videos} videos across {len(all_videos_data)} channels")
 
     def update_all_games_from_channels(self, channels: list[str], max_updates: int | None = None,
                                      pending_scrapers: list['YouTubeSteamScraper'] | None = None) -> None:
@@ -244,21 +253,13 @@ class SteamDataUpdater:
         """
         logging.info("Updating Steam data using age-based refresh intervals")
 
-        # Collect all Steam app IDs from all channels and build latest video date cache
+        # Collect all Steam app IDs from unified data source and build latest video date cache
         steam_app_ids: set[str] = set()
         latest_video_dates: dict[str, datetime] = {}  # app_id -> latest datetime
 
-        # First, collect from saved video data
-        for channel in channels:
-            videos_data = self.data_manager.load_videos_data(channel)
-            if videos_data and 'videos' in videos_data:
-                self._collect_steam_app_ids_from_videos(videos_data['videos'], steam_app_ids, latest_video_dates)
-
-        # Second, collect from pending in-memory scrapers
-        if pending_scrapers:
-            for scraper in pending_scrapers:
-                if scraper.videos_data and 'videos' in scraper.videos_data:
-                    self._collect_steam_app_ids_from_videos(scraper.videos_data['videos'], steam_app_ids, latest_video_dates)
+        # Use unified data collector to get all video data in consistent format
+        all_videos_data = self.data_collector.collect_all_videos_data(channels, pending_scrapers)
+        self._collect_steam_app_ids_from_unified_data(all_videos_data, steam_app_ids, latest_video_dates)
 
         # Also collect Steam app IDs from other games data (Itch.io with Steam links)
         # Track mapping of Steam app IDs to their Itch URLs
