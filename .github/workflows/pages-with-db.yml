@@ -65,10 +65,16 @@ jobs:
           # The database includes mtime from the built app files for version tracking
           uv run cubscrape build-db
 
+      - name: Copy database to dist
+        run: |
+          mkdir -p dist/data
+          cp data/games.db dist/data/
+
       - name: Verify database creation
         run: |
           ls -la data/
           file data/games.db
+          ls -la dist/data/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
