@@ -2103,7 +2103,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1111930/header.jpg?t=1752784460",
       "is_early_access": true,
-      "last_updated": "2025-07-27T16:57:19.711653",
+      "last_updated": "2025-07-28T00:55:23.634872",
       "name": "Underspace",
       "positive_review_percentage": 80,
       "price_eur": "16,79\u20ac",
@@ -2859,6 +2859,54 @@
         "Automation",
         "Modern",
         "Building"
+      ]
+    },
+    "1131620": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "PvP",
+        "Online PvP",
+        "Shared/Split Screen PvP",
+        "Shared/Split Screen",
+        "Cross-Platform Multiplayer",
+        "Remote Play Together"
+      ],
+      "developers": [
+        "Temple Gates Games"
+      ],
+      "genres": [
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1131620/header.jpg?t=1738861920",
+      "is_free": true,
+      "last_updated": "2025-07-28T00:54:59.563309",
+      "name": "Dominion",
+      "positive_review_percentage": 86,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Temple Gates Games"
+      ],
+      "recent_review_count": 18,
+      "recent_review_percentage": 77,
+      "recent_review_summary": "Mostly Positive",
+      "release_date": "1 Feb, 2024",
+      "review_count": 1961,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1131620",
+      "steam_url": "https://store.steampowered.com/app/1131620",
+      "tags": [
+        "Deckbuilding",
+        "Card Game",
+        "Board Game",
+        "Medieval",
+        "Tabletop",
+        "Strategy",
+        "Solitaire",
+        "Agriculture",
+        "Fantasy",
+        "Tutorial"
       ]
     },
     "113200": {
@@ -5232,7 +5280,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1233070/header.jpg?t=1747873306",
-      "last_updated": "2025-07-25T03:15:54.151594",
+      "last_updated": "2025-07-28T00:55:39.609078",
       "name": "Isles of Sea and Sky",
       "positive_review_percentage": 93,
       "price_eur": "19,50\u20ac",
@@ -5241,11 +5289,11 @@
         "Cicada Games",
         "Gamirror Games"
       ],
-      "recent_review_count": 45,
+      "recent_review_count": 46,
       "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "22 May, 2024",
-      "review_count": 985,
+      "review_count": 987,
       "review_summary": "Very Positive",
       "steam_app_id": "1233070",
       "steam_url": "https://store.steampowered.com/app/1233070",
@@ -7121,22 +7169,22 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313290/1de461fe2cb7121fa632b7b8ca950e5168c5c59d/header_alt_assets_1.jpg?t=1753440400",
-      "last_updated": "2025-07-26T22:52:21.284557",
+      "last_updated": "2025-07-28T00:55:06.460499",
       "name": "Let Them Trade",
-      "positive_review_percentage": 89,
+      "positive_review_percentage": 87,
       "price_eur": "14,39\u20ac",
       "price_usd": "$14.39",
       "publishers": [
         "ByteRockers' Games"
       ],
       "release_date": "24 Jul, 2025",
-      "review_count": 151,
+      "review_count": 217,
       "review_summary": "Very Positive",
       "steam_app_id": "1313290",
       "steam_url": "https://store.steampowered.com/app/1313290",
       "tags": [
-        "Relaxing",
         "City Builder",
+        "Relaxing",
         "Resource Management",
         "Real-Time with Pause",
         "Economy",
@@ -14079,6 +14127,47 @@
         "Atmospheric"
       ]
     },
+    "1573590": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Rembrosoft"
+      ],
+      "genres": [
+        "Simulation",
+        "Strategy",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1573590/header.jpg?t=1731684846",
+      "is_early_access": true,
+      "last_updated": "2025-07-28T00:55:01.234106",
+      "name": "Colonize",
+      "positive_review_percentage": 41,
+      "price_eur": "15,79\u20ac",
+      "price_usd": "$15.99",
+      "publishers": [
+        "CreativeForge Games"
+      ],
+      "release_date": "15 Feb, 2024",
+      "review_count": 134,
+      "review_summary": "Mixed",
+      "steam_app_id": "1573590",
+      "steam_url": "https://store.steampowered.com/app/1573590",
+      "tags": [
+        "Strategy",
+        "RTS",
+        "City Builder",
+        "Colony Sim",
+        "Life Sim",
+        "Action RTS",
+        "Exploration",
+        "Choose Your Own Adventure",
+        "3D",
+        "Realistic"
+      ]
+    },
     "1574240": {
       "categories": [
         "Single-player",
@@ -14124,6 +14213,53 @@
         "Magic",
         "3D",
         "Character Customization"
+      ]
+    },
+    "1574900": {
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Lavaboots Studios"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1574900/dd129eb1634dbbd6d92444ec16680a138d2d78d2/header.jpg?t=1752588330",
+      "is_early_access": true,
+      "last_updated": "2025-07-28T00:55:05.786655",
+      "name": "Salt 2: Shores of Gold",
+      "positive_review_percentage": 87,
+      "price_eur": "16,79\u20ac",
+      "price_usd": "$19.99",
+      "publishers": [
+        "Lavaboots Studios"
+      ],
+      "recent_review_count": 30,
+      "recent_review_percentage": 80,
+      "recent_review_summary": "Very Positive",
+      "release_date": "20 Sep, 2022",
+      "review_count": 1298,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1574900",
+      "steam_url": "https://store.steampowered.com/app/1574900",
+      "tags": [
+        "Early Access",
+        "Open World",
+        "Survival",
+        "Sailing",
+        "Pirates",
+        "Crafting",
+        "Exploration",
+        "Sandbox",
+        "Action-Adventure",
+        "PvE"
       ]
     },
     "1575940": {
@@ -15421,6 +15557,47 @@
         "Medieval",
         "Moddable",
         "Roguelite"
+      ]
+    },
+    "1608590": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2819820",
+      "developers": [
+        "Twokats"
+      ],
+      "genres": [
+        "Indie",
+        "RPG"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1608590/header.jpg?t=1750321346",
+      "last_updated": "2025-07-28T00:55:36.667294",
+      "name": "Thyria",
+      "positive_review_percentage": 85,
+      "price_eur": "15,99\u20ac",
+      "price_usd": "$15.99",
+      "publishers": [
+        "GrabTheGames"
+      ],
+      "release_date": "30 Sep, 2024",
+      "review_count": 101,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1608590",
+      "steam_url": "https://store.steampowered.com/app/1608590",
+      "tags": [
+        "RPG",
+        "Turn-Based Strategy",
+        "Dungeon Crawler",
+        "Procedural Generation",
+        "Exploration",
+        "2D",
+        "Hand-drawn",
+        "Dark Fantasy",
+        "Tactical RPG",
+        "Singleplayer"
       ]
     },
     "1610520": {
@@ -17219,6 +17396,57 @@
         "Farming Sim",
         "Card Battler",
         "Life Sim"
+      ]
+    },
+    "1658280": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Keyboard Only Option",
+        "Playable without Timed Input",
+        "Partial Controller Support",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Rabbit & Bear Studios"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1658280/header.jpg?t=1752751979",
+      "last_updated": "2025-07-28T00:55:26.573607",
+      "name": "Eiyuden Chronicle: Hundred Heroes",
+      "positive_review_percentage": 76,
+      "price_eur": "49,99\u20ac",
+      "price_usd": "$49.99",
+      "publishers": [
+        "505 Games"
+      ],
+      "recent_review_count": 43,
+      "recent_review_percentage": 62,
+      "recent_review_summary": "Mixed",
+      "release_date": "23 Apr, 2024",
+      "review_count": 2769,
+      "review_summary": "Mostly Positive",
+      "steam_app_id": "1658280",
+      "steam_url": "https://store.steampowered.com/app/1658280",
+      "tags": [
+        "JRPG",
+        "RPG",
+        "Pixel Graphics",
+        "2.5D",
+        "Story Rich",
+        "Fantasy",
+        "Drama",
+        "Singleplayer",
+        "Turn-Based Combat",
+        "Adventure"
       ]
     },
     "1658920": {
@@ -24338,6 +24566,57 @@
         "First-Person"
       ]
     },
+    "1887840": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Stereo Sound",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Aggro Crab"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1887840/header.jpg?t=1748555967",
+      "last_updated": "2025-07-28T00:55:34.255313",
+      "name": "Another Crab's Treasure",
+      "positive_review_percentage": 94,
+      "price_eur": "29,99\u20ac",
+      "price_usd": "$29.99",
+      "publishers": [
+        "Aggro Crab"
+      ],
+      "recent_review_count": 319,
+      "recent_review_percentage": 84,
+      "recent_review_summary": "Very Positive",
+      "release_date": "25 Apr, 2024",
+      "review_count": 14412,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1887840",
+      "steam_url": "https://store.steampowered.com/app/1887840",
+      "tags": [
+        "Souls-like",
+        "3D Platformer",
+        "Funny",
+        "Action RPG",
+        "Cartoony",
+        "Atmospheric",
+        "Nonlinear",
+        "Action-Adventure",
+        "Third Person",
+        "Dark Humor"
+      ]
+    },
     "1890310": {
       "categories": [
         "Single-player",
@@ -25487,9 +25766,9 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920430/header.jpg?t=1753005014",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920430/header.jpg?t=1753620976",
       "is_early_access": true,
-      "last_updated": "2025-07-26T20:14:32.734086",
+      "last_updated": "2025-07-28T00:55:11.223377",
       "name": "FUMES",
       "publishers": [
         "FUMES team"
@@ -25975,19 +26254,20 @@
         "Indie",
         "RPG"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1942280/header.jpg?t=1752771448",
-      "last_updated": "2025-07-20T03:08:22.657302",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1942280/header.jpg?t=1753285757",
+      "last_updated": "2025-07-28T00:55:40.603273",
       "name": "Brotato",
       "positive_review_percentage": 96,
-      "price_eur": "2,99\u20ac",
+      "price_eur": "4,99\u20ac",
+      "price_usd": "$4.99",
       "publishers": [
         "Blobfish"
       ],
-      "recent_review_count": 1314,
-      "recent_review_percentage": 94,
-      "recent_review_summary": "Very Positive",
+      "recent_review_count": 1411,
+      "recent_review_percentage": 95,
+      "recent_review_summary": "Overwhelmingly Positive",
       "release_date": "23 Jun, 2023",
-      "review_count": 94198,
+      "review_count": 94518,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "1942280",
       "steam_url": "https://store.steampowered.com/app/1942280",
@@ -26556,6 +26836,49 @@
         "Action Roguelike",
         "Shooter",
         "Online Co-Op"
+      ]
+    },
+    "1968630": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Coldwild Games"
+      ],
+      "genres": [
+        "RPG",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1968630/header.jpg?t=1710836018",
+      "last_updated": "2025-07-28T00:55:38.616359",
+      "name": "Stories from the Outbreak",
+      "positive_review_percentage": 82,
+      "price_eur": "19,99\u20ac",
+      "price_usd": "$19.99",
+      "publishers": [
+        "Coldwild Games"
+      ],
+      "release_date": "20 Feb, 2024",
+      "review_count": 134,
+      "review_summary": "Very Positive",
+      "steam_app_id": "1968630",
+      "steam_url": "https://store.steampowered.com/app/1968630",
+      "tags": [
+        "Perma Death",
+        "Survival",
+        "Zombies",
+        "Party-Based RPG",
+        "JRPG",
+        "Roguelike",
+        "Strategy",
+        "RPG",
+        "2D",
+        "Post-apocalyptic"
       ]
     },
     "1968730": {
@@ -30541,6 +30864,50 @@
         "Exploration"
       ]
     },
+    "2085440": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2455280",
+      "developers": [
+        "Studio Windsocke"
+      ],
+      "genres": [
+        "Adventure",
+        "Indie"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2085440/header.jpg?t=1744982692",
+      "last_updated": "2025-07-28T00:55:13.988272",
+      "name": "Passing By - A Tailwind Journey",
+      "positive_review_percentage": 95,
+      "price_eur": "4,99\u20ac",
+      "price_usd": "$4.99",
+      "publishers": [
+        "Dear Villagers"
+      ],
+      "release_date": "12 Mar, 2024",
+      "review_count": 22,
+      "review_summary": "Positive",
+      "steam_app_id": "2085440",
+      "steam_url": "https://store.steampowered.com/app/2085440",
+      "tags": [
+        "Exploration",
+        "Adventure",
+        "Survival",
+        "Puzzle Platformer",
+        "Wholesome",
+        "Atmospheric",
+        "Indie",
+        "Puzzle",
+        "Relaxing",
+        "Colorful"
+      ]
+    },
     "2085620": {
       "categories": [
         "Single-player",
@@ -31191,7 +31558,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2098160/header.jpg?t=1753526939",
       "is_early_access": true,
-      "last_updated": "2025-07-27T16:14:30.795343",
+      "last_updated": "2025-07-28T00:55:16.484711",
       "name": "Star Vortex",
       "publishers": [
         "Hunted Cow Games"
@@ -32313,6 +32680,51 @@
         "Early Access"
       ]
     },
+    "2120310": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Partial Controller Support",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2127770",
+      "developers": [
+        "ooze"
+      ],
+      "genres": [
+        "Adventure",
+        "Indie",
+        "RPG",
+        "Simulation"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2120310/header.jpg?t=1713367768",
+      "last_updated": "2025-07-28T00:55:08.061453",
+      "name": "Sagres",
+      "positive_review_percentage": 80,
+      "price_eur": "19,50\u20ac",
+      "price_usd": "$19.99",
+      "publishers": [
+        "Kakehashi Games"
+      ],
+      "release_date": "18 Sep, 2023",
+      "review_count": 177,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2120310",
+      "steam_url": "https://store.steampowered.com/app/2120310",
+      "tags": [
+        "Adventure",
+        "Indie",
+        "Exploration",
+        "Sailing",
+        "Historical",
+        "Story Rich",
+        "Action-Adventure",
+        "RPG",
+        "Simulation",
+        "2D"
+      ]
+    },
     "2121980": {
       "categories": [
         "Single-player",
@@ -32679,6 +33091,45 @@
         "Puzzle",
         "Exploration",
         "Immersive Sim"
+      ]
+    },
+    "2127770": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "ooze"
+      ],
+      "full_game_app_id": "2120310",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2127770/header.jpg?t=1695972732",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:09.038008",
+      "name": "Sagres Demo",
+      "positive_review_percentage": 80,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Kakehashi Games"
+      ],
+      "release_date": "20 Sep, 2022",
+      "review_count": 177,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2127770",
+      "steam_url": "https://store.steampowered.com/app/2127770",
+      "tags": [
+        "Adventure",
+        "Indie",
+        "Exploration",
+        "Sailing",
+        "Historical",
+        "Story Rich",
+        "Action-Adventure",
+        "RPG",
+        "Simulation",
+        "2D"
       ]
     },
     "2128270": {
@@ -33666,7 +34117,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2144640/490cf79ed3dec8fa5eef65213a215b8350913d67/header_alt_assets_5.jpg?t=1753366767",
-      "last_updated": "2025-07-26T22:52:28.888397",
+      "last_updated": "2025-07-28T00:54:56.079321",
       "name": "Endzone 2",
       "positive_review_percentage": 67,
       "price_eur": "12,49\u20ac",
@@ -33674,11 +34125,11 @@
       "publishers": [
         "Assemble Entertainment"
       ],
-      "recent_review_count": 27,
-      "recent_review_percentage": 59,
+      "recent_review_count": 36,
+      "recent_review_percentage": 61,
       "recent_review_summary": "Mixed",
       "release_date": "24 Jul, 2025",
-      "review_count": 563,
+      "review_count": 573,
       "review_summary": "Mixed",
       "steam_app_id": "2144640",
       "steam_url": "https://store.steampowered.com/app/2144640",
@@ -35617,6 +36068,54 @@
         "Cute"
       ]
     },
+    "2198510": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Trading Cards",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Core Engage"
+      ],
+      "genres": [
+        "Indie",
+        "Simulation",
+        "Strategy",
+        "Early Access"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2198510/header.jpg?t=1738330880",
+      "is_early_access": true,
+      "last_updated": "2025-07-28T00:55:17.553025",
+      "name": "New Cycle",
+      "positive_review_percentage": 80,
+      "price_eur": "29,99\u20ac",
+      "price_usd": "$29.99",
+      "publishers": [
+        "Daedalic Entertainment"
+      ],
+      "recent_review_count": 57,
+      "recent_review_percentage": 85,
+      "recent_review_summary": "Very Positive",
+      "release_date": "18 Jan, 2024",
+      "review_count": 2240,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2198510",
+      "steam_url": "https://store.steampowered.com/app/2198510",
+      "tags": [
+        "City Builder",
+        "Strategy",
+        "Survival",
+        "Building",
+        "Colony Sim",
+        "Realistic",
+        "Simulation",
+        "Post-apocalyptic",
+        "Base Building",
+        "Top-Down"
+      ]
+    },
     "219990": {
       "categories": [
         "Single-player",
@@ -36415,16 +36914,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2209140/b539e3bbe1caa3cfea59dcf1e2aa989e8523085a/header.jpg?t=1753444799",
       "is_early_access": true,
-      "last_updated": "2025-07-26T23:28:13.582723",
+      "last_updated": "2025-07-28T00:55:07.072129",
       "name": "Ascent of Ashes",
-      "positive_review_percentage": 57,
+      "positive_review_percentage": 58,
       "price_eur": "14,79\u20ac",
       "price_usd": "$14.99",
       "publishers": [
         "Vivid Storm Interactive"
       ],
       "release_date": "25 Jul, 2025",
-      "review_count": 120,
+      "review_count": 135,
       "review_summary": "Mixed",
       "steam_app_id": "2209140",
       "steam_url": "https://store.steampowered.com/app/2209140",
@@ -36717,6 +37216,56 @@
         "Mythology",
         "Action-Adventure",
         "City Builder"
+      ]
+    },
+    "2216660": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Trading Cards",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Adjustable Difficulty",
+        "Mouse Only Option",
+        "Steam Cloud",
+        "Stats",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Redbeak Games"
+      ],
+      "genres": [
+        "Indie",
+        "RPG",
+        "Simulation",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2216660/header.jpg?t=1745488132",
+      "last_updated": "2025-07-28T00:55:25.593163",
+      "name": "Mortal Glory 2",
+      "positive_review_percentage": 88,
+      "price_eur": "11,99\u20ac",
+      "price_usd": "$11.99",
+      "publishers": [
+        "Redbeak Games"
+      ],
+      "release_date": "4 Mar, 2024",
+      "review_count": 266,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2216660",
+      "steam_url": "https://store.steampowered.com/app/2216660",
+      "tags": [
+        "Turn-Based Tactics",
+        "Roguelike",
+        "Replay Value",
+        "Turn-Based Combat",
+        "Tactical RPG",
+        "Management",
+        "Roguelite",
+        "Turn-Based Strategy",
+        "Party-Based RPG",
+        "Strategy RPG"
       ]
     },
     "2218400": {
@@ -37311,7 +37860,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2225960/425f6fbdcab44710187348f88bf9a7ccf16ee193/header.jpg?t=1752744718",
       "is_early_access": true,
-      "last_updated": "2025-07-26T20:14:27.551342",
+      "last_updated": "2025-07-28T00:55:13.116681",
       "name": "Noobs Are Coming",
       "positive_review_percentage": 93,
       "price_eur": "4,67\u20ac",
@@ -37320,7 +37869,7 @@
         "Overboy"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 236,
+      "review_count": 244,
       "review_summary": "Very Positive",
       "steam_app_id": "2225960",
       "steam_url": "https://store.steampowered.com/app/2225960",
@@ -38584,6 +39133,52 @@
         "Roguelite",
         "Procedural Generation",
         "Singleplayer"
+      ]
+    },
+    "2259300": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2616710",
+      "developers": [
+        "Brookwood Games"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "RPG"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2259300/header.jpg?t=1710368541",
+      "last_updated": "2025-07-28T00:55:29.010983",
+      "name": "FloraMancer : Seeds and Spells",
+      "positive_review_percentage": 90,
+      "price_eur": "5,89\u20ac",
+      "price_usd": "$5.99",
+      "publishers": [
+        "Joe Sullivan"
+      ],
+      "release_date": "5 Mar, 2024",
+      "review_count": 30,
+      "review_summary": "Positive",
+      "steam_app_id": "2259300",
+      "steam_url": "https://store.steampowered.com/app/2259300",
+      "tags": [
+        "Farming",
+        "Combat",
+        "Magic",
+        "Pixel Graphics",
+        "Top-Down",
+        "2D",
+        "Nature",
+        "Action-Adventure",
+        "Agriculture",
+        "Twin Stick Shooter"
       ]
     },
     "2259590": {
@@ -44626,6 +45221,52 @@
         "Beat 'em up"
       ]
     },
+    "2369760": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "2383570",
+      "developers": [
+        "Peartree Games"
+      ],
+      "genres": [
+        "Action",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2369760/header.jpg?t=1748030718",
+      "last_updated": "2025-07-28T00:55:04.002474",
+      "name": "17.waves TD",
+      "planned_release_date": "2025",
+      "publishers": [
+        "2 Left Thumbs"
+      ],
+      "release_date": "2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2369760",
+      "steam_url": "https://store.steampowered.com/app/2369760",
+      "tags": [
+        "Online Co-Op",
+        "Tower Defense",
+        "Strategy",
+        "Multiplayer",
+        "Resource Management",
+        "Sci-fi",
+        "Family Friendly",
+        "Co-op",
+        "Abstract",
+        "Aliens"
+      ]
+    },
     "2371200": {
       "categories": [
         "Single-player",
@@ -44860,7 +45501,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377620/header.jpg?t=1752678276",
-      "last_updated": "2025-07-26T22:52:12.679394",
+      "last_updated": "2025-07-28T00:54:58.324981",
       "name": "Lord O' Pirates",
       "positive_review_percentage": 91,
       "price_eur": "4,99\u20ac",
@@ -45202,6 +45843,53 @@
         "Strategy RPG",
         "Dungeon Crawler",
         "3D"
+      ]
+    },
+    "2383570": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Game demo",
+        "Full controller support",
+        "Steam Cloud"
+      ],
+      "developers": [
+        "Peartree Games"
+      ],
+      "full_game_app_id": "2369760",
+      "genres": [
+        "Action",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2383570/header.jpg?t=1740438429",
+      "insufficient_reviews": true,
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:04.869863",
+      "name": "17.waves TD Demo",
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "2 Left Thumbs"
+      ],
+      "release_date": "1 Mar, 2024",
+      "review_count": 4,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "2383570",
+      "steam_url": "https://store.steampowered.com/app/2383570",
+      "tags": [
+        "Strategy",
+        "Online Co-Op",
+        "Tower Defense",
+        "Multiplayer",
+        "Resource Management",
+        "Family Friendly",
+        "3D",
+        "Sci-fi",
+        "Co-op",
+        "Action RTS"
       ]
     },
     "2385970": {
@@ -45814,9 +46502,9 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2397450/header.jpg?t=1753095269",
-      "last_updated": "2025-07-26T22:52:40.529040",
+      "last_updated": "2025-07-28T00:55:11.849629",
       "name": "Dust Raiders",
-      "positive_review_percentage": 61,
+      "positive_review_percentage": 59,
       "price_eur": "13,42\u20ac",
       "price_usd": "$13.59",
       "publishers": [
@@ -45824,7 +46512,7 @@
         "PlayWay S.A."
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 90,
+      "review_count": 92,
       "review_summary": "Mixed",
       "steam_app_id": "2397450",
       "steam_url": "https://store.steampowered.com/app/2397450",
@@ -49383,6 +50071,46 @@
         "Indie",
         "Tower Defense",
         "Roguelike"
+      ]
+    },
+    "2455280": {
+      "categories": [
+        "Single-player",
+        "Game demo",
+        "Partial Controller Support"
+      ],
+      "developers": [
+        "Studio Windsocke"
+      ],
+      "full_game_app_id": "2085440",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2455280/header.jpg?t=1742504867",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:15.053058",
+      "name": "Passing By - A Tailwind Journey Demo",
+      "positive_review_percentage": 95,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Dear Villagers"
+      ],
+      "release_date": "19 Jun, 2023",
+      "review_count": 22,
+      "review_summary": "Positive",
+      "steam_app_id": "2455280",
+      "steam_url": "https://store.steampowered.com/app/2455280",
+      "tags": [
+        "Exploration",
+        "Adventure",
+        "Survival",
+        "Puzzle Platformer",
+        "Wholesome",
+        "Atmospheric",
+        "Indie",
+        "Puzzle",
+        "Relaxing",
+        "Colorful"
       ]
     },
     "2455350": {
@@ -57941,6 +58669,44 @@
         "Roguelike"
       ]
     },
+    "2616710": {
+      "categories": [
+        "Game demo"
+      ],
+      "developers": [
+        "Joe Sullivan"
+      ],
+      "full_game_app_id": "2259300",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2616710/header.jpg?t=1696849864",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:29.976100",
+      "name": "FloraMancer : Seeds and Spells Demo",
+      "positive_review_percentage": 90,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Joe Sullivan"
+      ],
+      "release_date": "9 Oct, 2023",
+      "review_count": 30,
+      "review_summary": "Positive",
+      "steam_app_id": "2616710",
+      "steam_url": "https://store.steampowered.com/app/2616710",
+      "tags": [
+        "Farming",
+        "Combat",
+        "Magic",
+        "Pixel Graphics",
+        "Top-Down",
+        "2D",
+        "Nature",
+        "Action-Adventure",
+        "Agriculture",
+        "Twin Stick Shooter"
+      ]
+    },
     "2617360": {
       "categories": [
         "Single-player",
@@ -59000,6 +59766,54 @@
         "Auto Battler"
       ]
     },
+    "2636260": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Custom Volume Controls",
+        "Keyboard Only Option",
+        "Playable without Timed Input",
+        "Save Anytime",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Includes level editor",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Alan Higgs"
+      ],
+      "genres": [
+        "Action",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2636260/header.jpg?t=1745458035",
+      "last_updated": "2025-07-28T00:55:21.068901",
+      "name": "Fool's End",
+      "positive_review_percentage": 92,
+      "price_eur": "2,74\u20ac",
+      "price_usd": "$2.74",
+      "publishers": [
+        "Pickled Cactus Games"
+      ],
+      "release_date": "28 Feb, 2024",
+      "review_count": 27,
+      "review_summary": "Positive",
+      "steam_app_id": "2636260",
+      "steam_url": "https://store.steampowered.com/app/2636260",
+      "tags": [
+        "Mining",
+        "Destruction",
+        "2D Platformer",
+        "Exploration",
+        "Fast-Paced",
+        "Precision Platformer",
+        "Puzzle Platformer",
+        "PvE",
+        "Platformer",
+        "Action-Adventure"
+      ]
+    },
     "2636460": {
       "categories": [
         "Single-player",
@@ -59385,7 +60199,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2643010/header.jpg?t=1752672695",
-      "last_updated": "2025-07-26T22:52:35.400135",
+      "last_updated": "2025-07-28T00:54:55.363114",
       "name": "Becoming Saint",
       "positive_review_percentage": 73,
       "price_eur": "13,49\u20ac",
@@ -59395,7 +60209,7 @@
         "2P Games"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 82,
+      "review_count": 84,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2643010",
       "steam_url": "https://store.steampowered.com/app/2643010",
@@ -62605,6 +63419,48 @@
         "Procedural Generation"
       ]
     },
+    "2707610": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "demo_app_id": "2761200",
+      "developers": [
+        "Markus Fink"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2707610/header.jpg?t=1709452355",
+      "last_updated": "2025-07-28T00:55:19.072216",
+      "name": "Desert Kingdoms",
+      "positive_review_percentage": 100,
+      "price_eur": "2,99\u20ac",
+      "price_usd": "$2.99",
+      "publishers": [
+        "Markus Fink"
+      ],
+      "release_date": "9 Feb, 2024",
+      "review_count": 15,
+      "review_summary": "Positive",
+      "steam_app_id": "2707610",
+      "steam_url": "https://store.steampowered.com/app/2707610",
+      "tags": [
+        "Minimalist",
+        "RTS",
+        "Strategy",
+        "2D",
+        "Top-Down",
+        "Procedural Generation",
+        "Casual",
+        "Pixel Graphics",
+        "Medieval",
+        "Resource Management"
+      ]
+    },
     "2710040": {
       "categories": [
         "Single-player",
@@ -65167,6 +66023,45 @@
         "Resource Management"
       ]
     },
+    "2761200": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Markus Fink"
+      ],
+      "full_game_app_id": "2707610",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2761200/header.jpg?t=1704737022",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:20.059952",
+      "name": "Desert Kingdoms Demo",
+      "positive_review_percentage": 100,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Markus Fink"
+      ],
+      "release_date": "8 Jan, 2024",
+      "review_count": 15,
+      "review_summary": "Positive",
+      "steam_app_id": "2761200",
+      "steam_url": "https://store.steampowered.com/app/2761200",
+      "tags": [
+        "Minimalist",
+        "RTS",
+        "Strategy",
+        "2D",
+        "Top-Down",
+        "Procedural Generation",
+        "Casual",
+        "Pixel Graphics",
+        "Medieval",
+        "Resource Management"
+      ]
+    },
     "2763310": {
       "categories": [
         "Single-player",
@@ -66879,6 +67774,45 @@
         "Colony Sim"
       ]
     },
+    "2787920": {
+      "categories": [
+        "Single-player",
+        "Full controller support",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Sylph",
+        "Rolemusic"
+      ],
+      "genres": [
+        "Adventure"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2787920/header.jpg?t=1745334693",
+      "last_updated": "2025-07-28T00:55:22.190472",
+      "name": "Quick Quest",
+      "positive_review_percentage": 100,
+      "price_eur": "4,99\u20ac",
+      "price_usd": "$4.99",
+      "publishers": [
+        "Sylph"
+      ],
+      "release_date": "22 Feb, 2024",
+      "review_count": 45,
+      "review_summary": "Positive",
+      "steam_app_id": "2787920",
+      "steam_url": "https://store.steampowered.com/app/2787920",
+      "tags": [
+        "Adventure",
+        "Action-Adventure",
+        "2D Platformer",
+        "Pixel Graphics",
+        "Fantasy",
+        "Controller",
+        "Singleplayer",
+        "Procedural Generation",
+        "Roguelite"
+      ]
+    },
     "2788310": {
       "categories": [
         "Single-player",
@@ -67145,6 +68079,44 @@
         "Crafting"
       ]
     },
+    "2792760": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "DoughnutDev"
+      ],
+      "genres": [
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2792760/header.jpg?t=1720703813",
+      "insufficient_reviews": true,
+      "last_updated": "2025-07-28T00:55:41.601450",
+      "name": "Hexpire",
+      "price_eur": "4,99\u20ac",
+      "price_usd": "$4.99",
+      "publishers": [
+        " DoughnutDev"
+      ],
+      "release_date": "11 Jul, 2024",
+      "review_count": 2,
+      "review_summary": "Need more reviews for score",
+      "steam_app_id": "2792760",
+      "steam_url": "https://store.steampowered.com/app/2792760",
+      "tags": [
+        "City Builder",
+        "Turn-Based Tactics",
+        "Hand-drawn",
+        "Turn-Based Strategy",
+        "Strategy",
+        "2D",
+        "Cute",
+        "Roguelite",
+        "Relaxing",
+        "Procedural Generation"
+      ]
+    },
     "2793380": {
       "categories": [
         "Single-player",
@@ -67273,16 +68245,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2795090/84435755794a3658df752b9ec7c63bb43ab7bd2b/header.jpg?t=1753289957",
       "is_early_access": true,
-      "last_updated": "2025-07-26T22:52:17.849272",
+      "last_updated": "2025-07-28T00:55:12.457405",
       "name": "MR FARMBOY",
-      "positive_review_percentage": 77,
+      "positive_review_percentage": 76,
       "price_eur": "7,67\u20ac",
       "price_usd": "$7.79",
       "publishers": [
         "mrdboy"
       ],
       "release_date": "23 Jul, 2025",
-      "review_count": 71,
+      "review_count": 82,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2795090",
       "steam_url": "https://store.steampowered.com/app/2795090",
@@ -67471,16 +68443,16 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2797650/header.jpg?t=1753466433",
-      "last_updated": "2025-07-26T23:50:02.827759",
+      "last_updated": "2025-07-28T00:55:22.831788",
       "name": "Pip My Dice",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 94,
       "price_eur": "9,17\u20ac",
       "price_usd": "$9.34",
       "publishers": [
         "Diving Swan Games"
       ],
       "release_date": "25 Jul, 2025",
-      "review_count": 13,
+      "review_count": 19,
       "review_summary": "Positive",
       "steam_app_id": "2797650",
       "steam_url": "https://store.steampowered.com/app/2797650",
@@ -68585,6 +69557,45 @@
         "Roguelike"
       ]
     },
+    "2819820": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Twokats"
+      ],
+      "full_game_app_id": "1608590",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2819820/header.jpg?t=1707147923",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:37.705474",
+      "name": "Thyria Demo",
+      "positive_review_percentage": 85,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "GrabTheGames"
+      ],
+      "release_date": "5 Feb, 2024",
+      "review_count": 101,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2819820",
+      "steam_url": "https://store.steampowered.com/app/2819820",
+      "tags": [
+        "RPG",
+        "Turn-Based Strategy",
+        "Dungeon Crawler",
+        "Procedural Generation",
+        "Exploration",
+        "2D",
+        "Hand-drawn",
+        "Dark Fantasy",
+        "Tactical RPG",
+        "Singleplayer"
+      ]
+    },
     "281990": {
       "categories": [
         "Single-player",
@@ -68873,7 +69884,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2821800/53401902f3157b220a9845be1b8d3080f2061967/header_alt_assets_2.jpg?t=1753201763",
-      "last_updated": "2025-07-26T22:52:34.795314",
+      "last_updated": "2025-07-28T00:55:18.214880",
       "name": "Drill Core",
       "positive_review_percentage": 84,
       "price_eur": "19,50\u20ac",
@@ -68881,11 +69892,11 @@
       "publishers": [
         "tinyBuild"
       ],
-      "recent_review_count": 228,
+      "recent_review_count": 238,
       "recent_review_percentage": 84,
       "recent_review_summary": "Very Positive",
       "release_date": "17 Jul, 2025",
-      "review_count": 1395,
+      "review_count": 1407,
       "review_summary": "Very Positive",
       "steam_app_id": "2821800",
       "steam_url": "https://store.steampowered.com/app/2821800",
@@ -69122,16 +70133,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1753379651",
       "is_early_access": true,
-      "last_updated": "2025-07-26T20:14:28.692672",
+      "last_updated": "2025-07-28T00:55:09.647578",
       "name": "He is Coming",
-      "positive_review_percentage": 83,
+      "positive_review_percentage": 82,
       "price_eur": "9,74\u20ac",
       "price_usd": "$9.74",
       "publishers": [
         "Hooded Horse"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 971,
+      "review_count": 1067,
       "review_summary": "Very Positive",
       "steam_app_id": "2824490",
       "steam_url": "https://store.steampowered.com/app/2824490",
@@ -71359,19 +72370,20 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2862890/header.jpg?t=1751024413",
-      "last_updated": "2025-07-22T04:39:49.180087",
+      "itch_url": "https://feldspargames.itch.io/become-the-moon",
+      "last_updated": "2025-07-28T00:55:15.647451",
       "name": "Become the Moon",
-      "positive_review_percentage": 76,
+      "positive_review_percentage": 77,
       "price_eur": "16,49\u20ac",
       "price_usd": "$16.99",
       "publishers": [
         "Alibi Games"
       ],
-      "recent_review_count": 91,
-      "recent_review_percentage": 76,
-      "recent_review_summary": "Mostly Positive",
+      "recent_review_count": 54,
+      "recent_review_percentage": 85,
+      "recent_review_summary": "Very Positive",
       "release_date": "19 Jun, 2025",
-      "review_count": 128,
+      "review_count": 132,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2862890",
       "steam_url": "https://store.steampowered.com/app/2862890",
@@ -77802,18 +78814,18 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1753346011",
-      "last_updated": "2025-07-26T22:52:01.114673",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995450/004c20d080cd978332b9205a0a23de33fcb826dd/header.jpg?t=1753628717",
+      "last_updated": "2025-07-28T00:55:10.347390",
       "name": "Clutchtime\u2122: Basketball Deckbuilder",
-      "positive_review_percentage": 89,
+      "positive_review_percentage": 86,
       "price_eur": "14,39\u20ac",
       "price_usd": "$15.99",
       "publishers": [
         "Bigosaur"
       ],
       "release_date": "24 Jul, 2025",
-      "review_count": 46,
-      "review_summary": "Positive",
+      "review_count": 58,
+      "review_summary": "Very Positive",
       "steam_app_id": "2995450",
       "steam_url": "https://store.steampowered.com/app/2995450",
       "tags": [
@@ -78117,7 +79129,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3001330/c606589dc281fda785815c5aa1456f06ed29a4a3/header.jpg?t=1753067914",
-      "last_updated": "2025-07-26T22:52:23.312080",
+      "last_updated": "2025-07-28T00:54:56.739215",
       "name": "Forest Heroes",
       "positive_review_percentage": 85,
       "price_eur": "8,77\u20ac",
@@ -78125,11 +79137,11 @@
       "publishers": [
         "Hoochoo Game Studios"
       ],
-      "recent_review_count": 46,
-      "recent_review_percentage": 84,
+      "recent_review_count": 44,
+      "recent_review_percentage": 81,
       "recent_review_summary": "Very Positive",
       "release_date": "17 Jul, 2025",
-      "review_count": 177,
+      "review_count": 180,
       "review_summary": "Very Positive",
       "steam_app_id": "3001330",
       "steam_url": "https://store.steampowered.com/app/3001330",
@@ -83068,18 +84080,19 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3091340/89f82966dbea930b6a1523f50111fd0f4c130147/header.jpg?t=1743926074",
       "is_early_access": true,
-      "last_updated": "2025-07-20T20:51:58.735985",
+      "last_updated": "2025-07-28T00:55:24.693121",
       "name": "Metal Thunder",
-      "positive_review_percentage": 83,
-      "price_eur": "8,09\u20ac",
+      "positive_review_percentage": 84,
+      "price_eur": "10,79\u20ac",
+      "price_usd": "$10.99",
       "publishers": [
         "Dumbbell Games"
       ],
       "recent_review_count": 23,
-      "recent_review_percentage": 52,
+      "recent_review_percentage": 56,
       "recent_review_summary": "Mixed",
       "release_date": "1 Nov, 2024",
-      "review_count": 297,
+      "review_count": 301,
       "review_summary": "Very Positive",
       "steam_app_id": "3091340",
       "steam_url": "https://store.steampowered.com/app/3091340",
@@ -83535,6 +84548,50 @@
         "City Builder"
       ]
     },
+    "3104510": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "demo_app_id": "3204540",
+      "developers": [
+        "Cuddle Code"
+      ],
+      "genres": [
+        "Casual",
+        "Indie",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3104510/header.jpg?t=1743093071",
+      "last_updated": "2025-07-28T00:55:02.101814",
+      "name": "Town Keeper",
+      "positive_review_percentage": 97,
+      "price_eur": "8,79\u20ac",
+      "price_usd": "$8.99",
+      "publishers": [
+        "Cuddle Code"
+      ],
+      "release_date": "19 Sep, 2024",
+      "review_count": 41,
+      "review_summary": "Positive",
+      "steam_app_id": "3104510",
+      "steam_url": "https://store.steampowered.com/app/3104510",
+      "tags": [
+        "Strategy",
+        "City Builder",
+        "Cute",
+        "Pixel Graphics",
+        "Auto Battler",
+        "Colony Sim",
+        "Casual",
+        "Base Building",
+        "Relaxing",
+        "Agriculture"
+      ]
+    },
     "3104740": {
       "categories": [
         "Single-player",
@@ -83575,6 +84632,22 @@
         "Building",
         "Nature"
       ]
+    },
+    "3106610": {
+      "categories": [],
+      "developers": [],
+      "genres": [],
+      "header_image": "",
+      "is_stub": true,
+      "last_updated": "2025-07-28T00:55:21.286022",
+      "name": "[REDIRECT] 3106610 -> 361280",
+      "publishers": [],
+      "release_date": "",
+      "resolved_to": "361280",
+      "steam_app_id": "3106610",
+      "steam_url": "https://store.steampowered.com/app/3106610",
+      "stub_reason": "DLC redirected to base game",
+      "tags": []
     },
     "3107230": {
       "categories": [
@@ -88652,6 +89725,45 @@
         "Exploration"
       ]
     },
+    "3204540": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Cuddle Code"
+      ],
+      "full_game_app_id": "3104510",
+      "genres": [],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3204540/header.jpg?t=1743093106",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:03.136400",
+      "name": "Town Keeper Demo",
+      "positive_review_percentage": 97,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "Cuddle Code"
+      ],
+      "release_date": "15 Sep, 2024",
+      "review_count": 41,
+      "review_summary": "Positive",
+      "steam_app_id": "3204540",
+      "steam_url": "https://store.steampowered.com/app/3204540",
+      "tags": [
+        "Strategy",
+        "City Builder",
+        "Cute",
+        "Pixel Graphics",
+        "Auto Battler",
+        "Colony Sim",
+        "Casual",
+        "Base Building",
+        "Relaxing",
+        "Agriculture"
+      ]
+    },
     "3205380": {
       "categories": [
         "Single-player",
@@ -88948,7 +90060,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3208110/header.jpg?t=1753307796",
-      "last_updated": "2025-07-25T03:16:11.112266",
+      "last_updated": "2025-07-28T00:55:31.636659",
       "name": "Luck & Loot",
       "publishers": [
         "GrabTheGames"
@@ -94857,16 +95969,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3343160/1eeee54eab7d517b375080b0fef2b5023d19101f/header.jpg?t=1752850926",
-      "last_updated": "2025-07-26T22:52:04.482873",
+      "last_updated": "2025-07-28T00:55:34.821433",
       "name": "Fill Up The Hole",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 90,
       "price_eur": "2,99\u20ac",
       "price_usd": "$2.99",
       "publishers": [
         "Fluffy Lotus"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 346,
+      "review_count": 365,
       "review_summary": "Very Positive",
       "steam_app_id": "3343160",
       "steam_url": "https://store.steampowered.com/app/3343160",
@@ -97561,6 +98673,48 @@
         "Procedural Generation",
         "Singleplayer",
         "2D"
+      ]
+    },
+    "3415570": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "3639920",
+      "developers": [
+        "Monovoid"
+      ],
+      "genres": [
+        "Adventure",
+        "Indie",
+        "RPG",
+        "Strategy"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3415570/c2b0a56b4cbf0eb15ec5474bcedc3b99e28ed6a4/header.jpg?t=1753357387",
+      "last_updated": "2025-07-28T00:55:27.362432",
+      "name": "Die For The Lich",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "2 Left Thumbs"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3415570",
+      "steam_url": "https://store.steampowered.com/app/3415570",
+      "tags": [
+        "Roguelike Deckbuilder",
+        "Dice",
+        "Roguelike",
+        "Deckbuilding",
+        "Turn-Based Strategy",
+        "Zombies",
+        "Strategy",
+        "Singleplayer",
+        "Roguelite",
+        "Vampire"
       ]
     },
     "3415580": {
@@ -104853,16 +106007,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3604430/40a5200b03da84969cfd9c4f4cac2cfdc54e8039/header.jpg?t=1753112964",
-      "last_updated": "2025-07-26T20:14:14.606366",
+      "last_updated": "2025-07-28T00:55:32.403842",
       "name": "Digger: Galactic Treasures",
-      "positive_review_percentage": 86,
+      "positive_review_percentage": 87,
       "price_eur": "4,49\u20ac",
       "price_usd": "$4.49",
       "publishers": [
         "RainStyle games"
       ],
       "release_date": "18 Jul, 2025",
-      "review_count": 123,
+      "review_count": 139,
       "review_summary": "Very Positive",
       "steam_app_id": "3604430",
       "steam_url": "https://store.steampowered.com/app/3604430",
@@ -105364,8 +106518,8 @@
         "Indie",
         "Simulation"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3614980/7ec4b610f3f37e0338115e46bc791f3844ed3d6f/header.jpg?t=1753422722",
-      "last_updated": "2025-07-26T22:52:48.259354",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3614980/7ec4b610f3f37e0338115e46bc791f3844ed3d6f/header.jpg?t=1753631620",
+      "last_updated": "2025-07-28T00:55:35.666904",
       "name": "Keytamine",
       "publishers": [
         "Nabokov"
@@ -106040,6 +107194,49 @@
         "Singleplayer"
       ]
     },
+    "3639920": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Monovoid"
+      ],
+      "full_game_app_id": "3415570",
+      "genres": [
+        "Adventure",
+        "RPG",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3639920/c2b0a56b4cbf0eb15ec5474bcedc3b99e28ed6a4/header.jpg?t=1753340256",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-07-28T00:55:28.175301",
+      "name": "Die For The Lich - Demo",
+      "positive_review_percentage": 100,
+      "price_eur": "Free",
+      "price_usd": "Free",
+      "publishers": [
+        "2 Left Thumbs"
+      ],
+      "release_date": "22 Jul, 2025",
+      "review_count": 47,
+      "review_summary": "Positive",
+      "steam_app_id": "3639920",
+      "steam_url": "https://store.steampowered.com/app/3639920",
+      "tags": [
+        "Turn-Based Combat",
+        "Roguelike Deckbuilder",
+        "Dice",
+        "Roguelike",
+        "Deckbuilding",
+        "Adventure",
+        "RPG",
+        "Strategy",
+        "Roguelite",
+        "2D"
+      ]
+    },
     "3641940": {
       "categories": [
         "Single-player",
@@ -106321,7 +107518,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667850/7a9162a5387cb56bf8bd69f1538259b9d6f8089f/header.jpg?t=1752857374",
-      "last_updated": "2025-07-25T21:01:18.508701",
+      "last_updated": "2025-07-28T00:55:33.209919",
       "name": "Silk Roads II: Paths of Fortune",
       "publishers": [
         "Priory Games"
@@ -106449,7 +107646,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3669570/da84f32f1e93388acac5b683e52e9ea143f10f38/header.jpg?t=1752512035",
-      "last_updated": "2025-07-26T20:14:18.721492",
+      "last_updated": "2025-07-28T00:55:42.477826",
       "name": "Alchemy Factory",
       "planned_release_date": "November 2025",
       "publishers": [
@@ -107237,16 +108434,16 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3692070/e857d294069517d44470a18ec32fa63e0bba5562/header.jpg?t=1753390735",
-      "last_updated": "2025-07-26T22:52:22.687730",
+      "last_updated": "2025-07-28T00:55:00.130519",
       "name": "One Man\u00b4s Trash",
-      "positive_review_percentage": 83,
+      "positive_review_percentage": 85,
       "price_eur": "4,73\u20ac",
       "price_usd": "$4.79",
       "publishers": [
         "Jony Pazu Games"
       ],
       "release_date": "23 Jul, 2025",
-      "review_count": 79,
+      "review_count": 90,
       "review_summary": "Very Positive",
       "steam_app_id": "3692070",
       "steam_url": "https://store.steampowered.com/app/3692070",
@@ -110727,7 +111924,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427410/62bb338ff214d4fde1a07f0f768082832a8c2d0a/header.jpg?t=1753313427",
-      "last_updated": "2025-07-26T20:14:26.878382",
+      "last_updated": "2025-07-28T00:55:30.849666",
       "name": "Abiotic Factor",
       "positive_review_percentage": 96,
       "price_eur": "27,19\u20ac",
@@ -110735,11 +111932,11 @@
       "publishers": [
         "Playstack"
       ],
-      "recent_review_count": 1426,
-      "recent_review_percentage": 94,
+      "recent_review_count": 1651,
+      "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "22 Jul, 2025",
-      "review_count": 24787,
+      "review_count": 25030,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "427410",
       "steam_url": "https://store.steampowered.com/app/427410",
@@ -112106,6 +113303,41 @@
         "Sci-fi",
         "Capitalism",
         "Space"
+      ]
+    },
+    "557410": {
+      "categories": [
+        "Single-player",
+        "Family Sharing"
+      ],
+      "developers": [
+        "Peter Whalen"
+      ],
+      "genres": [
+        "RPG"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/557410/header.jpg?t=1481264404",
+      "last_updated": "2025-07-28T00:54:57.701899",
+      "name": "Dream Quest",
+      "positive_review_percentage": 89,
+      "price_eur": "9,99\u20ac",
+      "price_usd": "$9.99",
+      "publishers": [
+        "Peter Whalen"
+      ],
+      "release_date": "8 Dec, 2016",
+      "review_count": 302,
+      "review_summary": "Very Positive",
+      "steam_app_id": "557410",
+      "steam_url": "https://store.steampowered.com/app/557410",
+      "tags": [
+        "Roguelike Deckbuilder",
+        "Roguelike",
+        "Deckbuilding",
+        "RPG",
+        "Card Battler",
+        "Card Game",
+        "Singleplayer"
       ]
     },
     "558990": {
