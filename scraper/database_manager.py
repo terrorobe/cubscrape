@@ -2,6 +2,7 @@ import json
 import logging
 import re
 import sqlite3
+from datetime import UTC
 from pathlib import Path
 from typing import Any
 
@@ -97,9 +98,9 @@ class DatabaseManager:
         return 'unknown'
 
     def _get_current_timestamp(self) -> str:
-        """Get current timestamp in ISO format"""
+        """Get current timestamp in ISO format (UTC)"""
         from datetime import datetime
-        return datetime.now().isoformat()
+        return datetime.now(UTC).isoformat()
 
     def _get_newest_data_modified(self) -> str:
         """Get the newest modification time from JSON data source files"""
@@ -127,7 +128,8 @@ class DatabaseManager:
                         newest_file = json_file.name
 
             if newest_time:
-                newest_datetime = datetime.fromtimestamp(newest_time)
+                # Convert file mtime (local time) to UTC for consistency
+                newest_datetime = datetime.fromtimestamp(newest_time, tz=UTC)
                 logging.info(f"Newest data file: {newest_file} modified {newest_datetime.isoformat()}")
                 return newest_datetime.isoformat()
             else:
