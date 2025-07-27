@@ -11,7 +11,7 @@
       <!-- Desktop Layout: Sidebar + Main Content -->
       <div class="flex gap-6">
         <!-- Desktop Sidebar (hidden on mobile) -->
-        <div class="hidden w-80 shrink-0 md:block">
+        <div class="hidden w-72 shrink-0 md:block">
           <div
             class="sidebar-scroll sticky top-6 max-h-[calc(100vh-3rem)] space-y-6 overflow-y-auto pr-2"
             ref="sidebarScroll"
@@ -138,7 +138,7 @@
           <!-- Game Grid -->
           <div
             class="grid gap-5"
-            style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"
+            style="grid-template-columns: repeat(auto-fill, minmax(296px, 1fr))"
           >
             <GameCard
               v-for="game in filteredGames"
