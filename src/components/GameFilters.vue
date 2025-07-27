@@ -287,7 +287,7 @@
 </template>
 
 <script>
-import { reactive, computed, ref, onUnmounted, nextTick } from 'vue'
+import { reactive, computed, ref, onUnmounted, nextTick, watch } from 'vue'
 import { useDebouncedFilters } from '../composables/useDebouncedFilters.js'
 import CollapsibleSection from './CollapsibleSection.vue'
 import TagFilterMulti from './TagFilterMulti.vue'
@@ -383,6 +383,47 @@ export default {
     }
 
     const localFilters = reactive({ ...initialLocalFilters })
+
+    // Watch for changes in initial filters (e.g., from URL loading)
+    watch(
+      () => props.initialFilters,
+      (newInitialFilters) => {
+        if (newInitialFilters && Object.keys(newInitialFilters).length > 0) {
+          Object.assign(localFilters, {
+            releaseStatus: newInitialFilters.releaseStatus || 'all',
+            platform: newInitialFilters.platform || 'all',
+            rating: newInitialFilters.rating || '0',
+            crossPlatform: newInitialFilters.crossPlatform || false,
+            hiddenGems: newInitialFilters.hiddenGems || false,
+            tag: newInitialFilters.tag || '',
+            selectedTags:
+              newInitialFilters.selectedTags ||
+              (newInitialFilters.tag ? [newInitialFilters.tag] : []),
+            tagLogic: newInitialFilters.tagLogic || 'and',
+            channel: newInitialFilters.channel || '',
+            selectedChannels:
+              newInitialFilters.selectedChannels ||
+              (newInitialFilters.channel ? [newInitialFilters.channel] : []),
+            sortBy: newInitialFilters.sortBy || 'date',
+            sortSpec: newInitialFilters.sortSpec || null,
+            currency: newInitialFilters.currency || 'eur',
+            timeFilter: newInitialFilters.timeFilter || {
+              type: null,
+              preset: null,
+              startDate: null,
+              endDate: null,
+              smartLogic: null,
+            },
+            priceFilter: newInitialFilters.priceFilter || {
+              minPrice: 0,
+              maxPrice: 70,
+              includeFree: true,
+            },
+          })
+        }
+      },
+      { deep: true, immediate: false },
+    )
 
     // Set up debounced filter updates
     const { debouncedEmit, immediateEmit, cleanup } = useDebouncedFilters(

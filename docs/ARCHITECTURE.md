@@ -42,10 +42,13 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
   games.db            # SQLite database - primary data source for web interface
   schema.sql          # Database schema definition and indexes
   
-/web/
-  index.html          # Main web interface
-  script.js           # Client-side data loading and filtering
-  style.css           # Dark theme styling
+/src/
+  main.js             # Vue.js application entry point
+  App.vue             # Main application component
+  style.css           # Global styling with dark theme
+  components/         # Vue components (GameCard, GameFilters, etc.)
+  utils/              # Utility modules (databaseManager, performanceMonitor)
+  composables/        # Vue composition functions
   
 /.github/workflows/
   scrape.yml          # Automated scraping workflow

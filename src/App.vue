@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-bg-primary text-text-primary">
-    <div class="container mx-auto max-w-7xl p-5">
+    <div class="container mx-auto max-w-[1600px] p-5">
       <header class="mb-10 text-center">
         <h1 class="mb-2 text-4xl font-bold text-accent">Curated Steam Games</h1>
         <p class="text-lg text-text-secondary">
@@ -136,10 +136,7 @@
           </div>
 
           <!-- Game Grid -->
-          <div
-            class="grid gap-5"
-            style="grid-template-columns: repeat(auto-fill, minmax(296px, 1fr))"
-          >
+          <div class="game-grid grid w-full gap-5" ref="gameGrid">
             <GameCard
               v-for="game in filteredGames"
               :key="game.id"
@@ -147,6 +144,7 @@
               :currency="filters.currency"
               :is-highlighted="highlightedGameId === game.id"
               @click="clearHighlight"
+              @tag-click="handleTagClick"
             />
           </div>
 
@@ -226,6 +224,7 @@ export default {
     const channels = ref([])
     const channelsWithCounts = ref([])
     const allTags = ref([])
+    const gameGrid = ref(null)
     const highlightedGameId = ref(null)
     const gameStats = ref({
       totalGames: 0,
@@ -997,6 +996,13 @@ export default {
 
         filteredGames.value = processedGames
         console.log(`✓ Processed ${processedGames.length} games`)
+
+        // Update debug info after games are rendered
+        if (isDevelopment) {
+          nextTick(() => {
+            setTimeout(updateGridDebugInfo, 100)
+          })
+        }
       } else {
         filteredGames.value = []
         console.log('✓ No games found matching filters')
@@ -1091,6 +1097,40 @@ export default {
     const testVersionMismatch = () => {
       console.log('🧪 User clicked test version mismatch button')
       databaseManager.testVersionMismatch()
+    }
+
+    const updateGridDebugInfo = () => {
+      if (!gameGrid.value || !isDevelopment) {
+        return
+      }
+
+      const gridElement = gameGrid.value
+      const containerElement = gridElement.closest('.container')
+      const mainContentElement = gridElement.closest('.flex-1')
+
+      const viewport = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }
+
+      const containerRect = containerElement?.getBoundingClientRect()
+      const mainContentRect = mainContentElement?.getBoundingClientRect()
+      const gridRect = gridElement.getBoundingClientRect()
+
+      const computedStyles = window.getComputedStyle(gridElement)
+
+      console.log('🔧 Grid Debug:', {
+        viewport,
+        container: containerRect?.width,
+        mainContent: mainContentRect?.width,
+        grid: gridRect?.width,
+        gridColumns: computedStyles.gridTemplateColumns,
+        gridGap: computedStyles.gap,
+        availableSpace:
+          mainContentRect?.width -
+          parseFloat(computedStyles.paddingLeft) -
+          parseFloat(computedStyles.paddingRight),
+      })
     }
 
     const loadGames = async () => {
@@ -1276,6 +1316,19 @@ export default {
 
     const clearHighlight = () => {
       highlightedGameId.value = null
+    }
+
+    const handleTagClick = (tag) => {
+      // Add the clicked tag to the selected tags
+      const currentTags = filters.value.selectedTags || []
+      if (!currentTags.includes(tag)) {
+        const newFilters = {
+          ...filters.value,
+          selectedTags: [...currentTags, tag],
+          tag: currentTags.length === 0 ? tag : '', // Keep legacy field updated for backward compatibility
+        }
+        updateFilters(newFilters)
+      }
     }
 
     const updateFilters = (newFilters) => {
@@ -1503,6 +1556,22 @@ export default {
 
       // Store timer reference for cleanup
       window.timestampTimer = timestampTimer
+
+      // Set up debug info updates for development
+      if (isDevelopment) {
+        // Update debug info on resize
+        const handleResize = () => {
+          setTimeout(updateGridDebugInfo, 100) // Debounce slightly
+        }
+
+        window.addEventListener('resize', handleResize)
+
+        // Initial debug info after components are mounted
+        setTimeout(updateGridDebugInfo, 500)
+
+        // Store for cleanup
+        window.handleResize = handleResize
+      }
     })
 
     onUnmounted(() => {
@@ -1523,6 +1592,12 @@ export default {
         window.timestampTimer = null
       }
 
+      // Cleanup resize handler
+      if (window.handleResize) {
+        window.removeEventListener('resize', window.handleResize)
+        window.handleResize = null
+      }
+
       // Remove keyboard handler
       const handleKeydown = (e) => {
         if (e.key === 'Escape') {
@@ -1541,6 +1616,7 @@ export default {
       allTags,
       filteredGames,
       gameStats,
+      gameGrid,
       highlightedGameId,
       databaseStatus,
       isDevelopment,
@@ -1549,11 +1625,13 @@ export default {
       formatExactTimestamp,
       updateFilters,
       clearHighlight,
+      handleTagClick,
       showVersionMismatch,
       versionMismatchInfo,
       reloadApp,
       dismissVersionMismatch,
       testVersionMismatch,
+      updateGridDebugInfo,
     }
   },
 }
@@ -1563,3 +1641,44 @@ if (import.meta.hot) {
   import.meta.hot.accept()
 }
 </script>
+
+<style scoped>
+.game-grid {
+  /* Ensure proper grid container behavior */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(296px, 1fr));
+  gap: 1.25rem; /* 20px - matches gap-5 */
+  width: 100%;
+  min-width: 0;
+
+  /* Force grid to use all available space */
+  justify-content: stretch;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+/* Ensure grid items expand to fill their allocated space */
+.game-grid > * {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  justify-self: stretch;
+}
+
+/* Debug: Console-only debugging in development */
+
+/* Responsive grid adjustments for optimal card expansion */
+@media (min-width: 1280px) and (max-width: 1599px) {
+  .game-grid {
+    /* Force equal columns where auto-fit struggles to expand cards properly */
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* At very large viewports, allow auto-fit to determine optimal columns */
+@media (min-width: 1600px) {
+  .game-grid {
+    grid-template-columns: repeat(auto-fit, minmax(296px, 1fr));
+  }
+}
+</style>

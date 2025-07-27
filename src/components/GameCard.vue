@@ -1,6 +1,6 @@
 <template>
   <div
-    class="game-card relative flex h-full cursor-pointer flex-col overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
+    class="game-card relative flex size-full cursor-pointer flex-col overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
     :class="{
       'scale-105': copyFeedback,
       highlighted: isHighlighted && !highlightFading,
@@ -57,11 +57,12 @@
         </div>
 
         <!-- Game Meta -->
-        <div class="mb-3 flex items-center justify-between gap-3">
-          <!-- Rating -->
-          <div v-if="shouldShowRating(game)" class="flex flex-col gap-1">
+        <div class="mb-3 flex flex-col gap-2">
+          <!-- Top Row: Main Rating and Price -->
+          <div class="flex items-center justify-between gap-3">
             <!-- Main Rating Display -->
             <div
+              v-if="shouldShowRating(game)"
               :class="
                 getRatingClass(
                   game.positive_review_percentage,
@@ -85,21 +86,7 @@
               </div>
             </div>
 
-            <!-- Recent Reviews -->
-            <div
-              v-if="game.recent_review_percentage && game.recent_review_count"
-              class="text-xs text-text-secondary"
-            >
-              Recent: {{ game.recent_review_percentage }}% ({{
-                game.recent_review_count.toLocaleString()
-              }})
-            </div>
-          </div>
-        </div>
-
-        <!-- Price Line -->
-        <div class="my-3 flex h-8 items-center justify-between">
-          <div class="flex items-center">
+            <!-- Price -->
             <div
               v-if="getPrice(game)"
               class="rounded-sm bg-accent/10 px-3 py-1 text-lg font-bold text-accent"
@@ -107,25 +94,56 @@
               {{ getPrice(game) }}
             </div>
           </div>
-          <div class="flex items-center justify-end">
+
+          <!-- Bottom Row: Recent Reviews and Release Info -->
+          <div
+            v-if="
+              (game.recent_review_percentage && game.recent_review_count) ||
+              getReleaseInfo(game)
+            "
+            class="flex items-center justify-between gap-3"
+          >
+            <!-- Recent Reviews -->
+            <div
+              v-if="game.recent_review_percentage && game.recent_review_count"
+              class="text-xs whitespace-nowrap text-text-secondary"
+            >
+              Recent: {{ game.recent_review_percentage }}% ({{
+                game.recent_review_count.toLocaleString()
+              }})
+            </div>
+            <div v-else></div>
+            <!-- Spacer when no recent reviews -->
+
+            <!-- Release Info -->
             <div
               v-if="getReleaseInfo(game)"
               class="text-right text-sm text-text-secondary"
             >
-              {{ getReleaseInfo(game) }}
+              <span v-if="getReleaseInfo(game).includes('•')">
+                {{ getReleaseInfo(game).split(' • ')[0] }}<wbr /> • <wbr /><span
+                  class="whitespace-nowrap"
+                  >{{ getReleaseInfo(game).split(' • ')[1] }}</span
+                >
+              </span>
+              <span v-else>
+                {{ getReleaseInfo(game) }}
+              </span>
             </div>
           </div>
         </div>
 
         <!-- Tags -->
         <div class="mt-2 flex flex-wrap gap-1">
-          <span
+          <button
             v-for="tag in (game.tags || []).slice(0, 5)"
             :key="tag"
-            class="my-1 mr-1 rounded-full bg-bg-secondary px-2 py-1 text-xs text-text-secondary"
+            class="my-1 mr-1 rounded-full bg-bg-secondary px-2 py-1 text-xs text-text-secondary transition-colors hover:bg-accent hover:text-white"
+            :title="`Filter by ${tag}`"
+            @click.stop="handleTagClick(tag)"
           >
             {{ tag }}
-          </span>
+          </button>
         </div>
 
         <!-- Video Info -->
@@ -331,7 +349,8 @@ export default {
       default: false,
     },
   },
-  setup(props) {
+  emits: ['tag-click'],
+  setup(props, { emit }) {
     const showingVideos = ref({})
     const loadingVideos = ref({})
     const gameVideos = ref({})
@@ -877,6 +896,10 @@ export default {
       return null
     }
 
+    const handleTagClick = (tag) => {
+      emit('tag-click', tag)
+    }
+
     const groupVideosByChannel = (videos) => {
       if (!videos || !Array.isArray(videos)) {
         return {}
@@ -926,6 +949,7 @@ export default {
       availablePlatforms,
       toggleVideos,
       handleCardClick,
+      handleTagClick,
       slugifyForFragment,
       generateDeeplink,
       getChannelText,

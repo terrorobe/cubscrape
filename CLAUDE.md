@@ -103,9 +103,12 @@ The scraper has been refactored into modular components:
 - **`base_fetcher.py`** - BeautifulSoup type-safe helper methods
 
 ### Web Interface:
-- **`script.js`** - Refactored with utility functions and modular templates
-- **`index.html`** - Game discovery interface
-- **`style.css`** - Styling
+- **`src/`** - Vue.js application source code
+- **`src/App.vue`** - Main application component
+- **`src/main.js`** - Application entry point
+- **`src/components/`** - Vue components (GameCard, GameFilters, etc.)
+- **`src/utils/`** - Utility modules (databaseManager, performanceMonitor, etc.)
+- **`src/style.css`** - Global styling
 
 ### Steam Refresh Intervals:
 Steam games are updated using age-based intervals:
@@ -113,47 +116,57 @@ Steam games are updated using age-based intervals:
 - **Recent games** (< 365 days): Weekly refresh  
 - **Older games** (≥ 365 days): Monthly refresh
 
-## JavaScript Environment Setup
+## Vue.js Environment Setup
 
-This project uses **npm** for JavaScript dependency management and ESLint for code linting.
+This project uses **Vue.js 3** with **Vite** for the web interface, **npm** for dependency management, and **ESLint** for code linting.
 
 ### Key Files
-- `package.json` - JavaScript project configuration and dependencies
+- `package.json` - Project configuration and dependencies
 - `eslint.config.js` - ESLint configuration for code quality
-- `script.js` - Main JavaScript file for the web interface
+- `vite.config.js` - Vite build configuration
+- `src/main.js` - Vue application entry point
+- `src/App.vue` - Root application component
 
-### JavaScript Commands
+### Development Commands
 
 ```bash
-# Install JavaScript dependencies
+# Install dependencies
 npm install
 
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
 # Run ESLint to check code quality
-npx eslint script.js
+npx eslint src/
 
 # Fix auto-fixable ESLint issues
-npx eslint script.js --fix
-
-# Add npm scripts to package.json for common tasks
-npm run lint    # (after adding lint script)
+npx eslint src/ --fix
 ```
 
-### JavaScript Development Workflow
+### Vue.js Development Workflow
 
-1. **Linting**: Run `npx eslint script.js` to check for issues
-2. **Auto-fix**: Use `npx eslint script.js --fix` to automatically fix many issues
-3. **Manual fixes**: Address remaining issues like missing braces, const usage, etc.
+1. **Development**: Run `npm run dev` to start the Vite dev server with HMR
+2. **Linting**: Run `npx eslint src/` to check for issues
+3. **Auto-fix**: Use `npx eslint src/ --fix` to automatically fix many issues
+4. **Building**: Run `npm run build` for production builds
 
-### JavaScript Dependencies
+### Frontend Dependencies
+
+**Vue.js ecosystem**:
+- vue - Progressive JavaScript framework
+- vite - Fast build tool and dev server
 
 **Development dependencies**:
-- eslint - JavaScript linter for code quality and consistency
+- eslint - JavaScript/Vue linter for code quality and consistency
 
 ### ESLint Configuration
-The project uses a custom ESLint configuration that enforces:
+The project uses ESLint configured for Vue.js that enforces:
+- **Vue.js best practices**: Proper component structure and composition API usage
 - **Code quality**: No console statements (warnings), no debugger, consistent variable declarations
-- **Best practices**: Prefer const over let, require curly braces for conditionals
-- **Code style**: 4-space indentation, single quotes, semicolons required
+- **Modern JavaScript**: ES6+ features, proper async/await usage
 
 ## Production Deployment
 
