@@ -311,12 +311,13 @@
     "https://fbrzd.itch.io/dungeon-world": {
       "header_image": "https://img.itch.zone/aW1nLzEwODQ1OTcyLmdpZg==/original/cdV3I1.gif",
       "is_free": true,
-      "last_updated": "2025-07-27T16:56:35.568495",
+      "last_updated": "2025-07-28T00:54:50.505362",
       "name": "Dungeon World",
       "platform": "itch",
       "positive_review_percentage": 100,
-      "release_date": "",
+      "release_date": "22 December 2022",
       "review_count": 2,
+      "steam_url": "",
       "tags": [
         "Dungeon Crawler",
         "Exploration",
@@ -329,6 +330,29 @@
         "Turn-based"
       ],
       "url": "https://fbrzd.itch.io/dungeon-world"
+    },
+    "https://feldspargames.itch.io/become-the-moon": {
+      "header_image": "https://img.itch.zone/aW1nLzE1MjMyOTY2LnBuZw==/original/wLY0%2FK.png",
+      "is_free": true,
+      "last_updated": "2025-07-28T00:54:46.368379",
+      "name": "Become the Moon",
+      "platform": "itch",
+      "positive_review_percentage": 96,
+      "release_date": "07 March 2024",
+      "review_count": 13,
+      "steam_url": "https://store.steampowered.com/app/2862890",
+      "tags": [
+        "auto-battler",
+        "Deck Building",
+        "Fantasy",
+        "Roguelike",
+        "Roguelite",
+        "Singleplayer",
+        "Turn-based",
+        "Turn-Based Combat",
+        "Turn-based Strategy"
+      ],
+      "url": "https://feldspargames.itch.io/become-the-moon"
     },
     "https://fluffy-lotus.itch.io/fillupthehole": {
       "header_image": "https://img.itch.zone/aW1nLzIwMjg5NDEwLnBuZw==/original/3%2Fr49w.png",
@@ -519,12 +543,12 @@
     "https://koreanois.itch.io/mercedes": {
       "header_image": "https://img.itch.zone/aW1nLzIxOTA5MzY4LnBuZw==/original/6M2Ohh.png",
       "is_free": true,
-      "last_updated": "2025-07-21T00:36:36.946174",
+      "last_updated": "2025-07-28T00:54:51.961885",
       "name": "Mercedes",
       "platform": "itch",
       "positive_review_percentage": 100,
       "release_date": "29 June 2025",
-      "review_count": 2,
+      "review_count": 4,
       "steam_url": "",
       "tags": [
         "2D",
@@ -557,6 +581,30 @@
         "Weapons"
       ],
       "url": "https://kristoff-red.itch.io/combolite"
+    },
+    "https://louidev.itch.io/incro-pachinko": {
+      "header_image": "https://img.itch.zone/aW1nLzIyMjcxNDYxLnBuZw==/original/UJajao.png",
+      "is_free": true,
+      "last_updated": "2025-07-28T00:54:47.299622",
+      "name": "PACHINCRO!",
+      "platform": "itch",
+      "positive_review_percentage": 70,
+      "release_date": "09 July 2025",
+      "review_count": 10,
+      "steam_url": "",
+      "tags": [
+        "2D",
+        "Godot",
+        "Idle",
+        "Incremental",
+        "No AI",
+        "pachinko",
+        "peggle",
+        "Pinball",
+        "plinko",
+        "Singleplayer"
+      ],
+      "url": "https://louidev.itch.io/incro-pachinko"
     },
     "https://luis0413.itch.io/mine-your-way-out-2": {
       "header_image": "https://img.itch.zone/aW1nLzIxMDAzMTI2LnBuZw==/original/qbvA3q.png",
@@ -643,12 +691,12 @@
     "https://ome6a1717.itch.io/the-last-spire": {
       "header_image": "https://img.itch.zone/aW1nLzIyMTAxMjc2LnBuZw==/original/6hOccj.png",
       "is_free": true,
-      "last_updated": "2025-07-21T00:36:43.025706",
+      "last_updated": "2025-07-28T00:54:52.933637",
       "name": "The Last Spire",
       "platform": "itch",
-      "positive_review_percentage": 94,
+      "positive_review_percentage": 92,
       "release_date": "12 July 2025",
-      "review_count": 33,
+      "review_count": 57,
       "steam_url": "",
       "tags": [
         "Cartoon",
@@ -663,11 +711,11 @@
     "https://oroshibu.itch.io/the-desert-guntrain": {
       "header_image": "https://img.itch.zone/aW1nLzE1NDY4NTExLnBuZw==/original/lvmzGf.png",
       "is_free": true,
-      "last_updated": "2025-07-27T16:56:36.320440",
+      "last_updated": "2025-07-28T00:54:53.660930",
       "name": "The Desert Guntrain",
       "platform": "itch",
       "positive_review_percentage": 84,
-      "release_date": "",
+      "release_date": "11 March 2024",
       "review_count": 15,
       "steam_url": "",
       "tags": [
@@ -683,6 +731,30 @@
         "Zombies"
       ],
       "url": "https://oroshibu.itch.io/the-desert-guntrain"
+    },
+    "https://pastaspace.itch.io/underspace": {
+      "header_image": "https://img.itch.zone/aW1nLzQyMzU0NTUuanBn/original/OtOD%2Bc.jpg",
+      "is_free": true,
+      "last_updated": "2025-07-28T00:54:48.062516",
+      "name": "Underspace",
+      "platform": "itch",
+      "positive_review_percentage": 100,
+      "release_date": "25 March 2019",
+      "review_count": 11,
+      "steam_url": "",
+      "tags": [
+        "Action RPG",
+        "Exploration",
+        "Flight",
+        "Lovecraftian Horror",
+        "Moddable",
+        "Multiplayer",
+        "Open World",
+        "Space",
+        "Space Sim",
+        "Story Rich"
+      ],
+      "url": "https://pastaspace.itch.io/underspace"
     },
     "https://peachtreeoath.itch.io/fall-ball-fall": {
       "header_image": "https://img.itch.zone/aW1nLzQwNzYzNjIuanBn/original/ojSwv1.jpg",
@@ -1040,6 +1112,25 @@
       ],
       "url": "https://tundra-interactive.itch.io/void-war"
     },
+    "https://twotinydice.itch.io/pick-and-poke": {
+      "header_image": "https://img.itch.zone/aW1nLzE1Mjk3OTM0LnBuZw==/original/rmpstK.png",
+      "is_free": true,
+      "last_updated": "2025-07-28T00:54:48.915245",
+      "name": "Pick & Poke",
+      "platform": "itch",
+      "positive_review_percentage": 92,
+      "release_date": "08 March 2024",
+      "review_count": 144,
+      "steam_url": "",
+      "tags": [
+        "Cartoon",
+        "Hand-drawn",
+        "Narrative",
+        "Roguelike",
+        "Text based"
+      ],
+      "url": "https://twotinydice.itch.io/pick-and-poke"
+    },
     "https://ularis-badler.itch.io/archrebel": {
       "header_image": "https://img.itch.zone/aW1nLzE2MzI4MDc0LnBuZw==/original/%2ByjNGF.png",
       "is_free": true,
@@ -1061,6 +1152,30 @@
         "Unity"
       ],
       "url": "https://ularis-badler.itch.io/archrebel"
+    },
+    "https://wompthecat.itch.io/omen-miniminer": {
+      "header_image": "https://img.itch.zone/aW1nLzE3Njc2Mjk2LnBuZw==/original/ohLoCG.png",
+      "is_free": true,
+      "last_updated": "2025-07-28T00:54:49.678788",
+      "name": "OMEN: MiniMiner",
+      "platform": "itch",
+      "positive_review_percentage": 100,
+      "release_date": "13 September 2024",
+      "review_count": 2,
+      "steam_url": "",
+      "tags": [
+        "2D",
+        "Casual",
+        "Clicker",
+        "GameMaker",
+        "Idle",
+        "Incremental",
+        "Sci-fi",
+        "Singleplayer",
+        "Space",
+        "Space Sim"
+      ],
+      "url": "https://wompthecat.itch.io/omen-miniminer"
     },
     "https://www.crazygames.com/game/block-wall-destroyer": {
       "header_image": "https://imgs.crazygames.com/block-wall-destroyer_16x9/20250602093150/block-wall-destroyer_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
@@ -1149,12 +1264,12 @@
     "https://www.crazygames.com/game/stick-war": {
       "header_image": "https://imgs.crazygames.com/games/stick-war/cover-1659084995039.jpg?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "is_free": true,
-      "last_updated": "2025-07-27T16:56:36.781187",
+      "last_updated": "2025-07-28T00:54:54.466941",
       "name": "Stick War",
       "platform": "crazygames",
       "positive_review_percentage": 93,
       "release_date": "",
-      "review_count": 220384,
+      "review_count": 220433,
       "steam_url": "",
       "tags": [
         "Action",
