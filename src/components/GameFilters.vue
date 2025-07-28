@@ -201,7 +201,16 @@
       :default-expanded="false"
     >
       <TimeFilterSimple
-        :initial-time-filter="localFilters.timeFilter || {}"
+        :initial-time-filter="
+          localFilters.timeFilter ||
+          ({
+            type: null,
+            preset: null,
+            startDate: null,
+            endDate: null,
+            smartLogic: null,
+          } as any)
+        "
         @time-filter-changed="handleTimeFilterChanged"
       />
     </CollapsibleSection>
@@ -214,7 +223,13 @@
     >
       <PriceFilter
         :currency="localFilters.currency"
-        :initial-price-filter="localFilters.priceFilter || {}"
+        :initial-price-filter="
+          localFilters.priceFilter || {
+            minPrice: 0,
+            maxPrice: 1000,
+            includeFree: true,
+          }
+        "
         :game-stats="gameStats"
         @price-filter-changed="handlePriceFilterChanged"
       />
@@ -286,11 +301,23 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref, onUnmounted, nextTick, watch, type Ref } from 'vue'
+import {
+  reactive,
+  computed,
+  ref,
+  onUnmounted,
+  nextTick,
+  watch,
+  type Ref,
+} from 'vue'
 import { useDebouncedFilters } from '../composables/useDebouncedFilters'
 import { TIMING } from '../config/index'
 import type { FilterConfig } from '../utils/presetManager'
-import type { ChannelWithCount, TagWithCount, DatabaseStats } from '../types/database'
+import type {
+  ChannelWithCount,
+  TagWithCount,
+  DatabaseStats,
+} from '../types/database'
 import CollapsibleSection from './CollapsibleSection.vue'
 import TagFilterMulti from './TagFilterMulti.vue'
 import ChannelFilterMulti from './ChannelFilterMulti.vue'
@@ -452,11 +479,12 @@ watch(
 )
 
 // Set up debounced filter updates
-const { debouncedEmit, immediateEmit, cleanup } = useDebouncedFilters<FilterConfig>(
-  initialLocalFilters,
-  (newFilters: FilterConfig) => emit('filters-changed', newFilters),
-      TIMING.FILTER_DEBOUNCE_DELAY, // Configurable debounce delay
-)
+const { debouncedEmit, immediateEmit, cleanup } =
+  useDebouncedFilters<FilterConfig>(
+    initialLocalFilters,
+    (newFilters: FilterConfig) => emit('filters-changed', newFilters),
+    TIMING.FILTER_DEBOUNCE_DELAY, // Configurable debounce delay
+  )
 
 const activeFilterCount = computed((): number => {
   let count = 0
@@ -664,35 +692,35 @@ const handleRemoveFilter = (filterInfo: FilterInfo): void => {
 }
 
 const handleClearAllFilters = (): void => {
-      preserveScrollPosition(() => {
-        localFilters.releaseStatus = 'all'
-        localFilters.platform = 'all'
-        localFilters.rating = '0'
-        localFilters.crossPlatform = false
-        localFilters.hiddenGems = false
-        localFilters.tag = ''
-        localFilters.selectedTags = []
-        localFilters.tagLogic = 'and'
-        localFilters.channel = ''
-        localFilters.selectedChannels = []
-        localFilters.sortBy = 'date'
-        localFilters.sortSpec = null
-        localFilters.currency = 'eur'
-        localFilters.timeFilter = {
-          type: null,
-          preset: null,
-          startDate: null,
-          endDate: null,
-          smartLogic: null,
-        }
-        localFilters.priceFilter = {
-          minPrice: 0,
-          maxPrice: 70,
-          includeFree: true,
-        }
-        // Clear all should be immediate
-        immediateEmitFiltersChanged()
-    })
+  preserveScrollPosition(() => {
+    localFilters.releaseStatus = 'all'
+    localFilters.platform = 'all'
+    localFilters.rating = '0'
+    localFilters.crossPlatform = false
+    localFilters.hiddenGems = false
+    localFilters.tag = ''
+    localFilters.selectedTags = []
+    localFilters.tagLogic = 'and'
+    localFilters.channel = ''
+    localFilters.selectedChannels = []
+    localFilters.sortBy = 'date'
+    localFilters.sortSpec = null
+    localFilters.currency = 'eur'
+    localFilters.timeFilter = {
+      type: null,
+      preset: null,
+      startDate: null,
+      endDate: null,
+      smartLogic: null,
+    }
+    localFilters.priceFilter = {
+      minPrice: 0,
+      maxPrice: 70,
+      includeFree: true,
+    }
+    // Clear all should be immediate
+    immediateEmitFiltersChanged()
+  })
 }
 
 const handleApplyPreset = (presetFilters: FilterConfig): void => {
@@ -709,21 +737,6 @@ const debouncedEmitFiltersChanged = (): void => {
 // Immediate emit for important changes
 const immediateEmitFiltersChanged = (): void => {
   immediateEmit({ ...localFilters })
-}
-
-// Legacy emit function for backward compatibility
-const emitFiltersChanged = (): void => {
-  debouncedEmitFiltersChanged()
-}
-
-const formatChannelName = (channel: string | undefined): string => {
-  if (!channel || typeof channel !== 'string') {
-    return 'Unknown Channel'
-  }
-  return channel
-    .replace(/^videos-/, '')
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (l) => l.toUpperCase())
 }
 
 // Cleanup on unmount

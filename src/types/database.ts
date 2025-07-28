@@ -87,7 +87,11 @@ export interface QueryExecResult {
 /**
  * Parsed game data with additional computed properties
  */
-export interface ParsedGameData extends Omit<GameRecord, 'unique_channels' | 'genres' | 'tags' | 'developers' | 'publishers'> {
+export interface ParsedGameData
+  extends Omit<
+    GameRecord,
+    'unique_channels' | 'genres' | 'tags' | 'developers' | 'publishers'
+  > {
   unique_channels: string[]
   genres: string[]
   tags: string[]
@@ -107,11 +111,11 @@ export interface ParsedGameData extends Omit<GameRecord, 'unique_channels' | 'ge
 /**
  * Re-export advanced platform types for backward compatibility
  */
-export type { 
-  PlatformGameData, 
-  SteamGameData, 
-  ItchGameData, 
-  CrazyGamesData 
+export type {
+  PlatformGameData,
+  SteamGameData,
+  ItchGameData,
+  CrazyGamesData,
 } from './platform-discriminated.js'
 
 /**
@@ -217,7 +221,9 @@ export function parseVideoRecords(result: QueryExecResult): VideoRecord[] {
 export function parseGameData(game: GameRecord): ParsedGameData {
   return {
     ...game,
-    unique_channels: game.unique_channels ? JSON.parse(game.unique_channels) : [],
+    unique_channels: game.unique_channels
+      ? JSON.parse(game.unique_channels)
+      : [],
     genres: game.genres ? JSON.parse(game.genres) : [],
     tags: game.tags ? JSON.parse(game.tags) : [],
     developers: game.developers ? JSON.parse(game.developers) : [],

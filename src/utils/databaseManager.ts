@@ -53,7 +53,7 @@ export class DatabaseManager {
   private readonly versionMismatchListeners = new Set<VersionMismatchListener>()
 
   // In production, check every 10 minutes
-  private readonly PRODUCTION_CHECK_INTERVAL = 10 * 60 * 1000 // 10 minutes
+  public readonly PRODUCTION_CHECK_INTERVAL = 10 * 60 * 1000 // 10 minutes
 
   constructor() {
     this.isDevelopment = import.meta.env.DEV
@@ -367,7 +367,9 @@ export class DatabaseManager {
         "SELECT COUNT(DISTINCT unique_channels) FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]'",
       )
       const channelCount =
-        channelResults.length > 0 ? (channelResults[0].values[0][0] as number) : 0
+        channelResults.length > 0
+          ? (channelResults[0].values[0][0] as number)
+          : 0
 
       // Get data freshness from database metadata instead of HTTP requests
       let dataModified = this.lastModified // fallback to database file mtime

@@ -236,7 +236,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useProgressiveOptions, type OptionWithCount } from '../composables/useProgressiveOptions'
+import {
+  useProgressiveOptions,
+  type OptionWithCount,
+} from '../composables/useProgressiveOptions'
 import { UI_LIMITS } from '../config/index'
 
 /**
@@ -486,5 +489,4 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
-
 </script>

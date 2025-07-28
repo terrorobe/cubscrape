@@ -85,7 +85,10 @@ interface PlatformColor {
 /**
  * Platform-specific colors and styles
  */
-export const PLATFORM_COLORS: Record<'steam' | 'itch' | 'crazygames', PlatformColor> = {
+export const PLATFORM_COLORS: Record<
+  'steam' | 'itch' | 'crazygames',
+  PlatformColor
+> = {
   steam: {
     primary: '#1b2838',
     secondary: '#66c0f4',
@@ -185,8 +188,8 @@ export const SHADOWS = {
  * Helper function to get rating color based on percentage and review summary
  */
 export function getRatingColor(
-  percentage?: number | null, 
-  reviewSummary?: string | null
+  percentage?: number | null,
+  reviewSummary?: string | null,
 ): RatingColor {
   if (!percentage) {
     return RATING_COLORS.UNKNOWN

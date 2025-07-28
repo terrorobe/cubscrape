@@ -506,7 +506,10 @@ export function saveUserPreset(
 /**
  * Update an existing user preset
  */
-export function updateUserPreset(id: string, updates: Partial<Preset>): boolean {
+export function updateUserPreset(
+  id: string,
+  updates: Partial<Preset>,
+): boolean {
   const userPresets = loadUserPresets()
   const index = userPresets.findIndex((preset) => preset.id === id)
 
@@ -860,7 +863,9 @@ export function areFiltersEqual(
 /**
  * Find preset that matches current filters
  */
-export function findMatchingPreset(currentFilters: FilterConfig): Preset | undefined {
+export function findMatchingPreset(
+  currentFilters: FilterConfig,
+): Preset | undefined {
   return getAllPresets().find((preset) =>
     areFiltersEqual(currentFilters, preset.filters),
   )

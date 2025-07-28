@@ -168,7 +168,7 @@ import { ref, computed, watch } from 'vue'
 /**
  * Sort criteria field options for advanced mode
  */
-export type SortField = 
+export type SortField =
   | 'rating'
   | 'coverage'
   | 'recency'
@@ -276,12 +276,10 @@ const sortDescriptions: Record<string, string> = {
     'High-rated games at reasonable prices - great bang for your buck',
   'hidden-gems':
     'Highly rated games with less video coverage - undiscovered treasures',
-  'most-covered':
-    'Games covered by many channels - popular community picks',
+  'most-covered': 'Games covered by many channels - popular community picks',
   trending: 'Games gaining recent attention with multiple new videos',
   'creator-consensus': 'Games praised by multiple different channels',
-  'recent-discoveries':
-    'Recently featured games that are worth checking out',
+  'recent-discoveries': 'Recently featured games that are worth checking out',
   // Contextual sorting descriptions
   'video-recency':
     'Games within your video time range, prioritizing newest coverage',
@@ -401,8 +399,7 @@ const contextualSortOptions = computed((): ContextualSortOption[] => {
     options.push({
       value: 'tag-match',
       label: 'Tag Relevance',
-      description:
-        'Games matching your tags, sorted by rating and coverage',
+      description: 'Games matching your tags, sorted by rating and coverage',
     })
   }
 
@@ -411,8 +408,7 @@ const contextualSortOptions = computed((): ContextualSortOption[] => {
     options.push({
       value: 'channel-picks',
       label: 'Channel Picks',
-      description:
-        'Highlighted by your selected channels, best rated first',
+      description: 'Highlighted by your selected channels, best rated first',
     })
   }
 
@@ -435,7 +431,10 @@ const advancedSortInfo = computed((): string => {
   return `Sorting by ${primary}, then by ${secondary}`
 })
 
-const getFieldDescription = (field: SortField, direction: SortDirection): string => {
+const getFieldDescription = (
+  field: SortField,
+  direction: SortDirection,
+): string => {
   const fieldNames: Record<SortField, string> = {
     rating: 'rating score',
     coverage: 'video coverage',

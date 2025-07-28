@@ -186,8 +186,8 @@ const props = withDefaults(defineProps<PriceFilterProps>(), {
 const emit = defineEmits<{
   'price-filter-changed': [filter: PriceFilterConfig]
 }>()
-const maxPossiblePrice = computed((): number => 
-  props.gameStats.maxPrice || PRICING.DEFAULT_MAX_PRICE
+const maxPossiblePrice = computed(
+  (): number => props.gameStats.maxPrice || PRICING.DEFAULT_MAX_PRICE,
 )
 const freeGameCount = computed((): number => props.gameStats.freeGames || 0)
 
@@ -300,10 +300,8 @@ const handleMaxChange = (): void => {
 
 // Calculate the visual range fill style
 const rangeStyle = computed((): { left: string; width: string } => {
-  const minPercent =
-    (localPriceFilter.minPrice / maxPossiblePrice.value) * 100
-  const maxPercent =
-    (localPriceFilter.maxPrice / maxPossiblePrice.value) * 100
+  const minPercent = (localPriceFilter.minPrice / maxPossiblePrice.value) * 100
+  const maxPercent = (localPriceFilter.maxPrice / maxPossiblePrice.value) * 100
 
   return {
     left: `${minPercent}%`,
@@ -315,8 +313,7 @@ const rangeStyle = computed((): { left: string; width: string } => {
 const getFilteredGameCount = (): number => {
   // This is a simplified estimation - in reality you'd need access to the full dataset
   // For now, we'll provide a basic estimate
-  const totalPaidGames =
-    props.gameStats.totalGames - props.gameStats.freeGames
+  const totalPaidGames = props.gameStats.totalGames - props.gameStats.freeGames
   let estimatedCount = 0
 
   if (localPriceFilter.includeFree && localPriceFilter.minPrice === 0) {

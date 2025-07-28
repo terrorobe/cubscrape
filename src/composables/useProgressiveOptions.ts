@@ -41,9 +41,9 @@ export interface ProgressiveOptionsComposable {
 /**
  * All options parameter type - can be array, ref, or function returning array
  */
-export type AllOptionsParameter = 
-  | OptionWithCount[] 
-  | Ref<OptionWithCount[]> 
+export type AllOptionsParameter =
+  | OptionWithCount[]
+  | Ref<OptionWithCount[]>
   | (() => OptionWithCount[])
 
 export function useProgressiveOptions(
@@ -56,7 +56,7 @@ export function useProgressiveOptions(
     const options =
       typeof allOptions === 'function'
         ? allOptions()
-        : (allOptions as any)?.value ?? allOptions
+        : ((allOptions as any)?.value ?? allOptions)
     return Array.isArray(options) ? options : []
   }
 

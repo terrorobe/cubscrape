@@ -391,7 +391,10 @@ interface VideosByChannel {
 // Database interface for window object
 interface WindowWithDatabase extends Window {
   gameDatabase?: {
-    exec: (query: string, params?: any[]) => Array<{
+    exec: (
+      query: string,
+      params?: any[],
+    ) => Array<{
       columns: string[]
       values: any[][]
     }>
@@ -448,12 +451,14 @@ const toggleVideos = async (gameId: number): Promise<void> => {
     const results = db.exec(query, [gameId])
 
     if (results.length > 0) {
-      const videos: VideoData[] = results[0].values.map((row): VideoData => ({
-        video_title: row[0] as string,
-        video_id: row[1] as string,
-        video_date: row[2] as string,
-        channel_name: row[3] as string,
-      }))
+      const videos: VideoData[] = results[0].values.map(
+        (row): VideoData => ({
+          video_title: row[0] as string,
+          video_id: row[1] as string,
+          video_date: row[2] as string,
+          channel_name: row[3] as string,
+        }),
+      )
       gameVideos.value[gameId] = videos
     } else {
       gameVideos.value[gameId] = []
@@ -487,10 +492,7 @@ const shouldShowRating = (game: ParsedGameData): boolean => {
 
 const getRatingNumbers = (game: ParsedGameData): string => {
   // Handle "No user reviews" case
-  if (
-    game.review_summary === 'No user reviews' ||
-    game.review_count === 0
-  ) {
+  if (game.review_summary === 'No user reviews' || game.review_count === 0) {
     return 'No user reviews'
   }
 
@@ -514,10 +516,7 @@ const getRatingNumbers = (game: ParsedGameData): string => {
 
 const getRatingSummary = (game: ParsedGameData): string => {
   // For "No user reviews" and "Too few reviews", don't show summary
-  if (
-    game.review_summary === 'No user reviews' ||
-    game.review_count === 0
-  ) {
+  if (game.review_summary === 'No user reviews' || game.review_count === 0) {
     return ''
   }
 
@@ -560,11 +559,17 @@ const getRatingTooltip = (game: ParsedGameData): string => {
   return tooltipText
 }
 
-const getRatingClass = (percentage?: number | null, reviewSummary?: string | null): string => {
+const getRatingClass = (
+  percentage?: number | null,
+  reviewSummary?: string | null,
+): string => {
   return getRatingClassConfig(percentage, reviewSummary)
 }
 
-const getRatingStyle = (percentage?: number | null, reviewSummary?: string | null): { backgroundColor: string } => {
+const getRatingStyle = (
+  percentage?: number | null,
+  reviewSummary?: string | null,
+): { backgroundColor: string } => {
   return getRatingStyleConfig(percentage, reviewSummary)
 }
 
@@ -791,9 +796,7 @@ const generateDeeplink = (game: ParsedGameData): string | null => {
 
   if (game.platform === 'crazygames' && game.crazygames_url) {
     // Extract game slug from CrazyGames URL
-    const match = game.crazygames_url.match(
-      /crazygames\.com\/game\/([^/?]+)/,
-    )
+    const match = game.crazygames_url.match(/crazygames\.com\/game\/([^/?]+)/)
     if (match) {
       const slug = slugifyForFragment(game.name)
       return `${baseUrl}${searchParams}#crazygames-${match[1]}-${slug}`
@@ -844,7 +847,6 @@ watch(
     }
   },
 )
-
 </script>
 
 <style scoped>

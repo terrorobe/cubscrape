@@ -222,10 +222,10 @@ export type PlatformFeatures = {
 /**
  * Type-safe platform feature checker
  */
-export function hasPlatformFeature<P extends PlatformId, F extends keyof PlatformFeatures[P]>(
-  platform: P,
-  feature: F
-): PlatformFeatures[P][F] {
+export function hasPlatformFeature<
+  P extends PlatformId,
+  F extends keyof PlatformFeatures[P],
+>(platform: P, feature: F): PlatformFeatures[P][F] {
   const features: PlatformFeatures = {
     steam: {
       pricing: true,
@@ -252,7 +252,7 @@ export function hasPlatformFeature<P extends PlatformId, F extends keyof Platfor
       multi_currency: false,
     },
   }
-  
+
   return features[platform][feature]
 }
 
@@ -267,7 +267,9 @@ export function isItchGame(game: PlatformGameData): game is ItchGameData {
   return game.platform === 'itch'
 }
 
-export function isCrazyGamesGame(game: PlatformGameData): game is CrazyGamesData {
+export function isCrazyGamesGame(
+  game: PlatformGameData,
+): game is CrazyGamesData {
   return game.platform === 'crazygames'
 }
 
@@ -275,15 +277,14 @@ export function isCrazyGamesGame(game: PlatformGameData): game is CrazyGamesData
  * Type-safe platform URL extractor
  */
 export function getPlatformUrl<T extends PlatformGameData>(
-  game: T
-): T extends SteamGameData 
+  game: T,
+): T extends SteamGameData
   ? { platform: 'steam'; url: string; app_id: string }
   : T extends ItchGameData
-  ? { platform: 'itch'; url: string }
-  : T extends CrazyGamesData
-  ? { platform: 'crazygames'; url: string }
-  : never {
-  
+    ? { platform: 'itch'; url: string }
+    : T extends CrazyGamesData
+      ? { platform: 'crazygames'; url: string }
+      : never {
   if (isSteamGame(game)) {
     return {
       platform: 'steam',
@@ -291,21 +292,21 @@ export function getPlatformUrl<T extends PlatformGameData>(
       app_id: game.steam_app_id,
     } as any
   }
-  
+
   if (isItchGame(game)) {
     return {
       platform: 'itch',
       url: game.itch_url,
     } as any
   }
-  
+
   if (isCrazyGamesGame(game)) {
     return {
       platform: 'crazygames',
       url: game.crazygames_url,
     } as any
   }
-  
+
   throw new Error(`Unknown platform: ${(game as any).platform}`)
 }
 
@@ -313,15 +314,19 @@ export function getPlatformUrl<T extends PlatformGameData>(
  * Type-safe pricing extractor with currency support
  */
 export function getPlatformPricing<T extends PlatformGameData>(
-  game: T
+  game: T,
 ): T extends SteamGameData
-  ? { currencies: ['EUR', 'USD']; price_eur?: number; price_usd?: number; price_final?: number }
+  ? {
+      currencies: ['EUR', 'USD']
+      price_eur?: number
+      price_usd?: number
+      price_final?: number
+    }
   : T extends ItchGameData
-  ? { currencies: ['USD']; price_usd?: number; price_final?: number }
-  : T extends CrazyGamesData
-  ? { currencies: never; is_free: true }
-  : never {
-  
+    ? { currencies: ['USD']; price_usd?: number; price_final?: number }
+    : T extends CrazyGamesData
+      ? { currencies: never; is_free: true }
+      : never {
   if (isSteamGame(game)) {
     return {
       currencies: ['EUR', 'USD'],
@@ -330,7 +335,7 @@ export function getPlatformPricing<T extends PlatformGameData>(
       price_final: game.price_final,
     } as any
   }
-  
+
   if (isItchGame(game)) {
     return {
       currencies: ['USD'],
@@ -338,14 +343,14 @@ export function getPlatformPricing<T extends PlatformGameData>(
       price_final: game.price_final,
     } as any
   }
-  
+
   if (isCrazyGamesGame(game)) {
     return {
       currencies: [] as never,
       is_free: true,
     } as any
   }
-  
+
   throw new Error(`Unknown platform: ${(game as any).platform}`)
 }
 
@@ -370,7 +375,10 @@ export type PlatformComponentProps<P extends PlatformId> = {
 /**
  * Utility type to extract platform-specific properties
  */
-export type ExtractPlatformProps<T extends PlatformGameData, K extends keyof T> = Pick<T, K>
+export type ExtractPlatformProps<
+  T extends PlatformGameData,
+  K extends keyof T,
+> = Pick<T, K>
 
 /**
  * Platform validation utilities
@@ -417,9 +425,15 @@ export const PlatformValidation = {
    * Validate any platform game data
    */
   validatePlatformGame(data: any): data is PlatformGameData {
-    if (data.platform === 'steam') return this.validateSteam(data)
-    if (data.platform === 'itch') return this.validateItch(data)
-    if (data.platform === 'crazygames') return this.validateCrazyGames(data)
+    if (data.platform === 'steam') {
+      return this.validateSteam(data)
+    }
+    if (data.platform === 'itch') {
+      return this.validateItch(data)
+    }
+    if (data.platform === 'crazygames') {
+      return this.validateCrazyGames(data)
+    }
     return false
   },
 } as const

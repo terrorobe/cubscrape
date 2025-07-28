@@ -199,69 +199,68 @@ const showSortMenu = ref(false)
 
 // Sort method labels
 const sortLabels: Record<string, string> = {
-      date: 'Latest Videos',
-      'rating-score': 'Highest Rated',
-      'rating-category': 'Rating Tiers',
-      name: 'Alphabetical',
-      'release-new': 'Newest Releases',
-      'release-old': 'Oldest Releases',
-      'best-value': 'Best Value',
-      'hidden-gems': 'Hidden Gems',
-      'most-covered': 'Most Covered',
-      trending: 'Trending Up',
-      'creator-consensus': 'Creator Consensus',
-      'recent-discoveries': 'Recent Discoveries',
-      'video-recency': 'Within Time Range',
-      'time-range-releases': 'Time Range Releases',
-      'price-value': 'Price Range Value',
-      'steam-optimized': 'Steam Highlights',
-      'itch-discoveries': 'Itch Discoveries',
-      'premium-quality': 'Premium Quality',
-      'tag-match': 'Tag Relevance',
-      'channel-picks': 'Channel Picks',
-      advanced: 'Custom Multi-Criteria',
-    }
+  date: 'Latest Videos',
+  'rating-score': 'Highest Rated',
+  'rating-category': 'Rating Tiers',
+  name: 'Alphabetical',
+  'release-new': 'Newest Releases',
+  'release-old': 'Oldest Releases',
+  'best-value': 'Best Value',
+  'hidden-gems': 'Hidden Gems',
+  'most-covered': 'Most Covered',
+  trending: 'Trending Up',
+  'creator-consensus': 'Creator Consensus',
+  'recent-discoveries': 'Recent Discoveries',
+  'video-recency': 'Within Time Range',
+  'time-range-releases': 'Time Range Releases',
+  'price-value': 'Price Range Value',
+  'steam-optimized': 'Steam Highlights',
+  'itch-discoveries': 'Itch Discoveries',
+  'premium-quality': 'Premium Quality',
+  'tag-match': 'Tag Relevance',
+  'channel-picks': 'Channel Picks',
+  advanced: 'Custom Multi-Criteria',
+}
 
 // Sort explanations
 const sortExplanations: Record<string, string> = {
-      date: 'Games sorted by most recent video coverage, showing what content creators are playing now.',
-      'rating-score':
-        'Games with the highest Steam review percentages first, focusing on quality.',
-      'rating-category':
-        'Games grouped by Steam review categories (Overwhelmingly Positive, Very Positive, etc.), then by rating within each tier.',
-      name: 'Games listed alphabetically by title, useful for finding specific games.',
-      'release-new':
-        'Most recently released games first, great for discovering new titles.',
-      'release-old':
-        'Oldest games first, perfect for finding classic or retro titles.',
-      'best-value':
-        'High-quality games at reasonable prices, prioritizing good value for money.',
-      'hidden-gems':
-        'Highly rated games with less video coverage - undiscovered treasures worth exploring.',
-      'most-covered':
-        'Games featured by many content creators, indicating strong community interest.',
-      trending:
-        'Games gaining recent attention with multiple new videos, showing current gaming trends.',
-      'creator-consensus':
-        'Games praised by multiple different channels, indicating broad appeal.',
-      'recent-discoveries':
-        'Recently featured games worth checking out, balanced by quality ratings.',
-      'video-recency':
-        'Games within your selected video time range, prioritizing newest coverage.',
-      'time-range-releases':
-        'Games released in your selected time range, sorted by rating quality.',
-      'price-value': 'Best value games within your specified price range.',
-      'steam-optimized':
-        'Steam games sorted by review quality and community engagement metrics.',
-      'itch-discoveries':
-        'Creative indie games sorted by coverage and uniqueness.',
-      'premium-quality':
-        'Top-rated games with detailed reviews and recent attention.',
-      'tag-match':
-        'Games matching your selected tags, prioritized by rating and coverage.',
-      'channel-picks':
-        'Games featured by your selected channels, highest rated first.',
-    }
+  date: 'Games sorted by most recent video coverage, showing what content creators are playing now.',
+  'rating-score':
+    'Games with the highest Steam review percentages first, focusing on quality.',
+  'rating-category':
+    'Games grouped by Steam review categories (Overwhelmingly Positive, Very Positive, etc.), then by rating within each tier.',
+  name: 'Games listed alphabetically by title, useful for finding specific games.',
+  'release-new':
+    'Most recently released games first, great for discovering new titles.',
+  'release-old':
+    'Oldest games first, perfect for finding classic or retro titles.',
+  'best-value':
+    'High-quality games at reasonable prices, prioritizing good value for money.',
+  'hidden-gems':
+    'Highly rated games with less video coverage - undiscovered treasures worth exploring.',
+  'most-covered':
+    'Games featured by many content creators, indicating strong community interest.',
+  trending:
+    'Games gaining recent attention with multiple new videos, showing current gaming trends.',
+  'creator-consensus':
+    'Games praised by multiple different channels, indicating broad appeal.',
+  'recent-discoveries':
+    'Recently featured games worth checking out, balanced by quality ratings.',
+  'video-recency':
+    'Games within your selected video time range, prioritizing newest coverage.',
+  'time-range-releases':
+    'Games released in your selected time range, sorted by rating quality.',
+  'price-value': 'Best value games within your specified price range.',
+  'steam-optimized':
+    'Steam games sorted by review quality and community engagement metrics.',
+  'itch-discoveries': 'Creative indie games sorted by coverage and uniqueness.',
+  'premium-quality':
+    'Top-rated games with detailed reviews and recent attention.',
+  'tag-match':
+    'Games matching your selected tags, prioritized by rating and coverage.',
+  'channel-picks':
+    'Games featured by your selected channels, highest rated first.',
+}
 
 const sortLabel = computed((): string => {
   return sortLabels[props.sortBy] || 'Custom Sort'

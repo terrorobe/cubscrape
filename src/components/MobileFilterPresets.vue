@@ -394,7 +394,9 @@ const importOverwrite: Ref<boolean> = ref(false)
 
 // Reactive preset data
 const allPresets: Ref<Preset[]> = ref(getAllPresets())
-const userPresets = computed((): Preset[] => allPresets.value.filter((p) => p.isUser))
+const userPresets = computed((): Preset[] =>
+  allPresets.value.filter((p) => p.isUser),
+)
 const popularPresets = computed((): Preset[] => POPULAR_PRESETS)
 
 // Filtered presets based on search
@@ -446,7 +448,10 @@ const hasActiveFilters = computed((): boolean => {
 })
 
 // Methods with proper typing
-const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'info'): void => {
+const showNotification = (
+  message: string,
+  type: 'success' | 'error' | 'info' = 'info',
+): void => {
   notification.value = { message, type }
   setTimeout(() => {
     notification.value = null
@@ -569,7 +574,9 @@ const importUserPresets = (): void => {
 
   try {
     const data = JSON.parse(importData.value)
-    const result: ImportResult = importPresets(data, { overwrite: importOverwrite.value })
+    const result: ImportResult = importPresets(data, {
+      overwrite: importOverwrite.value,
+    })
 
     if (result.success) {
       refreshPresets()

@@ -10,12 +10,12 @@ declare module 'sql.js' {
     exec(sql: string, params?: any[]): QueryExecResult[]
     close(): void
   }
-  
+
   export interface QueryExecResult {
     columns: string[]
     values: any[][]
   }
-  
+
   export default function initSqlJs(config?: any): Promise<{
     Database: new (data?: Uint8Array) => Database
   }>

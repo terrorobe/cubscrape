@@ -195,7 +195,9 @@ export function isPlatformUrl(url: string, platformId: string): boolean {
 /**
  * Get available platforms for a game
  */
-export function getAvailablePlatforms(game: GameForPlatforms): AvailablePlatform[] {
+export function getAvailablePlatforms(
+  game: GameForPlatforms,
+): AvailablePlatform[] {
   const platforms: AvailablePlatform[] = []
 
   if (game.steam_url && !game.is_absorbed) {

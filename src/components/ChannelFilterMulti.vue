@@ -213,9 +213,7 @@ const getChannelColor = (channelName: string): string => {
 const filteredChannels = computed((): ChannelWithCount[] => {
   if (!searchQuery.value.trim()) {
     // Sort by popularity (game count) when not searching
-    return props.channelsWithCounts
-      .slice()
-      .sort((a, b) => b.count - a.count)
+    return props.channelsWithCounts.slice().sort((a, b) => b.count - a.count)
   }
 
   const query = searchQuery.value.toLowerCase()

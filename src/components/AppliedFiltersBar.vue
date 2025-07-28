@@ -146,10 +146,7 @@ const appliedFilters = computed((): AppliedFilter[] => {
   const filters: AppliedFilter[] = []
 
   // Release Status
-  if (
-    props.filters.releaseStatus &&
-    props.filters.releaseStatus !== 'all'
-  ) {
+  if (props.filters.releaseStatus && props.filters.releaseStatus !== 'all') {
     const statusLabels: Record<string, string> = {
       released: 'Released Only',
       'early-access': 'Early Access',
@@ -175,8 +172,7 @@ const appliedFilters = computed((): AppliedFilter[] => {
     filters.push({
       key: 'platform',
       type: 'platform',
-      label:
-        platformLabels[props.filters.platform] || props.filters.platform,
+      label: platformLabels[props.filters.platform] || props.filters.platform,
       value: 'all',
     })
   }
@@ -211,154 +207,150 @@ const appliedFilters = computed((): AppliedFilter[] => {
     })
   }
 
-      // Tags
-      if (props.filters.selectedTags && props.filters.selectedTags.length > 0) {
-        if (props.filters.selectedTags.length === 1) {
-          filters.push({
-            key: 'tags',
-            type: 'tags',
-            label: props.filters.selectedTags[0],
-            value: [],
-          })
-        } else {
-          const logic = props.filters.tagLogic === 'or' ? 'any' : 'all'
-          filters.push({
-            key: 'tags',
-            type: 'tags',
-            label: `${props.filters.selectedTags.length} tags (${logic})`,
-            value: [],
-          })
-        }
-      }
+  // Tags
+  if (props.filters.selectedTags && props.filters.selectedTags.length > 0) {
+    if (props.filters.selectedTags.length === 1) {
+      filters.push({
+        key: 'tags',
+        type: 'tags',
+        label: props.filters.selectedTags[0],
+        value: [],
+      })
+    } else {
+      const logic = props.filters.tagLogic === 'or' ? 'any' : 'all'
+      filters.push({
+        key: 'tags',
+        type: 'tags',
+        label: `${props.filters.selectedTags.length} tags (${logic})`,
+        value: [],
+      })
+    }
+  }
 
-      // Channels
+  // Channels
+  if (
+    props.filters.selectedChannels &&
+    props.filters.selectedChannels.length > 0
+  ) {
+    if (props.filters.selectedChannels.length === 1) {
+      const channelName = formatChannelName(props.filters.selectedChannels[0])
+      filters.push({
+        key: 'channels',
+        type: 'channels',
+        label: channelName,
+        value: [],
+      })
+    } else {
+      filters.push({
+        key: 'channels',
+        type: 'channels',
+        label: `${props.filters.selectedChannels.length} channels`,
+        value: [],
+      })
+    }
+  }
+
+  // Sort
+  if (props.filters.sortBy && props.filters.sortBy !== 'date') {
+    const sortLabels = {
+      'rating-score': 'Rating Score',
+      'rating-category': 'Rating Category',
+      name: 'Game Name',
+      'release-new': 'Release: Newest',
+      'release-old': 'Release: Oldest',
+    }
+    filters.push({
+      key: 'sortBy',
+      type: 'sortBy',
+      label: `Sort: ${sortLabels[props.filters.sortBy] || props.filters.sortBy}`,
+      value: 'date',
+    })
+  }
+
+  // Currency
+  if (props.filters.currency && props.filters.currency !== 'eur') {
+    const currencyLabels = {
+      usd: 'USD ($)',
+    }
+    filters.push({
+      key: 'currency',
+      type: 'currency',
+      label: currencyLabels[props.filters.currency] || props.filters.currency,
+      value: 'eur',
+    })
+  }
+
+  // Time Filter
+  if (props.filters.timeFilter && props.filters.timeFilter.type) {
+    let label = 'Time Filter'
+
+    if (props.filters.timeFilter.type === 'smart') {
+      const smartLabels = {
+        'release-and-video-recent': 'Recently Released',
+        'first-video-recent': 'Newly Discovered',
+        'multiple-videos-recent': 'Trending',
+        'old-game-new-attention': 'Rediscovered',
+      }
+      label = smartLabels[props.filters.timeFilter.smartLogic] || 'Smart Filter'
+    } else if (props.filters.timeFilter.type === 'video') {
+      label = 'Video Date Filter'
+    } else if (props.filters.timeFilter.type === 'release') {
+      label = 'Release Date Filter'
+    }
+
+    filters.push({
+      key: 'timeFilter',
+      type: 'timeFilter',
+      label: label,
+      value: {
+        type: null,
+        preset: null,
+        startDate: null,
+        endDate: null,
+        smartLogic: null,
+      },
+    })
+  }
+
+  // Price Filter
+  if (
+    props.filters.priceFilter &&
+    (props.filters.priceFilter.minPrice > 0 ||
+      props.filters.priceFilter.maxPrice < 70 ||
+      !props.filters.priceFilter.includeFree)
+  ) {
+    let label = 'Price Filter'
+    const currency = props.filters.currency === 'usd' ? '$' : '€'
+
+    // Create a descriptive label based on the filter settings
+    if (!props.filters.priceFilter.includeFree) {
       if (
-        props.filters.selectedChannels &&
-        props.filters.selectedChannels.length > 0
+        props.filters.priceFilter.minPrice > 0 ||
+        props.filters.priceFilter.maxPrice < 70
       ) {
-        if (props.filters.selectedChannels.length === 1) {
-          const channelName = formatChannelName(
-            props.filters.selectedChannels[0],
-          )
-          filters.push({
-            key: 'channels',
-            type: 'channels',
-            label: channelName,
-            value: [],
-          })
-        } else {
-          filters.push({
-            key: 'channels',
-            type: 'channels',
-            label: `${props.filters.selectedChannels.length} channels`,
-            value: [],
-          })
-        }
+        label = `${currency}${props.filters.priceFilter.minPrice}-${props.filters.priceFilter.maxPrice} (no free)`
+      } else {
+        label = 'Paid games only'
       }
+    } else if (
+      props.filters.priceFilter.minPrice === 0 &&
+      props.filters.priceFilter.maxPrice === 0
+    ) {
+      label = 'Free games only'
+    } else if (
+      props.filters.priceFilter.minPrice > 0 ||
+      props.filters.priceFilter.maxPrice < 70
+    ) {
+      label = `${currency}${props.filters.priceFilter.minPrice}-${props.filters.priceFilter.maxPrice}`
+    }
 
-      // Sort
-      if (props.filters.sortBy && props.filters.sortBy !== 'date') {
-        const sortLabels = {
-          'rating-score': 'Rating Score',
-          'rating-category': 'Rating Category',
-          name: 'Game Name',
-          'release-new': 'Release: Newest',
-          'release-old': 'Release: Oldest',
-        }
-        filters.push({
-          key: 'sortBy',
-          type: 'sortBy',
-          label: `Sort: ${sortLabels[props.filters.sortBy] || props.filters.sortBy}`,
-          value: 'date',
-        })
-      }
-
-      // Currency
-      if (props.filters.currency && props.filters.currency !== 'eur') {
-        const currencyLabels = {
-          usd: 'USD ($)',
-        }
-        filters.push({
-          key: 'currency',
-          type: 'currency',
-          label:
-            currencyLabels[props.filters.currency] || props.filters.currency,
-          value: 'eur',
-        })
-      }
-
-      // Time Filter
-      if (props.filters.timeFilter && props.filters.timeFilter.type) {
-        let label = 'Time Filter'
-
-        if (props.filters.timeFilter.type === 'smart') {
-          const smartLabels = {
-            'release-and-video-recent': 'Recently Released',
-            'first-video-recent': 'Newly Discovered',
-            'multiple-videos-recent': 'Trending',
-            'old-game-new-attention': 'Rediscovered',
-          }
-          label =
-            smartLabels[props.filters.timeFilter.smartLogic] || 'Smart Filter'
-        } else if (props.filters.timeFilter.type === 'video') {
-          label = 'Video Date Filter'
-        } else if (props.filters.timeFilter.type === 'release') {
-          label = 'Release Date Filter'
-        }
-
-        filters.push({
-          key: 'timeFilter',
-          type: 'timeFilter',
-          label: label,
-          value: {
-            type: null,
-            preset: null,
-            startDate: null,
-            endDate: null,
-            smartLogic: null,
-          },
-        })
-      }
-
-      // Price Filter
-      if (
-        props.filters.priceFilter &&
-        (props.filters.priceFilter.minPrice > 0 ||
-          props.filters.priceFilter.maxPrice < 70 ||
-          !props.filters.priceFilter.includeFree)
-      ) {
-        let label = 'Price Filter'
-        const currency = props.filters.currency === 'usd' ? '$' : '€'
-
-        // Create a descriptive label based on the filter settings
-        if (!props.filters.priceFilter.includeFree) {
-          if (
-            props.filters.priceFilter.minPrice > 0 ||
-            props.filters.priceFilter.maxPrice < 70
-          ) {
-            label = `${currency}${props.filters.priceFilter.minPrice}-${props.filters.priceFilter.maxPrice} (no free)`
-          } else {
-            label = 'Paid games only'
-          }
-        } else if (
-          props.filters.priceFilter.minPrice === 0 &&
-          props.filters.priceFilter.maxPrice === 0
-        ) {
-          label = 'Free games only'
-        } else if (
-          props.filters.priceFilter.minPrice > 0 ||
-          props.filters.priceFilter.maxPrice < 70
-        ) {
-          label = `${currency}${props.filters.priceFilter.minPrice}-${props.filters.priceFilter.maxPrice}`
-        }
-
-        filters.push({
-          key: 'priceFilter',
-          type: 'priceFilter',
-          label: label,
-          value: { minPrice: 0, maxPrice: 70, includeFree: true },
-        })
-      }
+    filters.push({
+      key: 'priceFilter',
+      type: 'priceFilter',
+      label: label,
+      value: { minPrice: 0, maxPrice: 70, includeFree: true },
+    })
+  }
 
   return filters
 })

@@ -57,13 +57,13 @@ class PerformanceMonitor {
 
   endTimer(operationName: string): number | undefined {
     if (!this.isEnabled) {
-      return
+      return undefined
     }
 
     const measurement = this.measurements.get(operationName)
     if (!measurement) {
       console.warn(`No start timer found for operation: ${operationName}`)
-      return
+      return undefined
     }
 
     measurement.endTime = globalThis.performance?.now() || Date.now()

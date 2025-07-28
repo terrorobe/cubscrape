@@ -298,9 +298,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, nextTick, onMounted, onUnmounted, watch, type Ref } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  watch,
+  type Ref,
+} from 'vue'
 import type { FilterConfig } from '../utils/presetManager'
-import type { ChannelWithCount, TagWithCount, DatabaseStats } from '../types/database'
+import type {
+  ChannelWithCount,
+  TagWithCount,
+  DatabaseStats,
+} from '../types/database'
 import MobileTagFilter from './MobileTagFilter.vue'
 import MobileChannelFilter from './MobileChannelFilter.vue'
 import MobileTimeFilterSimple from './MobileTimeFilterSimple.vue'
@@ -354,7 +367,7 @@ interface Tab {
   count: number
 }
 
-// Filter data interfaces  
+// Filter data interfaces
 interface TagChangedData {
   selectedTags: string[]
   tagLogic: 'and' | 'or'
@@ -568,12 +581,15 @@ const handleTouchMove = (e: TouchEvent): void => {
 
   // Only allow downward swipes and only if we're at the top of scroll content
   if (deltaY > 0) {
-    const scrollContainer = (e.currentTarget as HTMLElement).querySelector('.overflow-y-auto') as HTMLElement | null
+    const scrollContainer = (e.currentTarget as HTMLElement).querySelector(
+      '.overflow-y-auto',
+    ) as HTMLElement | null
     if (!scrollContainer || scrollContainer.scrollTop === 0) {
       e.preventDefault()
       // Apply some resistance to the drag
       const resistance = Math.min(deltaY / 3, 100)
-      ;(e.currentTarget as HTMLElement).style.transform = `translateY(${resistance}px)`
+      ;(e.currentTarget as HTMLElement).style.transform =
+        `translateY(${resistance}px)`
     }
   }
 }

@@ -72,7 +72,7 @@ export type TimeFilterType = 'video' | 'release' | null
 /**
  * Time filter preset options
  */
-export type TimeFilterPreset = 
+export type TimeFilterPreset =
   | 'last-week'
   | 'last-month'
   | 'last-3-months'
@@ -136,9 +136,7 @@ const handleChange = (): void => {
     const days = ranges[selectedPreset.value]
     if (days) {
       const endDate = new Date()
-      const startDate = new Date(
-        endDate.getTime() - days * 24 * 60 * 60 * 1000,
-      )
+      const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000)
       timeFilter.startDate = startDate.toISOString().split('T')[0]
       timeFilter.endDate = endDate.toISOString().split('T')[0]
     }
