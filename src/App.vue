@@ -11,9 +11,38 @@
       <!-- Desktop Layout: Sidebar + Main Content -->
       <div class="flex gap-6">
         <!-- Desktop Sidebar (hidden on mobile) -->
-        <div class="hidden w-72 shrink-0 md:block">
+        <div
+          class="hidden shrink-0 transition-all duration-300 ease-in-out md:block"
+          :class="sidebarCollapsed ? 'w-12' : 'w-72'"
+        >
+          <!-- Sidebar Toggle Button -->
+          <div class="sticky top-6 mb-4">
+            <button
+              @click="sidebarCollapsed = !sidebarCollapsed"
+              class="flex size-10 items-center justify-center rounded-lg bg-accent text-white transition-colors hover:bg-accent-hover active:bg-accent-active"
+              :title="sidebarCollapsed ? 'Expand filters' : 'Collapse filters'"
+            >
+              <svg
+                class="size-5 transition-transform duration-300"
+                :class="sidebarCollapsed ? 'rotate-180' : ''"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Sidebar Content -->
           <div
-            class="sidebar-scroll sticky top-6 max-h-[calc(100vh-3rem)] space-y-6 overflow-y-auto pr-2"
+            v-show="!sidebarCollapsed"
+            class="sidebar-scroll sticky top-20 max-h-[calc(100vh-6rem)] space-y-6 overflow-y-auto pr-2 transition-opacity duration-300"
             ref="sidebarScroll"
           >
             <GameFilters
@@ -52,6 +81,7 @@
                 :sort-by="filters.sortBy"
                 :sort-spec="filters.sortSpec"
                 :game-count="filteredGames.length"
+                @sort-changed="handleSortChange"
               />
 
               <!-- Game count -->
@@ -189,6 +219,7 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const currentTime = ref(new Date())
+    const sidebarCollapsed = ref(false)
     const { monitorDatabaseQuery, monitorFilterUpdate } =
       usePerformanceMonitoring()
     const filters = ref({
@@ -1341,6 +1372,15 @@ export default {
       })
     }
 
+    const handleSortChange = (sortData) => {
+      filters.value.sortBy = sortData.sortBy
+      filters.value.sortSpec = sortData.sortSpec
+      updateURLParams(filters.value)
+      if (db) {
+        executeQuery(db)
+      }
+    }
+
     const updateURLParams = (filterValues) => {
       const url = new URL(window.location)
 
@@ -1632,6 +1672,8 @@ export default {
       dismissVersionMismatch,
       testVersionMismatch,
       updateGridDebugInfo,
+      sidebarCollapsed,
+      handleSortChange,
     }
   },
 }
@@ -1654,7 +1696,7 @@ if (import.meta.hot) {
   /* Force grid to use all available space */
   justify-content: stretch;
   align-items: stretch;
-  grid-auto-rows: 1fr;
+  grid-auto-rows: auto;
 }
 
 /* Ensure grid items expand to fill their allocated space */

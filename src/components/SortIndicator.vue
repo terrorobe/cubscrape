@@ -19,8 +19,71 @@
     </div>
 
     <!-- Sort Method -->
-    <div class="flex items-center gap-2">
-      <span class="font-medium text-text-primary">{{ sortLabel }}</span>
+    <div class="relative flex items-center gap-2">
+      <!-- Sort Dropdown -->
+      <div class="relative">
+        <button
+          @click="showSortMenu = !showSortMenu"
+          class="flex items-center gap-1 rounded-sm px-2 py-1 font-medium text-text-primary transition-colors hover:bg-bg-secondary"
+          :title="'Click to change sort method'"
+        >
+          <span>{{ sortLabel }}</span>
+          <svg
+            class="size-3 transition-transform duration-200"
+            :class="showSortMenu ? 'rotate-180' : ''"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Sort Options Menu -->
+        <div
+          v-show="showSortMenu"
+          class="absolute top-full left-0 z-20 mt-1 w-56 rounded-lg border border-gray-600 bg-bg-card shadow-lg"
+          @click.stop
+        >
+          <div class="py-2">
+            <div class="px-3 pb-2 text-xs font-medium text-text-secondary">
+              Basic Sorting
+            </div>
+            <button
+              v-for="option in basicSortOptions"
+              :key="option.value"
+              @click="handleSortChange(option.value)"
+              class="flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors hover:bg-bg-secondary"
+              :class="
+                sortBy === option.value
+                  ? 'bg-accent/10 text-accent'
+                  : 'text-text-primary'
+              "
+            >
+              <span>{{ option.label }}</span>
+              <svg
+                v-if="sortBy === option.value"
+                class="size-4 text-accent"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- Advanced indicator -->
       <span
@@ -80,7 +143,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 
 export default {
   name: 'SortIndicator',
@@ -98,7 +161,9 @@ export default {
       default: 0,
     },
   },
-  setup(props) {
+  emits: ['sort-changed'],
+  setup(props, { emit }) {
+    const showSortMenu = ref(false)
     // Sort method labels
     const sortLabels = {
       date: 'Latest Videos',
@@ -247,6 +312,39 @@ export default {
       }
     })
 
+    // Basic sort options that are commonly used
+    const basicSortOptions = [
+      { value: 'date', label: 'Latest Videos' },
+      { value: 'rating-score', label: 'Highest Rated' },
+      { value: 'rating-category', label: 'Rating Tiers' },
+      { value: 'name', label: 'Alphabetical' },
+      { value: 'release-new', label: 'Newest Releases' },
+      { value: 'release-old', label: 'Oldest Releases' },
+    ]
+
+    const handleSortChange = (newSortBy) => {
+      showSortMenu.value = false
+      emit('sort-changed', {
+        sortBy: newSortBy,
+        sortSpec: null, // Clear advanced sort spec when using basic sorts
+      })
+    }
+
+    // Close menu when clicking outside
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.relative')) {
+        showSortMenu.value = false
+      }
+    }
+
+    onMounted(() => {
+      document.addEventListener('click', handleClickOutside)
+    })
+
+    onUnmounted(() => {
+      document.removeEventListener('click', handleClickOutside)
+    })
+
     return {
       sortLabel,
       explanation,
@@ -255,6 +353,9 @@ export default {
       isSmart,
       advancedDetails,
       sortIcon,
+      showSortMenu,
+      basicSortOptions,
+      handleSortChange,
     }
   },
 }
