@@ -217,6 +217,13 @@ import type {
   ChannelWithCount,
   TagWithCount,
 } from './types/database'
+import type { SortSpec, SortChangeEvent } from './types/sorting'
+import {
+  normalizeSortSpec,
+  serializeSortSpec,
+  deserializeSortSpec,
+  isAdvancedSortSpec,
+} from './types/sorting'
 import {
   TIMING,
   PRICING,
@@ -274,20 +281,7 @@ interface DatabaseStatus {
   lastChecked: Date | null
 }
 
-interface SortCriteria {
-  field: string
-  direction: 'asc' | 'desc'
-}
-
-interface AdvancedSortSpec {
-  primary: SortCriteria
-  secondary?: SortCriteria
-}
-
-interface SortChangeData {
-  sortBy: string
-  sortSpec: string | AdvancedSortSpec
-}
+// SortChangeEvent is now imported from types/sorting
 
 interface TimeFilter {
   type: string | null
@@ -303,19 +297,17 @@ interface PriceFilter {
   includeFree: boolean
 }
 
-interface AppFilters {
+interface AppFilters extends Record<string, unknown> {
   releaseStatus: string
   platform: string
   rating: string
   crossPlatform: boolean
   hiddenGems: boolean
-  tag: string
   selectedTags: string[]
   tagLogic: 'and' | 'or'
-  channel: string
   selectedChannels: string[]
   sortBy: string
-  sortSpec: string | AdvancedSortSpec
+  sortSpec: SortSpec
   currency: 'eur' | 'usd'
   timeFilter: TimeFilter
   priceFilter: PriceFilter
@@ -333,11 +325,9 @@ const filters: Ref<AppFilters> = ref({
   rating: '0',
   crossPlatform: false,
   hiddenGems: false,
-  tag: '', // Legacy single tag for backward compatibility
-  selectedTags: [], // New multi-select tags
+  selectedTags: [], // Multi-select tags
   tagLogic: 'and', // 'and' or 'or'
-  channel: '', // Legacy single channel for backward compatibility
-  selectedChannels: [], // New multi-select channels
+  selectedChannels: [], // Multi-select channels
   sortBy: 'date',
   sortSpec: null, // Advanced sorting specification
   currency: 'eur',
@@ -547,10 +537,9 @@ const buildSQLQuery = (
     }
   }
 
-  // Tag filter - support both legacy single tag and new multi-tag
+  // Tag filter with AND/OR logic
   // Note: These are expensive LIKE queries on JSON columns - consider placing them later for better performance
   if (filterValues.selectedTags && filterValues.selectedTags.length > 0) {
-    // Multi-tag filtering with AND/OR logic
     const tagConditions = filterValues.selectedTags.map(() => 'g.tags LIKE ?')
     if (filterValues.tagLogic === 'or') {
       query += ` AND (${tagConditions.join(' OR ')})`
@@ -561,19 +550,14 @@ const buildSQLQuery = (
     filterValues.selectedTags.forEach((tag) => {
       params.push(`%"${tag}"%`)
     })
-  } else if (filterValues.tag && filterValues.tag.trim()) {
-    // Legacy single tag support for backward compatibility
-    query += ' AND g.tags LIKE ?'
-    params.push(`%"${filterValues.tag}"%`)
   }
 
-  // Channel filter - support both legacy single channel and new multi-channel
+  // Channel filter with OR logic (games featured by ANY selected channel)
   // Note: These are expensive LIKE queries on JSON columns - consider placing them later for better performance
   if (
     filterValues.selectedChannels &&
     filterValues.selectedChannels.length > 0
   ) {
-    // Multi-channel filtering with OR logic (games featured by ANY selected channel)
     const channelConditions = filterValues.selectedChannels.map(
       () => 'g.unique_channels LIKE ?',
     )
@@ -581,10 +565,6 @@ const buildSQLQuery = (
     filterValues.selectedChannels.forEach((channel) => {
       params.push(`%"${channel}"%`)
     })
-  } else if (filterValues.channel && filterValues.channel.trim()) {
-    // Legacy single channel support for backward compatibility
-    query += ' AND g.unique_channels LIKE ?'
-    params.push(`%"${filterValues.channel}"%`)
   }
 
   // Price-based filtering
@@ -780,23 +760,43 @@ const buildSortClause = (filterValues: AppFilters): string => {
   return sortMappings[filterValues.sortBy] || 'latest_video_date DESC'
 }
 
-const buildAdvancedSortClause = (sortSpec: AdvancedSortSpec): string => {
+const buildAdvancedSortClause = (sortSpec: SortSpec): string => {
+  const normalized = normalizeSortSpec(sortSpec)
+
+  // If it's a string, treat as simple sort
+  if (typeof normalized === 'string') {
+    return getSortFieldClause(normalized, 'desc') || 'latest_video_date DESC'
+  }
+
+  if (!normalized) {
+    return 'latest_video_date DESC'
+  }
+
+  // Handle advanced sort object
+  if (!isAdvancedSortSpec(normalized)) {
+    // If it's not an advanced spec, fall back to default sorting
+    return (
+      getSortFieldClause('latest_video_date', 'desc') ||
+      'latest_video_date DESC'
+    )
+  }
+
   const clauses = []
 
   // Primary sorting criteria
   const primaryClause = getSortFieldClause(
-    sortSpec.primary.field,
-    sortSpec.primary.direction,
+    normalized.primary?.field || 'latest_video_date',
+    normalized.primary?.direction || 'desc',
   )
   if (primaryClause) {
     clauses.push(primaryClause)
   }
 
   // Secondary sorting criteria
-  if (sortSpec.secondary) {
+  if (normalized.secondary) {
     const secondaryClause = getSortFieldClause(
-      sortSpec.secondary.field,
-      sortSpec.secondary.direction,
+      normalized.secondary.field,
+      normalized.secondary.direction,
     )
     if (secondaryClause) {
       clauses.push(secondaryClause)
@@ -1037,7 +1037,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
 
       // Build parent lookup for absorbed games
       if (!gameData.is_absorbed) {
-        parentGameLookup.set(gameData.game_key, gameData)
+        parentGameLookup.set(String(gameData.game_key), gameData)
       }
     })
 
@@ -1045,11 +1045,13 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
     allGameData.forEach((gameData) => {
       // Parse JSON columns
       try {
-        gameData.genres = JSON.parse(gameData.genres || '[]')
-        gameData.tags = JSON.parse(gameData.tags || '[]')
-        gameData.developers = JSON.parse(gameData.developers || '[]')
-        gameData.publishers = JSON.parse(gameData.publishers || '[]')
-        gameData.unique_channels = JSON.parse(gameData.unique_channels || '[]')
+        gameData.genres = JSON.parse(String(gameData.genres || '[]'))
+        gameData.tags = JSON.parse(String(gameData.tags || '[]'))
+        gameData.developers = JSON.parse(String(gameData.developers || '[]'))
+        gameData.publishers = JSON.parse(String(gameData.publishers || '[]'))
+        gameData.unique_channels = JSON.parse(
+          String(gameData.unique_channels || '[]'),
+        )
       } catch {
         console.warn('Failed to parse JSON columns for game:', gameData.name)
       }
@@ -1057,7 +1059,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
       // Parse JSON fields that may contain display links
       try {
         gameData.display_links = gameData.display_links
-          ? JSON.parse(gameData.display_links)
+          ? JSON.parse(String(gameData.display_links))
           : null
       } catch {
         gameData.display_links = null
@@ -1065,7 +1067,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
 
       // For absorbed games, supplement with parent game data where needed
       if (gameData.is_absorbed && gameData.absorbed_into) {
-        const parentData = parentGameLookup.get(gameData.absorbed_into)
+        const parentData = parentGameLookup.get(String(gameData.absorbed_into))
         if (parentData) {
           // Use parent's review data if absorbed game has insufficient data
           if (
@@ -1094,52 +1096,62 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
 
       // Create game object matching the original data structure
       const game: AppGameData = {
-        id: gameData.id,
-        game_key: gameData.game_key || '',
-        name: gameData.name,
-        steam_app_id: gameData.steam_app_id,
-        header_image: gameData.header_image,
-        price_eur: gameData.price_eur,
-        price_usd: gameData.price_usd,
-        price_final: gameData.price_final,
-        is_free: gameData.is_free,
-        release_date: gameData.release_date,
-        release_date_sortable: gameData.release_date_sortable,
-        review_summary: gameData.review_summary,
-        review_summary_priority: gameData.review_summary_priority,
-        positive_review_percentage: gameData.positive_review_percentage,
-        review_count: gameData.review_count,
-        steam_url: gameData.steam_url,
-        itch_url: gameData.itch_url,
-        crazygames_url: gameData.crazygames_url,
-        demo_steam_app_id: gameData.demo_steam_app_id,
-        demo_steam_url: gameData.demo_steam_url,
-        display_links: gameData.display_links,
-        display_price: gameData.display_price,
-        tags: gameData.tags || [],
-        genres: gameData.genres || [],
-        developers: gameData.developers || [],
-        publishers: gameData.publishers || [],
-        platform: gameData.platform,
-        last_updated: gameData.last_updated,
-        latest_video_title: gameData.latest_video_title,
-        latest_video_id: gameData.latest_video_id,
-        latest_video_date: gameData.latest_video_date,
-        newest_video_date: gameData.latest_video_date,
-        unique_channels: gameData.unique_channels || [],
-        video_count: gameData.video_count || 0,
-        coming_soon: gameData.coming_soon,
-        is_early_access: gameData.is_early_access,
-        is_demo: gameData.is_demo,
-        planned_release_date: gameData.planned_release_date,
-        insufficient_reviews: gameData.insufficient_reviews,
-        is_inferred_summary: gameData.is_inferred_summary,
-        review_tooltip: gameData.review_tooltip,
-        recent_review_percentage: gameData.recent_review_percentage,
-        recent_review_count: gameData.recent_review_count,
-        recent_review_summary: gameData.recent_review_summary,
-        is_absorbed: gameData.is_absorbed,
-        absorbed_into: gameData.absorbed_into,
+        id: Number(gameData.id),
+        game_key: String(gameData.game_key || ''),
+        name: String(gameData.name),
+        steam_app_id: String(gameData.steam_app_id),
+        header_image: String(gameData.header_image),
+        price_eur: Number(gameData.price_eur),
+        price_usd: Number(gameData.price_usd),
+        price_final: Number(gameData.price_final),
+        is_free: Boolean(gameData.is_free),
+        release_date: String(gameData.release_date),
+        release_date_sortable: Number(gameData.release_date_sortable),
+        review_summary: String(gameData.review_summary),
+        review_summary_priority: Number(gameData.review_summary_priority),
+        positive_review_percentage: Number(gameData.positive_review_percentage),
+        review_count: Number(gameData.review_count),
+        steam_url: String(gameData.steam_url),
+        itch_url: String(gameData.itch_url),
+        crazygames_url: String(gameData.crazygames_url),
+        demo_steam_app_id: String(gameData.demo_steam_app_id),
+        demo_steam_url: String(gameData.demo_steam_url),
+        display_links:
+          typeof gameData.display_links === 'object' &&
+          gameData.display_links !== null
+            ? (gameData.display_links as { main?: string; demo?: string })
+            : null,
+        display_price: String(gameData.display_price),
+        tags: Array.isArray(gameData.tags) ? gameData.tags : [],
+        genres: Array.isArray(gameData.genres) ? gameData.genres : [],
+        developers: Array.isArray(gameData.developers)
+          ? gameData.developers
+          : [],
+        publishers: Array.isArray(gameData.publishers)
+          ? gameData.publishers
+          : [],
+        platform: String(gameData.platform) as 'steam' | 'itch' | 'crazygames',
+        last_updated: String(gameData.last_updated),
+        latest_video_title: String(gameData.latest_video_title),
+        latest_video_id: String(gameData.latest_video_id),
+        latest_video_date: String(gameData.latest_video_date),
+        newest_video_date: String(gameData.latest_video_date),
+        unique_channels: Array.isArray(gameData.unique_channels)
+          ? gameData.unique_channels
+          : [],
+        video_count: Number(gameData.video_count) || 0,
+        coming_soon: Boolean(gameData.coming_soon),
+        is_early_access: Boolean(gameData.is_early_access),
+        is_demo: Boolean(gameData.is_demo),
+        planned_release_date: String(gameData.planned_release_date),
+        insufficient_reviews: Boolean(gameData.insufficient_reviews),
+        is_inferred_summary: Boolean(gameData.is_inferred_summary),
+        review_tooltip: String(gameData.review_tooltip),
+        recent_review_percentage: Number(gameData.recent_review_percentage),
+        recent_review_count: Number(gameData.recent_review_count),
+        recent_review_summary: String(gameData.recent_review_summary),
+        is_absorbed: Boolean(gameData.is_absorbed),
+        absorbed_into: String(gameData.absorbed_into),
       }
 
       processedGames.push(game)
@@ -1509,7 +1521,7 @@ const updateFilters = (newFilters: Partial<AppFilters>): void => {
   })
 }
 
-const handleSortChange = (sortData: SortChangeData): void => {
+const handleSortChange = (sortData: SortChangeEvent): void => {
   filters.value.sortBy = sortData.sortBy
   filters.value.sortSpec = sortData.sortSpec
   updateURLParams(filters.value)
@@ -1529,25 +1541,25 @@ const updateURLParams = (filterValues: AppFilters): void => {
     rating: filterValues.rating !== '0' ? filterValues.rating : null,
     crossPlatform: filterValues.crossPlatform ? 'true' : null,
     hiddenGems: filterValues.hiddenGems ? 'true' : null,
-    // Support both legacy single tag and new multi-tag format
+    // Multi-tag format
     tags:
       filterValues.selectedTags && filterValues.selectedTags.length > 0
         ? filterValues.selectedTags.join(',')
-        : filterValues.tag || null,
+        : null,
     tagLogic:
       filterValues.selectedTags &&
       filterValues.selectedTags.length > 1 &&
       filterValues.tagLogic !== 'and'
         ? filterValues.tagLogic
         : null,
-    // Support both legacy single channel and new multi-channel format
+    // Multi-channel format
     channels:
       filterValues.selectedChannels && filterValues.selectedChannels.length > 0
         ? filterValues.selectedChannels.join(',')
-        : filterValues.channel || null,
+        : null,
     sort: filterValues.sortBy !== 'date' ? filterValues.sortBy : null,
     sortSpec: filterValues.sortSpec
-      ? JSON.stringify(filterValues.sortSpec)
+      ? serializeSortSpec(filterValues.sortSpec)
       : null,
     currency: filterValues.currency !== 'eur' ? filterValues.currency : null,
     // Time filter parameters
@@ -1607,23 +1619,16 @@ const loadFiltersFromURL = (): void => {
     urlFilters.hiddenGems = urlParams.get('hiddenGems') === 'true'
   }
 
-  // Handle both new 'tags' parameter and legacy 'tag' parameter
+  // Handle tags parameter (legacy params already migrated above)
   if (urlParams.has('tags')) {
     const tagsParam = urlParams.get('tags')
     if (tagsParam && tagsParam.includes(',')) {
       // Multi-tag format: "tag1,tag2,tag3"
       urlFilters.selectedTags = tagsParam.split(',').filter((tag) => tag.trim())
-      urlFilters.tag = '' // Clear legacy field
     } else if (tagsParam) {
-      // Single tag in new format
+      // Single tag format
       urlFilters.selectedTags = [tagsParam]
-      urlFilters.tag = tagsParam // Keep for backward compatibility
     }
-  } else if (urlParams.has('tag')) {
-    // Legacy single tag support
-    const tagParam = urlParams.get('tag')
-    urlFilters.tag = tagParam
-    urlFilters.selectedTags = tagParam ? [tagParam] : []
   }
 
   if (urlParams.has('tagLogic')) {
@@ -1633,7 +1638,7 @@ const loadFiltersFromURL = (): void => {
     }
   }
 
-  // Handle both new 'channels' parameter and legacy 'channel' parameter
+  // Handle channels parameter (legacy params already migrated above)
   if (urlParams.has('channels')) {
     const channelsParam = urlParams.get('channels')
     if (channelsParam && channelsParam.includes(',')) {
@@ -1641,17 +1646,10 @@ const loadFiltersFromURL = (): void => {
       urlFilters.selectedChannels = channelsParam
         .split(',')
         .filter((channel) => channel.trim())
-      urlFilters.channel = '' // Clear legacy field
     } else if (channelsParam) {
-      // Single channel in new format
+      // Single channel format
       urlFilters.selectedChannels = [channelsParam]
-      urlFilters.channel = channelsParam // Keep for backward compatibility
     }
-  } else if (urlParams.has('channel')) {
-    // Legacy single channel support
-    const channelParam = urlParams.get('channel')
-    urlFilters.channel = channelParam
-    urlFilters.selectedChannels = channelParam ? [channelParam] : []
   }
 
   if (urlParams.has('sort')) {
@@ -1659,10 +1657,9 @@ const loadFiltersFromURL = (): void => {
   }
 
   if (urlParams.has('sortSpec')) {
-    try {
-      urlFilters.sortSpec = JSON.parse(urlParams.get('sortSpec'))
-    } catch {
-      console.warn('Invalid sortSpec in URL parameters')
+    const sortSpecParam = urlParams.get('sortSpec')
+    if (sortSpecParam) {
+      urlFilters.sortSpec = deserializeSortSpec(sortSpecParam)
     }
   }
 

@@ -144,31 +144,8 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-
-/**
- * Sort specification for advanced sorting
- */
-export interface SortSpec {
-  primary?: {
-    field: string
-    direction?: 'asc' | 'desc'
-    weight?: number
-  }
-  secondary?: {
-    field: string
-    direction?: 'asc' | 'desc'
-    weight?: number
-  }
-  criteria?: string[]
-}
-
-/**
- * Sort change event payload
- */
-export interface SortChangeEvent {
-  sortBy: string
-  sortSpec: SortSpec | null
-}
+import type { SortSpec, SortChangeEvent } from '../types/sorting'
+import { isAdvancedSortSpec, getSortDisplayName } from '../types/sorting'
 
 /**
  * Sort option interface
@@ -183,7 +160,7 @@ interface SortOption {
  */
 export interface SortIndicatorProps {
   sortBy: string
-  sortSpec?: SortSpec | null
+  sortSpec?: SortSpec
   gameCount?: number
 }
 
@@ -263,7 +240,11 @@ const sortExplanations: Record<string, string> = {
 }
 
 const sortLabel = computed((): string => {
-  return sortLabels[props.sortBy] || 'Custom Sort'
+  return (
+    getSortDisplayName(props.sortSpec) ||
+    sortLabels[props.sortBy] ||
+    props.sortBy
+  )
 })
 
 const explanation = computed((): string => {
@@ -277,7 +258,7 @@ const explanation = computed((): string => {
 })
 
 const isAdvanced = computed((): boolean => {
-  return props.sortBy === 'advanced' && !!props.sortSpec
+  return props.sortBy === 'advanced' && isAdvancedSortSpec(props.sortSpec)
 })
 
 const isContextual = computed((): boolean => {
@@ -305,7 +286,7 @@ const isSmart = computed((): boolean => {
 })
 
 const advancedDetails = computed((): string => {
-  if (!props.sortSpec) {
+  if (!isAdvancedSortSpec(props.sortSpec)) {
     return ''
   }
 

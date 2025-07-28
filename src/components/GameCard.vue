@@ -349,6 +349,7 @@ import {
 } from '../config/platforms'
 import { UI_LIMITS } from '../config/index'
 import type { ParsedGameData } from '../types/database'
+import { databaseManager } from '../utils/databaseManager'
 
 // Component props interface
 interface Props {
@@ -388,19 +389,6 @@ interface VideosByChannel {
   [channelName: string]: ChannelGroup
 }
 
-// Database interface for window object
-interface WindowWithDatabase extends Window {
-  gameDatabase?: {
-    exec: (
-      query: string,
-      params?: (string | number)[],
-    ) => Array<{
-      columns: string[]
-      values: (string | number | null)[][]
-    }>
-  }
-}
-
 // Reactive state with proper typing
 const showingVideos: Ref<Record<number, boolean>> = ref({})
 const loadingVideos: Ref<Record<number, boolean>> = ref({})
@@ -435,8 +423,8 @@ const toggleVideos = async (gameId: number): Promise<void> => {
   loadingVideos.value[gameId] = true
 
   try {
-    // Get database instance from parent
-    const db = (window as WindowWithDatabase).gameDatabase
+    // Get database instance from database manager
+    const db = databaseManager.getDatabase()
     if (!db) {
       console.error('Database not available')
       return
@@ -675,8 +663,9 @@ const getMainPlatformUrl = (game: ParsedGameData): string | null => {
   const platformConfig = getPlatformConfig(game.platform)
   if (platformConfig && platformConfig.urlField) {
     return (
-      ((game as Record<string, unknown>)[platformConfig.urlField] as string) ||
-      null
+      ((game as unknown as Record<string, unknown>)[
+        platformConfig.urlField
+      ] as string) || null
     )
   }
 

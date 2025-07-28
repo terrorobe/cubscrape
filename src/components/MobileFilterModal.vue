@@ -314,6 +314,7 @@ import type {
   TagWithCount,
   DatabaseStats,
 } from '../types/database'
+import type { SortChangeEvent } from '../types/sorting'
 import MobileTagFilter from './MobileTagFilter.vue'
 import MobileChannelFilter from './MobileChannelFilter.vue'
 import MobileTimeFilterSimple from './MobileTimeFilterSimple.vue'
@@ -391,10 +392,7 @@ interface PriceFilterData {
   includeFree: boolean
 }
 
-interface SortData {
-  sortBy: string
-  sortSpec: string
-}
+// SortData interface is replaced by SortChangeEvent from types/sorting.ts
 
 // Reactive state with proper typing
 const isAnimating: Ref<boolean> = ref(false)
@@ -665,9 +663,9 @@ const handlePriceFilterChanged = (priceFilterData: PriceFilterData): void => {
   emitFiltersChanged()
 }
 
-const handleSortChanged = (sortData: SortData): void => {
-  localFilters.sortBy = sortData.sortBy
-  localFilters.sortSpec = sortData.sortSpec
+const handleSortChanged = (sortEvent: SortChangeEvent): void => {
+  localFilters.sortBy = sortEvent.sortBy
+  localFilters.sortSpec = sortEvent.sortSpec
   emitFiltersChanged()
 }
 

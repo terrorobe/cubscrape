@@ -117,6 +117,14 @@ export type FilterValue =
   | number
   | boolean
   | { min: number; max: number }
+  | {
+      type: string | null
+      preset: string | null
+      startDate: string | null
+      endDate: string | null
+      smartLogic: string | null
+    }
+  | { minPrice: number; maxPrice: number; includeFree: boolean }
   | null
 
 /**

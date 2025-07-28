@@ -274,66 +274,83 @@ export function isCrazyGamesGame(
 }
 
 /**
- * Type-safe platform URL extractor
+ * Return types for platform URL extraction
  */
-export function getPlatformUrl<T extends PlatformGameData>(
-  game: T,
-): T extends SteamGameData
-  ? { platform: 'steam'; url: string; app_id: string }
-  : T extends ItchGameData
-    ? { platform: 'itch'; url: string }
-    : T extends CrazyGamesData
-      ? { platform: 'crazygames'; url: string }
-      : never {
+type SteamUrlResult = { platform: 'steam'; url: string; app_id: string }
+type ItchUrlResult = { platform: 'itch'; url: string }
+type CrazyGamesUrlResult = { platform: 'crazygames'; url: string }
+
+/**
+ * Type-safe platform URL extractor - function overloads for better type inference
+ */
+export function getPlatformUrl(game: SteamGameData): SteamUrlResult
+export function getPlatformUrl(game: ItchGameData): ItchUrlResult
+export function getPlatformUrl(game: CrazyGamesData): CrazyGamesUrlResult
+export function getPlatformUrl(
+  game: PlatformGameData,
+): SteamUrlResult | ItchUrlResult | CrazyGamesUrlResult {
   if (isSteamGame(game)) {
     return {
       platform: 'steam',
       url: game.steam_url,
       app_id: game.steam_app_id,
-    } as any
+    }
   }
 
   if (isItchGame(game)) {
     return {
       platform: 'itch',
       url: game.itch_url,
-    } as any
+    }
   }
 
   if (isCrazyGamesGame(game)) {
     return {
       platform: 'crazygames',
       url: game.crazygames_url,
-    } as any
+    }
   }
 
-  throw new Error(`Unknown platform: ${(game as any).platform}`)
+  // This should never happen due to discriminated union, but we need exhaustive checking
+  // TypeScript ensures all cases are handled above
+  throw new Error(`Unknown platform: ${(game as { platform: string }).platform}`)
 }
 
 /**
- * Type-safe pricing extractor with currency support
+ * Return types for platform pricing extraction
  */
-export function getPlatformPricing<T extends PlatformGameData>(
-  game: T,
-): T extends SteamGameData
-  ? {
-      currencies: ['EUR', 'USD']
-      price_eur?: number
-      price_usd?: number
-      price_final?: number
-    }
-  : T extends ItchGameData
-    ? { currencies: ['USD']; price_usd?: number; price_final?: number }
-    : T extends CrazyGamesData
-      ? { currencies: never; is_free: true }
-      : never {
+type SteamPricingResult = {
+  currencies: ['EUR', 'USD']
+  price_eur?: number
+  price_usd?: number
+  price_final?: number
+}
+type ItchPricingResult = { 
+  currencies: ['USD']
+  price_usd?: number
+  price_final?: number 
+}
+type CrazyGamesPricingResult = { 
+  currencies: never
+  is_free: true 
+}
+
+/**
+ * Type-safe pricing extractor with currency support - function overloads for better type inference
+ */
+export function getPlatformPricing(game: SteamGameData): SteamPricingResult
+export function getPlatformPricing(game: ItchGameData): ItchPricingResult
+export function getPlatformPricing(game: CrazyGamesData): CrazyGamesPricingResult
+export function getPlatformPricing(
+  game: PlatformGameData,
+): SteamPricingResult | ItchPricingResult | CrazyGamesPricingResult {
   if (isSteamGame(game)) {
     return {
       currencies: ['EUR', 'USD'],
       price_eur: game.price_eur,
       price_usd: game.price_usd,
       price_final: game.price_final,
-    } as any
+    }
   }
 
   if (isItchGame(game)) {
@@ -341,17 +358,19 @@ export function getPlatformPricing<T extends PlatformGameData>(
       currencies: ['USD'],
       price_usd: game.price_usd,
       price_final: game.price_final,
-    } as any
+    }
   }
 
   if (isCrazyGamesGame(game)) {
     return {
       currencies: [] as never,
       is_free: true,
-    } as any
+    }
   }
 
-  throw new Error(`Unknown platform: ${(game as any).platform}`)
+  // This should never happen due to discriminated union, but we need exhaustive checking
+  // TypeScript ensures all cases are handled above
+  throw new Error(`Unknown platform: ${(game as { platform: string }).platform}`)
 }
 
 /**
@@ -424,15 +443,22 @@ export const PlatformValidation = {
   /**
    * Validate any platform game data
    */
-  validatePlatformGame(data: any): data is PlatformGameData {
-    if (data.platform === 'steam') {
-      return this.validateSteam(data)
+  validatePlatformGame(data: unknown): data is PlatformGameData {
+    // Type guard: check if data is an object with a platform property
+    if (typeof data !== 'object' || data === null || !('platform' in data)) {
+      return false
     }
-    if (data.platform === 'itch') {
-      return this.validateItch(data)
+    
+    const gameData = data as { platform: unknown }
+    
+    if (gameData.platform === 'steam') {
+      return this.validateSteam(gameData)
     }
-    if (data.platform === 'crazygames') {
-      return this.validateCrazyGames(data)
+    if (gameData.platform === 'itch') {
+      return this.validateItch(gameData)
+    }
+    if (gameData.platform === 'crazygames') {
+      return this.validateCrazyGames(gameData)
     }
     return false
   },

@@ -37,9 +37,16 @@ interface SQLModuleLike {
 }
 
 /**
+ * Initialized SQL.js module type
+ */
+interface InitializedSQLModule {
+  Database: new (data?: Uint8Array) => Database
+}
+
+/**
  * Type guard to check if SQL.js module is loaded
  */
-function isSQLModule(value: unknown): value is typeof import('sql.js') {
+function isSQLModule(value: unknown): value is InitializedSQLModule {
   return (
     value !== null &&
     typeof value === 'object' &&
@@ -56,10 +63,9 @@ interface QueryResultLike {
 }
 
 /**
- * Extended window interface for database global access
+ * Extended window interface for HMR persistence only
  */
 interface WindowWithGameDatabase extends Window {
-  gameDatabase?: Database
   __databaseManager?: DatabaseManager
 }
 
@@ -124,7 +130,7 @@ export interface DatabaseStats {
 
 export class DatabaseManager {
   private db: Database | null = null
-  private SQL: typeof import('sql.js') | null = null
+  private SQL: InitializedSQLModule | null = null
   private lastModified: string | null = null
   private lastETag: string | null = null
   private checkInterval: NodeJS.Timeout | null = null
@@ -147,10 +153,11 @@ export class DatabaseManager {
    */
   async init(): Promise<void> {
     // Initialize SQL.js
-    const initSqlJs = (await import('sql.js')).default
-    this.SQL = await initSqlJs({
+    const sqlJsModule = await import('sql.js')
+    const initSqlJs = sqlJsModule.default
+    this.SQL = (await initSqlJs({
       locateFile: (file: string) => `https://sql.js.org/dist/${file}`,
-    })
+    })) as InitializedSQLModule
 
     // Load initial database (will cache currentAppVersion from database)
     await this.loadDatabase()
@@ -303,8 +310,7 @@ export class DatabaseManager {
       this.lastModified = lastModified
       this.lastETag = etag
 
-      // Make database available globally for backward compatibility
-      ;(window as WindowWithGameDatabase).gameDatabase = this.db
+      // Database available through databaseManager.getDatabase() - no global access needed
 
       const totalGames = extractSingleValue(
         this.db.exec('SELECT COUNT(*) FROM games'),
@@ -522,10 +528,7 @@ export class DatabaseManager {
     this.listeners.clear()
     this.versionMismatchListeners.clear()
 
-    const extWindow = window as WindowWithGameDatabase
-    if (extWindow.gameDatabase === this.db) {
-      delete extWindow.gameDatabase
-    }
+    // Database cleanup handled by this.db.close() above
   }
 }
 

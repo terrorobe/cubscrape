@@ -593,19 +593,11 @@ const currencyCount = computed((): number => {
 const handleTagsChanged = (tagData: TagChangedData): void => {
   localFilters.selectedTags = tagData.selectedTags
   localFilters.tagLogic = tagData.tagLogic
-  // Update legacy tag field for backward compatibility
-  localFilters.tag =
-    tagData.selectedTags.length === 1 ? tagData.selectedTags[0] : ''
   debouncedEmitFiltersChanged()
 }
 
 const handleChannelsChanged = (channelData: ChannelChangedData): void => {
   localFilters.selectedChannels = channelData.selectedChannels
-  // Update legacy channel field for backward compatibility
-  localFilters.channel =
-    channelData.selectedChannels.length === 1
-      ? channelData.selectedChannels[0]
-      : ''
   debouncedEmitFiltersChanged()
 }
 
@@ -656,40 +648,48 @@ const handleRemoveFilter = (filterInfo: FilterInfo): void => {
   preserveScrollPosition(() => {
     switch (filterInfo.type) {
       case 'releaseStatus':
-        localFilters.releaseStatus = filterInfo.value
+        localFilters.releaseStatus = filterInfo.value as string
         break
       case 'platform':
-        localFilters.platform = filterInfo.value
+        localFilters.platform = filterInfo.value as string
         break
       case 'rating':
-        localFilters.rating = filterInfo.value
+        localFilters.rating = filterInfo.value as string
         break
       case 'crossPlatform':
-        localFilters.crossPlatform = filterInfo.value
+        localFilters.crossPlatform = filterInfo.value as boolean
         break
       case 'hiddenGems':
-        localFilters.hiddenGems = filterInfo.value
+        localFilters.hiddenGems = filterInfo.value as boolean
         break
       case 'tags':
-        localFilters.selectedTags = filterInfo.value
-        localFilters.tag = ''
+        localFilters.selectedTags = filterInfo.value as string[]
         break
       case 'channels':
-        localFilters.selectedChannels = filterInfo.value
-        localFilters.channel = ''
+        localFilters.selectedChannels = filterInfo.value as string[]
         break
       case 'sortBy':
-        localFilters.sortBy = filterInfo.value
+        localFilters.sortBy = filterInfo.value as string
         localFilters.sortSpec = null
         break
       case 'currency':
-        localFilters.currency = filterInfo.value
+        localFilters.currency = filterInfo.value as 'eur' | 'usd'
         break
       case 'timeFilter':
-        localFilters.timeFilter = filterInfo.value
+        localFilters.timeFilter = filterInfo.value as unknown as {
+          type: string
+          preset: string
+          startDate: string
+          endDate: string
+          smartLogic: string
+        }
         break
       case 'priceFilter':
-        localFilters.priceFilter = filterInfo.value
+        localFilters.priceFilter = filterInfo.value as unknown as {
+          minPrice: number
+          maxPrice: number
+          includeFree: boolean
+        }
         break
     }
     // Remove operations should be immediate
@@ -704,10 +704,8 @@ const handleClearAllFilters = (): void => {
     localFilters.rating = '0'
     localFilters.crossPlatform = false
     localFilters.hiddenGems = false
-    localFilters.tag = ''
     localFilters.selectedTags = []
     localFilters.tagLogic = 'and'
-    localFilters.channel = ''
     localFilters.selectedChannels = []
     localFilters.sortBy = 'date'
     localFilters.sortSpec = null

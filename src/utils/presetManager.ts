@@ -3,13 +3,26 @@
  * Handles saving, loading, and managing filter presets for quick access
  */
 
+import { DEFAULT_FILTERS } from '../config/index'
+import type { SortSpec } from '../types/sorting'
+import { serializeSortSpec, deserializeSortSpec } from '../types/sorting'
+
 const PRESET_STORAGE_KEY = 'cubscrape-filter-presets'
 const PRESET_VERSION = '1.0'
 
 /**
+ * Preset categories
+ */
+export const PRESET_CATEGORIES = {
+  POPULAR: 'popular',
+  CUSTOM: 'custom',
+  COMMUNITY: 'community',
+} as const
+
+/**
  * Filter configuration interface
  */
-export interface FilterConfig {
+export interface FilterConfig extends Record<string, unknown> {
   releaseStatus: string
   platform: string
   rating: string
@@ -21,7 +34,7 @@ export interface FilterConfig {
   channel?: string
   selectedChannels: string[]
   sortBy: string
-  sortSpec: string | Record<string, unknown>
+  sortSpec: SortSpec
   currency: 'eur' | 'usd'
   timeFilter: {
     type: string | null
@@ -574,7 +587,10 @@ export function generateShareableURL(
     params.set('sort', filters.sortBy)
   }
   if (filters.sortSpec) {
-    params.set('sortSpec', JSON.stringify(filters.sortSpec))
+    const serialized = serializeSortSpec(filters.sortSpec)
+    if (serialized) {
+      params.set('sortSpec', serialized)
+    }
   }
 
   // Handle currency
@@ -672,13 +688,9 @@ export function parseShareableURL(url: string): FilterConfig {
       filters.sortBy = params.get('sort') || DEFAULT_FILTERS.sortBy
     }
     if (params.has('sortSpec')) {
-      try {
-        const sortSpecParam = params.get('sortSpec')
-        if (sortSpecParam) {
-          filters.sortSpec = JSON.parse(sortSpecParam)
-        }
-      } catch {
-        console.warn('Invalid sortSpec in URL')
+      const sortSpecParam = params.get('sortSpec')
+      if (sortSpecParam) {
+        filters.sortSpec = deserializeSortSpec(sortSpecParam)
       }
     }
 
@@ -741,10 +753,14 @@ export function exportPresets(presetIds: string[] | null = null): ExportData {
     version: PRESET_VERSION,
     exported: new Date().toISOString(),
     presets: presetsToExport.map((preset) => {
-      // Remove runtime-only properties
+      // Remove runtime-only properties and ensure required fields
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { isPopular, isUser, ...exportPreset } = preset
-      return exportPreset
+      return {
+        ...exportPreset,
+        // Ensure all required Preset fields are present
+        isPopular: false, // Will be set to true for popular presets when imported
+      }
     }),
   }
 }

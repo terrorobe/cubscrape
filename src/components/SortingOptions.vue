@@ -164,40 +164,14 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-
-/**
- * Sort criteria field options for advanced mode
- */
-export type SortField =
-  | 'rating'
-  | 'coverage'
-  | 'recency'
-  | 'release'
-  | 'price'
-  | 'channels'
-  | 'reviews'
-
-/**
- * Sort direction options
- */
-export type SortDirection = 'asc' | 'desc'
-
-/**
- * Sort criteria configuration for advanced mode
- */
-export interface SortCriteria {
-  field: SortField
-  direction: SortDirection
-}
-
-/**
- * Advanced sort specification
- */
-export interface AdvancedSortSpec {
-  mode: 'advanced'
-  primary: SortCriteria
-  secondary: SortCriteria | null
-}
+import type {
+  SortField,
+  SortDirection,
+  SortCriteria,
+  AdvancedSortSpec,
+  SortSpec,
+  SortChangeEvent,
+} from '../types/sorting'
 
 /**
  * Quick preset configuration for advanced mode
@@ -219,13 +193,7 @@ export interface ContextualSortOption {
   description: string
 }
 
-/**
- * Sort change event payload
- */
-export interface SortChangeEvent {
-  sortBy: string
-  sortSpec: AdvancedSortSpec | null
-}
+// SortChangeEvent is now imported from types/sorting
 
 /**
  * Props interface for SortingOptions component
@@ -242,6 +210,12 @@ export interface ContextualFilters {
   selectedTags?: string[]
   platform?: string
   releaseStatus?: string
+  rating?: string
+  priceFilter?: {
+    minPrice: number
+    maxPrice: number
+    includeFree: boolean
+  }
 }
 
 export interface SortingOptionsProps {
@@ -506,7 +480,7 @@ const handleAdvancedSortChange = (): void => {
 
   emit('sort-changed', {
     sortBy: 'advanced',
-    sortSpec: sortSpec,
+    sortSpec: sortSpec as SortSpec,
   })
 }
 
@@ -516,7 +490,7 @@ const emitSortChange = (): void => {
   } else {
     emit('sort-changed', {
       sortBy: currentSort.value,
-      sortSpec: null,
+      sortSpec: null as SortSpec,
     })
   }
 }
