@@ -35,7 +35,7 @@
           <!-- Hidden Gem Indicator -->
           <span
             v-if="isHiddenGem"
-            title="Hidden Gem: High quality game (80%+ rating) with limited video coverage (1-3 videos) and sufficient reviews (50+)"
+            :title="`Hidden Gem: High quality game (${HIDDEN_GEM_CRITERIA.MIN_RATING}%+ rating) with limited video coverage (${HIDDEN_GEM_CRITERIA.MIN_VIDEO_COUNT}-${HIDDEN_GEM_CRITERIA.MAX_VIDEO_COUNT} videos) and sufficient reviews (${HIDDEN_GEM_CRITERIA.MIN_REVIEW_COUNT}+)`"
             class="shrink-0 text-lg"
           >
             💎
@@ -136,7 +136,10 @@
         <!-- Tags -->
         <div class="mt-2 flex flex-wrap gap-1">
           <button
-            v-for="tag in (game.tags || []).slice(0, 5)"
+            v-for="tag in (game.tags || []).slice(
+              0,
+              UI_LIMITS.GAME_CARD_TAG_LIMIT,
+            )"
             :key="tag"
             class="my-1 mr-1 rounded-full bg-bg-secondary px-2 py-1 text-xs text-text-secondary transition-colors hover:bg-accent hover:text-white"
             :title="`Filter by ${tag}`"
@@ -332,6 +335,17 @@
 
 <script>
 import { ref, watch, computed } from 'vue'
+import {
+  HIDDEN_GEM_CRITERIA,
+  getRatingClass as getRatingClassConfig,
+  getRatingStyle as getRatingStyleConfig,
+  isHiddenGem as isHiddenGemConfig,
+} from '../utils/ratingConfig.js'
+import {
+  getAvailablePlatforms,
+  getPlatformConfig,
+} from '../config/platforms.js'
+import { UI_LIMITS } from '../config/index.js'
 
 export default {
   name: 'GameCard',
@@ -360,46 +374,12 @@ export default {
 
     // Check if game qualifies as a hidden gem
     const isHiddenGem = computed(() => {
-      return (
-        props.game.positive_review_percentage >= 80 &&
-        props.game.video_count >= 1 &&
-        props.game.video_count <= 3 &&
-        props.game.review_count >= 50
-      )
+      return isHiddenGemConfig(props.game)
     })
 
-    // Compute available platforms
+    // Compute available platforms using centralized configuration
     const availablePlatforms = computed(() => {
-      const platforms = []
-
-      if (props.game.steam_url && !props.game.is_absorbed) {
-        platforms.push({
-          name: 'steam',
-          displayName: 'Steam',
-          icon: 'S',
-          url: props.game.steam_url,
-        })
-      }
-
-      if (props.game.itch_url) {
-        platforms.push({
-          name: 'itch',
-          displayName: 'Itch.io',
-          icon: 'I',
-          url: props.game.itch_url,
-        })
-      }
-
-      if (props.game.crazygames_url) {
-        platforms.push({
-          name: 'crazygames',
-          displayName: 'CrazyGames',
-          icon: 'C',
-          url: props.game.crazygames_url,
-        })
-      }
-
-      return platforms
+      return getAvailablePlatforms(props.game)
     })
 
     const toggleVideos = async (gameId) => {
@@ -547,107 +527,11 @@ export default {
     }
 
     const getRatingClass = (percentage, reviewSummary) => {
-      // Handle special cases first
-      if (reviewSummary === 'No user reviews' || !percentage) {
-        return 'bg-gray-500 text-white'
-      }
-
-      // Use review summary for more specific classification when available
-      if (reviewSummary) {
-        const summary = reviewSummary.toLowerCase()
-        if (summary.includes('overwhelmingly positive')) {
-          // hsl(120, 70%, 40%) - Deep green
-          return 'text-black'
-        }
-        if (summary.includes('very positive')) {
-          // hsl(100, 60%, 50%)
-          return 'text-black'
-        }
-        if (summary.includes('mostly positive')) {
-          // hsl(80, 60%, 50%)
-          return 'text-black'
-        }
-        if (summary.includes('positive')) {
-          // hsl(60, 60%, 50%)
-          return 'text-black'
-        }
-        if (summary.includes('mixed')) {
-          // hsl(45, 60%, 50%) - Yellow-orange
-          return 'text-black'
-        }
-        if (summary.includes('mostly negative')) {
-          // hsl(20, 60%, 50%) - Orange-red
-          return 'text-white'
-        }
-        if (summary.includes('overwhelmingly negative')) {
-          // hsl(0, 80%, 40%) - Deep red
-          return 'text-white'
-        }
-        if (summary.includes('very negative')) {
-          // hsl(10, 70%, 50%)
-          return 'text-white'
-        }
-        if (summary.includes('negative')) {
-          // Default negative
-          return 'text-white'
-        }
-      }
-
-      // Fallback to percentage-based classification
-      if (percentage >= 80) {
-        return 'text-black'
-      }
-      if (percentage >= 50) {
-        return 'text-black'
-      }
-      return 'text-white'
+      return getRatingClassConfig(percentage, reviewSummary)
     }
 
     const getRatingStyle = (percentage, reviewSummary) => {
-      if (!percentage) {
-        return { backgroundColor: 'hsl(0, 0%, 50%)' } // gray
-      }
-
-      // Use review summary for more specific classification when available
-      if (reviewSummary) {
-        const summary = reviewSummary.toLowerCase()
-        if (summary.includes('overwhelmingly positive')) {
-          return { backgroundColor: 'hsl(120, 70%, 40%)' }
-        }
-        if (summary.includes('very positive')) {
-          return { backgroundColor: 'hsl(100, 60%, 50%)' }
-        }
-        if (summary.includes('mostly positive')) {
-          return { backgroundColor: 'hsl(80, 60%, 50%)' }
-        }
-        if (summary.includes('positive')) {
-          return { backgroundColor: 'hsl(60, 60%, 50%)' }
-        }
-        if (summary.includes('mixed')) {
-          return { backgroundColor: 'hsl(45, 60%, 50%)' }
-        }
-        if (summary.includes('mostly negative')) {
-          return { backgroundColor: 'hsl(20, 60%, 50%)' }
-        }
-        if (summary.includes('overwhelmingly negative')) {
-          return { backgroundColor: 'hsl(0, 80%, 40%)' }
-        }
-        if (summary.includes('very negative')) {
-          return { backgroundColor: 'hsl(10, 70%, 50%)' }
-        }
-        if (summary.includes('negative')) {
-          return { backgroundColor: 'hsl(15, 65%, 45%)' }
-        }
-      }
-
-      // Fallback to percentage-based classification
-      if (percentage >= 80) {
-        return { backgroundColor: 'hsl(120, 70%, 40%)' }
-      }
-      if (percentage >= 50) {
-        return { backgroundColor: 'hsl(45, 60%, 50%)' }
-      }
-      return { backgroundColor: 'hsl(0, 80%, 40%)' }
+      return getRatingStyleConfig(percentage, reviewSummary)
     }
 
     const getPrice = (game) => {
@@ -746,24 +630,19 @@ export default {
         return game.display_links.main
       }
 
-      // Fallback to platform-specific URLs
-      if (game.platform === 'itch') {
-        return game.itch_url
+      // Use platform configuration to get URL field name
+      const platformConfig = getPlatformConfig(game.platform)
+      if (platformConfig && platformConfig.urlField) {
+        return game[platformConfig.urlField]
       }
-      if (game.platform === 'crazygames') {
-        return game.crazygames_url
-      }
+
+      // Fallback to steam_url if no configuration found
       return game.steam_url
     }
 
     const getMainPlatformName = (game) => {
-      if (game.platform === 'itch') {
-        return 'Itch.io'
-      }
-      if (game.platform === 'crazygames') {
-        return 'CrazyGames'
-      }
-      return 'Steam'
+      const platformConfig = getPlatformConfig(game.platform)
+      return platformConfig ? platformConfig.displayName : 'Unknown Platform'
     }
 
     const getDemoUrl = (game) => {
@@ -781,16 +660,8 @@ export default {
     }
 
     const getPlatformName = (platform) => {
-      if (platform === 'itch') {
-        return 'Itch.io'
-      }
-      if (platform === 'crazygames') {
-        return 'CrazyGames'
-      }
-      if (platform === 'steam') {
-        return 'Steam'
-      }
-      return platform
+      const platformConfig = getPlatformConfig(platform)
+      return platformConfig ? platformConfig.displayName : platform
     }
 
     const getSteamParentUrl = (game) => {
@@ -970,6 +841,8 @@ export default {
       getDemoUrl,
       getPlatformName,
       getSteamParentUrl,
+      HIDDEN_GEM_CRITERIA,
+      UI_LIMITS,
     }
   },
 }

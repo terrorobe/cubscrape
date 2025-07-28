@@ -108,7 +108,10 @@
       <div class="mb-2 text-xs text-text-secondary">Popular Tags:</div>
       <div class="flex flex-wrap gap-1">
         <button
-          v-for="tag in popularTags.slice(0, 8)"
+          v-for="tag in popularTags.slice(
+            0,
+            UI_LIMITS.TAG_FILTER_INITIAL_SHOW_COUNT,
+          )"
           :key="tag.name"
           @click="toggleTag(tag.name)"
           :class="[
@@ -234,6 +237,7 @@
 <script>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useProgressiveOptions } from '../composables/useProgressiveOptions.js'
+import { UI_LIMITS } from '../config/index.js'
 
 export default {
   name: 'TagFilterMulti',
@@ -262,10 +266,12 @@ export default {
 
     // Popular tags (top 10 most used)
     const popularTags = computed(() => {
-      return props.tagsWithCounts.slice(0, 10).map((tag) => ({
-        ...tag,
-        isPopular: true,
-      }))
+      return props.tagsWithCounts
+        .slice(0, UI_LIMITS.POPULAR_TAGS_COUNT)
+        .map((tag) => ({
+          ...tag,
+          isPopular: true,
+        }))
     })
 
     // All tags with metadata
@@ -484,6 +490,7 @@ export default {
       filterTags,
       loadMoreTags,
       emitFiltersChanged,
+      UI_LIMITS,
     }
   },
 }

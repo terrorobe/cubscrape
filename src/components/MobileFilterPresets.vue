@@ -75,7 +75,10 @@
             </div>
             <div class="flex flex-wrap gap-1">
               <span
-                v-for="tag in preset.tags.slice(0, 2)"
+                v-for="tag in preset.tags.slice(
+                  0,
+                  UI_LIMITS.PRESET_TAG_PREVIEW_COUNT,
+                )"
                 :key="tag"
                 class="rounded-sm bg-accent/20 px-1.5 py-0.5 text-xs text-accent"
               >
@@ -325,6 +328,7 @@
 
 <script>
 import { ref, computed, nextTick } from 'vue'
+import { UI_LIMITS } from '../config/index.js'
 import {
   getAllPresets,
   saveUserPreset,
@@ -597,6 +601,7 @@ export default {
       handleFileSelect,
       importUserPresets,
       focusSaveInput,
+      UI_LIMITS,
     }
   },
   watch: {

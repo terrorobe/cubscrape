@@ -153,6 +153,7 @@
 
 <script>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { UI_LIMITS } from '../config/index.js'
 
 export default {
   name: 'ChannelFilterMulti',
@@ -173,7 +174,7 @@ export default {
     const showDropdown = ref(false)
     const selectedChannels = ref([...props.initialSelectedChannels])
     const showAll = ref(false)
-    const initialShowCount = 5
+    const initialShowCount = UI_LIMITS.CHANNEL_FILTER_INITIAL_SHOW_COUNT
 
     // Define consistent colors for channels
     const channelColors = {
@@ -225,7 +226,7 @@ export default {
       return props.channelsWithCounts
         .slice()
         .sort((a, b) => b.count - a.count)
-        .slice(0, 4)
+        .slice(0, UI_LIMITS.POPULAR_CHANNELS_COUNT)
     })
 
     const toggleChannel = (channelName) => {
@@ -325,6 +326,7 @@ export default {
       showDropdown,
       selectedChannels,
       showAll,
+      initialShowCount,
       popularChannels,
       filteredChannels,
       visibleChannels,

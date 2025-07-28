@@ -63,7 +63,6 @@
       :game-count="gameCount"
       @remove-filter="handleRemoveFilter"
       @clear-all-filters="handleClearAllFilters"
-      @height-change="handleActiveFiltersHeightChange"
     />
 
     <!-- Basic Filters Section -->
@@ -289,6 +288,7 @@
 <script>
 import { reactive, computed, ref, onUnmounted, nextTick, watch } from 'vue'
 import { useDebouncedFilters } from '../composables/useDebouncedFilters.js'
+import { TIMING } from '../config/index.js'
 import CollapsibleSection from './CollapsibleSection.vue'
 import TagFilterMulti from './TagFilterMulti.vue'
 import ChannelFilterMulti from './ChannelFilterMulti.vue'
@@ -429,7 +429,7 @@ export default {
     const { debouncedEmit, immediateEmit, cleanup } = useDebouncedFilters(
       initialLocalFilters,
       (newFilters) => emit('filters-changed', newFilters),
-      400, // 400ms debounce delay
+      TIMING.FILTER_DEBOUNCE_DELAY, // Configurable debounce delay
     )
 
     const activeFilterCount = computed(() => {

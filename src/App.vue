@@ -1,6 +1,9 @@
 <template>
   <div class="min-h-screen bg-bg-primary text-text-primary">
-    <div class="container mx-auto max-w-[1600px] p-5">
+    <div
+      class="container mx-auto p-5"
+      :style="{ 'max-width': LAYOUT.CONTAINER_MAX_WIDTH }"
+    >
       <header class="mb-10 text-center">
         <h1 class="mb-2 text-4xl font-bold text-accent">Curated Steam Games</h1>
         <p class="text-lg text-text-secondary">
@@ -207,6 +210,15 @@ import GameFilters from './components/GameFilters.vue'
 import SortIndicator from './components/SortIndicator.vue'
 import { databaseManager } from './utils/databaseManager.js'
 import { usePerformanceMonitoring } from './utils/performanceMonitor.js'
+import {
+  TIMING,
+  PRICING,
+  RATINGS,
+  HIDDEN_GEMS,
+  TIME_RANGES,
+  VIDEO_COVERAGE,
+  LAYOUT,
+} from './config/index.js'
 
 export default {
   name: 'App',
@@ -246,8 +258,8 @@ export default {
       },
       // Price-based filtering
       priceFilter: {
-        minPrice: 0,
-        maxPrice: 70,
+        minPrice: PRICING.MIN_PRICE,
+        maxPrice: PRICING.DEFAULT_MAX_PRICE,
         includeFree: true,
       },
     })
@@ -260,7 +272,7 @@ export default {
     const gameStats = ref({
       totalGames: 0,
       freeGames: 0,
-      maxPrice: 70,
+      maxPrice: PRICING.DEFAULT_MAX_PRICE,
     })
     const isDevelopment = import.meta.env.DEV
     const databaseStatus = ref({
@@ -288,7 +300,7 @@ export default {
         gameStats.value = {
           totalGames: stats[0] || 0,
           freeGames: stats[1] || 0,
-          maxPrice: Math.ceil(stats[2] || 70),
+          maxPrice: Math.ceil(stats[2] || PRICING.DEFAULT_MAX_PRICE),
         }
       }
     }
@@ -424,8 +436,7 @@ export default {
 
       // Hidden Gems filter (very selective)
       if (filterValues.hiddenGems) {
-        query +=
-          ' AND g.positive_review_percentage >= 80 AND g.video_count >= 1 AND g.video_count <= 3 AND g.review_count >= 50'
+        query += ` AND g.positive_review_percentage >= ${HIDDEN_GEMS.MIN_RATING} AND g.video_count >= ${HIDDEN_GEMS.MIN_VIDEOS} AND g.video_count <= ${HIDDEN_GEMS.MAX_VIDEOS} AND g.review_count >= ${HIDDEN_GEMS.MIN_REVIEWS}`
       }
 
       // Release status filter
@@ -495,7 +506,10 @@ export default {
         }
 
         // Handle price range filtering for paid games
-        if (priceFilter.minPrice > 0 || priceFilter.maxPrice < 70) {
+        if (
+          priceFilter.minPrice > 0 ||
+          priceFilter.maxPrice < PRICING.DEFAULT_MAX_PRICE
+        ) {
           // Create a combined condition for price filtering
           const priceConditions = []
 
@@ -570,10 +584,14 @@ export default {
           // Smart filtering logic
           const now = new Date()
           const thirtyDaysAgo = new Date(
-            now.getTime() - 30 * 24 * 60 * 60 * 1000,
+            now.getTime() - TIME_RANGES.MONTHLY * 24 * 60 * 60 * 1000,
           )
-          const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-          const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+          const sevenDaysAgo = new Date(
+            now.getTime() - TIME_RANGES.RECENT * 24 * 60 * 60 * 1000,
+          )
+          const oneYearAgo = new Date(
+            now.getTime() - TIME_RANGES.YEARLY * 24 * 60 * 60 * 1000,
+          )
           const twoThousandTwenty = new Date('2020-01-01')
 
           switch (timeFilter.smartLogic) {
@@ -763,9 +781,9 @@ export default {
           // High rating + reasonable price (prioritize quality over cheapness)
           return `
             CASE 
-              WHEN positive_review_percentage >= 80 AND (is_free = 1 OR price_final <= 20) THEN 1
-              WHEN positive_review_percentage >= 70 AND (is_free = 1 OR price_final <= 30) THEN 2
-              WHEN positive_review_percentage >= 60 THEN 3
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.BUDGET}) THEN 1
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.MODERATE}) THEN 2
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MIXED} THEN 3
               ELSE 4
             END ASC,
             positive_review_percentage DESC,
@@ -776,9 +794,9 @@ export default {
           // High rating + low video coverage (undiscovered quality games)
           return `
             CASE 
-              WHEN positive_review_percentage >= 85 AND video_count <= 3 THEN 1
-              WHEN positive_review_percentage >= 80 AND video_count <= 5 THEN 2
-              WHEN positive_review_percentage >= 75 AND video_count <= 8 THEN 3
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.EXCELLENT} AND video_count <= ${VIDEO_COVERAGE.LOW} THEN 1
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND video_count <= ${VIDEO_COVERAGE.MEDIUM} THEN 2
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.POSITIVE} AND video_count <= ${VIDEO_COVERAGE.HIGH} THEN 3
               ELSE 4
             END ASC,
             positive_review_percentage DESC,
@@ -793,9 +811,9 @@ export default {
           // Recent videos + increasing coverage (games gaining momentum)
           return `
             CASE 
-              WHEN latest_video_date >= datetime('now', '-7 days') AND video_count >= 2 THEN 1
-              WHEN latest_video_date >= datetime('now', '-14 days') AND video_count >= 3 THEN 2
-              WHEN latest_video_date >= datetime('now', '-30 days') AND video_count >= 2 THEN 3
+              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.RECENT} days') AND video_count >= ${VIDEO_COVERAGE.TRENDING_MIN} THEN 1
+              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.SEMI_RECENT} days') AND video_count >= ${VIDEO_COVERAGE.STRONG_CONSENSUS} THEN 2
+              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.MONTHLY} days') AND video_count >= ${VIDEO_COVERAGE.TRENDING_MIN} THEN 3
               ELSE 4
             END ASC,
             latest_video_date DESC,
@@ -806,9 +824,9 @@ export default {
           // Multiple channels + high ratings (broadly appreciated games)
           return `
             CASE 
-              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= 3 AND positive_review_percentage >= 80 THEN 1
-              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= 2 AND positive_review_percentage >= 75 THEN 2
-              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= 2 THEN 3
+              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.STRONG_CONSENSUS} AND positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} THEN 1
+              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.CONSENSUS_MIN} AND positive_review_percentage >= ${RATINGS.SMART_SORT.POSITIVE} THEN 2
+              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.CONSENSUS_MIN} THEN 3
               ELSE 4
             END ASC,
             positive_review_percentage DESC,
@@ -819,14 +837,14 @@ export default {
           // Recently covered games worth checking out
           return `
             CASE 
-              WHEN latest_video_date >= datetime('now', '-14 days') THEN 1
-              WHEN latest_video_date >= datetime('now', '-30 days') THEN 2
+              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.SEMI_RECENT} days') THEN 1
+              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.MONTHLY} days') THEN 2
               ELSE 3
             END ASC,
             latest_video_date DESC,
             CASE 
-              WHEN positive_review_percentage >= 80 THEN 1
-              WHEN positive_review_percentage >= 70 THEN 2
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} THEN 1
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} THEN 2
               ELSE 3
             END ASC
           `
@@ -1031,7 +1049,7 @@ export default {
         // Update debug info after games are rendered
         if (isDevelopment) {
           nextTick(() => {
-            setTimeout(updateGridDebugInfo, 100)
+            setTimeout(updateGridDebugInfo, TIMING.DEBUG_UPDATE_DELAY)
           })
         }
       } else {
@@ -1071,8 +1089,8 @@ export default {
       const date = new Date(timestamp)
       const now = currentTime.value // Use reactive current time
       const diffMs = now - date
-      const diffMins = Math.floor(diffMs / 60000)
-      const diffHours = Math.floor(diffMs / 3600000)
+      const diffMins = Math.floor(diffMs / TIMING.MINUTE_IN_MS)
+      const diffHours = Math.floor(diffMs / TIMING.HOUR_IN_MS)
 
       const suffix = useOld ? ' old' : ' ago'
 
@@ -1324,7 +1342,9 @@ export default {
         }
 
         // Wait a moment then try again
-        await new Promise((resolve) => setTimeout(resolve, 100))
+        await new Promise((resolve) =>
+          setTimeout(resolve, TIMING.SCROLL_RETRY_DELAY),
+        )
         await scrollToGame(platform, gameId)
       }
     }
@@ -1336,13 +1356,13 @@ export default {
       // Set highlighted game
       highlightedGameId.value = game.id
 
-      // Set up auto-fade after 6 seconds (like original)
+      // Set up auto-fade after configured duration
       setTimeout(() => {
         if (highlightedGameId.value === game.id) {
           // Start fade-out process
           highlightedGameId.value = null
         }
-      }, 6000)
+      }, TIMING.GAME_HIGHLIGHT_DURATION)
     }
 
     const clearHighlight = () => {
@@ -1430,7 +1450,7 @@ export default {
             ? filterValues.priceFilter.minPrice
             : null,
         priceMax:
-          filterValues.priceFilter?.maxPrice < 70
+          filterValues.priceFilter?.maxPrice < PRICING.DEFAULT_MAX_PRICE
             ? filterValues.priceFilter.maxPrice
             : null,
         includeFree:
@@ -1566,7 +1586,7 @@ export default {
             : 0,
           maxPrice: urlParams.has('priceMax')
             ? parseFloat(urlParams.get('priceMax'))
-            : 70,
+            : PRICING.DEFAULT_MAX_PRICE,
           includeFree: urlParams.get('includeFree') !== 'false',
         }
       }
@@ -1589,10 +1609,10 @@ export default {
 
       document.addEventListener('keydown', handleKeydown)
 
-      // Update timestamps every minute
+      // Update timestamps at configured interval
       const timestampTimer = setInterval(() => {
         currentTime.value = new Date()
-      }, 60000) // Update every minute
+      }, TIMING.TIMESTAMP_UPDATE_INTERVAL)
 
       // Store timer reference for cleanup
       window.timestampTimer = timestampTimer
@@ -1601,13 +1621,13 @@ export default {
       if (isDevelopment) {
         // Update debug info on resize
         const handleResize = () => {
-          setTimeout(updateGridDebugInfo, 100) // Debounce slightly
+          setTimeout(updateGridDebugInfo, TIMING.RESIZE_DEBOUNCE_DELAY) // Debounce slightly
         }
 
         window.addEventListener('resize', handleResize)
 
         // Initial debug info after components are mounted
-        setTimeout(updateGridDebugInfo, 500)
+        setTimeout(updateGridDebugInfo, TIMING.INITIAL_DEBUG_DELAY)
 
         // Store for cleanup
         window.handleResize = handleResize
@@ -1674,6 +1694,7 @@ export default {
       updateGridDebugInfo,
       sidebarCollapsed,
       handleSortChange,
+      LAYOUT,
     }
   },
 }
@@ -1688,7 +1709,10 @@ if (import.meta.hot) {
 .game-grid {
   /* Ensure proper grid container behavior */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(296px, 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(v-bind('LAYOUT.CARD_MIN_WIDTH'), 1fr)
+  );
   gap: 1.25rem; /* 20px - matches gap-5 */
   width: 100%;
   min-width: 0;
@@ -1710,7 +1734,7 @@ if (import.meta.hot) {
 /* Debug: Console-only debugging in development */
 
 /* Responsive grid adjustments for optimal card expansion */
-@media (min-width: 1280px) and (max-width: 1599px) {
+@media (min-width: 1280px) and (max-width: v-bind('LAYOUT.CONTAINER_MAX_WIDTH_PX - 1 + "px"')) {
   .game-grid {
     /* Force equal columns where auto-fit struggles to expand cards properly */
     grid-template-columns: repeat(3, 1fr);
@@ -1718,9 +1742,12 @@ if (import.meta.hot) {
 }
 
 /* At very large viewports, allow auto-fit to determine optimal columns */
-@media (min-width: 1600px) {
+@media (min-width: v-bind('LAYOUT.CONTAINER_MAX_WIDTH')) {
   .game-grid {
-    grid-template-columns: repeat(auto-fit, minmax(296px, 1fr));
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(v-bind('LAYOUT.CARD_MIN_WIDTH'), 1fr)
+    );
   }
 }
 </style>

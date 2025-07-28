@@ -115,6 +115,7 @@
 
 <script>
 import { ref, computed, watch } from 'vue'
+import { UI_LIMITS } from '../config/index.js'
 
 export default {
   name: 'MobileChannelFilter',
@@ -136,7 +137,7 @@ export default {
     const popularChannels = computed(() => {
       return props.channelsWithCounts
         .filter((channel) => !selectedChannels.value.includes(channel.name))
-        .slice(0, 5)
+        .slice(0, UI_LIMITS.MOBILE_CHANNELS_COUNT)
     })
 
     const filteredAvailableChannels = computed(() => {
@@ -179,7 +180,9 @@ export default {
     }
 
     const selectPopularChannels = () => {
-      const channelsToAdd = popularChannels.value.slice(0, 5).map((c) => c.name)
+      const channelsToAdd = popularChannels.value
+        .slice(0, UI_LIMITS.MOBILE_CHANNELS_COUNT)
+        .map((c) => c.name)
       selectedChannels.value = [...selectedChannels.value, ...channelsToAdd]
       emitChange()
     }

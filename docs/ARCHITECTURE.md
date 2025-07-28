@@ -47,6 +47,11 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
   App.vue             # Main application component
   style.css           # Global styling with dark theme
   components/         # Vue components (GameCard, GameFilters, etc.)
+  config/             # Centralized configuration system
+    index.js          # Main configuration exports and utilities
+    constants.js      # Magic numbers, UI limits, and thresholds
+    theme.js          # Colors, spacing, timing, and visual tokens  
+    platforms.js      # Platform-specific configurations and logic
   utils/              # Utility modules (databaseManager, performanceMonitor)
   composables/        # Vue composition functions
   
@@ -87,6 +92,14 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
 - Provides filtering by platform, rating, release status, tags
 - Displays comprehensive game information with review counts
 - Optimized for game discovery workflow with database-powered performance
+
+### Configuration System (`src/config/`)
+- **Centralized Configuration**: All hardcoded values moved to dedicated configuration modules
+- **Theme System**: Consistent colors, spacing, and timing tokens in `theme.js`
+- **Constants Management**: Magic numbers, UI limits, and thresholds in `constants.js`
+- **Platform Abstraction**: Platform-specific logic centralized in `platforms.js`
+- **Type Safety**: JSDoc documentation for all configuration properties
+- **Maintainability**: Single source of truth eliminates scattered hardcoded values
 
 ## Review Data Extraction
 

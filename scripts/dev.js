@@ -23,9 +23,10 @@ function createLockFile() {
             try {
                 // On Unix, sending signal 0 checks if process exists
                 process.kill(pid, 0);
-                console.error(`❌ Another dev server is already running (PID: ${pid})`);
-                console.error('   Stop the other server or use: npm run stop-dev');
-                process.exit(1);
+                console.log(`✅ Dev server is already running (PID: ${pid})`);
+                console.log('   Access at: http://localhost:5173');
+                console.log('   Stop with: npm run stop-dev');
+                process.exit(0);
             } catch {
                 // Process no longer exists, remove stale lock file
                 console.log(`⚠️  Removing stale dev server lock file from PID ${pid}`);

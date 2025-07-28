@@ -124,6 +124,7 @@
 
 <script>
 import { reactive, computed, watch } from 'vue'
+import { PRICING } from '../config/index.js'
 
 export default {
   name: 'PriceFilter',
@@ -136,8 +137,8 @@ export default {
     initialPriceFilter: {
       type: Object,
       default: () => ({
-        minPrice: 0,
-        maxPrice: 70,
+        minPrice: PRICING.MIN_PRICE,
+        maxPrice: PRICING.DEFAULT_MAX_PRICE,
         includeFree: true,
       }),
     },
@@ -147,17 +148,19 @@ export default {
       default: () => ({
         totalGames: 0,
         freeGames: 0,
-        maxPrice: 70,
+        maxPrice: PRICING.DEFAULT_MAX_PRICE,
       }),
     },
   },
   emits: ['price-filter-changed'],
   setup(props, { emit }) {
-    const maxPossiblePrice = computed(() => props.gameStats.maxPrice || 70)
+    const maxPossiblePrice = computed(
+      () => props.gameStats.maxPrice || PRICING.DEFAULT_MAX_PRICE,
+    )
     const freeGameCount = computed(() => props.gameStats.freeGames || 0)
 
     const localPriceFilter = reactive({
-      minPrice: props.initialPriceFilter.minPrice || 0,
+      minPrice: props.initialPriceFilter.minPrice || PRICING.MIN_PRICE,
       maxPrice: props.initialPriceFilter.maxPrice || maxPossiblePrice.value,
       includeFree: props.initialPriceFilter.includeFree !== false,
     })
@@ -167,21 +170,21 @@ export default {
       {
         key: 'free',
         label: 'Free',
-        minPrice: 0,
-        maxPrice: 0,
+        minPrice: PRICING.MIN_PRICE,
+        maxPrice: PRICING.MIN_PRICE,
         includeFree: true,
       },
       {
         key: 'under-5',
         label: '< $5',
-        minPrice: 0,
+        minPrice: PRICING.MIN_PRICE,
         maxPrice: 5,
         includeFree: false,
       },
       {
         key: 'under-10',
         label: '< $10',
-        minPrice: 0,
+        minPrice: PRICING.MIN_PRICE,
         maxPrice: 10,
         includeFree: false,
       },
@@ -216,7 +219,7 @@ export default {
       {
         key: 'all',
         label: 'All',
-        minPrice: 0,
+        minPrice: PRICING.MIN_PRICE,
         maxPrice: maxPossiblePrice.value,
         includeFree: true,
       },
@@ -313,7 +316,7 @@ export default {
     watch(
       () => props.initialPriceFilter,
       (newFilter) => {
-        localPriceFilter.minPrice = newFilter.minPrice || 0
+        localPriceFilter.minPrice = newFilter.minPrice || PRICING.MIN_PRICE
         localPriceFilter.maxPrice = newFilter.maxPrice || maxPossiblePrice.value
         localPriceFilter.includeFree = newFilter.includeFree !== false
       },
