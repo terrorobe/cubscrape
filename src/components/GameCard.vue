@@ -393,10 +393,10 @@ interface WindowWithDatabase extends Window {
   gameDatabase?: {
     exec: (
       query: string,
-      params?: any[],
+      params?: (string | number)[],
     ) => Array<{
       columns: string[]
-      values: any[][]
+      values: (string | number | null)[][]
     }>
   }
 }
@@ -674,7 +674,10 @@ const getMainPlatformUrl = (game: ParsedGameData): string | null => {
   // Use platform configuration to get URL field name
   const platformConfig = getPlatformConfig(game.platform)
   if (platformConfig && platformConfig.urlField) {
-    return (game as any)[platformConfig.urlField] || null
+    return (
+      ((game as Record<string, unknown>)[platformConfig.urlField] as string) ||
+      null
+    )
   }
 
   // Fallback to steam_url if no configuration found

@@ -266,9 +266,9 @@ export interface TagFilterChangeEvent {
  * Props interface for TagFilterMulti component
  */
 export interface TagFilterMultiProps {
-  tagsWithCounts: TagWithCount[]
-  initialSelectedTags: string[]
-  initialTagLogic: TagLogic
+  tagsWithCounts?: TagWithCount[]
+  initialSelectedTags?: string[]
+  initialTagLogic?: TagLogic
 }
 
 const props = withDefaults(defineProps<TagFilterMultiProps>(), {

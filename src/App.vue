@@ -274,9 +274,19 @@ interface DatabaseStatus {
   lastChecked: Date | null
 }
 
+interface SortCriteria {
+  field: string
+  direction: 'asc' | 'desc'
+}
+
+interface AdvancedSortSpec {
+  primary: SortCriteria
+  secondary?: SortCriteria
+}
+
 interface SortChangeData {
   sortBy: string
-  sortSpec: any
+  sortSpec: string | AdvancedSortSpec
 }
 
 interface TimeFilter {
@@ -305,7 +315,7 @@ interface AppFilters {
   channel: string
   selectedChannels: string[]
   sortBy: string
-  sortSpec: any
+  sortSpec: string | AdvancedSortSpec
   currency: 'eur' | 'usd'
   timeFilter: TimeFilter
   priceFilter: PriceFilter
@@ -770,7 +780,7 @@ const buildSortClause = (filterValues: AppFilters): string => {
   return sortMappings[filterValues.sortBy] || 'latest_video_date DESC'
 }
 
-const buildAdvancedSortClause = (sortSpec: any): string => {
+const buildAdvancedSortClause = (sortSpec: AdvancedSortSpec): string => {
   const clauses = []
 
   // Primary sorting criteria
@@ -994,17 +1004,30 @@ const executeQuery = (db: Database): void => {
   })
 }
 
-const processQueryResults = (results: any[]): void => {
+interface DatabaseQueryResult {
+  columns: string[]
+  values: (string | number | null)[][]
+}
+
+interface ExtendedWindow extends Window {
+  timestampTimer?: NodeJS.Timeout
+  handleResize?: () => void
+}
+
+const processQueryResults = (results: DatabaseQueryResult[]): void => {
   if (results.length > 0) {
     const processedGames: AppGameData[] = []
 
     // First pass: collect all games and build a lookup for parent data resolution
-    const allGameData: any[] = []
-    const parentGameLookup = new Map<string, any>()
+    const allGameData: Record<string, string | number | null>[] = []
+    const parentGameLookup = new Map<
+      string,
+      Record<string, string | number | null>
+    >()
 
-    results[0].values.forEach((row: any[]) => {
+    results[0].values.forEach((row: (string | number | null)[]) => {
       const columns = results[0].columns
-      const gameData: any = {}
+      const gameData: Record<string, string | number | null> = {}
 
       columns.forEach((col, index) => {
         gameData[col] = row[index]
@@ -1708,7 +1731,7 @@ onMounted((): void => {
   }, TIMING.TIMESTAMP_UPDATE_INTERVAL)
 
   // Store timer reference for cleanup
-  ;(window as any).timestampTimer = timestampTimer
+  ;(window as ExtendedWindow).timestampTimer = timestampTimer
 
   // Set up debug info updates for development
   if (isDevelopment) {
@@ -1723,7 +1746,7 @@ onMounted((): void => {
     setTimeout(updateGridDebugInfo, TIMING.INITIAL_DEBUG_DELAY)
 
     // Store for cleanup
-    ;(window as any).handleResize = handleResize
+    ;(window as ExtendedWindow).handleResize = handleResize
   }
 })
 
@@ -1740,15 +1763,16 @@ onUnmounted((): void => {
   }
 
   // Cleanup timestamp timer
-  if ((window as any).timestampTimer) {
-    clearInterval((window as any).timestampTimer)
-    ;(window as any).timestampTimer = null
+  const extWindow = window as ExtendedWindow
+  if (extWindow.timestampTimer) {
+    clearInterval(extWindow.timestampTimer)
+    extWindow.timestampTimer = undefined
   }
 
   // Cleanup resize handler
-  if ((window as any).handleResize) {
-    window.removeEventListener('resize', (window as any).handleResize)
-    ;(window as any).handleResize = null
+  if (extWindow.handleResize) {
+    window.removeEventListener('resize', extWindow.handleResize)
+    extWindow.handleResize = undefined
   }
 
   // Remove keyboard handler

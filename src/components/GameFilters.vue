@@ -386,12 +386,18 @@ interface PriceFilterData {
 
 interface SortData {
   sortBy: string
-  sortSpec: any
+  sortSpec: string
 }
 
 interface FilterInfo {
   type: string
-  value: any
+  value:
+    | string
+    | string[]
+    | number
+    | boolean
+    | { min: number; max: number }
+    | null
 }
 
 // Reactive state

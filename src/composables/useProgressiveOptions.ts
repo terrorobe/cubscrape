@@ -56,7 +56,7 @@ export function useProgressiveOptions(
     const options =
       typeof allOptions === 'function'
         ? allOptions()
-        : ((allOptions as any)?.value ?? allOptions)
+        : ((allOptions as { value?: OptionWithCount[] })?.value ?? allOptions)
     return Array.isArray(options) ? options : []
   }
 

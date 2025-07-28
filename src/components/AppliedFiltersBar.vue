@@ -109,13 +109,24 @@ import { computed } from 'vue'
 import type { FilterConfig } from '../utils/presetManager'
 
 /**
+ * Filter value types that can be applied
+ */
+export type FilterValue =
+  | string
+  | string[]
+  | number
+  | boolean
+  | { min: number; max: number }
+  | null
+
+/**
  * Applied filter item interface
  */
 export interface AppliedFilter {
   key: string
   type: string
   label: string
-  value: any
+  value: FilterValue
 }
 
 /**
@@ -123,7 +134,7 @@ export interface AppliedFilter {
  */
 export interface FilterRemoveEvent {
   type: string
-  value: any
+  value: FilterValue
 }
 
 /**

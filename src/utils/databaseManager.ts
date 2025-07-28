@@ -11,6 +11,89 @@
 import type { Database } from 'sql.js'
 
 /**
+ * SQL.js Database-like interface for type checking
+ */
+interface DatabaseLike {
+  exec: (sql: string, params?: (string | number)[]) => unknown[]
+}
+
+/**
+ * Type guard to check if value is sql.js Database
+ */
+function isDatabase(value: unknown): value is Database {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    'exec' in value &&
+    typeof (value as DatabaseLike).exec === 'function'
+  )
+}
+
+/**
+ * SQL.js Module-like interface for type checking
+ */
+interface SQLModuleLike {
+  Database: new (data?: Uint8Array) => Database
+}
+
+/**
+ * Type guard to check if SQL.js module is loaded
+ */
+function isSQLModule(value: unknown): value is typeof import('sql.js') {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    'Database' in value &&
+    typeof (value as SQLModuleLike).Database === 'function'
+  )
+}
+
+/**
+ * SQL.js Query Result interface for type checking
+ */
+interface QueryResultLike {
+  values: (string | number | null)[][]
+}
+
+/**
+ * Extended window interface for database global access
+ */
+interface WindowWithGameDatabase extends Window {
+  gameDatabase?: Database
+  __databaseManager?: DatabaseManager
+}
+
+/**
+ * Safely extract single value from query result
+ */
+function extractSingleValue(
+  result: unknown,
+  fallback: string | number = '',
+): string | number {
+  if (
+    Array.isArray(result) &&
+    result.length > 0 &&
+    result[0] &&
+    typeof result[0] === 'object' &&
+    'values' in result[0]
+  ) {
+    const queryResult = result[0] as QueryResultLike
+    if (
+      Array.isArray(queryResult.values) &&
+      queryResult.values.length > 0 &&
+      Array.isArray(queryResult.values[0]) &&
+      queryResult.values[0].length > 0
+    ) {
+      const value = queryResult.values[0][0]
+      return typeof value === 'string' || typeof value === 'number'
+        ? value
+        : fallback
+    }
+  }
+  return fallback
+}
+
+/**
  * Database update listener callback type
  */
 export type DatabaseUpdateListener = (db: Database | null) => void
@@ -41,7 +124,7 @@ export interface DatabaseStats {
 
 export class DatabaseManager {
   private db: Database | null = null
-  private SQL: any | null = null
+  private SQL: typeof import('sql.js') | null = null
   private lastModified: string | null = null
   private lastETag: string | null = null
   private checkInterval: NodeJS.Timeout | null = null
@@ -95,11 +178,9 @@ export class DatabaseManager {
       const result = db.exec(
         "SELECT value FROM app_metadata WHERE key = 'app_version'",
       )
-      if (result.length > 0 && result[0].values.length > 0) {
-        const version = result[0].values[0][0] as string
-        console.log('🗄️ Database app version:', version)
-        return version
-      }
+      const version = extractSingleValue(result, 'unknown')
+      console.log('🗄️ Database app version:', version)
+      return String(version)
     } catch (error) {
       console.warn('⚠️ Could not extract database version:', error)
     }
@@ -163,6 +244,9 @@ export class DatabaseManager {
       }
 
       // Create temporary database instance to check version
+      if (!this.SQL || !isSQLModule(this.SQL)) {
+        throw new Error('SQL.js module not initialized')
+      }
       const tempDb = new this.SQL.Database(new Uint8Array(dbBuffer))
 
       // Extract version from the new database
@@ -220,12 +304,13 @@ export class DatabaseManager {
       this.lastETag = etag
 
       // Make database available globally for backward compatibility
-      ;(window as any).gameDatabase = this.db
+      ;(window as WindowWithGameDatabase).gameDatabase = this.db
 
-      console.log(
-        '🗄️ Database loaded, total games:',
-        this.db.exec('SELECT COUNT(*) FROM games')[0].values[0][0],
+      const totalGames = extractSingleValue(
+        this.db.exec('SELECT COUNT(*) FROM games'),
+        0,
       )
+      console.log('🗄️ Database loaded, total games:', totalGames)
 
       // Notify listeners that database has been updated
       this.notifyListeners()
@@ -341,14 +426,17 @@ export class DatabaseManager {
    * Get current database instance
    */
   getDatabase(): Database | null {
-    return this.db
+    if (this.db && isDatabase(this.db)) {
+      return this.db
+    }
+    return null
   }
 
   /**
-   * Check if database is loaded
+   * Check if database is loaded and valid
    */
   isLoaded(): boolean {
-    return this.db !== null
+    return this.db !== null && isDatabase(this.db)
   }
 
   /**
@@ -360,16 +448,14 @@ export class DatabaseManager {
     }
 
     try {
-      const gameCount = this.db.exec(
-        'SELECT COUNT(*) FROM games WHERE is_absorbed = 0',
-      )[0].values[0][0] as number
+      const gameCount = extractSingleValue(
+        this.db.exec('SELECT COUNT(*) FROM games WHERE is_absorbed = 0'),
+        0,
+      ) as number
       const channelResults = this.db.exec(
         "SELECT COUNT(DISTINCT unique_channels) FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]'",
       )
-      const channelCount =
-        channelResults.length > 0
-          ? (channelResults[0].values[0][0] as number)
-          : 0
+      const channelCount = extractSingleValue(channelResults, 0) as number
 
       // Get data freshness from database metadata instead of HTTP requests
       let dataModified = this.lastModified // fallback to database file mtime
@@ -377,8 +463,9 @@ export class DatabaseManager {
         const metadataResult = this.db.exec(
           "SELECT value FROM app_metadata WHERE key = 'data_last_modified'",
         )
-        if (metadataResult.length > 0 && metadataResult[0].values.length > 0) {
-          dataModified = metadataResult[0].values[0][0] as string
+        const extractedData = extractSingleValue(metadataResult, '')
+        if (extractedData) {
+          dataModified = String(extractedData)
         }
       } catch (error) {
         console.debug('Could not read data_last_modified from metadata:', error)
@@ -435,8 +522,9 @@ export class DatabaseManager {
     this.listeners.clear()
     this.versionMismatchListeners.clear()
 
-    if ((window as any).gameDatabase === this.db) {
-      delete (window as any).gameDatabase
+    const extWindow = window as WindowWithGameDatabase
+    if (extWindow.gameDatabase === this.db) {
+      delete extWindow.gameDatabase
     }
   }
 }
@@ -444,16 +532,16 @@ export class DatabaseManager {
 // Create HMR-safe singleton instance
 let _databaseManager: DatabaseManager
 
-if (import.meta.hot && (window as any).__databaseManager) {
+if (import.meta.hot && (window as WindowWithGameDatabase).__databaseManager) {
   // Reuse existing instance during HMR
-  _databaseManager = (window as any).__databaseManager
+  _databaseManager = (window as WindowWithGameDatabase).__databaseManager
 } else {
   // Create new instance
   _databaseManager = new DatabaseManager()
 
   // Store globally for HMR persistence
   if (typeof window !== 'undefined') {
-    ;(window as any).__databaseManager = _databaseManager
+    ;(window as WindowWithGameDatabase).__databaseManager = _databaseManager
   }
 }
 

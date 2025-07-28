@@ -21,7 +21,7 @@ export interface FilterConfig {
   channel?: string
   selectedChannels: string[]
   sortBy: string
-  sortSpec: any
+  sortSpec: string | Record<string, unknown>
   currency: 'eur' | 'usd'
   timeFilter: {
     type: string | null
@@ -632,18 +632,19 @@ export function parseShareableURL(url: string): FilterConfig {
 
     // Parse basic filters
     if (params.has('release')) {
-      filters.releaseStatus = params.get('release')!
+      filters.releaseStatus =
+        params.get('release') || DEFAULT_FILTERS.releaseStatus
     }
     if (params.has('platform')) {
-      filters.platform = params.get('platform')!
+      filters.platform = params.get('platform') || DEFAULT_FILTERS.platform
     }
     if (params.has('rating')) {
-      filters.rating = params.get('rating')!
+      filters.rating = params.get('rating') || DEFAULT_FILTERS.rating
     }
 
     // Parse tags
     if (params.has('tags')) {
-      const tagsParam = params.get('tags')!
+      const tagsParam = params.get('tags') || ''
       if (tagsParam.includes(',')) {
         filters.selectedTags = tagsParam.split(',').filter((tag) => tag.trim())
       } else if (tagsParam) {
@@ -656,7 +657,7 @@ export function parseShareableURL(url: string): FilterConfig {
 
     // Parse channels
     if (params.has('channels')) {
-      const channelsParam = params.get('channels')!
+      const channelsParam = params.get('channels') || ''
       if (channelsParam.includes(',')) {
         filters.selectedChannels = channelsParam
           .split(',')
@@ -668,11 +669,14 @@ export function parseShareableURL(url: string): FilterConfig {
 
     // Parse sorting
     if (params.has('sort')) {
-      filters.sortBy = params.get('sort')!
+      filters.sortBy = params.get('sort') || DEFAULT_FILTERS.sortBy
     }
     if (params.has('sortSpec')) {
       try {
-        filters.sortSpec = JSON.parse(params.get('sortSpec')!)
+        const sortSpecParam = params.get('sortSpec')
+        if (sortSpecParam) {
+          filters.sortSpec = JSON.parse(sortSpecParam)
+        }
       } catch {
         console.warn('Invalid sortSpec in URL')
       }
@@ -702,11 +706,17 @@ export function parseShareableURL(url: string): FilterConfig {
     ) {
       filters.priceFilter = {
         minPrice: params.has('priceMin')
-          ? parseFloat(params.get('priceMin')!)
-          : 0,
+          ? parseFloat(
+              params.get('priceMin') ||
+                String(DEFAULT_FILTERS.priceFilter.minPrice),
+            )
+          : DEFAULT_FILTERS.priceFilter.minPrice,
         maxPrice: params.has('priceMax')
-          ? parseFloat(params.get('priceMax')!)
-          : 70,
+          ? parseFloat(
+              params.get('priceMax') ||
+                String(DEFAULT_FILTERS.priceFilter.maxPrice),
+            )
+          : DEFAULT_FILTERS.priceFilter.maxPrice,
         includeFree: params.get('includeFree') !== 'false',
       }
     }
@@ -730,12 +740,12 @@ export function exportPresets(presetIds: string[] | null = null): ExportData {
   return {
     version: PRESET_VERSION,
     exported: new Date().toISOString(),
-    presets: presetsToExport.map((preset) => ({
-      ...preset,
+    presets: presetsToExport.map((preset) => {
       // Remove runtime-only properties
-      isPopular: undefined as any,
-      isUser: undefined as any,
-    })),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { isPopular, isUser, ...exportPreset } = preset
+      return exportPreset
+    }),
   }
 }
 
@@ -814,12 +824,15 @@ export function getPresetCategories(): CategoryData[] {
   const categories = new Map<string, { count: number; presets: Preset[] }>()
 
   allPresets.forEach((preset) => {
-    const category = preset.category || 'custom'
+    const category = preset.category || PRESET_CATEGORIES.CUSTOM
     if (!categories.has(category)) {
       categories.set(category, { count: 0, presets: [] })
     }
-    categories.get(category)!.count++
-    categories.get(category)!.presets.push(preset)
+    const categoryData = categories.get(category)
+    if (categoryData) {
+      categoryData.count++
+      categoryData.presets.push(preset)
+    }
   })
 
   return Array.from(categories.entries()).map(([name, data]) => ({

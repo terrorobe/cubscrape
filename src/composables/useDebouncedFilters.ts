@@ -22,7 +22,7 @@ export interface DebouncedFiltersComposable<T> {
   hasPendingUpdates: () => boolean
 }
 
-export function useDebouncedFilters<T extends Record<string, any>>(
+export function useDebouncedFilters<T extends Record<string, unknown>>(
   initialFilters: T,
   onFiltersChanged: FilterChangeCallback<T>,
   debounceMs: number = 400,

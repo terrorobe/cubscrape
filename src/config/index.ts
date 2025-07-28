@@ -120,19 +120,19 @@ export const APP_METADATA: AppMetadata = {
 /**
  * Get configuration value with fallback
  */
-export function getConfig<T = any>(path: string, defaultValue: T): T {
+export function getConfig<T = unknown>(path: string, defaultValue: T): T {
   const keys = path.split('.')
-  let value: any = CONFIG
+  let value: unknown = CONFIG
 
   for (const key of keys) {
     if (value && typeof value === 'object' && key in value) {
-      value = value[key]
+      value = (value as Record<string, unknown>)[key]
     } else {
       return defaultValue
     }
   }
 
-  return value
+  return value as T
 }
 
 // Type exports for external use

@@ -164,9 +164,9 @@ export interface PricePreset {
  * Props interface for PriceFilter component
  */
 export interface PriceFilterProps {
-  currency: Currency
-  initialPriceFilter: PriceFilterConfig
-  gameStats: GameStats
+  currency?: Currency
+  initialPriceFilter?: PriceFilterConfig
+  gameStats?: GameStats
 }
 
 const props = withDefaults(defineProps<PriceFilterProps>(), {

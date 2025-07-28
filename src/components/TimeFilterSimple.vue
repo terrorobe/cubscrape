@@ -95,7 +95,7 @@ export interface TimeFilterConfig {
  * Props interface for TimeFilterSimple component
  */
 export interface TimeFilterSimpleProps {
-  initialTimeFilter: TimeFilterConfig
+  initialTimeFilter?: TimeFilterConfig
 }
 
 const props = withDefaults(defineProps<TimeFilterSimpleProps>(), {

@@ -393,7 +393,7 @@ interface PriceFilterData {
 
 interface SortData {
   sortBy: string
-  sortSpec: any
+  sortSpec: string
 }
 
 // Reactive state with proper typing

@@ -230,9 +230,23 @@ export interface SortChangeEvent {
 /**
  * Props interface for SortingOptions component
  */
+/**
+ * Contextual filters interface for sorting suggestions
+ */
+export interface ContextualFilters {
+  timeFilter?: {
+    type?: string | null
+    preset?: string | null
+  }
+  selectedChannels?: string[]
+  selectedTags?: string[]
+  platform?: string
+  releaseStatus?: string
+}
+
 export interface SortingOptionsProps {
-  initialSort: string
-  contextualFilters: Record<string, any>
+  initialSort?: string
+  contextualFilters?: ContextualFilters
   hideSmartPresets?: boolean
   showAdvancedToggle?: boolean
 }

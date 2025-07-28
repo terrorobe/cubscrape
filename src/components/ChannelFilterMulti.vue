@@ -174,8 +174,8 @@ export interface ChannelFilterChangeEvent {
  * Props interface for ChannelFilterMulti component
  */
 export interface ChannelFilterMultiProps {
-  channelsWithCounts: ChannelWithCount[]
-  initialSelectedChannels: string[]
+  channelsWithCounts?: ChannelWithCount[]
+  initialSelectedChannels?: string[]
 }
 
 const props = withDefaults(defineProps<ChannelFilterMultiProps>(), {
