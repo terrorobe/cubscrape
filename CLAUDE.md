@@ -173,6 +173,11 @@ The project uses ESLint configured for Vue.js that enforces:
 - **GitHub Pages URL**: https://terrorobe.github.io/cubscrape/
 - **Database compression**: GitHub Pages automatically serves `games.db` with gzip (3MB → ~655KB)
 
+## Production Deployment
+
+- **GitHub Pages URL**: https://terrorobe.github.io/cubscrape/
+- **Database compression**: GitHub Pages automatically serves `games.db` with gzip (3MB → ~655KB)
+
 ## Development Issues
 
 ### JSON Data Analysis

@@ -517,6 +517,26 @@
       ],
       "url": "https://juanggz.itch.io/spartan-survivors"
     },
+    "https://justin-wang123.itch.io/rogue-fable-iv": {
+      "header_image": "https://img.itch.zone/aW1nLzE0MjMyMDgwLnBuZw==/original/CF5oQE.png",
+      "is_free": true,
+      "last_updated": "2025-07-28T09:01:40.331280",
+      "name": "Rogue Fable IV",
+      "platform": "itch",
+      "positive_review_percentage": 96,
+      "release_date": "",
+      "review_count": 89,
+      "tags": [
+        "2D",
+        "Dungeon Crawler",
+        "Fantasy",
+        "Pixel Art",
+        "Roguelike",
+        "Singleplayer",
+        "Top-Down"
+      ],
+      "url": "https://justin-wang123.itch.io/rogue-fable-iv"
+    },
     "https://korbohned.itch.io/you-found-a-hole-in-the-ground": {
       "header_image": "https://img.itch.zone/aW1nLzEzMjM3NTQxLnBuZw==/original/OuWLsz.png",
       "is_free": true,
@@ -983,6 +1003,29 @@
       ],
       "url": "https://squidcor.itch.io/second-earth"
     },
+    "https://starvaders.itch.io/starvaders": {
+      "header_image": "https://img.itch.zone/aW1nLzEwNTg0MzExLnBuZw==/original/6voKNY.png",
+      "is_free": true,
+      "last_updated": "2025-07-28T09:01:41.144744",
+      "name": "Star\u2605Vaders",
+      "platform": "itch",
+      "positive_review_percentage": 98,
+      "release_date": "",
+      "review_count": 23,
+      "steam_url": "",
+      "tags": [
+        "Anime",
+        "Deck Building",
+        "Mechs",
+        "Roguelike",
+        "Roguelite",
+        "Shoot 'Em Up",
+        "Singleplayer",
+        "Turn-based",
+        "Unity"
+      ],
+      "url": "https://starvaders.itch.io/starvaders"
+    },
     "https://tellusgames.itch.io/outhold": {
       "header_image": "https://img.itch.zone/aW1nLzIxMzk2OTMzLnBuZw==/original/5xcBq4.png",
       "is_free": true,
@@ -1264,12 +1307,12 @@
     "https://www.crazygames.com/game/stick-war": {
       "header_image": "https://imgs.crazygames.com/games/stick-war/cover-1659084995039.jpg?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "is_free": true,
-      "last_updated": "2025-07-28T01:08:05.298818",
+      "last_updated": "2025-07-28T09:01:41.319167",
       "name": "Stick War",
       "platform": "crazygames",
       "positive_review_percentage": 93,
       "release_date": "",
-      "review_count": 220433,
+      "review_count": 220460,
       "steam_url": "",
       "tags": [
         "Action",
