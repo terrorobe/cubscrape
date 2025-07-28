@@ -8,7 +8,6 @@
 
 - **README.md** - Project overview, setup instructions, and usage
 - **docs/ARCHITECTURE.md** - System architecture, data flow, and component design  
-- **docs/IMPLEMENTATION_NOTES.md** - Detailed implementation notes and technical decisions
 - **docs/FAVICON.md** - Favicon generation and design documentation
 - **CLAUDE.md** - This file: Development environment and workflow notes
 
@@ -103,11 +102,11 @@ The scraper has been refactored into modular components:
 - **`base_fetcher.py`** - BeautifulSoup type-safe helper methods
 
 ### Web Interface:
-- **`src/`** - Vue.js application source code
+- **`src/`** - Vue.js application source code (TypeScript)
 - **`src/App.vue`** - Main application component
-- **`src/main.js`** - Application entry point
-- **`src/components/`** - Vue components (GameCard, GameFilters, etc.)
-- **`src/utils/`** - Utility modules (databaseManager, performanceMonitor, etc.)
+- **`src/main.ts`** - Application entry point (TypeScript)
+- **`src/components/`** - Vue components with TypeScript support
+- **`src/utils/`** - Utility modules (TypeScript with type safety)
 - **`src/style.css`** - Global styling
 
 ### Steam Refresh Intervals:
@@ -122,9 +121,10 @@ This project uses **Vue.js 3** with **Vite** for the web interface, **npm** for 
 
 ### Key Files
 - `package.json` - Project configuration and dependencies
+- `tsconfig.json` - TypeScript configuration
 - `eslint.config.js` - ESLint configuration for code quality
-- `vite.config.js` - Vite build configuration
-- `src/main.js` - Vue application entry point
+- `vite.config.js` - Vite build configuration with TypeScript support
+- `src/main.ts` - Vue application entry point (TypeScript)
 - `src/App.vue` - Root application component
 
 ### Development Commands
@@ -153,6 +153,26 @@ npx eslint src/ --fix
 3. **Auto-fix**: Use `npx eslint src/ --fix` to automatically fix many issues
 4. **Building**: Run `npm run build` for production builds
 
+## Testing & Debugging
+
+### Manual Testing Commands
+```bash
+# Test specific channel processing
+cubscrape backfill --channel olexa --max-new 5
+
+# Test missing Steam games resolution (interactive)
+cubscrape infer-games
+
+# Test data quality checks
+cubscrape data-quality
+
+# Fetch single Steam app (useful for debugging)
+cubscrape single-app --app-id 3586420
+
+# Test all channels (cron mode)
+cubscrape cron
+```
+
 ### Frontend Dependencies
 
 **Vue.js ecosystem**:
@@ -167,11 +187,6 @@ The project uses ESLint configured for Vue.js that enforces:
 - **Vue.js best practices**: Proper component structure and composition API usage
 - **Code quality**: No console statements (warnings), no debugger, consistent variable declarations
 - **Modern JavaScript**: ES6+ features, proper async/await usage
-
-## Production Deployment
-
-- **GitHub Pages URL**: https://terrorobe.github.io/cubscrape/
-- **Database compression**: GitHub Pages automatically serves `games.db` with gzip (3MB → ~655KB)
 
 ## Production Deployment
 

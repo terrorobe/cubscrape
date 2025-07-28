@@ -234,264 +234,257 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useProgressiveOptions } from '../composables/useProgressiveOptions.js'
-import { UI_LIMITS } from '../config/index.js'
+import { useProgressiveOptions, type OptionWithCount } from '../composables/useProgressiveOptions'
+import { UI_LIMITS } from '../config/index'
 
-export default {
-  name: 'TagFilterMulti',
-  props: {
-    tagsWithCounts: {
-      type: Array,
-      default: () => [],
-    },
-    initialSelectedTags: {
-      type: Array,
-      default: () => [],
-    },
-    initialTagLogic: {
-      type: String,
-      default: 'and',
-      validator: (value) => ['and', 'or'].includes(value),
-    },
-  },
-  emits: ['tags-changed'],
-  setup(props, { emit }) {
-    const searchInput = ref(null)
-    const searchQuery = ref('')
-    const showDropdown = ref(false)
-    const selectedTags = ref([...props.initialSelectedTags])
-    const tagLogic = ref(props.initialTagLogic)
-
-    // Popular tags (top 10 most used)
-    const popularTags = computed(() => {
-      return props.tagsWithCounts
-        .slice(0, UI_LIMITS.POPULAR_TAGS_COUNT)
-        .map((tag) => ({
-          ...tag,
-          isPopular: true,
-        }))
-    })
-
-    // All tags with metadata
-    const tagsWithMetadata = computed(() => {
-      const popularTagNames = new Set(popularTags.value.map((t) => t.name))
-
-      return props.tagsWithCounts.map((tag) => ({
-        ...tag,
-        isPopular: popularTagNames.has(tag.name),
-      }))
-    })
-
-    // Filtered tags based on search query
-    const filteredTags = computed(() => {
-      if (!searchQuery.value.trim()) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return tagsWithMetadata.value.sort((a, b) => {
-          // Sort by popularity first, then by count, then alphabetically
-          if (a.isPopular && !b.isPopular) {
-            return -1
-          }
-          if (!a.isPopular && b.isPopular) {
-            return 1
-          }
-          if (a.count !== b.count) {
-            return b.count - a.count
-          }
-          return a.name.localeCompare(b.name)
-        })
-      }
-
-      const query = searchQuery.value.toLowerCase()
-      return tagsWithMetadata.value
-        .filter((tag) => tag.name.toLowerCase().includes(query))
-        .sort((a, b) => {
-          // Exact matches first
-          const aExact = a.name.toLowerCase() === query
-          const bExact = b.name.toLowerCase() === query
-          if (aExact && !bExact) {
-            return -1
-          }
-          if (!aExact && bExact) {
-            return 1
-          }
-
-          // Then by popularity
-          if (a.isPopular && !b.isPopular) {
-            return -1
-          }
-          if (!a.isPopular && b.isPopular) {
-            return 1
-          }
-
-          // Then by count
-          return b.count - a.count
-        })
-    })
-
-    // Progressive loading for tags
-    const {
-      visibleOptions: visibleFilteredTags,
-      isLoading: isLoadingTags,
-      hasMore: hasMoreTags,
-      loadMore: loadMoreTags,
-      updateSearch: updateTagSearch,
-    } = useProgressiveOptions(filteredTags, 20, 15)
-
-    // Additional computed properties for UI
-    const remainingTagCount = computed(() => {
-      return filteredTags.value.length - visibleFilteredTags.value.length
-    })
-
-    // Preview text for result count
-    const previewText = computed(() => {
-      if (selectedTags.value.length === 0) {
-        return ''
-      }
-      if (selectedTags.value.length === 1) {
-        return `Games with "${selectedTags.value[0]}"`
-      }
-
-      const logic = tagLogic.value.toUpperCase()
-      return `${logic} filter active`
-    })
-
-    // Logic explanation
-    const logicExplanation = computed(() => {
-      if (selectedTags.value.length <= 1) {
-        return ''
-      }
-
-      const count = selectedTags.value.length
-      if (tagLogic.value === 'and') {
-        return `Games must have all ${count} selected tags`
-      } else {
-        return `Games must have any of the ${count} selected tags`
-      }
-    })
-
-    const toggleTag = (tagName) => {
-      const index = selectedTags.value.indexOf(tagName)
-      if (index > -1) {
-        selectedTags.value.splice(index, 1)
-      } else {
-        selectedTags.value.push(tagName)
-      }
-      emitFiltersChanged()
-    }
-
-    const removeTag = (tagName) => {
-      const index = selectedTags.value.indexOf(tagName)
-      if (index > -1) {
-        selectedTags.value.splice(index, 1)
-        emitFiltersChanged()
-      }
-    }
-
-    const clearAllTags = () => {
-      selectedTags.value = []
-      emitFiltersChanged()
-    }
-
-    const clearSearch = () => {
-      searchQuery.value = ''
-      if (searchInput.value) {
-        searchInput.value.focus()
-      }
-    }
-
-    const selectPopularTags = () => {
-      // Add popular tags that aren't already selected
-      const popularTagNames = popularTags.value.map((t) => t.name)
-      popularTagNames.forEach((tag) => {
-        if (!selectedTags.value.includes(tag)) {
-          selectedTags.value.push(tag)
-        }
-      })
-      emitFiltersChanged()
-    }
-
-    const filterTags = () => {
-      // Update the progressive loading search
-      updateTagSearch(searchQuery.value)
-    }
-
-    // Watch for search changes to update progressive loading
-    watch(searchQuery, (newQuery) => {
-      updateTagSearch(newQuery)
-    })
-
-    const emitFiltersChanged = () => {
-      emit('tags-changed', {
-        selectedTags: [...selectedTags.value],
-        tagLogic: tagLogic.value,
-      })
-    }
-
-    // Handle clicking outside to close dropdown
-    const handleClickOutside = (event) => {
-      const input = searchInput.value
-      const dropdown = input?.parentElement?.nextElementSibling
-
-      if (
-        input &&
-        !input.contains(event.target) &&
-        dropdown &&
-        !dropdown.contains(event.target)
-      ) {
-        showDropdown.value = false
-      }
-    }
-
-    // Watch for changes in initial props
-    watch(
-      () => props.initialSelectedTags,
-      (newTags) => {
-        selectedTags.value = [...newTags]
-      },
-      { deep: true },
-    )
-
-    watch(
-      () => props.initialTagLogic,
-      (newLogic) => {
-        tagLogic.value = newLogic
-      },
-    )
-
-    onMounted(() => {
-      document.addEventListener('click', handleClickOutside)
-    })
-
-    onUnmounted(() => {
-      document.removeEventListener('click', handleClickOutside)
-    })
-
-    return {
-      searchInput,
-      searchQuery,
-      showDropdown,
-      selectedTags,
-      tagLogic,
-      popularTags,
-      filteredTags,
-      visibleFilteredTags,
-      isLoadingTags,
-      hasMoreTags,
-      remainingTagCount,
-      previewText,
-      logicExplanation,
-      toggleTag,
-      removeTag,
-      clearAllTags,
-      clearSearch,
-      selectPopularTags,
-      filterTags,
-      loadMoreTags,
-      emitFiltersChanged,
-      UI_LIMITS,
-    }
-  },
+/**
+ * Tag item interface with name, count and popularity indicator
+ */
+export interface TagWithCount extends OptionWithCount {
+  isPopular?: boolean
 }
+
+/**
+ * Tag logic type for filtering
+ */
+export type TagLogic = 'and' | 'or'
+
+/**
+ * Tag filter change event payload
+ */
+export interface TagFilterChangeEvent {
+  selectedTags: string[]
+  tagLogic: TagLogic
+}
+
+/**
+ * Props interface for TagFilterMulti component
+ */
+export interface TagFilterMultiProps {
+  tagsWithCounts: TagWithCount[]
+  initialSelectedTags: string[]
+  initialTagLogic: TagLogic
+}
+
+const props = withDefaults(defineProps<TagFilterMultiProps>(), {
+  tagsWithCounts: () => [],
+  initialSelectedTags: () => [],
+  initialTagLogic: 'and',
+})
+
+const emit = defineEmits<{
+  'tags-changed': [event: TagFilterChangeEvent]
+}>()
+const searchInput = ref<HTMLInputElement | null>(null)
+const searchQuery = ref<string>('')
+const showDropdown = ref<boolean>(false)
+const selectedTags = ref<string[]>([...props.initialSelectedTags])
+const tagLogic = ref<TagLogic>(props.initialTagLogic)
+
+// Popular tags (top 10 most used)
+const popularTags = computed((): TagWithCount[] => {
+  return props.tagsWithCounts
+    .slice(0, UI_LIMITS.POPULAR_TAGS_COUNT)
+    .map((tag) => ({
+      ...tag,
+      isPopular: true,
+    }))
+})
+
+// All tags with metadata
+const tagsWithMetadata = computed((): TagWithCount[] => {
+  const popularTagNames = new Set(popularTags.value.map((t) => t.name))
+
+  return props.tagsWithCounts.map((tag) => ({
+    ...tag,
+    isPopular: popularTagNames.has(tag.name),
+  }))
+})
+
+// Filtered tags based on search query
+const filteredTags = computed((): TagWithCount[] => {
+  if (!searchQuery.value.trim()) {
+    return [...tagsWithMetadata.value].sort((a, b) => {
+      // Sort by popularity first, then by count, then alphabetically
+      if (a.isPopular && !b.isPopular) {
+        return -1
+      }
+      if (!a.isPopular && b.isPopular) {
+        return 1
+      }
+      if (a.count !== b.count) {
+        return b.count - a.count
+      }
+      return a.name.localeCompare(b.name)
+    })
+  }
+
+  const query = searchQuery.value.toLowerCase()
+  return tagsWithMetadata.value
+    .filter((tag) => tag.name.toLowerCase().includes(query))
+    .sort((a, b) => {
+      // Exact matches first
+      const aExact = a.name.toLowerCase() === query
+      const bExact = b.name.toLowerCase() === query
+      if (aExact && !bExact) {
+        return -1
+      }
+      if (!aExact && bExact) {
+        return 1
+      }
+
+      // Then by popularity
+      if (a.isPopular && !b.isPopular) {
+        return -1
+      }
+      if (!a.isPopular && b.isPopular) {
+        return 1
+      }
+
+      // Then by count
+      return b.count - a.count
+    })
+})
+
+// Progressive loading for tags
+const {
+  visibleOptions: visibleFilteredTags,
+  isLoading: isLoadingTags,
+  hasMore: hasMoreTags,
+  loadMore: loadMoreTags,
+  updateSearch: updateTagSearch,
+} = useProgressiveOptions(filteredTags, 20, 15)
+
+// Additional computed properties for UI
+const remainingTagCount = computed((): number => {
+  return filteredTags.value.length - visibleFilteredTags.value.length
+})
+
+// Preview text for result count
+const previewText = computed((): string => {
+  if (selectedTags.value.length === 0) {
+    return ''
+  }
+  if (selectedTags.value.length === 1) {
+    return `Games with "${selectedTags.value[0]}"`
+  }
+
+  const logic = tagLogic.value.toUpperCase()
+  return `${logic} filter active`
+})
+
+// Logic explanation
+const logicExplanation = computed((): string => {
+  if (selectedTags.value.length <= 1) {
+    return ''
+  }
+
+  const count = selectedTags.value.length
+  if (tagLogic.value === 'and') {
+    return `Games must have all ${count} selected tags`
+  } else {
+    return `Games must have any of the ${count} selected tags`
+  }
+})
+
+const toggleTag = (tagName: string): void => {
+  const index = selectedTags.value.indexOf(tagName)
+  if (index > -1) {
+    selectedTags.value.splice(index, 1)
+  } else {
+    selectedTags.value.push(tagName)
+  }
+  emitFiltersChanged()
+}
+
+const removeTag = (tagName: string): void => {
+  const index = selectedTags.value.indexOf(tagName)
+  if (index > -1) {
+    selectedTags.value.splice(index, 1)
+    emitFiltersChanged()
+  }
+}
+
+const clearAllTags = (): void => {
+  selectedTags.value = []
+  emitFiltersChanged()
+}
+
+const clearSearch = (): void => {
+  searchQuery.value = ''
+  if (searchInput.value) {
+    searchInput.value.focus()
+  }
+}
+
+const selectPopularTags = (): void => {
+  // Add popular tags that aren't already selected
+  const popularTagNames = popularTags.value.map((t) => t.name)
+  popularTagNames.forEach((tag) => {
+    if (!selectedTags.value.includes(tag)) {
+      selectedTags.value.push(tag)
+    }
+  })
+  emitFiltersChanged()
+}
+
+const filterTags = (): void => {
+  // Update the progressive loading search
+  updateTagSearch(searchQuery.value)
+}
+
+// Watch for search changes to update progressive loading
+watch(searchQuery, (newQuery: string) => {
+  updateTagSearch(newQuery)
+})
+
+const emitFiltersChanged = (): void => {
+  emit('tags-changed', {
+    selectedTags: [...selectedTags.value],
+    tagLogic: tagLogic.value,
+  })
+}
+
+// Handle clicking outside to close dropdown
+const handleClickOutside = (event: Event): void => {
+  const input = searchInput.value
+  const dropdown = input?.parentElement?.nextElementSibling
+
+  if (
+    input &&
+    event.target &&
+    !input.contains(event.target as Node) &&
+    dropdown &&
+    !dropdown.contains(event.target as Node)
+  ) {
+    showDropdown.value = false
+  }
+}
+
+// Watch for changes in initial props
+watch(
+  () => props.initialSelectedTags,
+  (newTags: string[]) => {
+    selectedTags.value = [...newTags]
+  },
+  { deep: true },
+)
+
+watch(
+  () => props.initialTagLogic,
+  (newLogic: TagLogic) => {
+    tagLogic.value = newLogic
+  },
+)
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
 </script>

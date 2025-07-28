@@ -24,7 +24,25 @@ export const TIMING = {
 
   /** Simulated loading delay for progressive options */
   PROGRESSIVE_LOAD_DELAY: 50,
-}
+
+  /** Debug info update delay */
+  DEBUG_UPDATE_DELAY: 100,
+
+  /** Scroll retry delay */
+  SCROLL_RETRY_DELAY: 100,
+
+  /** Resize debounce delay */
+  RESIZE_DEBOUNCE_DELAY: 100,
+
+  /** Initial debug delay */
+  INITIAL_DEBUG_DELAY: 500,
+
+  /** Milliseconds in a minute */
+  MINUTE_IN_MS: 60000,
+
+  /** Milliseconds in an hour */
+  HOUR_IN_MS: 3600000,
+} as const
 
 /**
  * Price-related constants
@@ -44,6 +62,14 @@ export const PRICING = {
     BUDGET: 20,
     MODERATE: 30,
   },
+} as const
+
+/**
+ * Rating threshold configuration
+ */
+interface RatingFilterOption {
+  value: number
+  label: string
 }
 
 /**
@@ -62,7 +88,7 @@ export const RATINGS = {
     { value: 70, label: '70%+ Positive' },
     { value: 80, label: '80%+ Positive' },
     { value: 90, label: '90%+ Positive' },
-  ],
+  ] as readonly RatingFilterOption[],
 
   /** Smart sorting rating thresholds */
   SMART_SORT: {
@@ -72,7 +98,7 @@ export const RATINGS = {
     MOSTLY_POSITIVE: 70,
     MIXED: 60,
   },
-}
+} as const
 
 /**
  * Progressive loading configuration
@@ -83,7 +109,7 @@ export const PROGRESSIVE_LOADING = {
 
   /** Number of items to load on each "load more" action */
   LOAD_MORE_COUNT: 10,
-}
+} as const
 
 /**
  * UI component display limits
@@ -109,7 +135,7 @@ export const UI_LIMITS = {
 
   /** Number of popular tags for top selection */
   POPULAR_TAGS_COUNT: 10,
-}
+} as const
 
 /**
  * Layout and responsive design constants
@@ -150,7 +176,7 @@ export const LAYOUT = {
     XL: '1280px',
     '2XL': '1536px',
   },
-}
+} as const
 
 /**
  * Internationalization strings (preparation for i18n)
@@ -181,7 +207,7 @@ export const I18N_STRINGS = {
   FILTERS: 'Filters',
   EXPAND_FILTERS: 'Expand filters',
   COLLAPSE_FILTERS: 'Collapse filters',
-}
+} as const
 
 /**
  * Animation durations
@@ -198,12 +224,19 @@ export const ANIMATIONS = {
 
   /** Sidebar transition duration */
   SIDEBAR_TRANSITION: '300ms',
+} as const
+
+/**
+ * Sort specification with SQL ordering logic
+ */
+interface SortSpec {
+  sql: string
 }
 
 /**
  * Sort specifications with their SQL ordering logic
  */
-export const SORT_SPECS = {
+export const SORT_SPECS: Record<string, SortSpec> = {
   relevance: {
     sql: `
       ORDER BY
@@ -270,7 +303,7 @@ export const HIDDEN_GEMS = {
 
   /** Minimum review count required */
   MIN_REVIEWS: 50,
-}
+} as const
 
 /**
  * Time-based filtering constants (in days)
@@ -287,7 +320,7 @@ export const TIME_RANGES = {
 
   /** Yearly threshold for old games */
   YEARLY: 365,
-}
+} as const
 
 /**
  * Video coverage thresholds for smart sorting
@@ -310,4 +343,16 @@ export const VIDEO_COVERAGE = {
 
   /** Strong consensus threshold */
   STRONG_CONSENSUS: 3,
-}
+} as const
+
+// Type exports for external use
+export type TimingConfig = typeof TIMING
+export type PricingConfig = typeof PRICING
+export type RatingsConfig = typeof RATINGS
+export type UILimitsConfig = typeof UI_LIMITS
+export type LayoutConfig = typeof LAYOUT
+export type I18NStringsConfig = typeof I18N_STRINGS
+export type AnimationsConfig = typeof ANIMATIONS
+export type HiddenGemsConfig = typeof HIDDEN_GEMS
+export type TimeRangesConfig = typeof TIME_RANGES
+export type VideoCoverageConfig = typeof VIDEO_COVERAGE

@@ -40,36 +40,26 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ref } from 'vue'
 
-export default {
-  name: 'CollapsibleSection',
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    activeCount: {
-      type: Number,
-      default: 0,
-    },
-    defaultExpanded: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  setup(props) {
-    const isExpanded = ref(props.defaultExpanded)
+/**
+ * Props interface for CollapsibleSection component
+ */
+export interface CollapsibleSectionProps {
+  title: string
+  activeCount?: number
+  defaultExpanded?: boolean
+}
 
-    const toggleExpanded = () => {
-      isExpanded.value = !isExpanded.value
-    }
+const props = withDefaults(defineProps<CollapsibleSectionProps>(), {
+  activeCount: 0,
+  defaultExpanded: true,
+})
 
-    return {
-      isExpanded,
-      toggleExpanded,
-    }
-  },
+const isExpanded = ref(props.defaultExpanded)
+
+const toggleExpanded = (): void => {
+  isExpanded.value = !isExpanded.value
 }
 </script>

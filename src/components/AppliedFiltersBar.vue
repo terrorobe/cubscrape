@@ -104,91 +104,112 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { computed } from 'vue'
+import type { FilterConfig } from '../utils/presetManager'
 
-export default {
-  name: 'AppliedFiltersBar',
-  props: {
-    filters: {
-      type: Object,
-      required: true,
-    },
-    gameCount: {
-      type: Number,
-      default: undefined,
-    },
-  },
-  emits: ['remove-filter', 'clear-all-filters'],
-  setup(props, { emit }) {
-    const appliedFilters = computed(() => {
-      const filters = []
+/**
+ * Applied filter item interface
+ */
+export interface AppliedFilter {
+  key: string
+  type: string
+  label: string
+  value: any
+}
 
-      // Release Status
-      if (
-        props.filters.releaseStatus &&
-        props.filters.releaseStatus !== 'all'
-      ) {
-        const statusLabels = {
-          released: 'Released Only',
-          'early-access': 'Early Access',
-          'coming-soon': 'Coming Soon',
-        }
-        filters.push({
-          key: 'releaseStatus',
-          type: 'releaseStatus',
-          label:
-            statusLabels[props.filters.releaseStatus] ||
-            props.filters.releaseStatus,
-          value: 'all',
-        })
-      }
+/**
+ * Filter remove event payload
+ */
+export interface FilterRemoveEvent {
+  type: string
+  value: any
+}
 
-      // Platform
-      if (props.filters.platform && props.filters.platform !== 'all') {
-        const platformLabels = {
-          steam: 'Steam',
-          itch: 'Itch.io',
-          crazygames: 'CrazyGames',
-        }
-        filters.push({
-          key: 'platform',
-          type: 'platform',
-          label:
-            platformLabels[props.filters.platform] || props.filters.platform,
-          value: 'all',
-        })
-      }
+/**
+ * Props interface for AppliedFiltersBar component
+ */
+export interface AppliedFiltersBarProps {
+  filters: FilterConfig
+  gameCount?: number
+}
 
-      // Rating
-      if (props.filters.rating && props.filters.rating !== '0') {
-        filters.push({
-          key: 'rating',
-          type: 'rating',
-          label: `${props.filters.rating}%+ Rating`,
-          value: '0',
-        })
-      }
+const props = withDefaults(defineProps<AppliedFiltersBarProps>(), {
+  gameCount: undefined,
+})
 
-      // Cross-Platform
-      if (props.filters.crossPlatform) {
-        filters.push({
-          key: 'crossPlatform',
-          type: 'crossPlatform',
-          label: 'Multi-platform only',
-          value: false,
-        })
-      }
+const emit = defineEmits<{
+  'remove-filter': [event: FilterRemoveEvent]
+  'clear-all-filters': []
+}>()
+const appliedFilters = computed((): AppliedFilter[] => {
+  const filters: AppliedFilter[] = []
 
-      // Hidden Gems
-      if (props.filters.hiddenGems) {
-        filters.push({
-          key: 'hiddenGems',
-          type: 'hiddenGems',
-          label: 'Hidden Gems',
-          value: false,
-        })
-      }
+  // Release Status
+  if (
+    props.filters.releaseStatus &&
+    props.filters.releaseStatus !== 'all'
+  ) {
+    const statusLabels: Record<string, string> = {
+      released: 'Released Only',
+      'early-access': 'Early Access',
+      'coming-soon': 'Coming Soon',
+    }
+    filters.push({
+      key: 'releaseStatus',
+      type: 'releaseStatus',
+      label:
+        statusLabels[props.filters.releaseStatus] ||
+        props.filters.releaseStatus,
+      value: 'all',
+    })
+  }
+
+  // Platform
+  if (props.filters.platform && props.filters.platform !== 'all') {
+    const platformLabels: Record<string, string> = {
+      steam: 'Steam',
+      itch: 'Itch.io',
+      crazygames: 'CrazyGames',
+    }
+    filters.push({
+      key: 'platform',
+      type: 'platform',
+      label:
+        platformLabels[props.filters.platform] || props.filters.platform,
+      value: 'all',
+    })
+  }
+
+  // Rating
+  if (props.filters.rating && props.filters.rating !== '0') {
+    filters.push({
+      key: 'rating',
+      type: 'rating',
+      label: `${props.filters.rating}%+ Rating`,
+      value: '0',
+    })
+  }
+
+  // Cross-Platform
+  if (props.filters.crossPlatform) {
+    filters.push({
+      key: 'crossPlatform',
+      type: 'crossPlatform',
+      label: 'Multi-platform only',
+      value: false,
+    })
+  }
+
+  // Hidden Gems
+  if (props.filters.hiddenGems) {
+    filters.push({
+      key: 'hiddenGems',
+      type: 'hiddenGems',
+      label: 'Hidden Gems',
+      value: false,
+    })
+  }
 
       // Tags
       if (props.filters.selectedTags && props.filters.selectedTags.length > 0) {
@@ -339,36 +360,28 @@ export default {
         })
       }
 
-      return filters
-    })
+  return filters
+})
 
-    const formatChannelName = (channel) => {
-      if (!channel || typeof channel !== 'string') {
-        return 'Unknown Channel'
-      }
-      return channel
-        .replace(/^videos-/, '')
-        .replace(/-/g, ' ')
-        .replace(/\b\w/g, (l) => l.toUpperCase())
-    }
+const formatChannelName = (channel: string): string => {
+  if (!channel || typeof channel !== 'string') {
+    return 'Unknown Channel'
+  }
+  return channel
+    .replace(/^videos-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (l) => l.toUpperCase())
+}
 
-    const removeFilter = (filter) => {
-      emit('remove-filter', {
-        type: filter.type,
-        value: filter.value,
-      })
-    }
+const removeFilter = (filter: AppliedFilter): void => {
+  emit('remove-filter', {
+    type: filter.type,
+    value: filter.value,
+  })
+}
 
-    const clearAllFilters = () => {
-      emit('clear-all-filters')
-    }
-
-    return {
-      appliedFilters,
-      removeFilter,
-      clearAllFilters,
-    }
-  },
+const clearAllFilters = (): void => {
+  emit('clear-all-filters')
 }
 </script>
 

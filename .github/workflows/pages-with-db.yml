@@ -5,15 +5,17 @@ on:
     branches: [master]
     paths:
       - 'data/**.json' # JSON data changes
-      - 'src/**' # Vue components
+      - 'src/**' # Vue components and TypeScript files
       - 'public/**' # Public assets
       - '*.html' # HTML files
       - '*.js' # JavaScript files
+      - '*.ts' # TypeScript files
       - '*.css' # CSS files
       - 'package*.json' # Dependencies
       - 'vite.config.js' # Vite config
       - 'tailwind.config.js' # Tailwind config
       - 'postcss.config.js' # PostCSS config
+      - 'tsconfig*.json' # TypeScript config
       - '.github/workflows/**.yml' # Workflow changes
       - '.github/workflows/**.yaml' # Alternative YAML extension
   workflow_dispatch:
@@ -54,6 +56,11 @@ jobs:
       - name: Install Node dependencies
         run: |
           npm ci
+
+      - name: TypeScript type checking
+        run: |
+          npx tsc --noEmit
+          npx vue-tsc --noEmit
 
       - name: Build Vue application
         run: |

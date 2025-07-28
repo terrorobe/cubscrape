@@ -42,18 +42,21 @@ YouTube Channel → Video Extraction → Steam/Itch Link Detection → Steam API
   games.db            # SQLite database - primary data source for web interface
   schema.sql          # Database schema definition and indexes
   
-/src/
-  main.js             # Vue.js application entry point
-  App.vue             # Main application component
+/src/ (TypeScript Frontend)
+  main.ts             # Vue.js application entry point (TypeScript)
+  App.vue             # Main application component with TypeScript
   style.css           # Global styling with dark theme
-  components/         # Vue components (GameCard, GameFilters, etc.)
-  config/             # Centralized configuration system
-    index.js          # Main configuration exports and utilities
-    constants.js      # Magic numbers, UI limits, and thresholds
-    theme.js          # Colors, spacing, timing, and visual tokens  
-    platforms.js      # Platform-specific configurations and logic
-  utils/              # Utility modules (databaseManager, performanceMonitor)
-  composables/        # Vue composition functions
+  components/         # Vue components with TypeScript support
+  config/             # Centralized configuration system (TypeScript)
+    index.ts          # Main configuration exports and utilities
+    constants.ts      # Magic numbers, UI limits, and thresholds
+    theme.ts          # Colors, spacing, timing, and visual tokens  
+    platforms.ts      # Platform-specific configurations and logic
+  utils/              # Utility modules (TypeScript with type safety)
+  composables/        # Vue composition functions (TypeScript)
+  types/              # TypeScript type definitions
+    database.ts       # Database schema types
+    vue-shims.d.ts    # Vue TypeScript declarations
   
 /.github/workflows/
   scrape.yml          # Automated scraping workflow
@@ -127,3 +130,168 @@ The scraper extracts both overall and recent reviews from Steam:
 - **Triggered On**: JSON data changes in data/ directory
 - **GitHub Pages**: Automatically deploys web interface with database
 - **Performance**: Web interface queries SQLite database directly for optimal performance
+
+## TypeScript Architecture
+
+The frontend has been fully migrated to TypeScript, providing comprehensive type safety and enhanced developer experience across all components.
+
+### Type System Design
+
+**Core Type Philosophy**:
+- **Database-First Types**: All data types derive from SQLite schema, ensuring frontend-backend consistency
+- **Strict Type Safety**: Zero tolerance for `any` types, comprehensive null checking
+- **Vue Integration**: Full TypeScript support for Vue 3 Composition API with proper reactivity typing
+- **Configuration Types**: Centralized, strongly-typed configuration system
+
+### Type Structure
+
+```typescript
+// Database types generated from SQLite schema
+interface Game {
+  steam_app_id: string;
+  name: string;
+  rating: number;
+  platform: 'steam' | 'itch' | 'crazygames';
+  // ... comprehensive game properties
+}
+
+// Vue component props with strict typing
+interface GameCardProps {
+  game: Game;
+  showVideo?: boolean;
+  compactMode?: boolean;
+}
+
+// Configuration with JSDoc documentation
+interface ThemeConfig {
+  /** Primary application colors */
+  colors: {
+    primary: string;
+    secondary: string;
+    // ... type-safe color palette
+  };
+}
+```
+
+### Advanced TypeScript Features
+
+**Generic Type Utilities**:
+- **Database Operations**: Generic query builders with compile-time SQL validation
+- **Reactive Data**: Vue 3 reactivity with preserved TypeScript inference
+- **Component Props**: Conditional types for dynamic prop validation
+- **Configuration System**: Template literal types for compile-time string validation
+
+**Error Handling Patterns**:
+- **Result Types**: Explicit error handling with `Result<T, E>` patterns
+- **Type Guards**: Runtime type validation with compile-time guarantees
+- **Null Safety**: Comprehensive optional chaining and nullish coalescing
+
+### Integration Patterns
+
+**Vue Component Architecture**:
+```typescript
+<script setup lang="ts">
+// Compile-time prop validation
+interface Props {
+  games: Game[];
+  filters: FilterState;
+}
+const props = defineProps<Props>();
+
+// Type-safe composables
+const { filteredGames, loading } = useGameFiltering(props.games);
+</script>
+```
+
+**Database Layer**:
+```typescript
+// Type-safe database operations
+class DatabaseManager {
+  async getGames(filters: GameFilters): Promise<Game[]> {
+    // SQLite queries with TypeScript validation
+  }
+}
+```
+
+**Configuration System**:
+```typescript
+// Central configuration with comprehensive types
+export const CONFIG = {
+  ui: {
+    pagination: { defaultPageSize: 20 } as const,
+    filters: { maxTags: 50 } as const
+  }
+} satisfies AppConfig;
+```
+
+### Development Workflow Integration
+
+**Type Checking Pipeline**:
+- **Build-time**: Vite TypeScript plugin validates all code during development
+- **IDE Integration**: Full IntelliSense with error detection and auto-completion
+- **Component Validation**: Vue-specific TypeScript checking with `vue-tsc`
+- **Configuration Validation**: Compile-time validation of all configuration properties
+
+**Migration Benefits**:
+- **Bug Prevention**: Catches type mismatches and null reference errors at compile time
+- **Refactoring Safety**: Confident large-scale code changes with comprehensive type checking
+- **Documentation**: Types serve as living documentation for component interfaces
+- **Developer Experience**: Enhanced IDE support with intelligent code completion
+
+The TypeScript architecture maintains the existing component structure while adding a comprehensive type layer that prevents common JavaScript errors and improves long-term maintainability.
+
+## Component Architecture
+
+### Filter System Design
+
+The filtering system uses a component library with consistent patterns and centralized state management.
+
+**Core Components**:
+
+1. **GameFilters.vue** - Main orchestrator
+   - Coordinates all filter components
+   - Handles desktop/mobile layouts
+   - Provides 400ms debounced updates
+   - Manages URL synchronization
+
+2. **Multi-Select Filters**
+   - `TagFilterMulti.vue` - Tag selection with AND/OR logic
+   - `ChannelFilterMulti.vue` - Channel selection with search
+   - Progressive loading for large datasets
+   - Consistent dropdown patterns
+
+3. **Range Filters**
+   - `PriceFilter.vue` - Dual-range slider with presets
+   - `TimeFilterSimple.vue` - Time-based filtering
+   - `SortingOptions.vue` - Advanced sorting options
+
+4. **Mobile Components**
+   - `MobileFilterModal.vue` - Bottom sheet container
+   - Touch-optimized with 44px targets
+   - Swipe gestures for dismissal
+
+5. **State Display**
+   - `AppliedFiltersBar.vue` - Active filter chips
+   - `FilterPresets.vue` - Preset management
+   - `SortIndicator.vue` - Sort state indicator
+
+### Design System
+
+**Consistent Patterns**:
+```css
+/* Shared component classes */
+.filter-input { /* Consistent input styling */ }
+.filter-chip { /* Tag/chip styling */ }
+.filter-dropdown { /* Dropdown containers */ }
+```
+
+**Communication**:
+- Event-based with consistent naming (`filters-changed`, `channels-changed`)
+- Props accept initial state and data with counts
+- Debounced updates for performance
+
+**Mobile Strategy**:
+- Breakpoint at 768px (`md:` prefix)
+- Bottom sheet pattern for mobile
+- Horizontal scrolling for filter chips
+- Progressive enhancement approach

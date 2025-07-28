@@ -122,231 +122,246 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { reactive, computed, watch } from 'vue'
-import { PRICING } from '../config/index.js'
+import { PRICING } from '../config/index'
 
-export default {
-  name: 'PriceFilter',
-  props: {
-    currency: {
-      type: String,
-      default: 'eur',
-      validator: (value) => ['eur', 'usd'].includes(value),
-    },
-    initialPriceFilter: {
-      type: Object,
-      default: () => ({
-        minPrice: PRICING.MIN_PRICE,
-        maxPrice: PRICING.DEFAULT_MAX_PRICE,
-        includeFree: true,
-      }),
-    },
-    // Game statistics for showing filtered counts
-    gameStats: {
-      type: Object,
-      default: () => ({
-        totalGames: 0,
-        freeGames: 0,
-        maxPrice: PRICING.DEFAULT_MAX_PRICE,
-      }),
-    },
-  },
-  emits: ['price-filter-changed'],
-  setup(props, { emit }) {
-    const maxPossiblePrice = computed(
-      () => props.gameStats.maxPrice || PRICING.DEFAULT_MAX_PRICE,
-    )
-    const freeGameCount = computed(() => props.gameStats.freeGames || 0)
+/**
+ * Currency type
+ */
+export type Currency = 'eur' | 'usd'
 
-    const localPriceFilter = reactive({
-      minPrice: props.initialPriceFilter.minPrice || PRICING.MIN_PRICE,
-      maxPrice: props.initialPriceFilter.maxPrice || maxPossiblePrice.value,
-      includeFree: props.initialPriceFilter.includeFree !== false,
-    })
-
-    // Price presets based on common price ranges
-    const pricePresets = computed(() => [
-      {
-        key: 'free',
-        label: 'Free',
-        minPrice: PRICING.MIN_PRICE,
-        maxPrice: PRICING.MIN_PRICE,
-        includeFree: true,
-      },
-      {
-        key: 'under-5',
-        label: '< $5',
-        minPrice: PRICING.MIN_PRICE,
-        maxPrice: 5,
-        includeFree: false,
-      },
-      {
-        key: 'under-10',
-        label: '< $10',
-        minPrice: PRICING.MIN_PRICE,
-        maxPrice: 10,
-        includeFree: false,
-      },
-      {
-        key: '5-15',
-        label: '$5-15',
-        minPrice: 5,
-        maxPrice: 15,
-        includeFree: false,
-      },
-      {
-        key: '10-30',
-        label: '$10-30',
-        minPrice: 10,
-        maxPrice: 30,
-        includeFree: false,
-      },
-      {
-        key: '15-40',
-        label: '$15-40',
-        minPrice: 15,
-        maxPrice: 40,
-        includeFree: false,
-      },
-      {
-        key: '30-plus',
-        label: '$30+',
-        minPrice: 30,
-        maxPrice: maxPossiblePrice.value,
-        includeFree: false,
-      },
-      {
-        key: 'all',
-        label: 'All',
-        minPrice: PRICING.MIN_PRICE,
-        maxPrice: maxPossiblePrice.value,
-        includeFree: true,
-      },
-    ])
-
-    // Format price according to currency
-    const formatPrice = (price) => {
-      if (price === 0) {
-        return 'Free'
-      }
-
-      const symbol = props.currency === 'eur' ? '€' : '$'
-      return `${symbol}${price.toFixed(2)}`
-    }
-
-    // Check if a preset is currently active
-    const isPresetActive = (preset) => {
-      return (
-        localPriceFilter.minPrice === preset.minPrice &&
-        localPriceFilter.maxPrice === preset.maxPrice &&
-        localPriceFilter.includeFree === preset.includeFree
-      )
-    }
-
-    // Select a price preset
-    const selectPreset = (preset) => {
-      localPriceFilter.minPrice = preset.minPrice
-      localPriceFilter.maxPrice = preset.maxPrice
-      localPriceFilter.includeFree = preset.includeFree
-      emitFilterChanged()
-    }
-
-    // Handle min price changes (ensure min <= max)
-    const handleMinChange = () => {
-      if (localPriceFilter.minPrice > localPriceFilter.maxPrice) {
-        localPriceFilter.maxPrice = localPriceFilter.minPrice
-      }
-    }
-
-    // Handle max price changes (ensure max >= min)
-    const handleMaxChange = () => {
-      if (localPriceFilter.maxPrice < localPriceFilter.minPrice) {
-        localPriceFilter.minPrice = localPriceFilter.maxPrice
-      }
-    }
-
-    // Calculate the visual range fill style
-    const rangeStyle = computed(() => {
-      const minPercent =
-        (localPriceFilter.minPrice / maxPossiblePrice.value) * 100
-      const maxPercent =
-        (localPriceFilter.maxPrice / maxPossiblePrice.value) * 100
-
-      return {
-        left: `${minPercent}%`,
-        width: `${maxPercent - minPercent}%`,
-      }
-    })
-
-    // Estimate filtered game count (simplified calculation)
-    const getFilteredGameCount = () => {
-      // This is a simplified estimation - in reality you'd need access to the full dataset
-      // For now, we'll provide a basic estimate
-      const totalPaidGames =
-        props.gameStats.totalGames - props.gameStats.freeGames
-      let estimatedCount = 0
-
-      if (localPriceFilter.includeFree && localPriceFilter.minPrice === 0) {
-        estimatedCount += props.gameStats.freeGames
-      }
-
-      if (localPriceFilter.maxPrice > 0) {
-        // Rough estimation based on price range
-        const priceRangeFactor = Math.min(
-          localPriceFilter.maxPrice / maxPossiblePrice.value,
-          1,
-        )
-        estimatedCount += Math.round(totalPaidGames * priceRangeFactor)
-      }
-
-      return Math.min(estimatedCount, props.gameStats.totalGames)
-    }
-
-    // Emit filter changes
-    const emitFilterChanged = () => {
-      emit('price-filter-changed', {
-        minPrice: localPriceFilter.minPrice,
-        maxPrice: localPriceFilter.maxPrice,
-        includeFree: localPriceFilter.includeFree,
-      })
-    }
-
-    // Watch for prop changes
-    watch(
-      () => props.initialPriceFilter,
-      (newFilter) => {
-        localPriceFilter.minPrice = newFilter.minPrice || PRICING.MIN_PRICE
-        localPriceFilter.maxPrice = newFilter.maxPrice || maxPossiblePrice.value
-        localPriceFilter.includeFree = newFilter.includeFree !== false
-      },
-      { deep: true },
-    )
-
-    // Watch max possible price changes
-    watch(maxPossiblePrice, (newMax) => {
-      if (localPriceFilter.maxPrice > newMax) {
-        localPriceFilter.maxPrice = newMax
-        emitFilterChanged()
-      }
-    })
-
-    return {
-      localPriceFilter,
-      maxPossiblePrice,
-      freeGameCount,
-      pricePresets,
-      formatPrice,
-      isPresetActive,
-      selectPreset,
-      handleMinChange,
-      handleMaxChange,
-      rangeStyle,
-      getFilteredGameCount,
-      emitFilterChanged,
-    }
-  },
+/**
+ * Price filter configuration
+ */
+export interface PriceFilterConfig {
+  minPrice: number
+  maxPrice: number
+  includeFree: boolean
 }
+
+/**
+ * Game statistics for price filtering
+ */
+export interface GameStats {
+  totalGames: number
+  freeGames: number
+  maxPrice: number
+}
+
+/**
+ * Price preset configuration
+ */
+export interface PricePreset {
+  key: string
+  label: string
+  minPrice: number
+  maxPrice: number
+  includeFree: boolean
+}
+
+/**
+ * Props interface for PriceFilter component
+ */
+export interface PriceFilterProps {
+  currency: Currency
+  initialPriceFilter: PriceFilterConfig
+  gameStats: GameStats
+}
+
+const props = withDefaults(defineProps<PriceFilterProps>(), {
+  currency: 'eur',
+  initialPriceFilter: () => ({
+    minPrice: PRICING.MIN_PRICE,
+    maxPrice: PRICING.DEFAULT_MAX_PRICE,
+    includeFree: true,
+  }),
+  gameStats: () => ({
+    totalGames: 0,
+    freeGames: 0,
+    maxPrice: PRICING.DEFAULT_MAX_PRICE,
+  }),
+})
+
+const emit = defineEmits<{
+  'price-filter-changed': [filter: PriceFilterConfig]
+}>()
+const maxPossiblePrice = computed((): number => 
+  props.gameStats.maxPrice || PRICING.DEFAULT_MAX_PRICE
+)
+const freeGameCount = computed((): number => props.gameStats.freeGames || 0)
+
+const localPriceFilter = reactive<PriceFilterConfig>({
+  minPrice: props.initialPriceFilter.minPrice || PRICING.MIN_PRICE,
+  maxPrice: props.initialPriceFilter.maxPrice || maxPossiblePrice.value,
+  includeFree: props.initialPriceFilter.includeFree !== false,
+})
+
+// Price presets based on common price ranges
+const pricePresets = computed((): PricePreset[] => [
+  {
+    key: 'free',
+    label: 'Free',
+    minPrice: PRICING.MIN_PRICE,
+    maxPrice: PRICING.MIN_PRICE,
+    includeFree: true,
+  },
+  {
+    key: 'under-5',
+    label: '< $5',
+    minPrice: PRICING.MIN_PRICE,
+    maxPrice: 5,
+    includeFree: false,
+  },
+  {
+    key: 'under-10',
+    label: '< $10',
+    minPrice: PRICING.MIN_PRICE,
+    maxPrice: 10,
+    includeFree: false,
+  },
+  {
+    key: '5-15',
+    label: '$5-15',
+    minPrice: 5,
+    maxPrice: 15,
+    includeFree: false,
+  },
+  {
+    key: '10-30',
+    label: '$10-30',
+    minPrice: 10,
+    maxPrice: 30,
+    includeFree: false,
+  },
+  {
+    key: '15-40',
+    label: '$15-40',
+    minPrice: 15,
+    maxPrice: 40,
+    includeFree: false,
+  },
+  {
+    key: '30-plus',
+    label: '$30+',
+    minPrice: 30,
+    maxPrice: maxPossiblePrice.value,
+    includeFree: false,
+  },
+  {
+    key: 'all',
+    label: 'All',
+    minPrice: PRICING.MIN_PRICE,
+    maxPrice: maxPossiblePrice.value,
+    includeFree: true,
+  },
+])
+
+// Format price according to currency
+const formatPrice = (price: number): string => {
+  if (price === 0) {
+    return 'Free'
+  }
+
+  const symbol = props.currency === 'eur' ? '€' : '$'
+  return `${symbol}${price.toFixed(2)}`
+}
+
+// Check if a preset is currently active
+const isPresetActive = (preset: PricePreset): boolean => {
+  return (
+    localPriceFilter.minPrice === preset.minPrice &&
+    localPriceFilter.maxPrice === preset.maxPrice &&
+    localPriceFilter.includeFree === preset.includeFree
+  )
+}
+
+// Select a price preset
+const selectPreset = (preset: PricePreset): void => {
+  localPriceFilter.minPrice = preset.minPrice
+  localPriceFilter.maxPrice = preset.maxPrice
+  localPriceFilter.includeFree = preset.includeFree
+  emitFilterChanged()
+}
+
+// Handle min price changes (ensure min <= max)
+const handleMinChange = (): void => {
+  if (localPriceFilter.minPrice > localPriceFilter.maxPrice) {
+    localPriceFilter.maxPrice = localPriceFilter.minPrice
+  }
+}
+
+// Handle max price changes (ensure max >= min)
+const handleMaxChange = (): void => {
+  if (localPriceFilter.maxPrice < localPriceFilter.minPrice) {
+    localPriceFilter.minPrice = localPriceFilter.maxPrice
+  }
+}
+
+// Calculate the visual range fill style
+const rangeStyle = computed((): { left: string; width: string } => {
+  const minPercent =
+    (localPriceFilter.minPrice / maxPossiblePrice.value) * 100
+  const maxPercent =
+    (localPriceFilter.maxPrice / maxPossiblePrice.value) * 100
+
+  return {
+    left: `${minPercent}%`,
+    width: `${maxPercent - minPercent}%`,
+  }
+})
+
+// Estimate filtered game count (simplified calculation)
+const getFilteredGameCount = (): number => {
+  // This is a simplified estimation - in reality you'd need access to the full dataset
+  // For now, we'll provide a basic estimate
+  const totalPaidGames =
+    props.gameStats.totalGames - props.gameStats.freeGames
+  let estimatedCount = 0
+
+  if (localPriceFilter.includeFree && localPriceFilter.minPrice === 0) {
+    estimatedCount += props.gameStats.freeGames
+  }
+
+  if (localPriceFilter.maxPrice > 0) {
+    // Rough estimation based on price range
+    const priceRangeFactor = Math.min(
+      localPriceFilter.maxPrice / maxPossiblePrice.value,
+      1,
+    )
+    estimatedCount += Math.round(totalPaidGames * priceRangeFactor)
+  }
+
+  return Math.min(estimatedCount, props.gameStats.totalGames)
+}
+
+// Emit filter changes
+const emitFilterChanged = (): void => {
+  emit('price-filter-changed', {
+    minPrice: localPriceFilter.minPrice,
+    maxPrice: localPriceFilter.maxPrice,
+    includeFree: localPriceFilter.includeFree,
+  })
+}
+
+// Watch for prop changes
+watch(
+  () => props.initialPriceFilter,
+  (newFilter: PriceFilterConfig) => {
+    localPriceFilter.minPrice = newFilter.minPrice || PRICING.MIN_PRICE
+    localPriceFilter.maxPrice = newFilter.maxPrice || maxPossiblePrice.value
+    localPriceFilter.includeFree = newFilter.includeFree !== false
+  },
+  { deep: true },
+)
+
+// Watch max possible price changes
+watch(maxPossiblePrice, (newMax: number) => {
+  if (localPriceFilter.maxPrice > newMax) {
+    localPriceFilter.maxPrice = newMax
+    emitFilterChanged()
+  }
+})
 </script>
 
 <style scoped>

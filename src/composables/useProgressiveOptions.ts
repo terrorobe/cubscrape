@@ -3,19 +3,60 @@
  * Loads popular options first, then loads more on demand
  */
 
-import { ref, computed } from 'vue'
+import { ref, computed, type Ref, type ComputedRef } from 'vue'
+
+/**
+ * Option interface with name and count
+ */
+export interface OptionWithCount {
+  name: string
+  count: number
+  isPopular?: boolean
+}
+
+/**
+ * Option statistics interface
+ */
+export interface OptionStats {
+  visible: number
+  total: number
+  loaded: number
+  hasMore: boolean
+}
+
+/**
+ * Progressive options composable return type
+ */
+export interface ProgressiveOptionsComposable {
+  visibleOptions: ComputedRef<OptionWithCount[]>
+  searchQuery: Ref<string>
+  isLoading: Ref<boolean>
+  hasMore: ComputedRef<boolean>
+  optionStats: ComputedRef<OptionStats>
+  loadMore: () => void
+  reset: () => void
+  updateSearch: (query: string) => void
+}
+
+/**
+ * All options parameter type - can be array, ref, or function returning array
+ */
+export type AllOptionsParameter = 
+  | OptionWithCount[] 
+  | Ref<OptionWithCount[]> 
+  | (() => OptionWithCount[])
 
 export function useProgressiveOptions(
-  allOptions,
-  initialLoadCount = 20,
-  loadMoreCount = 10,
-) {
+  allOptions: AllOptionsParameter,
+  initialLoadCount: number = 20,
+  loadMoreCount: number = 10,
+): ProgressiveOptionsComposable {
   // Handle reactive refs and ensure we always have an array
-  const getOptionsArray = () => {
+  const getOptionsArray = (): OptionWithCount[] => {
     const options =
       typeof allOptions === 'function'
         ? allOptions()
-        : (allOptions?.value ?? allOptions)
+        : (allOptions as any)?.value ?? allOptions
     return Array.isArray(options) ? options : []
   }
 
@@ -26,7 +67,7 @@ export function useProgressiveOptions(
   const isLoading = ref(false)
 
   // Visible options based on current load count and search
-  const visibleOptions = computed(() => {
+  const visibleOptions = computed((): OptionWithCount[] => {
     const optionsArray = getOptionsArray()
     let options = optionsArray.slice(0, currentLoadCount.value)
 
@@ -42,7 +83,7 @@ export function useProgressiveOptions(
   })
 
   // Whether there are more options to load
-  const hasMore = computed(() => {
+  const hasMore = computed((): boolean => {
     const optionsArray = getOptionsArray()
     if (searchQuery.value.trim()) {
       return false // When searching, show all results
@@ -51,7 +92,7 @@ export function useProgressiveOptions(
   })
 
   // Load more options
-  const loadMore = () => {
+  const loadMore = (): void => {
     if (hasMore.value && !isLoading.value) {
       isLoading.value = true
 
@@ -68,19 +109,19 @@ export function useProgressiveOptions(
   }
 
   // Reset to initial load count
-  const reset = () => {
+  const reset = (): void => {
     const optionsArray = getOptionsArray()
     currentLoadCount.value = Math.min(initialLoadCount, optionsArray.length)
     searchQuery.value = ''
   }
 
   // Update search query
-  const updateSearch = (query) => {
+  const updateSearch = (query: string): void => {
     searchQuery.value = query
   }
 
   // Get option statistics
-  const optionStats = computed(() => {
+  const optionStats = computed((): OptionStats => {
     const optionsArray = getOptionsArray()
     return {
       visible: visibleOptions.value.length,

@@ -8,32 +8,65 @@
  * - Database change detection via file modification time
  */
 
-export class DatabaseManager {
-  constructor() {
-    this.db = null
-    this.SQL = null
-    this.lastModified = null
-    this.lastETag = null
-    this.checkInterval = null
-    this.isDevelopment = import.meta.env.DEV
-    this.listeners = new Set()
-    this.lastCheckTime = null
-    this.currentAppVersion = null
-    this.databaseAppVersion = null
-    this.versionMismatchListeners = new Set()
+import type { Database } from 'sql.js'
 
-    // In production, check every 10 minutes
-    this.PRODUCTION_CHECK_INTERVAL = 10 * 60 * 1000 // 10 minutes
+/**
+ * Database update listener callback type
+ */
+export type DatabaseUpdateListener = (db: Database | null) => void
+
+/**
+ * Version mismatch information
+ */
+export interface VersionMismatchInfo {
+  currentVersion: string
+  databaseVersion: string
+}
+
+/**
+ * Version mismatch listener callback type
+ */
+export type VersionMismatchListener = (info: VersionMismatchInfo) => void
+
+/**
+ * Database statistics interface
+ */
+export interface DatabaseStats {
+  games: number
+  channels: number
+  lastModified: string | null
+  lastCheckTime: Date | null
+  isDevelopment: boolean
+}
+
+export class DatabaseManager {
+  private db: Database | null = null
+  private SQL: any | null = null
+  private lastModified: string | null = null
+  private lastETag: string | null = null
+  private checkInterval: NodeJS.Timeout | null = null
+  private readonly isDevelopment: boolean
+  private readonly listeners = new Set<DatabaseUpdateListener>()
+  private lastCheckTime: Date | null = null
+  private currentAppVersion: string | null = null
+  private databaseAppVersion: string | null = null
+  private readonly versionMismatchListeners = new Set<VersionMismatchListener>()
+
+  // In production, check every 10 minutes
+  private readonly PRODUCTION_CHECK_INTERVAL = 10 * 60 * 1000 // 10 minutes
+
+  constructor() {
+    this.isDevelopment = import.meta.env.DEV
   }
 
   /**
    * Initialize the database manager
    */
-  async init() {
+  async init(): Promise<void> {
     // Initialize SQL.js
     const initSqlJs = (await import('sql.js')).default
     this.SQL = await initSqlJs({
-      locateFile: (file) => `https://sql.js.org/dist/${file}`,
+      locateFile: (file: string) => `https://sql.js.org/dist/${file}`,
     })
 
     // Load initial database (will cache currentAppVersion from database)
@@ -57,13 +90,13 @@ export class DatabaseManager {
   /**
    * Extract app version from database metadata
    */
-  extractDatabaseAppVersion(db) {
+  private extractDatabaseAppVersion(db: Database): string {
     try {
       const result = db.exec(
         "SELECT value FROM app_metadata WHERE key = 'app_version'",
       )
       if (result.length > 0 && result[0].values.length > 0) {
-        const version = result[0].values[0][0]
+        const version = result[0].values[0][0] as string
         console.log('🗄️ Database app version:', version)
         return version
       }
@@ -77,7 +110,11 @@ export class DatabaseManager {
   /**
    * Load database from server
    */
-  async loadDatabase() {
+  async loadDatabase(): Promise<boolean> {
+    if (!this.SQL) {
+      throw new Error('SQL.js not initialized')
+    }
+
     try {
       this.lastCheckTime = new Date()
 
@@ -183,7 +220,7 @@ export class DatabaseManager {
       this.lastETag = etag
 
       // Make database available globally for backward compatibility
-      window.gameDatabase = this.db
+      ;(window as any).gameDatabase = this.db
 
       console.log(
         '🗄️ Database loaded, total games:',
@@ -203,7 +240,7 @@ export class DatabaseManager {
   /**
    * Force reload the database
    */
-  async reloadDatabase() {
+  async reloadDatabase(): Promise<boolean> {
     this.lastModified = null // Force reload by clearing headers
     this.lastETag = null
     return await this.loadDatabase()
@@ -212,7 +249,7 @@ export class DatabaseManager {
   /**
    * Start periodic checking in production
    */
-  startProductionChecking() {
+  private startProductionChecking(): void {
     if (this.checkInterval) {
       clearInterval(this.checkInterval)
     }
@@ -238,7 +275,7 @@ export class DatabaseManager {
   /**
    * Stop periodic checking
    */
-  stopProductionChecking() {
+  private stopProductionChecking(): void {
     if (this.checkInterval) {
       clearInterval(this.checkInterval)
       this.checkInterval = null
@@ -249,35 +286,35 @@ export class DatabaseManager {
   /**
    * Add listener for database updates
    */
-  addUpdateListener(callback) {
+  addUpdateListener(callback: DatabaseUpdateListener): void {
     this.listeners.add(callback)
   }
 
   /**
    * Remove listener for database updates
    */
-  removeUpdateListener(callback) {
+  removeUpdateListener(callback: DatabaseUpdateListener): void {
     this.listeners.delete(callback)
   }
 
   /**
    * Add listener for version mismatches
    */
-  addVersionMismatchListener(callback) {
+  addVersionMismatchListener(callback: VersionMismatchListener): void {
     this.versionMismatchListeners.add(callback)
   }
 
   /**
    * Remove listener for version mismatches
    */
-  removeVersionMismatchListener(callback) {
+  removeVersionMismatchListener(callback: VersionMismatchListener): void {
     this.versionMismatchListeners.delete(callback)
   }
 
   /**
    * Notify all listeners that database has been updated
    */
-  notifyListeners() {
+  private notifyListeners(): void {
     this.listeners.forEach((callback) => {
       try {
         callback(this.db)
@@ -290,13 +327,10 @@ export class DatabaseManager {
   /**
    * Notify all listeners about version mismatch
    */
-  notifyVersionMismatchListeners() {
+  private notifyVersionMismatchListeners(info: VersionMismatchInfo): void {
     this.versionMismatchListeners.forEach((callback) => {
       try {
-        callback({
-          currentVersion: this.currentAppVersion,
-          databaseVersion: this.databaseAppVersion,
-        })
+        callback(info)
       } catch (error) {
         console.error('❌ Error in version mismatch listener:', error)
       }
@@ -306,21 +340,21 @@ export class DatabaseManager {
   /**
    * Get current database instance
    */
-  getDatabase() {
+  getDatabase(): Database | null {
     return this.db
   }
 
   /**
    * Check if database is loaded
    */
-  isLoaded() {
+  isLoaded(): boolean {
     return this.db !== null
   }
 
   /**
    * Get database statistics
    */
-  getStats() {
+  getStats(): DatabaseStats | null {
     if (!this.db) {
       return null
     }
@@ -328,12 +362,12 @@ export class DatabaseManager {
     try {
       const gameCount = this.db.exec(
         'SELECT COUNT(*) FROM games WHERE is_absorbed = 0',
-      )[0].values[0][0]
+      )[0].values[0][0] as number
       const channelResults = this.db.exec(
         "SELECT COUNT(DISTINCT unique_channels) FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]'",
       )
       const channelCount =
-        channelResults.length > 0 ? channelResults[0].values[0][0] : 0
+        channelResults.length > 0 ? (channelResults[0].values[0][0] as number) : 0
 
       // Get data freshness from database metadata instead of HTTP requests
       let dataModified = this.lastModified // fallback to database file mtime
@@ -342,7 +376,7 @@ export class DatabaseManager {
           "SELECT value FROM app_metadata WHERE key = 'data_last_modified'",
         )
         if (metadataResult.length > 0 && metadataResult[0].values.length > 0) {
-          dataModified = metadataResult[0].values[0][0]
+          dataModified = metadataResult[0].values[0][0] as string
         }
       } catch (error) {
         console.debug('Could not read data_last_modified from metadata:', error)
@@ -364,7 +398,7 @@ export class DatabaseManager {
   /**
    * Force a version mismatch test (development only)
    */
-  async testVersionMismatch() {
+  async testVersionMismatch(): Promise<void> {
     if (!this.isDevelopment) {
       return
     }
@@ -379,7 +413,7 @@ export class DatabaseManager {
     if (this.currentAppVersion !== fakeVersion) {
       console.log('📢 Triggering version mismatch notification...')
       this.notifyVersionMismatchListeners({
-        currentVersion: this.currentAppVersion,
+        currentVersion: this.currentAppVersion || 'unknown',
         databaseVersion: fakeVersion,
       })
     }
@@ -388,7 +422,7 @@ export class DatabaseManager {
   /**
    * Cleanup resources
    */
-  destroy() {
+  destroy(): void {
     this.stopProductionChecking()
 
     if (this.db) {
@@ -399,25 +433,25 @@ export class DatabaseManager {
     this.listeners.clear()
     this.versionMismatchListeners.clear()
 
-    if (window.gameDatabase === this.db) {
-      delete window.gameDatabase
+    if ((window as any).gameDatabase === this.db) {
+      delete (window as any).gameDatabase
     }
   }
 }
 
 // Create HMR-safe singleton instance
-let _databaseManager
+let _databaseManager: DatabaseManager
 
-if (import.meta.hot && window.__databaseManager) {
+if (import.meta.hot && (window as any).__databaseManager) {
   // Reuse existing instance during HMR
-  _databaseManager = window.__databaseManager
+  _databaseManager = (window as any).__databaseManager
 } else {
   // Create new instance
   _databaseManager = new DatabaseManager()
 
   // Store globally for HMR persistence
   if (typeof window !== 'undefined') {
-    window.__databaseManager = _databaseManager
+    ;(window as any).__databaseManager = _databaseManager
   }
 }
 

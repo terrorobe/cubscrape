@@ -285,10 +285,12 @@
   </div>
 </template>
 
-<script>
-import { reactive, computed, ref, onUnmounted, nextTick, watch } from 'vue'
-import { useDebouncedFilters } from '../composables/useDebouncedFilters.js'
-import { TIMING } from '../config/index.js'
+<script setup lang="ts">
+import { reactive, computed, ref, onUnmounted, nextTick, watch, type Ref } from 'vue'
+import { useDebouncedFilters } from '../composables/useDebouncedFilters'
+import { TIMING } from '../config/index'
+import type { FilterConfig } from '../utils/presetManager'
+import type { ChannelWithCount, TagWithCount, DatabaseStats } from '../types/database'
 import CollapsibleSection from './CollapsibleSection.vue'
 import TagFilterMulti from './TagFilterMulti.vue'
 import ChannelFilterMulti from './ChannelFilterMulti.vue'
@@ -299,345 +301,369 @@ import MobileFilterModal from './MobileFilterModal.vue'
 import AppliedFiltersBar from './AppliedFiltersBar.vue'
 import FilterPresets from './FilterPresets.vue'
 
-export default {
-  name: 'GameFilters',
-  components: {
-    CollapsibleSection,
-    TagFilterMulti,
-    ChannelFilterMulti,
-    TimeFilterSimple,
-    PriceFilter,
-    SortingOptions,
-    MobileFilterModal,
-    AppliedFiltersBar,
-    FilterPresets,
+// Component props interface
+interface Props {
+  channels?: string[]
+  channelsWithCounts?: ChannelWithCount[]
+  tags?: TagWithCount[]
+  initialFilters?: Partial<FilterConfig>
+  gameCount?: number
+  gameStats?: DatabaseStats
+}
+
+// Component events interface
+interface Emits {
+  'filters-changed': [filters: FilterConfig]
+}
+
+// Define props with defaults
+const props = withDefaults(defineProps<Props>(), {
+  channels: () => [],
+  channelsWithCounts: () => [],
+  tags: () => [],
+  initialFilters: () => ({}),
+  gameCount: 0,
+  gameStats: () => ({
+    totalGames: 0,
+    freeGames: 0,
+    maxPrice: 70,
+  }),
+})
+
+// Define emits
+const emit = defineEmits<Emits>()
+
+// Interfaces for filter data
+interface TagChangedData {
+  selectedTags: string[]
+  tagLogic: 'and' | 'or'
+}
+
+interface ChannelChangedData {
+  selectedChannels: string[]
+}
+
+interface TimeFilterData {
+  type: string | null
+  preset: string | null
+  startDate: string | null
+  endDate: string | null
+  smartLogic: string | null
+}
+
+interface PriceFilterData {
+  minPrice: number
+  maxPrice: number
+  includeFree: boolean
+}
+
+interface SortData {
+  sortBy: string
+  sortSpec: any
+}
+
+interface FilterInfo {
+  type: string
+  value: any
+}
+
+// Reactive state
+const showMobileModal: Ref<boolean> = ref(false)
+
+// Initialize local filters with proper defaults
+const initialLocalFilters: FilterConfig = {
+  releaseStatus: props.initialFilters.releaseStatus || 'all',
+  platform: props.initialFilters.platform || 'all',
+  rating: props.initialFilters.rating || '0',
+  crossPlatform: props.initialFilters.crossPlatform || false,
+  hiddenGems: props.initialFilters.hiddenGems || false,
+  // Legacy single tag support for backward compatibility
+  tag: props.initialFilters.tag || '',
+  // New multi-tag support
+  selectedTags:
+    props.initialFilters.selectedTags ||
+    (props.initialFilters.tag ? [props.initialFilters.tag] : []),
+  tagLogic: (props.initialFilters.tagLogic as 'and' | 'or') || 'and',
+  // Legacy single channel support for backward compatibility
+  channel: props.initialFilters.channel || '',
+  // New multi-channel support
+  selectedChannels:
+    props.initialFilters.selectedChannels ||
+    (props.initialFilters.channel ? [props.initialFilters.channel] : []),
+  sortBy: props.initialFilters.sortBy || 'date',
+  sortSpec: props.initialFilters.sortSpec || null,
+  currency: (props.initialFilters.currency as 'eur' | 'usd') || 'eur',
+  // Time-based filtering
+  timeFilter: props.initialFilters.timeFilter || {
+    type: null,
+    preset: null,
+    startDate: null,
+    endDate: null,
+    smartLogic: null,
   },
-  props: {
-    channels: {
-      type: Array,
-      default: () => [],
-    },
-    channelsWithCounts: {
-      type: Array,
-      default: () => [],
-    },
-    tags: {
-      type: Array,
-      default: () => [],
-    },
-    initialFilters: {
-      type: Object,
-      default: () => ({}),
-    },
-    gameCount: {
-      type: Number,
-      default: 0,
-    },
-    gameStats: {
-      type: Object,
-      default: () => ({
-        totalGames: 0,
-        freeGames: 0,
-        maxPrice: 70,
-      }),
-    },
+  priceFilter: props.initialFilters.priceFilter || {
+    minPrice: 0,
+    maxPrice: 70,
+    includeFree: true,
   },
-  emits: ['filters-changed'],
-  setup(props, { emit }) {
-    const showMobileModal = ref(false)
-    const initialLocalFilters = {
-      releaseStatus: props.initialFilters.releaseStatus || 'all',
-      platform: props.initialFilters.platform || 'all',
-      rating: props.initialFilters.rating || '0',
-      crossPlatform: props.initialFilters.crossPlatform || false,
-      hiddenGems: props.initialFilters.hiddenGems || false,
-      // Legacy single tag support for backward compatibility
-      tag: props.initialFilters.tag || '',
-      // New multi-tag support
-      selectedTags:
-        props.initialFilters.selectedTags ||
-        (props.initialFilters.tag ? [props.initialFilters.tag] : []),
-      tagLogic: props.initialFilters.tagLogic || 'and',
-      // Legacy single channel support for backward compatibility
-      channel: props.initialFilters.channel || '',
-      // New multi-channel support
-      selectedChannels:
-        props.initialFilters.selectedChannels ||
-        (props.initialFilters.channel ? [props.initialFilters.channel] : []),
-      sortBy: props.initialFilters.sortBy || 'date',
-      sortSpec: props.initialFilters.sortSpec || null,
-      currency: props.initialFilters.currency || 'eur',
-      // Time-based filtering
-      timeFilter: props.initialFilters.timeFilter || {
-        type: null,
-        preset: null,
-        startDate: null,
-        endDate: null,
-        smartLogic: null,
-      },
-      priceFilter: props.initialFilters.priceFilter || {
-        minPrice: 0,
-        maxPrice: 70,
-        includeFree: true,
-      },
+}
+
+const localFilters = reactive<FilterConfig>({ ...initialLocalFilters })
+
+// Watch for changes in initial filters (e.g., from URL loading)
+watch(
+  () => props.initialFilters,
+  (newInitialFilters: Partial<FilterConfig> | undefined) => {
+    if (newInitialFilters && Object.keys(newInitialFilters).length > 0) {
+      Object.assign(localFilters, {
+        releaseStatus: newInitialFilters.releaseStatus || 'all',
+        platform: newInitialFilters.platform || 'all',
+        rating: newInitialFilters.rating || '0',
+        crossPlatform: newInitialFilters.crossPlatform || false,
+        hiddenGems: newInitialFilters.hiddenGems || false,
+        tag: newInitialFilters.tag || '',
+        selectedTags:
+          newInitialFilters.selectedTags ||
+          (newInitialFilters.tag ? [newInitialFilters.tag] : []),
+        tagLogic: (newInitialFilters.tagLogic as 'and' | 'or') || 'and',
+        channel: newInitialFilters.channel || '',
+        selectedChannels:
+          newInitialFilters.selectedChannels ||
+          (newInitialFilters.channel ? [newInitialFilters.channel] : []),
+        sortBy: newInitialFilters.sortBy || 'date',
+        sortSpec: newInitialFilters.sortSpec || null,
+        currency: (newInitialFilters.currency as 'eur' | 'usd') || 'eur',
+        timeFilter: newInitialFilters.timeFilter || {
+          type: null,
+          preset: null,
+          startDate: null,
+          endDate: null,
+          smartLogic: null,
+        },
+        priceFilter: newInitialFilters.priceFilter || {
+          minPrice: 0,
+          maxPrice: 70,
+          includeFree: true,
+        },
+      })
     }
+  },
+  { deep: true, immediate: false },
+)
 
-    const localFilters = reactive({ ...initialLocalFilters })
-
-    // Watch for changes in initial filters (e.g., from URL loading)
-    watch(
-      () => props.initialFilters,
-      (newInitialFilters) => {
-        if (newInitialFilters && Object.keys(newInitialFilters).length > 0) {
-          Object.assign(localFilters, {
-            releaseStatus: newInitialFilters.releaseStatus || 'all',
-            platform: newInitialFilters.platform || 'all',
-            rating: newInitialFilters.rating || '0',
-            crossPlatform: newInitialFilters.crossPlatform || false,
-            hiddenGems: newInitialFilters.hiddenGems || false,
-            tag: newInitialFilters.tag || '',
-            selectedTags:
-              newInitialFilters.selectedTags ||
-              (newInitialFilters.tag ? [newInitialFilters.tag] : []),
-            tagLogic: newInitialFilters.tagLogic || 'and',
-            channel: newInitialFilters.channel || '',
-            selectedChannels:
-              newInitialFilters.selectedChannels ||
-              (newInitialFilters.channel ? [newInitialFilters.channel] : []),
-            sortBy: newInitialFilters.sortBy || 'date',
-            sortSpec: newInitialFilters.sortSpec || null,
-            currency: newInitialFilters.currency || 'eur',
-            timeFilter: newInitialFilters.timeFilter || {
-              type: null,
-              preset: null,
-              startDate: null,
-              endDate: null,
-              smartLogic: null,
-            },
-            priceFilter: newInitialFilters.priceFilter || {
-              minPrice: 0,
-              maxPrice: 70,
-              includeFree: true,
-            },
-          })
-        }
-      },
-      { deep: true, immediate: false },
-    )
-
-    // Set up debounced filter updates
-    const { debouncedEmit, immediateEmit, cleanup } = useDebouncedFilters(
-      initialLocalFilters,
-      (newFilters) => emit('filters-changed', newFilters),
+// Set up debounced filter updates
+const { debouncedEmit, immediateEmit, cleanup } = useDebouncedFilters<FilterConfig>(
+  initialLocalFilters,
+  (newFilters: FilterConfig) => emit('filters-changed', newFilters),
       TIMING.FILTER_DEBOUNCE_DELAY, // Configurable debounce delay
-    )
+)
 
-    const activeFilterCount = computed(() => {
-      let count = 0
-      if (localFilters.releaseStatus !== 'all') {
-        count++
-      }
-      if (localFilters.platform !== 'all') {
-        count++
-      }
-      if (localFilters.rating !== '0') {
-        count++
-      }
-      if (localFilters.crossPlatform) {
-        count++
-      }
-      if (localFilters.hiddenGems) {
-        count++
-      }
-      if (localFilters.selectedTags.length > 0) {
-        count++
-      }
-      if (localFilters.selectedChannels.length > 0) {
-        count++
-      }
-      if (localFilters.sortBy !== 'date' || localFilters.sortSpec) {
-        count++
-      }
-      if (localFilters.currency !== 'eur') {
-        count++
-      }
-      if (localFilters.timeFilter.type) {
-        count++
-      }
-      if (
-        localFilters.priceFilter &&
-        (localFilters.priceFilter.minPrice > 0 ||
-          localFilters.priceFilter.maxPrice < 70 ||
-          !localFilters.priceFilter.includeFree)
-      ) {
-        count++
-      }
-      return count
-    })
+const activeFilterCount = computed((): number => {
+  let count = 0
+  if (localFilters.releaseStatus !== 'all') {
+    count++
+  }
+  if (localFilters.platform !== 'all') {
+    count++
+  }
+  if (localFilters.rating !== '0') {
+    count++
+  }
+  if (localFilters.crossPlatform) {
+    count++
+  }
+  if (localFilters.hiddenGems) {
+    count++
+  }
+  if (localFilters.selectedTags.length > 0) {
+    count++
+  }
+  if (localFilters.selectedChannels.length > 0) {
+    count++
+  }
+  if (localFilters.sortBy !== 'date' || localFilters.sortSpec) {
+    count++
+  }
+  if (localFilters.currency !== 'eur') {
+    count++
+  }
+  if (localFilters.timeFilter.type) {
+    count++
+  }
+  if (
+    localFilters.priceFilter &&
+    (localFilters.priceFilter.minPrice > 0 ||
+      localFilters.priceFilter.maxPrice < 70 ||
+      !localFilters.priceFilter.includeFree)
+  ) {
+    count++
+  }
+  return count
+})
 
-    // Section-specific active filter counts for badges
-    const basicFiltersCount = computed(() => {
-      let count = 0
-      if (localFilters.releaseStatus !== 'all') {
-        count++
-      }
-      if (localFilters.platform !== 'all') {
-        count++
-      }
-      if (localFilters.crossPlatform) {
-        count++
-      }
-      if (localFilters.hiddenGems) {
-        count++
-      }
-      return count
-    })
+// Section-specific active filter counts for badges
+const basicFiltersCount = computed((): number => {
+  let count = 0
+  if (localFilters.releaseStatus !== 'all') {
+    count++
+  }
+  if (localFilters.platform !== 'all') {
+    count++
+  }
+  if (localFilters.crossPlatform) {
+    count++
+  }
+  if (localFilters.hiddenGems) {
+    count++
+  }
+  return count
+})
 
-    const ratingFiltersCount = computed(() => {
-      return localFilters.rating !== '0' ? 1 : 0
-    })
+const ratingFiltersCount = computed((): number => {
+  return localFilters.rating !== '0' ? 1 : 0
+})
 
-    const tagsCount = computed(() => {
-      return localFilters.selectedTags.length > 0
-        ? localFilters.selectedTags.length
-        : 0
-    })
+const tagsCount = computed((): number => {
+  return localFilters.selectedTags.length > 0
+    ? localFilters.selectedTags.length
+    : 0
+})
 
-    const channelsCount = computed(() => {
-      return localFilters.selectedChannels.length > 0
-        ? localFilters.selectedChannels.length
-        : 0
-    })
+const channelsCount = computed((): number => {
+  return localFilters.selectedChannels.length > 0
+    ? localFilters.selectedChannels.length
+    : 0
+})
 
-    const sortingCount = computed(() => {
-      return localFilters.sortBy !== 'date' || localFilters.sortSpec ? 1 : 0
-    })
+const sortingCount = computed((): number => {
+  return localFilters.sortBy !== 'date' || localFilters.sortSpec ? 1 : 0
+})
 
-    const timeFilterCount = computed(() => {
-      return localFilters.timeFilter && localFilters.timeFilter.type ? 1 : 0
-    })
+const timeFilterCount = computed((): number => {
+  return localFilters.timeFilter && localFilters.timeFilter.type ? 1 : 0
+})
 
-    const priceFilterCount = computed(() => {
-      return localFilters.priceFilter &&
-        (localFilters.priceFilter.minPrice > 0 ||
-          localFilters.priceFilter.maxPrice < 70 ||
-          !localFilters.priceFilter.includeFree)
-        ? 1
-        : 0
-    })
+const priceFilterCount = computed((): number => {
+  return localFilters.priceFilter &&
+    (localFilters.priceFilter.minPrice > 0 ||
+      localFilters.priceFilter.maxPrice < 70 ||
+      !localFilters.priceFilter.includeFree)
+    ? 1
+    : 0
+})
 
-    const currencyCount = computed(() => {
-      return localFilters.currency !== 'eur' ? 1 : 0
-    })
+const currencyCount = computed((): number => {
+  return localFilters.currency !== 'eur' ? 1 : 0
+})
 
-    const handleTagsChanged = (tagData) => {
-      localFilters.selectedTags = tagData.selectedTags
-      localFilters.tagLogic = tagData.tagLogic
-      // Update legacy tag field for backward compatibility
-      localFilters.tag =
-        tagData.selectedTags.length === 1 ? tagData.selectedTags[0] : ''
-      debouncedEmitFiltersChanged()
+const handleTagsChanged = (tagData: TagChangedData): void => {
+  localFilters.selectedTags = tagData.selectedTags
+  localFilters.tagLogic = tagData.tagLogic
+  // Update legacy tag field for backward compatibility
+  localFilters.tag =
+    tagData.selectedTags.length === 1 ? tagData.selectedTags[0] : ''
+  debouncedEmitFiltersChanged()
+}
+
+const handleChannelsChanged = (channelData: ChannelChangedData): void => {
+  localFilters.selectedChannels = channelData.selectedChannels
+  // Update legacy channel field for backward compatibility
+  localFilters.channel =
+    channelData.selectedChannels.length === 1
+      ? channelData.selectedChannels[0]
+      : ''
+  debouncedEmitFiltersChanged()
+}
+
+const handleTimeFilterChanged = (timeFilterData: TimeFilterData): void => {
+  localFilters.timeFilter = { ...timeFilterData }
+  debouncedEmitFiltersChanged()
+}
+
+const handlePriceFilterChanged = (priceFilterData: PriceFilterData): void => {
+  localFilters.priceFilter = { ...priceFilterData }
+  debouncedEmitFiltersChanged()
+}
+
+const handleSortChanged = (sortData: SortData): void => {
+  localFilters.sortBy = sortData.sortBy
+  localFilters.sortSpec = sortData.sortSpec
+  // Sort changes should be immediate for better UX
+  immediateEmitFiltersChanged()
+}
+
+const handleFiltersChanged = (newFilters: Partial<FilterConfig>): void => {
+  Object.assign(localFilters, newFilters)
+  debouncedEmitFiltersChanged()
+}
+
+// Helper to preserve scroll position when filters change
+const preserveScrollPosition = (callback: () => void): void => {
+  // Find the sidebar scroll container
+  const scrollContainer = document.querySelector('.sidebar-scroll')
+  if (!scrollContainer) {
+    callback()
+    return
+  }
+
+  // Save current scroll position
+  const scrollTop = scrollContainer.scrollTop
+
+  // Execute the callback
+  callback()
+
+  // Restore scroll position after DOM update
+  nextTick(() => {
+    scrollContainer.scrollTop = scrollTop
+  })
+}
+
+const handleRemoveFilter = (filterInfo: FilterInfo): void => {
+  preserveScrollPosition(() => {
+    switch (filterInfo.type) {
+      case 'releaseStatus':
+        localFilters.releaseStatus = filterInfo.value
+        break
+      case 'platform':
+        localFilters.platform = filterInfo.value
+        break
+      case 'rating':
+        localFilters.rating = filterInfo.value
+        break
+      case 'crossPlatform':
+        localFilters.crossPlatform = filterInfo.value
+        break
+      case 'hiddenGems':
+        localFilters.hiddenGems = filterInfo.value
+        break
+      case 'tags':
+        localFilters.selectedTags = filterInfo.value
+        localFilters.tag = ''
+        break
+      case 'channels':
+        localFilters.selectedChannels = filterInfo.value
+        localFilters.channel = ''
+        break
+      case 'sortBy':
+        localFilters.sortBy = filterInfo.value
+        localFilters.sortSpec = null
+        break
+      case 'currency':
+        localFilters.currency = filterInfo.value
+        break
+      case 'timeFilter':
+        localFilters.timeFilter = filterInfo.value
+        break
+      case 'priceFilter':
+        localFilters.priceFilter = filterInfo.value
+        break
     }
+    // Remove operations should be immediate
+    immediateEmitFiltersChanged()
+  })
+}
 
-    const handleChannelsChanged = (channelData) => {
-      localFilters.selectedChannels = channelData.selectedChannels
-      // Update legacy channel field for backward compatibility
-      localFilters.channel =
-        channelData.selectedChannels.length === 1
-          ? channelData.selectedChannels[0]
-          : ''
-      debouncedEmitFiltersChanged()
-    }
-
-    const handleTimeFilterChanged = (timeFilterData) => {
-      localFilters.timeFilter = { ...timeFilterData }
-      debouncedEmitFiltersChanged()
-    }
-
-    const handlePriceFilterChanged = (priceFilterData) => {
-      localFilters.priceFilter = { ...priceFilterData }
-      debouncedEmitFiltersChanged()
-    }
-
-    const handleSortChanged = (sortData) => {
-      localFilters.sortBy = sortData.sortBy
-      localFilters.sortSpec = sortData.sortSpec
-      // Sort changes should be immediate for better UX
-      immediateEmitFiltersChanged()
-    }
-
-    const handleFiltersChanged = (newFilters) => {
-      Object.assign(localFilters, newFilters)
-      debouncedEmitFiltersChanged()
-    }
-
-    // Helper to preserve scroll position when filters change
-    const preserveScrollPosition = (callback) => {
-      // Find the sidebar scroll container
-      const scrollContainer = document.querySelector('.sidebar-scroll')
-      if (!scrollContainer) {
-        callback()
-        return
-      }
-
-      // Save current scroll position
-      const scrollTop = scrollContainer.scrollTop
-
-      // Execute the callback
-      callback()
-
-      // Restore scroll position after DOM update
-      nextTick(() => {
-        scrollContainer.scrollTop = scrollTop
-      })
-    }
-
-    const handleRemoveFilter = (filterInfo) => {
-      preserveScrollPosition(() => {
-        switch (filterInfo.type) {
-          case 'releaseStatus':
-            localFilters.releaseStatus = filterInfo.value
-            break
-          case 'platform':
-            localFilters.platform = filterInfo.value
-            break
-          case 'rating':
-            localFilters.rating = filterInfo.value
-            break
-          case 'crossPlatform':
-            localFilters.crossPlatform = filterInfo.value
-            break
-          case 'hiddenGems':
-            localFilters.hiddenGems = filterInfo.value
-            break
-          case 'tags':
-            localFilters.selectedTags = filterInfo.value
-            localFilters.tag = ''
-            break
-          case 'channels':
-            localFilters.selectedChannels = filterInfo.value
-            localFilters.channel = ''
-            break
-          case 'sortBy':
-            localFilters.sortBy = filterInfo.value
-            localFilters.sortSpec = null
-            break
-          case 'currency':
-            localFilters.currency = filterInfo.value
-            break
-          case 'timeFilter':
-            localFilters.timeFilter = filterInfo.value
-            break
-          case 'priceFilter':
-            localFilters.priceFilter = filterInfo.value
-            break
-        }
-        // Remove operations should be immediate
-        immediateEmitFiltersChanged()
-      })
-    }
-
-    const handleClearAllFilters = () => {
+const handleClearAllFilters = (): void => {
       preserveScrollPosition(() => {
         localFilters.releaseStatus = 'all'
         localFilters.platform = 'all'
@@ -666,71 +692,42 @@ export default {
         }
         // Clear all should be immediate
         immediateEmitFiltersChanged()
-      })
-    }
-
-    const handleApplyPreset = (presetFilters) => {
-      Object.assign(localFilters, presetFilters)
-      // Preset changes should be immediate
-      immediateEmitFiltersChanged()
-    }
-
-    // Debounced emit for gradual filter changes
-    const debouncedEmitFiltersChanged = () => {
-      debouncedEmit({ ...localFilters })
-    }
-
-    // Immediate emit for important changes
-    const immediateEmitFiltersChanged = () => {
-      immediateEmit({ ...localFilters })
-    }
-
-    // Legacy emit function for backward compatibility
-    const emitFiltersChanged = () => {
-      debouncedEmitFiltersChanged()
-    }
-
-    const formatChannelName = (channel) => {
-      if (!channel || typeof channel !== 'string') {
-        return 'Unknown Channel'
-      }
-      return channel
-        .replace(/^videos-/, '')
-        .replace(/-/g, ' ')
-        .replace(/\b\w/g, (l) => l.toUpperCase())
-    }
-
-    // Cleanup on unmount
-    onUnmounted(() => {
-      cleanup()
     })
-
-    return {
-      showMobileModal,
-      localFilters,
-      activeFilterCount,
-      basicFiltersCount,
-      ratingFiltersCount,
-      tagsCount,
-      channelsCount,
-      sortingCount,
-      timeFilterCount,
-      priceFilterCount,
-      currencyCount,
-      handleTagsChanged,
-      handleChannelsChanged,
-      handleTimeFilterChanged,
-      handlePriceFilterChanged,
-      handleSortChanged,
-      handleFiltersChanged,
-      handleRemoveFilter,
-      handleClearAllFilters,
-      handleApplyPreset,
-      emitFiltersChanged,
-      debouncedEmitFiltersChanged,
-      immediateEmitFiltersChanged,
-      formatChannelName,
-    }
-  },
 }
+
+const handleApplyPreset = (presetFilters: FilterConfig): void => {
+  Object.assign(localFilters, presetFilters)
+  // Preset changes should be immediate
+  immediateEmitFiltersChanged()
+}
+
+// Debounced emit for gradual filter changes
+const debouncedEmitFiltersChanged = (): void => {
+  debouncedEmit({ ...localFilters })
+}
+
+// Immediate emit for important changes
+const immediateEmitFiltersChanged = (): void => {
+  immediateEmit({ ...localFilters })
+}
+
+// Legacy emit function for backward compatibility
+const emitFiltersChanged = (): void => {
+  debouncedEmitFiltersChanged()
+}
+
+const formatChannelName = (channel: string | undefined): string => {
+  if (!channel || typeof channel !== 'string') {
+    return 'Unknown Channel'
+  }
+  return channel
+    .replace(/^videos-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (l) => l.toUpperCase())
+}
+
+// Cleanup on unmount
+onUnmounted(() => {
+  cleanup()
+})
 </script>

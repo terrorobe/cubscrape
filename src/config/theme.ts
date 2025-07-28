@@ -4,10 +4,18 @@
  */
 
 /**
+ * Rating color configuration with background and text color
+ */
+interface RatingColor {
+  background: string
+  text: 'text-black' | 'text-white'
+}
+
+/**
  * Rating color system based on review percentages and summaries
  * Each color includes HSL values and text color recommendations
  */
-export const RATING_COLORS = {
+export const RATING_COLORS: Record<string, RatingColor> = {
   // Review summary-based colors (take precedence)
   OVERWHELMINGLY_POSITIVE: {
     background: 'hsl(120, 70%, 40%)', // Deep green
@@ -63,12 +71,21 @@ export const RATING_COLORS = {
     background: 'hsl(0, 0%, 50%)', // No data - Gray
     text: 'text-white',
   },
+} as const
+
+/**
+ * Platform color configuration
+ */
+interface PlatformColor {
+  primary: string
+  secondary: string
+  accent: string
 }
 
 /**
  * Platform-specific colors and styles
  */
-export const PLATFORM_COLORS = {
+export const PLATFORM_COLORS: Record<'steam' | 'itch' | 'crazygames', PlatformColor> = {
   steam: {
     primary: '#1b2838',
     secondary: '#66c0f4',
@@ -84,7 +101,7 @@ export const PLATFORM_COLORS = {
     secondary: '#9747ff',
     accent: '#7b2ff7',
   },
-}
+} as const
 
 /**
  * CSS transition timing functions
@@ -96,7 +113,7 @@ export const TRANSITIONS = {
     easeOut: 'ease-out',
     easeInOut: 'ease-in-out',
   },
-}
+} as const
 
 /**
  * Opacity values for various UI states
@@ -113,7 +130,7 @@ export const OPACITY = {
 
   /** Active state overlays */
   activeOverlay: 0.2,
-}
+} as const
 
 /**
  * Z-index layering system
@@ -136,7 +153,7 @@ export const Z_INDEX = {
 
   /** Critical UI elements that must always be on top */
   critical: 50,
-}
+} as const
 
 /**
  * Border radius values
@@ -151,7 +168,7 @@ export const BORDERS = {
     xl: '0.75rem', // 12px
     full: '9999px',
   },
-}
+} as const
 
 /**
  * Shadow definitions
@@ -162,12 +179,15 @@ export const SHADOWS = {
   md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-}
+} as const
 
 /**
  * Helper function to get rating color based on percentage and review summary
  */
-export function getRatingColor(percentage, reviewSummary) {
+export function getRatingColor(
+  percentage?: number | null, 
+  reviewSummary?: string | null
+): RatingColor {
   if (!percentage) {
     return RATING_COLORS.UNKNOWN
   }
@@ -214,3 +234,12 @@ export function getRatingColor(percentage, reviewSummary) {
   }
   return RATING_COLORS.LOW
 }
+
+// Type exports for external use
+export type RatingColorConfig = typeof RATING_COLORS
+export type PlatformColorConfig = typeof PLATFORM_COLORS
+export type TransitionConfig = typeof TRANSITIONS
+export type OpacityConfig = typeof OPACITY
+export type ZIndexConfig = typeof Z_INDEX
+export type BordersConfig = typeof BORDERS
+export type ShadowsConfig = typeof SHADOWS

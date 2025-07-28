@@ -7,9 +7,100 @@ const PRESET_STORAGE_KEY = 'cubscrape-filter-presets'
 const PRESET_VERSION = '1.0'
 
 /**
+ * Filter configuration interface
+ */
+export interface FilterConfig {
+  releaseStatus: string
+  platform: string
+  rating: string
+  crossPlatform?: boolean
+  hiddenGems?: boolean
+  tag?: string
+  selectedTags: string[]
+  tagLogic: 'and' | 'or'
+  channel?: string
+  selectedChannels: string[]
+  sortBy: string
+  sortSpec: any
+  currency: 'eur' | 'usd'
+  timeFilter: {
+    type: string | null
+    preset: string | null
+    startDate: string | null
+    endDate: string | null
+    smartLogic: string | null
+  }
+  priceFilter: {
+    minPrice: number
+    maxPrice: number
+    includeFree: boolean
+  }
+}
+
+/**
+ * Preset interface
+ */
+export interface Preset {
+  id: string
+  name: string
+  description: string
+  filters: FilterConfig
+  category: string
+  tags: string[]
+  isPopular: boolean
+  isUser?: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+/**
+ * Preset storage data interface
+ */
+interface PresetStorageData {
+  version: string
+  presets: Preset[]
+  lastUpdated: string
+}
+
+/**
+ * Export data interface
+ */
+export interface ExportData {
+  version: string
+  exported: string
+  presets: Preset[]
+}
+
+/**
+ * Import result interface
+ */
+export interface ImportResult {
+  success: boolean
+  imported?: Preset[]
+  count?: number
+  error?: string
+}
+
+/**
+ * Import options interface
+ */
+export interface ImportOptions {
+  overwrite: boolean
+}
+
+/**
+ * Category data interface
+ */
+export interface CategoryData {
+  name: string
+  count: number
+  presets: Preset[]
+}
+
+/**
  * Popular preset configurations based on common discovery patterns
  */
-export const POPULAR_PRESETS = [
+export const POPULAR_PRESETS: Preset[] = [
   {
     id: 'weekend-indie',
     name: 'Weekend Indie Games',
@@ -263,11 +354,13 @@ export const POPULAR_PRESETS = [
 /**
  * Create a default filter object with all possible filter values
  */
-export function createDefaultFilters() {
+export function createDefaultFilters(): FilterConfig {
   return {
     releaseStatus: 'all',
     platform: 'all',
     rating: '0',
+    crossPlatform: false,
+    hiddenGems: false,
     tag: '',
     selectedTags: [],
     tagLogic: 'and',
@@ -294,14 +387,14 @@ export function createDefaultFilters() {
 /**
  * Load user presets from localStorage
  */
-export function loadUserPresets() {
+export function loadUserPresets(): Preset[] {
   try {
     const stored = localStorage.getItem(PRESET_STORAGE_KEY)
     if (!stored) {
       return []
     }
 
-    const data = JSON.parse(stored)
+    const data: PresetStorageData = JSON.parse(stored)
 
     // Version check for future compatibility
     if (data.version !== PRESET_VERSION) {
@@ -319,9 +412,9 @@ export function loadUserPresets() {
 /**
  * Save user presets to localStorage
  */
-export function saveUserPresets(presets) {
+export function saveUserPresets(presets: Preset[]): boolean {
   try {
-    const data = {
+    const data: PresetStorageData = {
       version: PRESET_VERSION,
       presets: presets,
       lastUpdated: new Date().toISOString(),
@@ -338,12 +431,12 @@ export function saveUserPresets(presets) {
  * Create a new user preset
  */
 export function createUserPreset(
-  name,
-  description,
-  filters,
-  category = 'custom',
-  tags = [],
-) {
+  name: string,
+  description: string,
+  filters: FilterConfig,
+  category: string = 'custom',
+  tags: string[] = [],
+): Preset {
   return {
     id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     name: name.trim(),
@@ -360,7 +453,7 @@ export function createUserPreset(
 /**
  * Get all presets (popular + user)
  */
-export function getAllPresets() {
+export function getAllPresets(): Preset[] {
   const userPresets = loadUserPresets()
   return [...POPULAR_PRESETS, ...userPresets]
 }
@@ -368,14 +461,14 @@ export function getAllPresets() {
 /**
  * Get presets by category
  */
-export function getPresetsByCategory(category) {
+export function getPresetsByCategory(category: string): Preset[] {
   return getAllPresets().filter((preset) => preset.category === category)
 }
 
 /**
  * Search presets by name or description
  */
-export function searchPresets(query) {
+export function searchPresets(query: string): Preset[] {
   if (!query || query.trim() === '') {
     return getAllPresets()
   }
@@ -393,12 +486,12 @@ export function searchPresets(query) {
  * Save a new user preset
  */
 export function saveUserPreset(
-  name,
-  description,
-  filters,
-  category = 'custom',
-  tags = [],
-) {
+  name: string,
+  description: string,
+  filters: FilterConfig,
+  category: string = 'custom',
+  tags: string[] = [],
+): Preset | null {
   const userPresets = loadUserPresets()
   const newPreset = createUserPreset(name, description, filters, category, tags)
 
@@ -413,7 +506,7 @@ export function saveUserPreset(
 /**
  * Update an existing user preset
  */
-export function updateUserPreset(id, updates) {
+export function updateUserPreset(id: string, updates: Partial<Preset>): boolean {
   const userPresets = loadUserPresets()
   const index = userPresets.findIndex((preset) => preset.id === id)
 
@@ -433,7 +526,7 @@ export function updateUserPreset(id, updates) {
 /**
  * Delete a user preset
  */
-export function deleteUserPreset(id) {
+export function deleteUserPreset(id: string): boolean {
   const userPresets = loadUserPresets()
   const filtered = userPresets.filter((preset) => preset.id !== id)
 
@@ -444,9 +537,9 @@ export function deleteUserPreset(id) {
  * Generate a shareable URL for a filter configuration
  */
 export function generateShareableURL(
-  filters,
-  baseURL = window.location.origin + window.location.pathname,
-) {
+  filters: FilterConfig,
+  baseURL: string = window.location.origin + window.location.pathname,
+): string {
   const params = new URLSearchParams()
 
   // Only include non-default values
@@ -528,7 +621,7 @@ export function generateShareableURL(
 /**
  * Parse a shareable URL back into filter configuration
  */
-export function parseShareableURL(url) {
+export function parseShareableURL(url: string): FilterConfig {
   try {
     const urlObj = new URL(url)
     const params = urlObj.searchParams
@@ -536,18 +629,18 @@ export function parseShareableURL(url) {
 
     // Parse basic filters
     if (params.has('release')) {
-      filters.releaseStatus = params.get('release')
+      filters.releaseStatus = params.get('release')!
     }
     if (params.has('platform')) {
-      filters.platform = params.get('platform')
+      filters.platform = params.get('platform')!
     }
     if (params.has('rating')) {
-      filters.rating = params.get('rating')
+      filters.rating = params.get('rating')!
     }
 
     // Parse tags
     if (params.has('tags')) {
-      const tagsParam = params.get('tags')
+      const tagsParam = params.get('tags')!
       if (tagsParam.includes(',')) {
         filters.selectedTags = tagsParam.split(',').filter((tag) => tag.trim())
       } else if (tagsParam) {
@@ -555,12 +648,12 @@ export function parseShareableURL(url) {
       }
     }
     if (params.has('tagLogic')) {
-      filters.tagLogic = params.get('tagLogic')
+      filters.tagLogic = params.get('tagLogic') as 'and' | 'or'
     }
 
     // Parse channels
     if (params.has('channels')) {
-      const channelsParam = params.get('channels')
+      const channelsParam = params.get('channels')!
       if (channelsParam.includes(',')) {
         filters.selectedChannels = channelsParam
           .split(',')
@@ -572,11 +665,11 @@ export function parseShareableURL(url) {
 
     // Parse sorting
     if (params.has('sort')) {
-      filters.sortBy = params.get('sort')
+      filters.sortBy = params.get('sort')!
     }
     if (params.has('sortSpec')) {
       try {
-        filters.sortSpec = JSON.parse(params.get('sortSpec'))
+        filters.sortSpec = JSON.parse(params.get('sortSpec')!)
       } catch {
         console.warn('Invalid sortSpec in URL')
       }
@@ -584,7 +677,7 @@ export function parseShareableURL(url) {
 
     // Parse currency
     if (params.has('currency')) {
-      filters.currency = params.get('currency')
+      filters.currency = params.get('currency') as 'eur' | 'usd'
     }
 
     // Parse time filter
@@ -606,10 +699,10 @@ export function parseShareableURL(url) {
     ) {
       filters.priceFilter = {
         minPrice: params.has('priceMin')
-          ? parseFloat(params.get('priceMin'))
+          ? parseFloat(params.get('priceMin')!)
           : 0,
         maxPrice: params.has('priceMax')
-          ? parseFloat(params.get('priceMax'))
+          ? parseFloat(params.get('priceMax')!)
           : 70,
         includeFree: params.get('includeFree') !== 'false',
       }
@@ -625,7 +718,7 @@ export function parseShareableURL(url) {
 /**
  * Export presets to JSON for sharing
  */
-export function exportPresets(presetIds = null) {
+export function exportPresets(presetIds: string[] | null = null): ExportData {
   const allPresets = getAllPresets()
   const presetsToExport = presetIds
     ? allPresets.filter((preset) => presetIds.includes(preset.id))
@@ -637,8 +730,8 @@ export function exportPresets(presetIds = null) {
     presets: presetsToExport.map((preset) => ({
       ...preset,
       // Remove runtime-only properties
-      isPopular: undefined,
-      isUser: undefined,
+      isPopular: undefined as any,
+      isUser: undefined as any,
     })),
   }
 }
@@ -646,14 +739,17 @@ export function exportPresets(presetIds = null) {
 /**
  * Import presets from JSON
  */
-export function importPresets(importData, options = { overwrite: false }) {
+export function importPresets(
+  importData: ExportData,
+  options: ImportOptions = { overwrite: false },
+): ImportResult {
   try {
     if (!importData.presets || !Array.isArray(importData.presets)) {
       throw new Error('Invalid preset data format')
     }
 
     const userPresets = loadUserPresets()
-    const imported = []
+    const imported: Preset[] = []
 
     for (const presetData of importData.presets) {
       // Validate preset structure
@@ -703,24 +799,24 @@ export function importPresets(importData, options = { overwrite: false }) {
     }
   } catch (error) {
     console.error('Error importing presets:', error)
-    return { success: false, error: error.message }
+    return { success: false, error: (error as Error).message }
   }
 }
 
 /**
  * Get preset categories with counts
  */
-export function getPresetCategories() {
+export function getPresetCategories(): CategoryData[] {
   const allPresets = getAllPresets()
-  const categories = new Map()
+  const categories = new Map<string, { count: number; presets: Preset[] }>()
 
   allPresets.forEach((preset) => {
     const category = preset.category || 'custom'
     if (!categories.has(category)) {
       categories.set(category, { count: 0, presets: [] })
     }
-    categories.get(category).count++
-    categories.get(category).presets.push(preset)
+    categories.get(category)!.count++
+    categories.get(category)!.presets.push(preset)
   })
 
   return Array.from(categories.entries()).map(([name, data]) => ({
@@ -733,13 +829,16 @@ export function getPresetCategories() {
 /**
  * Check if two filter configurations are equivalent
  */
-export function areFiltersEqual(filters1, filters2) {
+export function areFiltersEqual(
+  filters1: FilterConfig,
+  filters2: FilterConfig,
+): boolean {
   if (!filters1 || !filters2) {
     return false
   }
 
   // Compare all filter properties
-  const keys = Object.keys(createDefaultFilters())
+  const keys = Object.keys(createDefaultFilters()) as (keyof FilterConfig)[]
 
   return keys.every((key) => {
     if (key === 'timeFilter' || key === 'priceFilter') {
@@ -748,8 +847,8 @@ export function areFiltersEqual(filters1, filters2) {
     } else if (Array.isArray(filters1[key]) && Array.isArray(filters2[key])) {
       // Array comparison
       return (
-        JSON.stringify(filters1[key].sort()) ===
-        JSON.stringify(filters2[key].sort())
+        JSON.stringify((filters1[key] as string[]).sort()) ===
+        JSON.stringify((filters2[key] as string[]).sort())
       )
     } else {
       // Simple value comparison
@@ -761,7 +860,7 @@ export function areFiltersEqual(filters1, filters2) {
 /**
  * Find preset that matches current filters
  */
-export function findMatchingPreset(currentFilters) {
+export function findMatchingPreset(currentFilters: FilterConfig): Preset | undefined {
   return getAllPresets().find((preset) =>
     areFiltersEqual(currentFilters, preset.filters),
   )

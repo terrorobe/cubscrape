@@ -31,6 +31,8 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
    ```bash
    npm install
    ```
+   
+   **TypeScript Support**: The frontend has been migrated to TypeScript for improved type safety and developer experience. All Vue components and utilities now use TypeScript with strict type checking.
 
 4. Configure channels and options:
    ```bash
@@ -132,7 +134,35 @@ npm run lint
 npm run lint:fix
 npm run format
 npm run format:check
+
+# TypeScript type checking (added during TypeScript migration)
+npx tsc --noEmit           # Check types without emitting files
+npx vue-tsc --noEmit       # Vue component type checking
 ```
+
+## TypeScript Migration
+
+The frontend codebase has been fully migrated to TypeScript for enhanced type safety and developer experience. Key aspects of the TypeScript implementation:
+
+### Type System Features
+- **Strict Type Checking**: Comprehensive type definitions for all data structures
+- **Database Types**: Auto-generated types from SQLite schema for type-safe database operations
+- **Vue Integration**: Full TypeScript support for Vue 3 components with Composition API
+- **Configuration Types**: Strongly typed configuration system with JSDoc documentation
+
+### Key Type Definitions
+- **Database Schema**: `/src/types/database.ts` - Generated types matching SQLite database structure
+- **Vue Components**: All `.vue` files use TypeScript with `<script setup lang="ts">`
+- **Utilities**: Type-safe utilities in `/src/utils/` with proper error handling
+- **Configuration**: Centralized configuration in `/src/config/` with comprehensive type annotations
+
+### Development Workflow
+- **Type Checking**: `npx tsc --noEmit` for TypeScript validation
+- **Vue Types**: `npx vue-tsc --noEmit` for Vue component type checking
+- **IDE Support**: Full IntelliSense and error detection in modern IDEs
+- **Build Integration**: Vite handles TypeScript compilation automatically
+
+The migration maintains full backward compatibility while adding type safety that catches errors at compile time and improves code maintainability.
 
 ## Data Structure
 

@@ -203,13 +203,17 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, nextTick, type Ref } from 'vue'
 import GameCard from './components/GameCard.vue'
 import GameFilters from './components/GameFilters.vue'
 import SortIndicator from './components/SortIndicator.vue'
-import { databaseManager } from './utils/databaseManager.js'
-import { usePerformanceMonitoring } from './utils/performanceMonitor.js'
+import { databaseManager } from './utils/databaseManager'
+import type { DatabaseStats, VersionMismatchInfo } from './utils/databaseManager'
+import { usePerformanceMonitoring } from './utils/performanceMonitor'
+import type { Database } from 'sql.js'
+import type { ParsedGameData, ChannelWithCount, TagWithCount } from './types/database'
+import type { FilterConfig } from './utils/presetManager'
 import {
   TIMING,
   PRICING,
@@ -218,23 +222,101 @@ import {
   TIME_RANGES,
   VIDEO_COVERAGE,
   LAYOUT,
-} from './config/index.js'
+} from './config/index'
 
-export default {
-  name: 'App',
-  components: {
-    GameCard,
-    GameFilters,
-    SortIndicator,
-  },
-  setup() {
-    const loading = ref(true)
-    const error = ref(null)
-    const currentTime = ref(new Date())
-    const sidebarCollapsed = ref(false)
+// Component interfaces
+interface GameStats {
+  totalGames: number
+  freeGames: number
+  maxPrice: number
+}
+
+// Extended game interface for App component usage
+interface AppGameData extends ParsedGameData {
+  // Additional properties used in the component
+  price_eur?: number
+  price_usd?: number
+  is_free: boolean
+  release_date?: string
+  review_summary?: string
+  review_summary_priority?: number
+  positive_review_percentage?: number
+  review_count?: number
+  steam_url?: string
+  itch_url?: string
+  crazygames_url?: string
+  demo_steam_app_id?: string
+  demo_steam_url?: string
+  platform: string
+  last_updated?: string
+  latest_video_date?: string
+  newest_video_date?: string
+  video_count: number
+  coming_soon: boolean
+  is_early_access: boolean
+  is_demo: boolean
+  planned_release_date?: string
+  insufficient_reviews: boolean
+  is_inferred_summary: boolean
+  review_tooltip?: string
+  recent_review_percentage?: number
+  recent_review_count?: number
+  is_absorbed: boolean
+  absorbed_into?: string
+}
+
+interface DatabaseStatus {
+  connected: boolean
+  games: number
+  lastGenerated: Date | null
+  lastChecked: Date | null
+}
+
+interface SortChangeData {
+  sortBy: string
+  sortSpec: any
+}
+
+interface TimeFilter {
+  type: string | null
+  preset: string | null
+  startDate: string | null
+  endDate: string | null
+  smartLogic: string | null
+}
+
+interface PriceFilter {
+  minPrice: number
+  maxPrice: number
+  includeFree: boolean
+}
+
+interface AppFilters {
+  releaseStatus: string
+  platform: string
+  rating: string
+  crossPlatform: boolean
+  hiddenGems: boolean
+  tag: string
+  selectedTags: string[]
+  tagLogic: 'and' | 'or'
+  channel: string
+  selectedChannels: string[]
+  sortBy: string
+  sortSpec: any
+  currency: 'eur' | 'usd'
+  timeFilter: TimeFilter
+  priceFilter: PriceFilter
+}
+
+// Component state
+    const loading: Ref<boolean> = ref(true)
+    const error: Ref<string | null> = ref(null)
+    const currentTime: Ref<Date> = ref(new Date())
+    const sidebarCollapsed: Ref<boolean> = ref(false)
     const { monitorDatabaseQuery, monitorFilterUpdate } =
       usePerformanceMonitoring()
-    const filters = ref({
+    const filters: Ref<AppFilters> = ref({
       releaseStatus: 'all',
       platform: 'all',
       rating: '0',
@@ -264,27 +346,27 @@ export default {
       },
     })
 
-    const channels = ref([])
-    const channelsWithCounts = ref([])
-    const allTags = ref([])
-    const gameGrid = ref(null)
-    const highlightedGameId = ref(null)
-    const gameStats = ref({
+    const channels: Ref<string[]> = ref([])
+    const channelsWithCounts: Ref<ChannelWithCount[]> = ref([])
+    const allTags: Ref<TagWithCount[]> = ref([])
+    const gameGrid: Ref<HTMLElement | null> = ref(null)
+    const highlightedGameId: Ref<number | null> = ref(null)
+    const gameStats: Ref<GameStats> = ref({
       totalGames: 0,
       freeGames: 0,
       maxPrice: PRICING.DEFAULT_MAX_PRICE,
     })
-    const isDevelopment = import.meta.env.DEV
-    const databaseStatus = ref({
+    const isDevelopment: boolean = import.meta.env.DEV
+    const databaseStatus: Ref<DatabaseStatus> = ref({
       connected: false,
       games: 0,
       lastGenerated: null,
       lastChecked: null,
     })
-    const showVersionMismatch = ref(false)
-    const versionMismatchInfo = ref(null)
+    const showVersionMismatch: Ref<boolean> = ref(false)
+    const versionMismatchInfo: Ref<VersionMismatchInfo | null> = ref(null)
 
-    const loadGameStats = (database) => {
+    const loadGameStats = (database: Database): void => {
       // Get game statistics for price filtering
       const statsResults = database.exec(`
         SELECT 
@@ -305,7 +387,7 @@ export default {
       }
     }
 
-    const loadChannelsAndTags = (database) => {
+    const loadChannelsAndTags = (database: Database): void => {
       // Get all unique channels with counts
       const channelResults = database.exec(
         "SELECT unique_channels FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]' AND is_absorbed = 0",
@@ -366,9 +448,9 @@ export default {
         })
     }
 
-    const filteredGames = ref([])
+    const filteredGames: Ref<AppGameData[]> = ref([])
 
-    const buildSQLQuery = (filterValues) => {
+    const buildSQLQuery = (filterValues: AppFilters): { query: string; params: (string | number)[] } => {
       console.log('Building query with filters:', filterValues)
 
       // Performance optimization: Track which filters are active to optimize query order
@@ -672,7 +754,7 @@ export default {
       return { query, params }
     }
 
-    const buildSortClause = (filterValues) => {
+    const buildSortClause = (filterValues: AppFilters): string => {
       // Handle advanced sorting with multi-criteria
       if (filterValues.sortBy === 'advanced' && filterValues.sortSpec) {
         return buildAdvancedSortClause(filterValues.sortSpec)
@@ -697,7 +779,7 @@ export default {
       return sortMappings[filterValues.sortBy] || 'latest_video_date DESC'
     }
 
-    const buildAdvancedSortClause = (sortSpec) => {
+    const buildAdvancedSortClause = (sortSpec: any): string => {
       const clauses = []
 
       // Primary sorting criteria
@@ -727,7 +809,7 @@ export default {
       return clauses.join(', ')
     }
 
-    const getSortFieldClause = (field, direction) => {
+    const getSortFieldClause = (field: string, direction: string): string | null => {
       const dir = direction.toUpperCase()
 
       switch (field) {
@@ -756,7 +838,7 @@ export default {
       }
     }
 
-    const isSmartSortPreset = (sortBy) => {
+    const isSmartSortPreset = (sortBy: string): boolean => {
       return [
         'best-value',
         'hidden-gems',
@@ -775,7 +857,7 @@ export default {
       ].includes(sortBy)
     }
 
-    const buildSmartSortClause = (sortBy) => {
+    const buildSmartSortClause = (sortBy: string): string => {
       switch (sortBy) {
         case 'best-value':
           // High rating + reasonable price (prioritize quality over cheapness)
@@ -900,8 +982,8 @@ export default {
       }
     }
 
-    const executeQuery = (db) => {
-      return monitorDatabaseQuery('Multi-filter Game Query', () => {
+    const executeQuery = (db: Database): void => {
+      monitorDatabaseQuery('Multi-filter Game Query', () => {
         const { query, params } = buildSQLQuery(filters.value)
         console.log('Executing query:', query)
         console.log('With params:', params)
@@ -914,21 +996,21 @@ export default {
         })
 
         const results = db.exec(query, params)
-        return processQueryResults(results)
+        processQueryResults(results)
       })
     }
 
-    const processQueryResults = (results) => {
+    const processQueryResults = (results: any[]): void => {
       if (results.length > 0) {
-        const processedGames = []
+        const processedGames: AppGameData[] = []
 
         // First pass: collect all games and build a lookup for parent data resolution
-        const allGameData = []
-        const parentGameLookup = new Map()
+        const allGameData: any[] = []
+        const parentGameLookup = new Map<string, any>()
 
-        results[0].values.forEach((row) => {
+        results[0].values.forEach((row: any[]) => {
           const columns = results[0].columns
-          const gameData = {}
+          const gameData: any = {}
 
           columns.forEach((col, index) => {
             gameData[col] = row[index]
@@ -999,7 +1081,7 @@ export default {
           }
 
           // Create game object matching the original data structure
-          const game = {
+          const game: AppGameData = {
             id: gameData.id,
             name: gameData.name,
             steam_app_id: gameData.steam_app_id,
@@ -1058,14 +1140,14 @@ export default {
       }
     }
 
-    let db = null
+    let db: Database | null = null
 
-    const loadDatabase = async () => {
+    const loadDatabase = async (): Promise<void> => {
       await databaseManager.init()
       db = databaseManager.getDatabase()
     }
 
-    const updateDatabaseStatus = () => {
+    const updateDatabaseStatus = (): void => {
       const stats = databaseManager.getStats()
       if (stats) {
         databaseStatus.value.connected = true
@@ -1082,7 +1164,7 @@ export default {
       }
     }
 
-    const formatTimestamp = (timestamp, useOld = false) => {
+    const formatTimestamp = (timestamp: Date | string | null, useOld = false): string => {
       if (!timestamp) {
         return 'Unknown'
       }
@@ -1106,7 +1188,7 @@ export default {
       return date.toLocaleDateString()
     }
 
-    const formatExactTimestamp = (timestamp) => {
+    const formatExactTimestamp = (timestamp: Date | string | null): string => {
       if (!timestamp) {
         return 'Unknown'
       }
@@ -1120,7 +1202,7 @@ export default {
       })
     }
 
-    const onDatabaseUpdate = (database) => {
+    const onDatabaseUpdate = (database: Database): void => {
       db = database
       loadGameStats(db)
       loadChannelsAndTags(db)
@@ -1129,26 +1211,26 @@ export default {
       console.log('🔄 UI updated with new database')
     }
 
-    const onVersionMismatch = (versionInfo) => {
+    const onVersionMismatch = (versionInfo: VersionMismatchInfo): void => {
       versionMismatchInfo.value = versionInfo
       showVersionMismatch.value = true
       console.warn('🔄 App version mismatch - reload recommended')
     }
 
-    const reloadApp = () => {
+    const reloadApp = (): void => {
       window.location.reload()
     }
 
-    const dismissVersionMismatch = () => {
+    const dismissVersionMismatch = (): void => {
       showVersionMismatch.value = false
     }
 
-    const testVersionMismatch = () => {
+    const testVersionMismatch = (): void => {
       console.log('🧪 User clicked test version mismatch button')
       databaseManager.testVersionMismatch()
     }
 
-    const updateGridDebugInfo = () => {
+    const updateGridDebugInfo = (): void => {
       if (!gameGrid.value || !isDevelopment) {
         return
       }
@@ -1182,7 +1264,7 @@ export default {
       })
     }
 
-    const loadGames = async () => {
+    const loadGames = async (): Promise<void> => {
       try {
         // Check if database is already loaded (from HMR preservation)
         if (!databaseManager.isLoaded()) {
@@ -1216,7 +1298,7 @@ export default {
       }
     }
 
-    const processDeeplink = async () => {
+    const processDeeplink = async (): Promise<void> => {
       const hash = window.location.hash
       if (!hash || hash.length <= 1) {
         return
@@ -1266,7 +1348,7 @@ export default {
       await scrollToGame(platform, gameId)
     }
 
-    const scrollToGame = async (platform, gameId) => {
+    const scrollToGame = async (platform: string, gameId: string): Promise<void> => {
       // Find the game in our current filtered list
       let targetGame = null
 
@@ -1316,7 +1398,7 @@ export default {
       }
     }
 
-    const tryToShowGame = async (platform, gameId) => {
+    const tryToShowGame = async (platform: string, gameId: string): Promise<void> => {
       // If we can't find the game, it might be filtered out
       // Try setting platform filter and clearing others
       if (
@@ -1349,7 +1431,7 @@ export default {
       }
     }
 
-    const highlightGame = (game) => {
+    const highlightGame = (game: AppGameData): void => {
       // Clear any existing highlights
       clearHighlight()
 
@@ -1365,11 +1447,11 @@ export default {
       }, TIMING.GAME_HIGHLIGHT_DURATION)
     }
 
-    const clearHighlight = () => {
+    const clearHighlight = (): void => {
       highlightedGameId.value = null
     }
 
-    const handleTagClick = (tag) => {
+    const handleTagClick = (tag: string): void => {
       // Add the clicked tag to the selected tags
       const currentTags = filters.value.selectedTags || []
       if (!currentTags.includes(tag)) {
@@ -1382,7 +1464,7 @@ export default {
       }
     }
 
-    const updateFilters = (newFilters) => {
+    const updateFilters = (newFilters: Partial<AppFilters>): void => {
       monitorFilterUpdate('Complete Filter Update', () => {
         filters.value = { ...filters.value, ...newFilters }
         updateURLParams(filters.value)
@@ -1392,7 +1474,7 @@ export default {
       })
     }
 
-    const handleSortChange = (sortData) => {
+    const handleSortChange = (sortData: SortChangeData): void => {
       filters.value.sortBy = sortData.sortBy
       filters.value.sortSpec = sortData.sortSpec
       updateURLParams(filters.value)
@@ -1401,7 +1483,7 @@ export default {
       }
     }
 
-    const updateURLParams = (filterValues) => {
+    const updateURLParams = (filterValues: AppFilters): void => {
       const url = new URL(window.location)
 
       // Remove null/undefined values and update URL
@@ -1469,7 +1551,7 @@ export default {
       window.history.replaceState({}, '', url)
     }
 
-    const loadFiltersFromURL = () => {
+    const loadFiltersFromURL = (): void => {
       const urlParams = new URLSearchParams(window.location.search)
 
       // Load each filter from URL if present
@@ -1597,11 +1679,11 @@ export default {
       }
     }
 
-    onMounted(() => {
+    onMounted((): void => {
       loadGames()
 
       // Set up keyboard handler for clearing highlights
-      const handleKeydown = (e) => {
+      const handleKeydown = (e: KeyboardEvent): void => {
         if (e.key === 'Escape') {
           clearHighlight()
         }
@@ -1615,12 +1697,12 @@ export default {
       }, TIMING.TIMESTAMP_UPDATE_INTERVAL)
 
       // Store timer reference for cleanup
-      window.timestampTimer = timestampTimer
+      ;(window as any).timestampTimer = timestampTimer
 
       // Set up debug info updates for development
       if (isDevelopment) {
         // Update debug info on resize
-        const handleResize = () => {
+        const handleResize = (): void => {
           setTimeout(updateGridDebugInfo, TIMING.RESIZE_DEBOUNCE_DELAY) // Debounce slightly
         }
 
@@ -1630,11 +1712,11 @@ export default {
         setTimeout(updateGridDebugInfo, TIMING.INITIAL_DEBUG_DELAY)
 
         // Store for cleanup
-        window.handleResize = handleResize
+        ;(window as any).handleResize = handleResize
       }
     })
 
-    onUnmounted(() => {
+    onUnmounted((): void => {
       // Cleanup database manager
       if (databaseManager.isLoaded()) {
         databaseManager.removeUpdateListener(onDatabaseUpdate)
@@ -1647,19 +1729,19 @@ export default {
       }
 
       // Cleanup timestamp timer
-      if (window.timestampTimer) {
-        clearInterval(window.timestampTimer)
-        window.timestampTimer = null
+      if ((window as any).timestampTimer) {
+        clearInterval((window as any).timestampTimer)
+        ;(window as any).timestampTimer = null
       }
 
       // Cleanup resize handler
-      if (window.handleResize) {
-        window.removeEventListener('resize', window.handleResize)
-        window.handleResize = null
+      if ((window as any).handleResize) {
+        window.removeEventListener('resize', (window as any).handleResize)
+        ;(window as any).handleResize = null
       }
 
       // Remove keyboard handler
-      const handleKeydown = (e) => {
+      const handleKeydown = (e: KeyboardEvent): void => {
         if (e.key === 'Escape') {
           clearHighlight()
         }
@@ -1667,37 +1749,36 @@ export default {
       document.removeEventListener('keydown', handleKeydown)
     })
 
-    return {
-      loading,
-      error,
-      filters,
-      channels,
-      channelsWithCounts,
-      allTags,
-      filteredGames,
-      gameStats,
-      gameGrid,
-      highlightedGameId,
-      databaseStatus,
-      isDevelopment,
-      databaseManager,
-      formatTimestamp,
-      formatExactTimestamp,
-      updateFilters,
-      clearHighlight,
-      handleTagClick,
-      showVersionMismatch,
-      versionMismatchInfo,
-      reloadApp,
-      dismissVersionMismatch,
-      testVersionMismatch,
-      updateGridDebugInfo,
-      sidebarCollapsed,
-      handleSortChange,
-      LAYOUT,
-    }
-  },
-}
+// Export reactive state and methods for template
+defineExpose({
+  loading,
+  error,
+  filters,
+  channels,
+  channelsWithCounts,
+  allTags,
+  filteredGames,
+  gameStats,
+  gameGrid,
+  highlightedGameId,
+  databaseStatus,
+  isDevelopment,
+  databaseManager,
+  formatTimestamp,
+  formatExactTimestamp,
+  updateFilters,
+  clearHighlight,
+  handleTagClick,
+  showVersionMismatch,
+  versionMismatchInfo,
+  reloadApp,
+  dismissVersionMismatch,
+  testVersionMismatch,
+  updateGridDebugInfo,
+  sidebarCollapsed,
+  handleSortChange,
+  LAYOUT,
+})
 
 // HMR support - accept module updates
 if (import.meta.hot) {

@@ -142,30 +142,63 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 
-export default {
-  name: 'SortIndicator',
-  props: {
-    sortBy: {
-      type: String,
-      required: true,
-    },
-    sortSpec: {
-      type: Object,
-      default: null,
-    },
-    gameCount: {
-      type: Number,
-      default: 0,
-    },
-  },
-  emits: ['sort-changed'],
-  setup(props, { emit }) {
-    const showSortMenu = ref(false)
-    // Sort method labels
-    const sortLabels = {
+/**
+ * Sort specification for advanced sorting
+ */
+export interface SortSpec {
+  primary?: {
+    field: string
+    direction?: 'asc' | 'desc'
+    weight?: number
+  }
+  secondary?: {
+    field: string
+    direction?: 'asc' | 'desc'
+    weight?: number
+  }
+  criteria?: string[]
+}
+
+/**
+ * Sort change event payload
+ */
+export interface SortChangeEvent {
+  sortBy: string
+  sortSpec: SortSpec | null
+}
+
+/**
+ * Sort option interface
+ */
+interface SortOption {
+  value: string
+  label: string
+}
+
+/**
+ * Props interface for SortIndicator component
+ */
+export interface SortIndicatorProps {
+  sortBy: string
+  sortSpec?: SortSpec | null
+  gameCount?: number
+}
+
+const props = withDefaults(defineProps<SortIndicatorProps>(), {
+  sortSpec: null,
+  gameCount: 0,
+})
+
+const emit = defineEmits<{
+  'sort-changed': [event: SortChangeEvent]
+}>()
+const showSortMenu = ref(false)
+
+// Sort method labels
+const sortLabels: Record<string, string> = {
       date: 'Latest Videos',
       'rating-score': 'Highest Rated',
       'rating-category': 'Rating Tiers',
@@ -189,8 +222,8 @@ export default {
       advanced: 'Custom Multi-Criteria',
     }
 
-    // Sort explanations
-    const sortExplanations = {
+// Sort explanations
+const sortExplanations: Record<string, string> = {
       date: 'Games sorted by most recent video coverage, showing what content creators are playing now.',
       'rating-score':
         'Games with the highest Steam review percentages first, focusing on quality.',
@@ -230,133 +263,119 @@ export default {
         'Games featured by your selected channels, highest rated first.',
     }
 
-    const sortLabel = computed(() => {
-      return sortLabels[props.sortBy] || 'Custom Sort'
-    })
+const sortLabel = computed((): string => {
+  return sortLabels[props.sortBy] || 'Custom Sort'
+})
 
-    const explanation = computed(() => {
-      let baseExplanation = sortExplanations[props.sortBy] || ''
+const explanation = computed((): string => {
+  let baseExplanation = sortExplanations[props.sortBy] || ''
 
-      if (props.gameCount > 0) {
-        baseExplanation += ` (${props.gameCount} games found)`
-      }
+  if (props.gameCount > 0) {
+    baseExplanation += ` (${props.gameCount} games found)`
+  }
 
-      return baseExplanation
-    })
+  return baseExplanation
+})
 
-    const isAdvanced = computed(() => {
-      return props.sortBy === 'advanced' && props.sortSpec
-    })
+const isAdvanced = computed((): boolean => {
+  return props.sortBy === 'advanced' && !!props.sortSpec
+})
 
-    const isContextual = computed(() => {
-      return [
-        'video-recency',
-        'time-range-releases',
-        'price-value',
-        'steam-optimized',
-        'itch-discoveries',
-        'premium-quality',
-        'tag-match',
-        'channel-picks',
-      ].includes(props.sortBy)
-    })
+const isContextual = computed((): boolean => {
+  return [
+    'video-recency',
+    'time-range-releases',
+    'price-value',
+    'steam-optimized',
+    'itch-discoveries',
+    'premium-quality',
+    'tag-match',
+    'channel-picks',
+  ].includes(props.sortBy)
+})
 
-    const isSmart = computed(() => {
-      return [
-        'best-value',
-        'hidden-gems',
-        'most-covered',
-        'trending',
-        'creator-consensus',
-        'recent-discoveries',
-      ].includes(props.sortBy)
-    })
+const isSmart = computed((): boolean => {
+  return [
+    'best-value',
+    'hidden-gems',
+    'most-covered',
+    'trending',
+    'creator-consensus',
+    'recent-discoveries',
+  ].includes(props.sortBy)
+})
 
-    const advancedDetails = computed(() => {
-      if (!props.sortSpec) {
-        return ''
-      }
+const advancedDetails = computed((): string => {
+  if (!props.sortSpec) {
+    return ''
+  }
 
-      const fieldNames = {
-        rating: 'Rating',
-        coverage: 'Coverage',
-        recency: 'Recency',
-        release: 'Release Date',
-        price: 'Price',
-        channels: 'Channels',
-        reviews: 'Reviews',
-      }
+  const fieldNames: Record<string, string> = {
+    rating: 'Rating',
+    coverage: 'Coverage',
+    recency: 'Recency',
+    release: 'Release Date',
+    price: 'Price',
+    channels: 'Channels',
+    reviews: 'Reviews',
+  }
 
-      let details = `Primary: ${fieldNames[props.sortSpec.primary?.field] || 'Unknown'}`
-      if (props.sortSpec.secondary) {
-        details += `, Secondary: ${fieldNames[props.sortSpec.secondary.field] || 'Unknown'}`
-      }
+  let details = `Primary: ${fieldNames[props.sortSpec.primary?.field || ''] || 'Unknown'}`
+  if (props.sortSpec.secondary) {
+    details += `, Secondary: ${fieldNames[props.sortSpec.secondary.field] || 'Unknown'}`
+  }
 
-      return details
-    })
+  return details
+})
 
-    const sortIcon = computed(() => {
-      // Different icons based on sort type
-      if (isAdvanced.value) {
-        // Multi-level sort icon
-        return 'M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12'
-      } else if (isSmart.value) {
-        // Brain/smart icon
-        return 'M9.663 17h4.673M12 3a6 6 0 00-6 6c0 1.105.063 2.105.196 3M12 3a6 6 0 016 6c0 1.105-.063 2.105-.196 3m-11.608 0c-.135 1.028-.196 2.073-.196 3.073 0 2.485.199 4.925.582 7.262a4.657 4.657 0 01-.582 2.665m0 0a4.99 4.99 0 005.592 2.665m6.608 0c.135 1.028.196 2.073.196 3.073 0 2.485-.199 4.925-.582 7.262a4.657 4.657 0 00.582 2.665m0 0a4.99 4.99 0 01-5.592 2.665m0 0c.41-.258.826-.534 1.246-.826C9.663 17 12 17 12 17'
-      } else if (isContextual.value) {
-        // Filter/contextual icon
-        return 'M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z'
-      } else {
-        // Standard sort icon
-        return 'M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4'
-      }
-    })
+const sortIcon = computed((): string => {
+  // Different icons based on sort type
+  if (isAdvanced.value) {
+    // Multi-level sort icon
+    return 'M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12'
+  } else if (isSmart.value) {
+    // Brain/smart icon
+    return 'M9.663 17h4.673M12 3a6 6 0 00-6 6c0 1.105.063 2.105.196 3M12 3a6 6 0 016 6c0 1.105-.063 2.105-.196 3m-11.608 0c-.135 1.028-.196 2.073-.196 3.073 0 2.485.199 4.925.582 7.262a4.657 4.657 0 01-.582 2.665m0 0a4.99 4.99 0 005.592 2.665m6.608 0c.135 1.028.196 2.073.196 3.073 0 2.485-.199 4.925-.582 7.262a4.657 4.657 0 00.582 2.665m0 0a4.99 4.99 0 01-5.592 2.665m0 0c.41-.258.826-.534 1.246-.826C9.663 17 12 17 12 17'
+  } else if (isContextual.value) {
+    // Filter/contextual icon
+    return 'M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z'
+  } else {
+    // Standard sort icon
+    return 'M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4'
+  }
+})
 
-    // Basic sort options that are commonly used
-    const basicSortOptions = [
-      { value: 'date', label: 'Latest Videos' },
-      { value: 'rating-score', label: 'Highest Rated' },
-      { value: 'rating-category', label: 'Rating Tiers' },
-      { value: 'name', label: 'Alphabetical' },
-      { value: 'release-new', label: 'Newest Releases' },
-      { value: 'release-old', label: 'Oldest Releases' },
-    ]
+// Basic sort options that are commonly used
+const basicSortOptions: SortOption[] = [
+  { value: 'date', label: 'Latest Videos' },
+  { value: 'rating-score', label: 'Highest Rated' },
+  { value: 'rating-category', label: 'Rating Tiers' },
+  { value: 'name', label: 'Alphabetical' },
+  { value: 'release-new', label: 'Newest Releases' },
+  { value: 'release-old', label: 'Oldest Releases' },
+]
 
-    const handleSortChange = (newSortBy) => {
-      showSortMenu.value = false
-      emit('sort-changed', {
-        sortBy: newSortBy,
-        sortSpec: null, // Clear advanced sort spec when using basic sorts
-      })
-    }
-
-    // Close menu when clicking outside
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('.relative')) {
-        showSortMenu.value = false
-      }
-    }
-
-    onMounted(() => {
-      document.addEventListener('click', handleClickOutside)
-    })
-
-    onUnmounted(() => {
-      document.removeEventListener('click', handleClickOutside)
-    })
-
-    return {
-      sortLabel,
-      explanation,
-      isAdvanced,
-      isContextual,
-      isSmart,
-      advancedDetails,
-      sortIcon,
-      showSortMenu,
-      basicSortOptions,
-      handleSortChange,
-    }
-  },
+const handleSortChange = (newSortBy: string): void => {
+  showSortMenu.value = false
+  emit('sort-changed', {
+    sortBy: newSortBy,
+    sortSpec: null, // Clear advanced sort spec when using basic sorts
+  })
 }
+
+// Close menu when clicking outside
+const handleClickOutside = (event: Event): void => {
+  const target = event.target as Element
+  if (!target.closest('.relative')) {
+    showSortMenu.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>

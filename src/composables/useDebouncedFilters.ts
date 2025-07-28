@@ -3,17 +3,34 @@
  * Provides a 400ms debounce delay for filter changes
  */
 
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
-export function useDebouncedFilters(
-  initialFilters,
-  onFiltersChanged,
-  debounceMs = 400,
-) {
-  const pendingFilters = ref({ ...initialFilters })
-  let debounceTimer = null
+/**
+ * Filter change callback type
+ */
+export type FilterChangeCallback<T> = (filters: T) => void
 
-  const debouncedEmit = (newFilters) => {
+/**
+ * Debounced filters composable return type
+ */
+export interface DebouncedFiltersComposable<T> {
+  pendingFilters: Ref<T>
+  debouncedEmit: (newFilters: T) => void
+  immediateEmit: (newFilters: T) => void
+  cancelPendingUpdates: () => void
+  cleanup: () => void
+  hasPendingUpdates: () => boolean
+}
+
+export function useDebouncedFilters<T extends Record<string, any>>(
+  initialFilters: T,
+  onFiltersChanged: FilterChangeCallback<T>,
+  debounceMs: number = 400,
+): DebouncedFiltersComposable<T> {
+  const pendingFilters = ref({ ...initialFilters }) as Ref<T>
+  let debounceTimer: NodeJS.Timeout | null = null
+
+  const debouncedEmit = (newFilters: T): void => {
     // Clear any existing timer
     if (debounceTimer) {
       clearTimeout(debounceTimer)
@@ -29,7 +46,7 @@ export function useDebouncedFilters(
     }, debounceMs)
   }
 
-  const immediateEmit = (newFilters) => {
+  const immediateEmit = (newFilters: T): void => {
     // Clear any pending debounced updates
     if (debounceTimer) {
       clearTimeout(debounceTimer)
@@ -41,7 +58,7 @@ export function useDebouncedFilters(
     onFiltersChanged(newFilters)
   }
 
-  const cancelPendingUpdates = () => {
+  const cancelPendingUpdates = (): void => {
     if (debounceTimer) {
       clearTimeout(debounceTimer)
       debounceTimer = null
@@ -49,7 +66,7 @@ export function useDebouncedFilters(
   }
 
   // Cleanup on unmount
-  const cleanup = () => {
+  const cleanup = (): void => {
     cancelPendingUpdates()
   }
 

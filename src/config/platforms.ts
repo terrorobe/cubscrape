@@ -4,9 +4,66 @@
  */
 
 /**
+ * Platform type identifier
+ */
+export type PlatformId = 'steam' | 'itch' | 'crazygames'
+
+/**
+ * Platform color configuration
+ */
+interface PlatformColors {
+  primary: string
+  secondary: string
+  accent: string
+}
+
+/**
+ * Platform feature flags
+ */
+interface PlatformFeatures {
+  reviews: boolean
+  pricing: boolean
+  tags: boolean
+  releaseDate: boolean
+}
+
+/**
+ * Complete platform configuration
+ */
+export interface PlatformConfig {
+  id: PlatformId
+  name: string
+  displayName: string
+  icon: string
+  urlPattern: RegExp
+  storeUrlPrefix: string
+  colors: PlatformColors
+  features: PlatformFeatures
+  urlField?: string
+}
+
+/**
+ * Available platform with URL
+ */
+export interface AvailablePlatform extends PlatformConfig {
+  url: string
+}
+
+/**
+ * Game object interface for platform operations
+ */
+interface GameForPlatforms {
+  steam_url?: string
+  itch_url?: string
+  crazygames_url?: string
+  is_absorbed?: boolean
+  platform?: string
+}
+
+/**
  * Platform registry with metadata and configuration
  */
-export const PLATFORMS = {
+export const PLATFORMS: Record<PlatformId, PlatformConfig> = {
   steam: {
     id: 'steam',
     name: 'Steam',
@@ -14,6 +71,7 @@ export const PLATFORMS = {
     icon: 'S',
     urlPattern: /^https?:\/\/(store\.)?steampowered\.com/,
     storeUrlPrefix: 'https://store.steampowered.com/app/',
+    urlField: 'steam_url',
     colors: {
       primary: '#1b2838',
       secondary: '#66c0f4',
@@ -34,6 +92,7 @@ export const PLATFORMS = {
     icon: 'I',
     urlPattern: /^https?:\/\/.*\.itch\.io/,
     storeUrlPrefix: 'https://itch.io/',
+    urlField: 'itch_url',
     colors: {
       primary: '#fa5c5c',
       secondary: '#ff2449',
@@ -54,6 +113,7 @@ export const PLATFORMS = {
     icon: 'C',
     urlPattern: /^https?:\/\/(www\.)?crazygames\.com/,
     storeUrlPrefix: 'https://www.crazygames.com/game/',
+    urlField: 'crazygames_url',
     colors: {
       primary: '#7b2ff7',
       secondary: '#9747ff',
@@ -66,7 +126,7 @@ export const PLATFORMS = {
       releaseDate: false,
     },
   },
-}
+} as const
 
 /**
  * YouTube platform configuration
@@ -77,57 +137,66 @@ export const YOUTUBE_CONFIG = {
     /^https?:\/\/youtu\.be\//,
   ],
   embedUrlPrefix: 'https://www.youtube.com/embed/',
-  thumbnailUrl: (videoId) =>
+  thumbnailUrl: (videoId: string): string =>
     `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+} as const
+
+/**
+ * Platform filter option for UI
+ */
+export interface PlatformFilterOption {
+  value: string
+  label: string
+  icon?: string
 }
 
 /**
- * Get platform configuration by ID
- * @param {string} platformId - The platform identifier
- * @returns {Object|null} Platform configuration or null if not found
+ * Platform filter options for UI
  */
-export function getPlatformConfig(platformId) {
-  return PLATFORMS[platformId] || null
+export const PLATFORM_FILTER_OPTIONS: readonly PlatformFilterOption[] = [
+  { value: 'all', label: 'All Platforms' },
+  { value: 'steam', label: 'Steam', icon: 'S' },
+  { value: 'itch', label: 'Itch.io', icon: 'I' },
+  { value: 'crazygames', label: 'CrazyGames', icon: 'C' },
+  { value: 'other', label: 'Other Platforms' },
+] as const
+
+/**
+ * Get platform configuration by ID
+ */
+export function getPlatformConfig(platformId: string): PlatformConfig | null {
+  return PLATFORMS[platformId as PlatformId] || null
 }
 
 /**
  * Get platform display name
- * @param {string} platformId - The platform identifier
- * @returns {string} Display name or the platformId if not found
  */
-export function getPlatformDisplayName(platformId) {
+export function getPlatformDisplayName(platformId: string): string {
   const platform = getPlatformConfig(platformId)
   return platform?.displayName || platformId
 }
 
 /**
  * Get platform icon
- * @param {string} platformId - The platform identifier
- * @returns {string} Icon character or first letter of platform name
  */
-export function getPlatformIcon(platformId) {
+export function getPlatformIcon(platformId: string): string {
   const platform = getPlatformConfig(platformId)
   return platform?.icon || platformId.charAt(0).toUpperCase()
 }
 
 /**
  * Check if a URL matches a platform's pattern
- * @param {string} url - The URL to check
- * @param {string} platformId - The platform identifier
- * @returns {boolean} True if URL matches platform pattern
  */
-export function isPlatformUrl(url, platformId) {
+export function isPlatformUrl(url: string, platformId: string): boolean {
   const platform = getPlatformConfig(platformId)
   return platform?.urlPattern?.test(url) || false
 }
 
 /**
  * Get available platforms for a game
- * @param {Object} game - The game object
- * @returns {Array} Array of platform configurations
  */
-export function getAvailablePlatforms(game) {
-  const platforms = []
+export function getAvailablePlatforms(game: GameForPlatforms): AvailablePlatform[] {
+  const platforms: AvailablePlatform[] = []
 
   if (game.steam_url && !game.is_absorbed) {
     platforms.push({
@@ -155,10 +224,8 @@ export function getAvailablePlatforms(game) {
 
 /**
  * Extract YouTube video ID from URL
- * @param {string} url - YouTube URL
- * @returns {string|null} Video ID or null if not a valid YouTube URL
  */
-export function extractYouTubeVideoId(url) {
+export function extractYouTubeVideoId(url: string): string | null {
   // Check watch URL format
   const watchMatch = url.match(/[?&]v=([^&]+)/)
   if (watchMatch) {
@@ -174,13 +241,6 @@ export function extractYouTubeVideoId(url) {
   return null
 }
 
-/**
- * Platform filter options for UI
- */
-export const PLATFORM_FILTER_OPTIONS = [
-  { value: 'all', label: 'All Platforms' },
-  { value: 'steam', label: 'Steam', icon: 'S' },
-  { value: 'itch', label: 'Itch.io', icon: 'I' },
-  { value: 'crazygames', label: 'CrazyGames', icon: 'C' },
-  { value: 'other', label: 'Other Platforms' },
-]
+// Type exports for external use
+export type PlatformsConfig = typeof PLATFORMS
+export type YouTubeConfig = typeof YOUTUBE_CONFIG
