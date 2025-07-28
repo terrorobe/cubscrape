@@ -313,7 +313,9 @@ export function getPlatformUrl(
 
   // This should never happen due to discriminated union, but we need exhaustive checking
   // TypeScript ensures all cases are handled above
-  throw new Error(`Unknown platform: ${(game as { platform: string }).platform}`)
+  throw new Error(
+    `Unknown platform: ${(game as { platform: string }).platform}`,
+  )
 }
 
 /**
@@ -325,14 +327,14 @@ type SteamPricingResult = {
   price_usd?: number
   price_final?: number
 }
-type ItchPricingResult = { 
+type ItchPricingResult = {
   currencies: ['USD']
   price_usd?: number
-  price_final?: number 
+  price_final?: number
 }
-type CrazyGamesPricingResult = { 
+type CrazyGamesPricingResult = {
   currencies: never
-  is_free: true 
+  is_free: true
 }
 
 /**
@@ -340,7 +342,9 @@ type CrazyGamesPricingResult = {
  */
 export function getPlatformPricing(game: SteamGameData): SteamPricingResult
 export function getPlatformPricing(game: ItchGameData): ItchPricingResult
-export function getPlatformPricing(game: CrazyGamesData): CrazyGamesPricingResult
+export function getPlatformPricing(
+  game: CrazyGamesData,
+): CrazyGamesPricingResult
 export function getPlatformPricing(
   game: PlatformGameData,
 ): SteamPricingResult | ItchPricingResult | CrazyGamesPricingResult {
@@ -370,7 +374,9 @@ export function getPlatformPricing(
 
   // This should never happen due to discriminated union, but we need exhaustive checking
   // TypeScript ensures all cases are handled above
-  throw new Error(`Unknown platform: ${(game as { platform: string }).platform}`)
+  throw new Error(
+    `Unknown platform: ${(game as { platform: string }).platform}`,
+  )
 }
 
 /**
@@ -448,9 +454,9 @@ export const PlatformValidation = {
     if (typeof data !== 'object' || data === null || !('platform' in data)) {
       return false
     }
-    
+
     const gameData = data as { platform: unknown }
-    
+
     if (gameData.platform === 'steam') {
       return this.validateSteam(gameData)
     }

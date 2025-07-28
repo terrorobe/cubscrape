@@ -70,9 +70,9 @@ export function isAdvancedSortSpec(
     typeof sortSpec === 'object' &&
     sortSpec !== null &&
     'mode' in sortSpec &&
-    (sortSpec as any).mode === 'advanced' &&
+    (sortSpec as Record<string, unknown>).mode === 'advanced' &&
     'primary' in sortSpec &&
-    typeof (sortSpec as any).primary === 'object'
+    typeof (sortSpec as Record<string, unknown>).primary === 'object'
   )
 }
 
@@ -86,7 +86,7 @@ export function isSimpleSortSpec(
     typeof sortSpec === 'object' &&
     sortSpec !== null &&
     'mode' in sortSpec &&
-    (sortSpec as any).mode === 'simple' &&
+    (sortSpec as Record<string, unknown>).mode === 'simple' &&
     'field' in sortSpec &&
     'direction' in sortSpec
   )

@@ -81,7 +81,7 @@ export interface AppMetadataRecord {
  */
 export interface QueryExecResult {
   columns: string[]
-  values: any[][]
+  values: (string | number | null)[][]
 }
 
 /**
@@ -154,30 +154,36 @@ export interface TagWithCount {
 /**
  * Type guard to check if a value is a GameRecord
  */
-export function isGameRecord(value: any): value is GameRecord {
+export function isGameRecord(value: unknown): value is GameRecord {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  const obj = value as Record<string, unknown>
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof value.id === 'number' &&
-    typeof value.game_key === 'string' &&
-    typeof value.name === 'string' &&
-    typeof value.platform === 'string' &&
-    ['steam', 'itch', 'crazygames'].includes(value.platform)
+    typeof obj.id === 'number' &&
+    typeof obj.game_key === 'string' &&
+    typeof obj.name === 'string' &&
+    typeof obj.platform === 'string' &&
+    ['steam', 'itch', 'crazygames'].includes(obj.platform)
   )
 }
 
 /**
  * Type guard to check if a value is a VideoRecord
  */
-export function isVideoRecord(value: any): value is VideoRecord {
+export function isVideoRecord(value: unknown): value is VideoRecord {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  const obj = value as Record<string, unknown>
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof value.id === 'number' &&
-    typeof value.game_id === 'number' &&
-    typeof value.video_id === 'string' &&
-    typeof value.video_title === 'string' &&
-    typeof value.channel_name === 'string'
+    typeof obj.id === 'number' &&
+    typeof obj.game_id === 'number' &&
+    typeof obj.video_id === 'string' &&
+    typeof obj.video_title === 'string' &&
+    typeof obj.channel_name === 'string'
   )
 }
 
@@ -190,11 +196,11 @@ export function parseGameRecords(result: QueryExecResult): GameRecord[] {
   }
 
   return result.values.map((row) => {
-    const record: any = {}
+    const record: Record<string, unknown> = {}
     result.columns.forEach((column, index) => {
       record[column] = row[index]
     })
-    return record as GameRecord
+    return record as unknown as GameRecord
   })
 }
 
@@ -207,11 +213,11 @@ export function parseVideoRecords(result: QueryExecResult): VideoRecord[] {
   }
 
   return result.values.map((row) => {
-    const record: any = {}
+    const record: Record<string, unknown> = {}
     result.columns.forEach((column, index) => {
       record[column] = row[index]
     })
-    return record as VideoRecord
+    return record as unknown as VideoRecord
   })
 }
 
