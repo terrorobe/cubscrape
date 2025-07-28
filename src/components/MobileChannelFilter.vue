@@ -1,3 +1,108 @@
+<script setup lang="ts">
+import { ref, computed, watch, type Ref } from 'vue'
+import { UI_LIMITS } from '../config/index'
+import type { ChannelWithCount } from '../types/database'
+
+// Component props interface
+interface Props {
+  channelsWithCounts?: ChannelWithCount[]
+  initialSelectedChannels?: string[]
+}
+
+// Component events interface
+interface Emits {
+  channelsChanged: [data: { selectedChannels: string[] }]
+}
+
+// Define props with defaults
+const props = withDefaults(defineProps<Props>(), {
+  channelsWithCounts: () => [],
+  initialSelectedChannels: () => [],
+})
+
+// Define emits
+const emit = defineEmits<Emits>()
+
+// Reactive state with proper typing
+const selectedChannels: Ref<string[]> = ref([...props.initialSelectedChannels])
+const searchQuery: Ref<string> = ref('')
+
+// Computed properties with proper typing
+const popularChannels = computed((): ChannelWithCount[] =>
+  props.channelsWithCounts
+    .filter((channel) => !selectedChannels.value.includes(channel.name))
+    .slice(0, UI_LIMITS.MOBILE_CHANNELS_COUNT),
+)
+
+const filteredAvailableChannels = computed((): ChannelWithCount[] => {
+  const available = props.channelsWithCounts.filter(
+    (channel) => !selectedChannels.value.includes(channel.name),
+  )
+
+  if (!searchQuery.value) {
+    return available
+  }
+
+  const query = searchQuery.value.toLowerCase()
+  return available.filter((channel) => {
+    const formattedName = formatChannelName(channel.name).toLowerCase()
+    return (
+      formattedName.includes(query) ||
+      channel.name.toLowerCase().includes(query)
+    )
+  })
+})
+
+// Helper functions with proper typing
+const formatChannelName = (channel: string | undefined): string => {
+  if (!channel || typeof channel !== 'string') {
+    return 'Unknown Channel'
+  }
+  return channel
+    .replace(/^videos-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (l) => l.toUpperCase())
+}
+
+const toggleChannel = (channelName: string): void => {
+  const index = selectedChannels.value.indexOf(channelName)
+  if (index > -1) {
+    selectedChannels.value.splice(index, 1)
+  } else {
+    selectedChannels.value.push(channelName)
+  }
+  emitChange()
+}
+
+const selectPopularChannels = (): void => {
+  const channelsToAdd = popularChannels.value
+    .slice(0, UI_LIMITS.MOBILE_CHANNELS_COUNT)
+    .map((c) => c.name)
+  selectedChannels.value = [...selectedChannels.value, ...channelsToAdd]
+  emitChange()
+}
+
+const clearAllChannels = (): void => {
+  selectedChannels.value = []
+  emitChange()
+}
+
+const emitChange = (): void => {
+  emit('channelsChanged', {
+    selectedChannels: [...selectedChannels.value],
+  })
+}
+
+// Watch for prop changes
+watch(
+  () => props.initialSelectedChannels,
+  (newChannels: string[]) => {
+    selectedChannels.value = [...newChannels]
+  },
+  { deep: true },
+)
+</script>
+
 <template>
   <div class="space-y-4">
     <!-- Search -->
@@ -112,111 +217,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed, watch, type Ref } from 'vue'
-import { UI_LIMITS } from '../config/index'
-import type { ChannelWithCount } from '../types/database'
-
-// Component props interface
-interface Props {
-  channelsWithCounts?: ChannelWithCount[]
-  initialSelectedChannels?: string[]
-}
-
-// Component events interface
-interface Emits {
-  'channels-changed': [data: { selectedChannels: string[] }]
-}
-
-// Define props with defaults
-const props = withDefaults(defineProps<Props>(), {
-  channelsWithCounts: () => [],
-  initialSelectedChannels: () => [],
-})
-
-// Define emits
-const emit = defineEmits<Emits>()
-
-// Reactive state with proper typing
-const selectedChannels: Ref<string[]> = ref([...props.initialSelectedChannels])
-const searchQuery: Ref<string> = ref('')
-
-// Computed properties with proper typing
-const popularChannels = computed((): ChannelWithCount[] => {
-  return props.channelsWithCounts
-    .filter((channel) => !selectedChannels.value.includes(channel.name))
-    .slice(0, UI_LIMITS.MOBILE_CHANNELS_COUNT)
-})
-
-const filteredAvailableChannels = computed((): ChannelWithCount[] => {
-  const available = props.channelsWithCounts.filter(
-    (channel) => !selectedChannels.value.includes(channel.name),
-  )
-
-  if (!searchQuery.value) {
-    return available
-  }
-
-  const query = searchQuery.value.toLowerCase()
-  return available.filter((channel) => {
-    const formattedName = formatChannelName(channel.name).toLowerCase()
-    return (
-      formattedName.includes(query) ||
-      channel.name.toLowerCase().includes(query)
-    )
-  })
-})
-
-// Helper functions with proper typing
-const formatChannelName = (channel: string | undefined): string => {
-  if (!channel || typeof channel !== 'string') {
-    return 'Unknown Channel'
-  }
-  return channel
-    .replace(/^videos-/, '')
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (l) => l.toUpperCase())
-}
-
-const toggleChannel = (channelName: string): void => {
-  const index = selectedChannels.value.indexOf(channelName)
-  if (index > -1) {
-    selectedChannels.value.splice(index, 1)
-  } else {
-    selectedChannels.value.push(channelName)
-  }
-  emitChange()
-}
-
-const selectPopularChannels = (): void => {
-  const channelsToAdd = popularChannels.value
-    .slice(0, UI_LIMITS.MOBILE_CHANNELS_COUNT)
-    .map((c) => c.name)
-  selectedChannels.value = [...selectedChannels.value, ...channelsToAdd]
-  emitChange()
-}
-
-const clearAllChannels = (): void => {
-  selectedChannels.value = []
-  emitChange()
-}
-
-const emitChange = (): void => {
-  emit('channels-changed', {
-    selectedChannels: [...selectedChannels.value],
-  })
-}
-
-// Watch for prop changes
-watch(
-  () => props.initialSelectedChannels,
-  (newChannels: string[]) => {
-    selectedChannels.value = [...newChannels]
-  },
-  { deep: true },
-)
-</script>
 
 <style scoped>
 /* Custom scrollbar for channel list */

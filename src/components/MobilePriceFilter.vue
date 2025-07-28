@@ -1,3 +1,120 @@
+<script>
+import { ref, watch } from 'vue'
+
+export default {
+  name: 'MobilePriceFilter',
+  props: {
+    initialPriceFilter: {
+      type: Object,
+      default: () => ({
+        minPrice: 0,
+        maxPrice: 70,
+        includeFree: true,
+      }),
+    },
+    currency: {
+      type: String,
+      default: 'eur',
+    },
+  },
+  emits: ['priceFilterChanged'],
+  setup(props, { emit }) {
+    const localMinPrice = ref(props.initialPriceFilter.minPrice)
+    const localMaxPrice = ref(props.initialPriceFilter.maxPrice)
+    const localIncludeFree = ref(props.initialPriceFilter.includeFree)
+
+    const pricePresets = [
+      { label: 'Free Only', min: 0, max: 0, includeFree: true },
+      { label: 'Under $5', min: 0, max: 5, includeFree: true },
+      { label: 'Under $10', min: 0, max: 10, includeFree: true },
+      { label: 'Under $20', min: 0, max: 20, includeFree: true },
+      { label: '$10-$30', min: 10, max: 30, includeFree: false },
+      { label: '$30+', min: 30, max: 70, includeFree: false },
+    ]
+
+    const formatPrice = (price) => {
+      if (price === 0) {
+        return 'Free'
+      }
+      const symbol = props.currency === 'usd' ? '$' : '€'
+      return `${symbol}${price}`
+    }
+
+    const getCurrentFilterDescription = () => {
+      if (
+        localMinPrice.value === 0 &&
+        localMaxPrice.value === 70 &&
+        localIncludeFree.value
+      ) {
+        return 'All prices (including free)'
+      }
+
+      if (localMinPrice.value === 0 && localMaxPrice.value === 0) {
+        return 'Free games only'
+      }
+
+      const minStr = formatPrice(localMinPrice.value)
+      const maxStr = formatPrice(localMaxPrice.value)
+      const freeNote = localIncludeFree.value
+        ? ' (including free)'
+        : ' (excluding free)'
+
+      return `${minStr} to ${maxStr}${freeNote}`
+    }
+
+    const applyPreset = (preset) => {
+      localMinPrice.value = preset.min
+      localMaxPrice.value = preset.max
+      localIncludeFree.value = preset.includeFree
+      handleChange()
+    }
+
+    const handleChange = () => {
+      // Ensure min <= max
+      if (localMinPrice.value > localMaxPrice.value) {
+        localMaxPrice.value = localMinPrice.value
+      }
+
+      const priceFilter = {
+        minPrice: localMinPrice.value,
+        maxPrice: localMaxPrice.value,
+        includeFree: localIncludeFree.value,
+      }
+
+      emit('priceFilterChanged', priceFilter)
+    }
+
+    // Watch for prop changes
+    watch(
+      () => props.initialPriceFilter,
+      (newFilter) => {
+        if (newFilter.minPrice !== localMinPrice.value) {
+          localMinPrice.value = newFilter.minPrice
+        }
+        if (newFilter.maxPrice !== localMaxPrice.value) {
+          localMaxPrice.value = newFilter.maxPrice
+        }
+        if (newFilter.includeFree !== localIncludeFree.value) {
+          localIncludeFree.value = newFilter.includeFree
+        }
+      },
+      { deep: true },
+    )
+
+    return {
+      localMinPrice,
+      localMaxPrice,
+      localIncludeFree,
+      pricePresets,
+      formatPrice,
+      getCurrentFilterDescription,
+      applyPreset,
+      handleChange,
+    }
+  },
+}
+</script>
+
 <template>
   <div class="space-y-4">
     <div class="mb-2 text-sm font-medium text-text-secondary">Price Filter</div>
@@ -115,120 +232,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import { ref, watch } from 'vue'
-
-export default {
-  name: 'MobilePriceFilter',
-  props: {
-    initialPriceFilter: {
-      type: Object,
-      default: () => ({
-        minPrice: 0,
-        maxPrice: 70,
-        includeFree: true,
-      }),
-    },
-    currency: {
-      type: String,
-      default: 'eur',
-    },
-  },
-  emits: ['price-filter-changed'],
-  setup(props, { emit }) {
-    const localMinPrice = ref(props.initialPriceFilter.minPrice)
-    const localMaxPrice = ref(props.initialPriceFilter.maxPrice)
-    const localIncludeFree = ref(props.initialPriceFilter.includeFree)
-
-    const pricePresets = [
-      { label: 'Free Only', min: 0, max: 0, includeFree: true },
-      { label: 'Under $5', min: 0, max: 5, includeFree: true },
-      { label: 'Under $10', min: 0, max: 10, includeFree: true },
-      { label: 'Under $20', min: 0, max: 20, includeFree: true },
-      { label: '$10-$30', min: 10, max: 30, includeFree: false },
-      { label: '$30+', min: 30, max: 70, includeFree: false },
-    ]
-
-    const formatPrice = (price) => {
-      if (price === 0) {
-        return 'Free'
-      }
-      const symbol = props.currency === 'usd' ? '$' : '€'
-      return `${symbol}${price}`
-    }
-
-    const getCurrentFilterDescription = () => {
-      if (
-        localMinPrice.value === 0 &&
-        localMaxPrice.value === 70 &&
-        localIncludeFree.value
-      ) {
-        return 'All prices (including free)'
-      }
-
-      if (localMinPrice.value === 0 && localMaxPrice.value === 0) {
-        return 'Free games only'
-      }
-
-      const minStr = formatPrice(localMinPrice.value)
-      const maxStr = formatPrice(localMaxPrice.value)
-      const freeNote = localIncludeFree.value
-        ? ' (including free)'
-        : ' (excluding free)'
-
-      return `${minStr} to ${maxStr}${freeNote}`
-    }
-
-    const applyPreset = (preset) => {
-      localMinPrice.value = preset.min
-      localMaxPrice.value = preset.max
-      localIncludeFree.value = preset.includeFree
-      handleChange()
-    }
-
-    const handleChange = () => {
-      // Ensure min <= max
-      if (localMinPrice.value > localMaxPrice.value) {
-        localMaxPrice.value = localMinPrice.value
-      }
-
-      const priceFilter = {
-        minPrice: localMinPrice.value,
-        maxPrice: localMaxPrice.value,
-        includeFree: localIncludeFree.value,
-      }
-
-      emit('price-filter-changed', priceFilter)
-    }
-
-    // Watch for prop changes
-    watch(
-      () => props.initialPriceFilter,
-      (newFilter) => {
-        if (newFilter.minPrice !== localMinPrice.value) {
-          localMinPrice.value = newFilter.minPrice
-        }
-        if (newFilter.maxPrice !== localMaxPrice.value) {
-          localMaxPrice.value = newFilter.maxPrice
-        }
-        if (newFilter.includeFree !== localIncludeFree.value) {
-          localIncludeFree.value = newFilter.includeFree
-        }
-      },
-      { deep: true },
-    )
-
-    return {
-      localMinPrice,
-      localMaxPrice,
-      localIncludeFree,
-      pricePresets,
-      formatPrice,
-      getCurrentFilterDescription,
-      applyPreset,
-      handleChange,
-    }
-  },
-}
-</script>

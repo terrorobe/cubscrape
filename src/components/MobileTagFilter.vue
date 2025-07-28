@@ -1,3 +1,98 @@
+<script>
+import { ref, computed, watch } from 'vue'
+
+export default {
+  name: 'MobileTagFilter',
+  props: {
+    tagsWithCounts: {
+      type: Array,
+      default: () => [],
+    },
+    initialSelectedTags: {
+      type: Array,
+      default: () => [],
+    },
+    initialTagLogic: {
+      type: String,
+      default: 'and',
+    },
+  },
+  emits: ['tagsChanged'],
+  setup(props, { emit }) {
+    const selectedTags = ref([...props.initialSelectedTags])
+    const tagLogic = ref(props.initialTagLogic)
+    const searchQuery = ref('')
+
+    const filteredAvailableTags = computed(() => {
+      const available = props.tagsWithCounts.filter(
+        (tag) => !selectedTags.value.includes(tag.name),
+      )
+
+      if (!searchQuery.value) {
+        return available
+      }
+
+      const query = searchQuery.value.toLowerCase()
+      return available.filter((tag) => tag.name.toLowerCase().includes(query))
+    })
+
+    const toggleTag = (tagName) => {
+      const index = selectedTags.value.indexOf(tagName)
+      if (index > -1) {
+        selectedTags.value.splice(index, 1)
+      } else {
+        selectedTags.value.push(tagName)
+      }
+      emitChange()
+    }
+
+    const clearAllTags = () => {
+      selectedTags.value = []
+      emitChange()
+    }
+
+    const emitChange = () => {
+      emit('tagsChanged', {
+        selectedTags: [...selectedTags.value],
+        tagLogic: tagLogic.value,
+      })
+    }
+
+    // Watch for logic changes
+    watch(tagLogic, () => {
+      if (selectedTags.value.length > 1) {
+        emitChange()
+      }
+    })
+
+    // Watch for prop changes
+    watch(
+      () => props.initialSelectedTags,
+      (newTags) => {
+        selectedTags.value = [...newTags]
+      },
+      { deep: true },
+    )
+
+    watch(
+      () => props.initialTagLogic,
+      (newLogic) => {
+        tagLogic.value = newLogic
+      },
+    )
+
+    return {
+      selectedTags,
+      tagLogic,
+      searchQuery,
+      filteredAvailableTags,
+      toggleTag,
+      clearAllTags,
+    }
+  },
+}
+</script>
+
 <template>
   <div class="space-y-4">
     <!-- Logic Toggle -->
@@ -126,101 +221,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import { ref, computed, watch } from 'vue'
-
-export default {
-  name: 'MobileTagFilter',
-  props: {
-    tagsWithCounts: {
-      type: Array,
-      default: () => [],
-    },
-    initialSelectedTags: {
-      type: Array,
-      default: () => [],
-    },
-    initialTagLogic: {
-      type: String,
-      default: 'and',
-    },
-  },
-  emits: ['tags-changed'],
-  setup(props, { emit }) {
-    const selectedTags = ref([...props.initialSelectedTags])
-    const tagLogic = ref(props.initialTagLogic)
-    const searchQuery = ref('')
-
-    const filteredAvailableTags = computed(() => {
-      const available = props.tagsWithCounts.filter(
-        (tag) => !selectedTags.value.includes(tag.name),
-      )
-
-      if (!searchQuery.value) {
-        return available
-      }
-
-      const query = searchQuery.value.toLowerCase()
-      return available.filter((tag) => tag.name.toLowerCase().includes(query))
-    })
-
-    const toggleTag = (tagName) => {
-      const index = selectedTags.value.indexOf(tagName)
-      if (index > -1) {
-        selectedTags.value.splice(index, 1)
-      } else {
-        selectedTags.value.push(tagName)
-      }
-      emitChange()
-    }
-
-    const clearAllTags = () => {
-      selectedTags.value = []
-      emitChange()
-    }
-
-    const emitChange = () => {
-      emit('tags-changed', {
-        selectedTags: [...selectedTags.value],
-        tagLogic: tagLogic.value,
-      })
-    }
-
-    // Watch for logic changes
-    watch(tagLogic, () => {
-      if (selectedTags.value.length > 1) {
-        emitChange()
-      }
-    })
-
-    // Watch for prop changes
-    watch(
-      () => props.initialSelectedTags,
-      (newTags) => {
-        selectedTags.value = [...newTags]
-      },
-      { deep: true },
-    )
-
-    watch(
-      () => props.initialTagLogic,
-      (newLogic) => {
-        tagLogic.value = newLogic
-      },
-    )
-
-    return {
-      selectedTags,
-      tagLogic,
-      searchQuery,
-      filteredAvailableTags,
-      toggleTag,
-      clearAllTags,
-    }
-  },
-}
-</script>
 
 <style scoped>
 /* Custom scrollbar for tag list */

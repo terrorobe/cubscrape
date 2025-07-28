@@ -1,208 +1,3 @@
-<template>
-  <div class="min-h-screen bg-bg-primary text-text-primary">
-    <div
-      class="container mx-auto p-5"
-      :style="{ 'max-width': LAYOUT.CONTAINER_MAX_WIDTH }"
-    >
-      <header class="mb-10 text-center">
-        <h1 class="mb-2 text-4xl font-bold text-accent">Curated Steam Games</h1>
-        <p class="text-lg text-text-secondary">
-          Discovered from YouTube Gaming Channels
-        </p>
-      </header>
-
-      <!-- Desktop Layout: Sidebar + Main Content -->
-      <div class="flex gap-6">
-        <!-- Desktop Sidebar (hidden on mobile) -->
-        <div
-          class="hidden shrink-0 transition-all duration-300 ease-in-out md:block"
-          :class="sidebarCollapsed ? 'w-12' : 'w-72'"
-        >
-          <!-- Sidebar Toggle Button -->
-          <div class="sticky top-6 mb-4">
-            <button
-              @click="sidebarCollapsed = !sidebarCollapsed"
-              class="flex size-10 items-center justify-center rounded-lg bg-accent text-white transition-colors hover:bg-accent-hover active:bg-accent-active"
-              :title="sidebarCollapsed ? 'Expand filters' : 'Collapse filters'"
-            >
-              <svg
-                class="size-5 transition-transform duration-300"
-                :class="sidebarCollapsed ? 'rotate-180' : ''"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7"
-                ></path>
-              </svg>
-            </button>
-          </div>
-
-          <!-- Sidebar Content -->
-          <div
-            v-show="!sidebarCollapsed"
-            class="sidebar-scroll sticky top-20 max-h-[calc(100vh-6rem)] space-y-6 overflow-y-auto pr-2 transition-opacity duration-300"
-            ref="sidebarScroll"
-          >
-            <GameFilters
-              :channels="channels"
-              :channels-with-counts="channelsWithCounts"
-              :tags="allTags"
-              :initial-filters="filters"
-              :game-count="filteredGames.length"
-              :game-stats="gameStats"
-              @filters-changed="updateFilters"
-            />
-          </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="flex-1">
-          <!-- Mobile Filters (shown only on mobile) -->
-          <div class="mb-6 md:hidden">
-            <GameFilters
-              :channels="channels"
-              :channels-with-counts="channelsWithCounts"
-              :tags="allTags"
-              :initial-filters="filters"
-              :game-count="filteredGames.length"
-              :game-stats="gameStats"
-              @filters-changed="updateFilters"
-            />
-          </div>
-
-          <!-- Sort & Status Info -->
-          <div class="relative mb-5 text-text-secondary">
-            <!-- Centered content - Sort indicator and game count -->
-            <div class="flex flex-col items-center gap-2 md:items-start">
-              <!-- Sort Indicator -->
-              <SortIndicator
-                :sort-by="filters.sortBy"
-                :sort-spec="filters.sortSpec"
-                :game-count="filteredGames.length"
-                @sort-changed="handleSortChange"
-              />
-
-              <!-- Game count -->
-              <div class="hidden text-center md:block md:text-left">
-                <span>{{ filteredGames.length }} games found</span>
-              </div>
-            </div>
-
-            <!-- Database Status - Absolute positioned to right -->
-            <div class="absolute top-0 right-0 flex items-center gap-4 text-sm">
-              <div class="flex items-center gap-2">
-                <span
-                  class="size-2 rounded-full"
-                  :class="
-                    databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
-                  "
-                ></span>
-                <span>{{ databaseStatus.games }} total</span>
-              </div>
-              <div class="text-xs text-text-secondary/70">
-                <span
-                  v-if="databaseStatus.lastGenerated"
-                  :title="
-                    isDevelopment
-                      ? 'Click to test version mismatch'
-                      : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
-                  "
-                  :class="
-                    isDevelopment
-                      ? 'cursor-pointer hover:text-text-primary'
-                      : ''
-                  "
-                  @click="isDevelopment ? testVersionMismatch() : null"
-                >
-                  Database:
-                  {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
-                </span>
-                <span
-                  v-if="databaseStatus.lastChecked && !isDevelopment"
-                  :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
-                >
-                  • Last check:
-                  {{ formatTimestamp(databaseStatus.lastChecked) }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Version Mismatch Notification -->
-          <div
-            v-if="showVersionMismatch"
-            class="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-900/20"
-          >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">🔄</span>
-                <div>
-                  <h3 class="font-semibold text-amber-800 dark:text-amber-200">
-                    New Version Available
-                  </h3>
-                  <p class="text-sm text-amber-700 dark:text-amber-300">
-                    The app has been updated. Please reload to get the latest
-                    features and fixes.
-                  </p>
-                </div>
-              </div>
-              <div class="flex gap-2">
-                <button
-                  @click="dismissVersionMismatch"
-                  class="rounded-sm px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-800/50"
-                >
-                  Dismiss
-                </button>
-                <button
-                  @click="reloadApp"
-                  class="rounded-sm bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
-                >
-                  Reload Now
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Game Grid -->
-          <div class="game-grid grid w-full gap-5" ref="gameGrid">
-            <GameCard
-              v-for="game in filteredGames"
-              :key="game.id"
-              :game="game"
-              :currency="filters.currency"
-              :is-highlighted="highlightedGameId === game.id"
-              @click="clearHighlight"
-              @tag-click="handleTagClick"
-            />
-          </div>
-
-          <!-- Loading/Error States -->
-          <div v-if="loading" class="py-10 text-center text-text-secondary">
-            Loading games...
-          </div>
-
-          <div v-if="error" class="py-10 text-center text-red-500">
-            Error loading games: {{ error }}
-          </div>
-
-          <!-- No Results State -->
-          <div
-            v-if="!loading && !error && filteredGames.length === 0"
-            class="py-10 text-center text-text-secondary"
-          >
-            No games found matching your criteria.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick, type Ref } from 'vue'
 import GameCard from './components/GameCard.vue'
@@ -569,7 +364,7 @@ const buildSQLQuery = (
 
   // Price-based filtering
   if (filterValues.priceFilter) {
-    const priceFilter = filterValues.priceFilter
+    const { priceFilter } = filterValues
     const currencyField =
       filterValues.currency === 'usd' ? 'price_usd' : 'price_eur'
 
@@ -607,7 +402,7 @@ const buildSQLQuery = (
 
   // Time-based filtering
   if (filterValues.timeFilter && filterValues.timeFilter.type) {
-    const timeFilter = filterValues.timeFilter
+    const { timeFilter } = filterValues
 
     if (
       timeFilter.type === 'video' &&
@@ -616,14 +411,14 @@ const buildSQLQuery = (
       // Filter by video publication date
       if (timeFilter.startDate && timeFilter.endDate) {
         query += ' AND g.latest_video_date >= ? AND g.latest_video_date <= ?'
-        params.push(timeFilter.startDate + 'T00:00:00')
-        params.push(timeFilter.endDate + 'T23:59:59')
+        params.push(`${timeFilter.startDate}T00:00:00`)
+        params.push(`${timeFilter.endDate}T23:59:59`)
       } else if (timeFilter.startDate) {
         query += ' AND g.latest_video_date >= ?'
-        params.push(timeFilter.startDate + 'T00:00:00')
+        params.push(`${timeFilter.startDate}T00:00:00`)
       } else if (timeFilter.endDate) {
         query += ' AND g.latest_video_date <= ?'
-        params.push(timeFilter.endDate + 'T23:59:59')
+        params.push(`${timeFilter.endDate}T23:59:59`)
       }
     } else if (
       timeFilter.type === 'release' &&
@@ -842,8 +637,8 @@ const getSortFieldClause = (
   }
 }
 
-const isSmartSortPreset = (sortBy: string): boolean => {
-  return [
+const isSmartSortPreset = (sortBy: string): boolean =>
+  [
     'best-value',
     'hidden-gems',
     'most-covered',
@@ -859,7 +654,6 @@ const isSmartSortPreset = (sortBy: string): boolean => {
     'tag-match',
     'channel-picks',
   ].includes(sortBy)
-}
 
 const buildSmartSortClause = (sortBy: string): string => {
   switch (sortBy) {
@@ -1026,7 +820,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
     >()
 
     results[0].values.forEach((row: (string | number | null)[]) => {
-      const columns = results[0].columns
+      const { columns } = results[0]
       const gameData: Record<string, string | number | null> = {}
 
       columns.forEach((col, index) => {
@@ -1334,7 +1128,7 @@ const loadGames = async (): Promise<void> => {
 }
 
 const processDeeplink = async (): Promise<void> => {
-  const hash = window.location.hash
+  const { hash } = window.location
   if (!hash || hash.length <= 1) {
     return
   }
@@ -1446,7 +1240,7 @@ const tryToShowGame = async (
     platform === 'crazygames'
   ) {
     const newFilters: AppFilters = {
-      platform: platform,
+      platform,
       releaseStatus: 'all',
       rating: '0',
       tag: '',
@@ -1818,6 +1612,211 @@ if (import.meta.hot) {
 }
 </script>
 
+<template>
+  <div class="min-h-screen bg-bg-primary text-text-primary">
+    <div
+      class="container mx-auto p-5"
+      :style="{ 'max-width': LAYOUT.CONTAINER_MAX_WIDTH }"
+    >
+      <header class="mb-10 text-center">
+        <h1 class="mb-2 text-4xl font-bold text-accent">Curated Steam Games</h1>
+        <p class="text-lg text-text-secondary">
+          Discovered from YouTube Gaming Channels
+        </p>
+      </header>
+
+      <!-- Desktop Layout: Sidebar + Main Content -->
+      <div class="flex gap-6">
+        <!-- Desktop Sidebar (hidden on mobile) -->
+        <div
+          class="hidden shrink-0 transition-all duration-300 ease-in-out md:block"
+          :class="sidebarCollapsed ? 'w-12' : 'w-72'"
+        >
+          <!-- Sidebar Toggle Button -->
+          <div class="sticky top-6 mb-4">
+            <button
+              @click="sidebarCollapsed = !sidebarCollapsed"
+              class="flex size-10 items-center justify-center rounded-lg bg-accent text-white transition-colors hover:bg-accent-hover active:bg-accent-active"
+              :title="sidebarCollapsed ? 'Expand filters' : 'Collapse filters'"
+            >
+              <svg
+                class="size-5 transition-transform duration-300"
+                :class="sidebarCollapsed ? 'rotate-180' : ''"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Sidebar Content -->
+          <div
+            v-show="!sidebarCollapsed"
+            class="sidebar-scroll sticky top-20 max-h-[calc(100vh-6rem)] space-y-6 overflow-y-auto pr-2 transition-opacity duration-300"
+            ref="sidebarScroll"
+          >
+            <GameFilters
+              :channels="channels"
+              :channels-with-counts="channelsWithCounts"
+              :tags="allTags"
+              :initial-filters="filters"
+              :game-count="filteredGames.length"
+              :game-stats="gameStats"
+              @filters-changed="updateFilters"
+            />
+          </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1">
+          <!-- Mobile Filters (shown only on mobile) -->
+          <div class="mb-6 md:hidden">
+            <GameFilters
+              :channels="channels"
+              :channels-with-counts="channelsWithCounts"
+              :tags="allTags"
+              :initial-filters="filters"
+              :game-count="filteredGames.length"
+              :game-stats="gameStats"
+              @filters-changed="updateFilters"
+            />
+          </div>
+
+          <!-- Sort & Status Info -->
+          <div class="relative mb-5 text-text-secondary">
+            <!-- Centered content - Sort indicator and game count -->
+            <div class="flex flex-col items-center gap-2 md:items-start">
+              <!-- Sort Indicator -->
+              <SortIndicator
+                :sort-by="filters.sortBy"
+                :sort-spec="filters.sortSpec"
+                :game-count="filteredGames.length"
+                @sort-changed="handleSortChange"
+              />
+
+              <!-- Game count -->
+              <div class="hidden text-center md:block md:text-left">
+                <span>{{ filteredGames.length }} games found</span>
+              </div>
+            </div>
+
+            <!-- Database Status - Absolute positioned to right -->
+            <div class="absolute top-0 right-0 flex items-center gap-4 text-sm">
+              <div class="flex items-center gap-2">
+                <span
+                  class="size-2 rounded-full"
+                  :class="
+                    databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
+                  "
+                ></span>
+                <span>{{ databaseStatus.games }} total</span>
+              </div>
+              <div class="text-xs text-text-secondary/70">
+                <span
+                  v-if="databaseStatus.lastGenerated"
+                  :title="
+                    isDevelopment
+                      ? 'Click to test version mismatch'
+                      : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
+                  "
+                  :class="
+                    isDevelopment
+                      ? 'cursor-pointer hover:text-text-primary'
+                      : ''
+                  "
+                  @click="isDevelopment ? testVersionMismatch() : null"
+                >
+                  Database:
+                  {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
+                </span>
+                <span
+                  v-if="databaseStatus.lastChecked && !isDevelopment"
+                  :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
+                >
+                  • Last check:
+                  {{ formatTimestamp(databaseStatus.lastChecked) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Version Mismatch Notification -->
+          <div
+            v-if="showVersionMismatch"
+            class="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-900/20"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">🔄</span>
+                <div>
+                  <h3 class="font-semibold text-amber-800 dark:text-amber-200">
+                    New Version Available
+                  </h3>
+                  <p class="text-sm text-amber-700 dark:text-amber-300">
+                    The app has been updated. Please reload to get the latest
+                    features and fixes.
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button
+                  @click="dismissVersionMismatch"
+                  class="rounded-sm px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-800/50"
+                >
+                  Dismiss
+                </button>
+                <button
+                  @click="reloadApp"
+                  class="rounded-sm bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
+                >
+                  Reload Now
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Game Grid -->
+          <div class="game-grid grid w-full gap-5" ref="gameGrid">
+            <GameCard
+              v-for="game in filteredGames"
+              :key="game.id"
+              :game="game"
+              :currency="filters.currency"
+              :is-highlighted="highlightedGameId === game.id"
+              @click="clearHighlight"
+              @tag-click="handleTagClick"
+            />
+          </div>
+
+          <!-- Loading/Error States -->
+          <div v-if="loading" class="py-10 text-center text-text-secondary">
+            Loading games...
+          </div>
+
+          <div v-if="error" class="py-10 text-center text-red-500">
+            Error loading games: {{ error }}
+          </div>
+
+          <!-- No Results State -->
+          <div
+            v-if="!loading && !error && filteredGames.length === 0"
+            class="py-10 text-center text-text-secondary"
+          >
+            No games found matching your criteria.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped>
 .game-grid {
   /* Ensure proper grid container behavior */
@@ -1847,7 +1846,7 @@ if (import.meta.hot) {
 /* Debug: Console-only debugging in development */
 
 /* Responsive grid adjustments for optimal card expansion */
-@media (min-width: 1280px) and (max-width: v-bind('LAYOUT.CONTAINER_MAX_WIDTH_PX - 1 + "px"')) {
+@media (min-width: 1280px) and (max-width: v-bind('`${LAYOUT.CONTAINER_MAX_WIDTH_PX - 1  }px`')) {
   .game-grid {
     /* Force equal columns where auto-fit struggles to expand cards properly */
     grid-template-columns: repeat(3, 1fr);

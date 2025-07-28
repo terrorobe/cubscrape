@@ -1,3 +1,439 @@
+<script setup lang="ts">
+import {
+  reactive,
+  computed,
+  ref,
+  onUnmounted,
+  nextTick,
+  watch,
+  type Ref,
+} from 'vue'
+import { useDebouncedFilters } from '../composables/useDebouncedFilters'
+import { TIMING } from '../config/index'
+import type { FilterConfig } from '../utils/presetManager'
+import type {
+  ChannelWithCount,
+  TagWithCount,
+  DatabaseStats,
+} from '../types/database'
+import type { FilterRemoveEvent } from '../types/filters'
+import type { SortChangeEvent } from '../types/sorting'
+import CollapsibleSection from './CollapsibleSection.vue'
+import TagFilterMulti from './TagFilterMulti.vue'
+import ChannelFilterMulti from './ChannelFilterMulti.vue'
+import TimeFilterSimple from './TimeFilterSimple.vue'
+import PriceFilter from './PriceFilter.vue'
+import SortingOptions from './SortingOptions.vue'
+import MobileFilterModal from './MobileFilterModal.vue'
+import AppliedFiltersBar from './AppliedFiltersBar.vue'
+import FilterPresets from './FilterPresets.vue'
+
+// Component props interface
+interface Props {
+  channels?: string[]
+  channelsWithCounts?: ChannelWithCount[]
+  tags?: TagWithCount[]
+  initialFilters?: Partial<FilterConfig>
+  gameCount?: number
+  gameStats?: DatabaseStats
+}
+
+// Component events interface
+interface Emits {
+  filtersChanged: [filters: FilterConfig]
+}
+
+// Define props with defaults
+const props = withDefaults(defineProps<Props>(), {
+  channels: () => [],
+  channelsWithCounts: () => [],
+  tags: () => [],
+  initialFilters: () => ({}),
+  gameCount: 0,
+  gameStats: () => ({
+    totalGames: 0,
+    freeGames: 0,
+    maxPrice: 70,
+  }),
+})
+
+// Define emits
+const emit = defineEmits<Emits>()
+
+// Interfaces for filter data
+interface TagChangedData {
+  selectedTags: string[]
+  tagLogic: 'and' | 'or'
+}
+
+interface ChannelChangedData {
+  selectedChannels: string[]
+}
+
+interface TimeFilterData {
+  type: string | null
+  preset: string | null
+  startDate: string | null
+  endDate: string | null
+  smartLogic: string | null
+}
+
+interface PriceFilterData {
+  minPrice: number
+  maxPrice: number
+  includeFree: boolean
+}
+
+// Using shared types from ../types/sorting and ../types/filters
+// SortChangeEvent and FilterRemoveEvent are imported above
+
+// Reactive state
+const showMobileModal: Ref<boolean> = ref(false)
+
+// Initialize local filters with proper defaults
+const initialLocalFilters: FilterConfig = {
+  releaseStatus: props.initialFilters.releaseStatus || 'all',
+  platform: props.initialFilters.platform || 'all',
+  rating: props.initialFilters.rating || '0',
+  crossPlatform: props.initialFilters.crossPlatform || false,
+  hiddenGems: props.initialFilters.hiddenGems || false,
+  // Legacy single tag support for backward compatibility
+  tag: props.initialFilters.tag || '',
+  // New multi-tag support
+  selectedTags:
+    props.initialFilters.selectedTags ||
+    (props.initialFilters.tag ? [props.initialFilters.tag] : []),
+  tagLogic: (props.initialFilters.tagLogic as 'and' | 'or') || 'and',
+  // Legacy single channel support for backward compatibility
+  channel: props.initialFilters.channel || '',
+  // New multi-channel support
+  selectedChannels:
+    props.initialFilters.selectedChannels ||
+    (props.initialFilters.channel ? [props.initialFilters.channel] : []),
+  sortBy: props.initialFilters.sortBy || 'date',
+  sortSpec: props.initialFilters.sortSpec || null,
+  currency: (props.initialFilters.currency as 'eur' | 'usd') || 'eur',
+  // Time-based filtering
+  timeFilter: props.initialFilters.timeFilter || {
+    type: null,
+    preset: null,
+    startDate: null,
+    endDate: null,
+    smartLogic: null,
+  },
+  priceFilter: props.initialFilters.priceFilter || {
+    minPrice: 0,
+    maxPrice: 70,
+    includeFree: true,
+  },
+}
+
+const localFilters = reactive<FilterConfig>({ ...initialLocalFilters })
+
+// Watch for changes in initial filters (e.g., from URL loading)
+watch(
+  () => props.initialFilters,
+  (newInitialFilters: Partial<FilterConfig> | undefined) => {
+    if (newInitialFilters && Object.keys(newInitialFilters).length > 0) {
+      Object.assign(localFilters, {
+        releaseStatus: newInitialFilters.releaseStatus || 'all',
+        platform: newInitialFilters.platform || 'all',
+        rating: newInitialFilters.rating || '0',
+        crossPlatform: newInitialFilters.crossPlatform || false,
+        hiddenGems: newInitialFilters.hiddenGems || false,
+        tag: newInitialFilters.tag || '',
+        selectedTags:
+          newInitialFilters.selectedTags ||
+          (newInitialFilters.tag ? [newInitialFilters.tag] : []),
+        tagLogic: (newInitialFilters.tagLogic as 'and' | 'or') || 'and',
+        channel: newInitialFilters.channel || '',
+        selectedChannels:
+          newInitialFilters.selectedChannels ||
+          (newInitialFilters.channel ? [newInitialFilters.channel] : []),
+        sortBy: newInitialFilters.sortBy || 'date',
+        sortSpec: newInitialFilters.sortSpec || null,
+        currency: (newInitialFilters.currency as 'eur' | 'usd') || 'eur',
+        timeFilter: newInitialFilters.timeFilter || {
+          type: null,
+          preset: null,
+          startDate: null,
+          endDate: null,
+          smartLogic: null,
+        },
+        priceFilter: newInitialFilters.priceFilter || {
+          minPrice: 0,
+          maxPrice: 70,
+          includeFree: true,
+        },
+      })
+    }
+  },
+  { deep: true, immediate: false },
+)
+
+// Set up debounced filter updates
+const { debouncedEmit, immediateEmit, cleanup } =
+  useDebouncedFilters<FilterConfig>(
+    initialLocalFilters,
+    (newFilters: FilterConfig) => emit('filtersChanged', newFilters),
+    TIMING.FILTER_DEBOUNCE_DELAY, // Configurable debounce delay
+  )
+
+const activeFilterCount = computed((): number => {
+  let count = 0
+  if (localFilters.releaseStatus !== 'all') {
+    count++
+  }
+  if (localFilters.platform !== 'all') {
+    count++
+  }
+  if (localFilters.rating !== '0') {
+    count++
+  }
+  if (localFilters.crossPlatform) {
+    count++
+  }
+  if (localFilters.hiddenGems) {
+    count++
+  }
+  if (localFilters.selectedTags.length > 0) {
+    count++
+  }
+  if (localFilters.selectedChannels.length > 0) {
+    count++
+  }
+  if (localFilters.sortBy !== 'date' || localFilters.sortSpec) {
+    count++
+  }
+  if (localFilters.currency !== 'eur') {
+    count++
+  }
+  if (localFilters.timeFilter.type) {
+    count++
+  }
+  if (
+    localFilters.priceFilter &&
+    (localFilters.priceFilter.minPrice > 0 ||
+      localFilters.priceFilter.maxPrice < 70 ||
+      !localFilters.priceFilter.includeFree)
+  ) {
+    count++
+  }
+  return count
+})
+
+// Section-specific active filter counts for badges
+const basicFiltersCount = computed((): number => {
+  let count = 0
+  if (localFilters.releaseStatus !== 'all') {
+    count++
+  }
+  if (localFilters.platform !== 'all') {
+    count++
+  }
+  if (localFilters.crossPlatform) {
+    count++
+  }
+  if (localFilters.hiddenGems) {
+    count++
+  }
+  return count
+})
+
+const ratingFiltersCount = computed((): number =>
+  localFilters.rating !== '0' ? 1 : 0,
+)
+
+const tagsCount = computed((): number =>
+  localFilters.selectedTags.length > 0 ? localFilters.selectedTags.length : 0,
+)
+
+const channelsCount = computed((): number =>
+  localFilters.selectedChannels.length > 0
+    ? localFilters.selectedChannels.length
+    : 0,
+)
+
+const sortingCount = computed((): number =>
+  localFilters.sortBy !== 'date' || localFilters.sortSpec ? 1 : 0,
+)
+
+const timeFilterCount = computed((): number =>
+  localFilters.timeFilter && localFilters.timeFilter.type ? 1 : 0,
+)
+
+const priceFilterCount = computed((): number =>
+  localFilters.priceFilter &&
+  (localFilters.priceFilter.minPrice > 0 ||
+    localFilters.priceFilter.maxPrice < 70 ||
+    !localFilters.priceFilter.includeFree)
+    ? 1
+    : 0,
+)
+
+const currencyCount = computed((): number =>
+  localFilters.currency !== 'eur' ? 1 : 0,
+)
+
+const handleTagsChanged = (tagData: TagChangedData): void => {
+  localFilters.selectedTags = tagData.selectedTags
+  localFilters.tagLogic = tagData.tagLogic
+  debouncedEmitFiltersChanged()
+}
+
+const handleChannelsChanged = (channelData: ChannelChangedData): void => {
+  localFilters.selectedChannels = channelData.selectedChannels
+  debouncedEmitFiltersChanged()
+}
+
+const handleTimeFilterChanged = (timeFilterData: TimeFilterData): void => {
+  localFilters.timeFilter = { ...timeFilterData }
+  debouncedEmitFiltersChanged()
+}
+
+const handlePriceFilterChanged = (priceFilterData: PriceFilterData): void => {
+  localFilters.priceFilter = { ...priceFilterData }
+  debouncedEmitFiltersChanged()
+}
+
+const handleSortChanged = (event: SortChangeEvent): void => {
+  localFilters.sortBy = event.sortBy
+  localFilters.sortSpec = event.sortSpec
+  // Sort changes should be immediate for better UX
+  immediateEmitFiltersChanged()
+}
+
+const handleFiltersChanged = (newFilters: Partial<FilterConfig>): void => {
+  Object.assign(localFilters, newFilters)
+  debouncedEmitFiltersChanged()
+}
+
+// Helper to preserve scroll position when filters change
+const preserveScrollPosition = (callback: () => void): void => {
+  // Find the sidebar scroll container
+  const scrollContainer = document.querySelector('.sidebar-scroll')
+  if (!scrollContainer) {
+    callback()
+    return
+  }
+
+  // Save current scroll position
+  const { scrollTop } = scrollContainer
+
+  // Execute the callback
+  callback()
+
+  // Restore scroll position after DOM update
+  nextTick(() => {
+    scrollContainer.scrollTop = scrollTop
+  })
+}
+
+const handleRemoveFilter = (event: FilterRemoveEvent): void => {
+  preserveScrollPosition(() => {
+    switch (event.type) {
+      case 'releaseStatus':
+        localFilters.releaseStatus = event.value as string
+        break
+      case 'platform':
+        localFilters.platform = event.value as string
+        break
+      case 'rating':
+        localFilters.rating = event.value as string
+        break
+      case 'crossPlatform':
+        localFilters.crossPlatform = event.value as boolean
+        break
+      case 'hiddenGems':
+        localFilters.hiddenGems = event.value as boolean
+        break
+      case 'tags':
+        localFilters.selectedTags = event.value as string[]
+        break
+      case 'channels':
+        localFilters.selectedChannels = event.value as string[]
+        break
+      case 'sortBy':
+        localFilters.sortBy = event.value as string
+        localFilters.sortSpec = null
+        break
+      case 'currency':
+        localFilters.currency = event.value as 'eur' | 'usd'
+        break
+      case 'timeFilter':
+        localFilters.timeFilter = event.value as unknown as {
+          type: string
+          preset: string
+          startDate: string
+          endDate: string
+          smartLogic: string
+        }
+        break
+      case 'priceFilter':
+        localFilters.priceFilter = event.value as unknown as {
+          minPrice: number
+          maxPrice: number
+          includeFree: boolean
+        }
+        break
+    }
+    // Remove operations should be immediate
+    immediateEmitFiltersChanged()
+  })
+}
+
+const handleClearAllFilters = (): void => {
+  preserveScrollPosition(() => {
+    localFilters.releaseStatus = 'all'
+    localFilters.platform = 'all'
+    localFilters.rating = '0'
+    localFilters.crossPlatform = false
+    localFilters.hiddenGems = false
+    localFilters.selectedTags = []
+    localFilters.tagLogic = 'and'
+    localFilters.selectedChannels = []
+    localFilters.sortBy = 'date'
+    localFilters.sortSpec = null
+    localFilters.currency = 'eur'
+    localFilters.timeFilter = {
+      type: null,
+      preset: null,
+      startDate: null,
+      endDate: null,
+      smartLogic: null,
+    }
+    localFilters.priceFilter = {
+      minPrice: 0,
+      maxPrice: 70,
+      includeFree: true,
+    }
+    // Clear all should be immediate
+    immediateEmitFiltersChanged()
+  })
+}
+
+const handleApplyPreset = (presetFilters: FilterConfig): void => {
+  Object.assign(localFilters, presetFilters)
+  // Preset changes should be immediate
+  immediateEmitFiltersChanged()
+}
+
+// Debounced emit for gradual filter changes
+const debouncedEmitFiltersChanged = (): void => {
+  debouncedEmit({ ...localFilters })
+}
+
+// Immediate emit for important changes
+const immediateEmitFiltersChanged = (): void => {
+  immediateEmit({ ...localFilters })
+}
+
+// Cleanup on unmount
+onUnmounted(() => {
+  cleanup()
+})
+</script>
+
 <template>
   <!-- Applied Filters Bar (Mobile only - desktop version is rendered below) -->
   <div class="md:hidden">
@@ -299,452 +735,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import {
-  reactive,
-  computed,
-  ref,
-  onUnmounted,
-  nextTick,
-  watch,
-  type Ref,
-} from 'vue'
-import { useDebouncedFilters } from '../composables/useDebouncedFilters'
-import { TIMING } from '../config/index'
-import type { FilterConfig } from '../utils/presetManager'
-import type {
-  ChannelWithCount,
-  TagWithCount,
-  DatabaseStats,
-} from '../types/database'
-import CollapsibleSection from './CollapsibleSection.vue'
-import TagFilterMulti from './TagFilterMulti.vue'
-import ChannelFilterMulti from './ChannelFilterMulti.vue'
-import TimeFilterSimple from './TimeFilterSimple.vue'
-import PriceFilter from './PriceFilter.vue'
-import SortingOptions from './SortingOptions.vue'
-import MobileFilterModal from './MobileFilterModal.vue'
-import AppliedFiltersBar from './AppliedFiltersBar.vue'
-import FilterPresets from './FilterPresets.vue'
-
-// Component props interface
-interface Props {
-  channels?: string[]
-  channelsWithCounts?: ChannelWithCount[]
-  tags?: TagWithCount[]
-  initialFilters?: Partial<FilterConfig>
-  gameCount?: number
-  gameStats?: DatabaseStats
-}
-
-// Component events interface
-interface Emits {
-  'filters-changed': [filters: FilterConfig]
-}
-
-// Define props with defaults
-const props = withDefaults(defineProps<Props>(), {
-  channels: () => [],
-  channelsWithCounts: () => [],
-  tags: () => [],
-  initialFilters: () => ({}),
-  gameCount: 0,
-  gameStats: () => ({
-    totalGames: 0,
-    freeGames: 0,
-    maxPrice: 70,
-  }),
-})
-
-// Define emits
-const emit = defineEmits<Emits>()
-
-// Interfaces for filter data
-interface TagChangedData {
-  selectedTags: string[]
-  tagLogic: 'and' | 'or'
-}
-
-interface ChannelChangedData {
-  selectedChannels: string[]
-}
-
-interface TimeFilterData {
-  type: string | null
-  preset: string | null
-  startDate: string | null
-  endDate: string | null
-  smartLogic: string | null
-}
-
-interface PriceFilterData {
-  minPrice: number
-  maxPrice: number
-  includeFree: boolean
-}
-
-interface SortData {
-  sortBy: string
-  sortSpec: string
-}
-
-interface FilterInfo {
-  type: string
-  value:
-    | string
-    | string[]
-    | number
-    | boolean
-    | { min: number; max: number }
-    | null
-}
-
-// Reactive state
-const showMobileModal: Ref<boolean> = ref(false)
-
-// Initialize local filters with proper defaults
-const initialLocalFilters: FilterConfig = {
-  releaseStatus: props.initialFilters.releaseStatus || 'all',
-  platform: props.initialFilters.platform || 'all',
-  rating: props.initialFilters.rating || '0',
-  crossPlatform: props.initialFilters.crossPlatform || false,
-  hiddenGems: props.initialFilters.hiddenGems || false,
-  // Legacy single tag support for backward compatibility
-  tag: props.initialFilters.tag || '',
-  // New multi-tag support
-  selectedTags:
-    props.initialFilters.selectedTags ||
-    (props.initialFilters.tag ? [props.initialFilters.tag] : []),
-  tagLogic: (props.initialFilters.tagLogic as 'and' | 'or') || 'and',
-  // Legacy single channel support for backward compatibility
-  channel: props.initialFilters.channel || '',
-  // New multi-channel support
-  selectedChannels:
-    props.initialFilters.selectedChannels ||
-    (props.initialFilters.channel ? [props.initialFilters.channel] : []),
-  sortBy: props.initialFilters.sortBy || 'date',
-  sortSpec: props.initialFilters.sortSpec || null,
-  currency: (props.initialFilters.currency as 'eur' | 'usd') || 'eur',
-  // Time-based filtering
-  timeFilter: props.initialFilters.timeFilter || {
-    type: null,
-    preset: null,
-    startDate: null,
-    endDate: null,
-    smartLogic: null,
-  },
-  priceFilter: props.initialFilters.priceFilter || {
-    minPrice: 0,
-    maxPrice: 70,
-    includeFree: true,
-  },
-}
-
-const localFilters = reactive<FilterConfig>({ ...initialLocalFilters })
-
-// Watch for changes in initial filters (e.g., from URL loading)
-watch(
-  () => props.initialFilters,
-  (newInitialFilters: Partial<FilterConfig> | undefined) => {
-    if (newInitialFilters && Object.keys(newInitialFilters).length > 0) {
-      Object.assign(localFilters, {
-        releaseStatus: newInitialFilters.releaseStatus || 'all',
-        platform: newInitialFilters.platform || 'all',
-        rating: newInitialFilters.rating || '0',
-        crossPlatform: newInitialFilters.crossPlatform || false,
-        hiddenGems: newInitialFilters.hiddenGems || false,
-        tag: newInitialFilters.tag || '',
-        selectedTags:
-          newInitialFilters.selectedTags ||
-          (newInitialFilters.tag ? [newInitialFilters.tag] : []),
-        tagLogic: (newInitialFilters.tagLogic as 'and' | 'or') || 'and',
-        channel: newInitialFilters.channel || '',
-        selectedChannels:
-          newInitialFilters.selectedChannels ||
-          (newInitialFilters.channel ? [newInitialFilters.channel] : []),
-        sortBy: newInitialFilters.sortBy || 'date',
-        sortSpec: newInitialFilters.sortSpec || null,
-        currency: (newInitialFilters.currency as 'eur' | 'usd') || 'eur',
-        timeFilter: newInitialFilters.timeFilter || {
-          type: null,
-          preset: null,
-          startDate: null,
-          endDate: null,
-          smartLogic: null,
-        },
-        priceFilter: newInitialFilters.priceFilter || {
-          minPrice: 0,
-          maxPrice: 70,
-          includeFree: true,
-        },
-      })
-    }
-  },
-  { deep: true, immediate: false },
-)
-
-// Set up debounced filter updates
-const { debouncedEmit, immediateEmit, cleanup } =
-  useDebouncedFilters<FilterConfig>(
-    initialLocalFilters,
-    (newFilters: FilterConfig) => emit('filters-changed', newFilters),
-    TIMING.FILTER_DEBOUNCE_DELAY, // Configurable debounce delay
-  )
-
-const activeFilterCount = computed((): number => {
-  let count = 0
-  if (localFilters.releaseStatus !== 'all') {
-    count++
-  }
-  if (localFilters.platform !== 'all') {
-    count++
-  }
-  if (localFilters.rating !== '0') {
-    count++
-  }
-  if (localFilters.crossPlatform) {
-    count++
-  }
-  if (localFilters.hiddenGems) {
-    count++
-  }
-  if (localFilters.selectedTags.length > 0) {
-    count++
-  }
-  if (localFilters.selectedChannels.length > 0) {
-    count++
-  }
-  if (localFilters.sortBy !== 'date' || localFilters.sortSpec) {
-    count++
-  }
-  if (localFilters.currency !== 'eur') {
-    count++
-  }
-  if (localFilters.timeFilter.type) {
-    count++
-  }
-  if (
-    localFilters.priceFilter &&
-    (localFilters.priceFilter.minPrice > 0 ||
-      localFilters.priceFilter.maxPrice < 70 ||
-      !localFilters.priceFilter.includeFree)
-  ) {
-    count++
-  }
-  return count
-})
-
-// Section-specific active filter counts for badges
-const basicFiltersCount = computed((): number => {
-  let count = 0
-  if (localFilters.releaseStatus !== 'all') {
-    count++
-  }
-  if (localFilters.platform !== 'all') {
-    count++
-  }
-  if (localFilters.crossPlatform) {
-    count++
-  }
-  if (localFilters.hiddenGems) {
-    count++
-  }
-  return count
-})
-
-const ratingFiltersCount = computed((): number => {
-  return localFilters.rating !== '0' ? 1 : 0
-})
-
-const tagsCount = computed((): number => {
-  return localFilters.selectedTags.length > 0
-    ? localFilters.selectedTags.length
-    : 0
-})
-
-const channelsCount = computed((): number => {
-  return localFilters.selectedChannels.length > 0
-    ? localFilters.selectedChannels.length
-    : 0
-})
-
-const sortingCount = computed((): number => {
-  return localFilters.sortBy !== 'date' || localFilters.sortSpec ? 1 : 0
-})
-
-const timeFilterCount = computed((): number => {
-  return localFilters.timeFilter && localFilters.timeFilter.type ? 1 : 0
-})
-
-const priceFilterCount = computed((): number => {
-  return localFilters.priceFilter &&
-    (localFilters.priceFilter.minPrice > 0 ||
-      localFilters.priceFilter.maxPrice < 70 ||
-      !localFilters.priceFilter.includeFree)
-    ? 1
-    : 0
-})
-
-const currencyCount = computed((): number => {
-  return localFilters.currency !== 'eur' ? 1 : 0
-})
-
-const handleTagsChanged = (tagData: TagChangedData): void => {
-  localFilters.selectedTags = tagData.selectedTags
-  localFilters.tagLogic = tagData.tagLogic
-  debouncedEmitFiltersChanged()
-}
-
-const handleChannelsChanged = (channelData: ChannelChangedData): void => {
-  localFilters.selectedChannels = channelData.selectedChannels
-  debouncedEmitFiltersChanged()
-}
-
-const handleTimeFilterChanged = (timeFilterData: TimeFilterData): void => {
-  localFilters.timeFilter = { ...timeFilterData }
-  debouncedEmitFiltersChanged()
-}
-
-const handlePriceFilterChanged = (priceFilterData: PriceFilterData): void => {
-  localFilters.priceFilter = { ...priceFilterData }
-  debouncedEmitFiltersChanged()
-}
-
-const handleSortChanged = (sortData: SortData): void => {
-  localFilters.sortBy = sortData.sortBy
-  localFilters.sortSpec = sortData.sortSpec
-  // Sort changes should be immediate for better UX
-  immediateEmitFiltersChanged()
-}
-
-const handleFiltersChanged = (newFilters: Partial<FilterConfig>): void => {
-  Object.assign(localFilters, newFilters)
-  debouncedEmitFiltersChanged()
-}
-
-// Helper to preserve scroll position when filters change
-const preserveScrollPosition = (callback: () => void): void => {
-  // Find the sidebar scroll container
-  const scrollContainer = document.querySelector('.sidebar-scroll')
-  if (!scrollContainer) {
-    callback()
-    return
-  }
-
-  // Save current scroll position
-  const scrollTop = scrollContainer.scrollTop
-
-  // Execute the callback
-  callback()
-
-  // Restore scroll position after DOM update
-  nextTick(() => {
-    scrollContainer.scrollTop = scrollTop
-  })
-}
-
-const handleRemoveFilter = (filterInfo: FilterInfo): void => {
-  preserveScrollPosition(() => {
-    switch (filterInfo.type) {
-      case 'releaseStatus':
-        localFilters.releaseStatus = filterInfo.value as string
-        break
-      case 'platform':
-        localFilters.platform = filterInfo.value as string
-        break
-      case 'rating':
-        localFilters.rating = filterInfo.value as string
-        break
-      case 'crossPlatform':
-        localFilters.crossPlatform = filterInfo.value as boolean
-        break
-      case 'hiddenGems':
-        localFilters.hiddenGems = filterInfo.value as boolean
-        break
-      case 'tags':
-        localFilters.selectedTags = filterInfo.value as string[]
-        break
-      case 'channels':
-        localFilters.selectedChannels = filterInfo.value as string[]
-        break
-      case 'sortBy':
-        localFilters.sortBy = filterInfo.value as string
-        localFilters.sortSpec = null
-        break
-      case 'currency':
-        localFilters.currency = filterInfo.value as 'eur' | 'usd'
-        break
-      case 'timeFilter':
-        localFilters.timeFilter = filterInfo.value as unknown as {
-          type: string
-          preset: string
-          startDate: string
-          endDate: string
-          smartLogic: string
-        }
-        break
-      case 'priceFilter':
-        localFilters.priceFilter = filterInfo.value as unknown as {
-          minPrice: number
-          maxPrice: number
-          includeFree: boolean
-        }
-        break
-    }
-    // Remove operations should be immediate
-    immediateEmitFiltersChanged()
-  })
-}
-
-const handleClearAllFilters = (): void => {
-  preserveScrollPosition(() => {
-    localFilters.releaseStatus = 'all'
-    localFilters.platform = 'all'
-    localFilters.rating = '0'
-    localFilters.crossPlatform = false
-    localFilters.hiddenGems = false
-    localFilters.selectedTags = []
-    localFilters.tagLogic = 'and'
-    localFilters.selectedChannels = []
-    localFilters.sortBy = 'date'
-    localFilters.sortSpec = null
-    localFilters.currency = 'eur'
-    localFilters.timeFilter = {
-      type: null,
-      preset: null,
-      startDate: null,
-      endDate: null,
-      smartLogic: null,
-    }
-    localFilters.priceFilter = {
-      minPrice: 0,
-      maxPrice: 70,
-      includeFree: true,
-    }
-    // Clear all should be immediate
-    immediateEmitFiltersChanged()
-  })
-}
-
-const handleApplyPreset = (presetFilters: FilterConfig): void => {
-  Object.assign(localFilters, presetFilters)
-  // Preset changes should be immediate
-  immediateEmitFiltersChanged()
-}
-
-// Debounced emit for gradual filter changes
-const debouncedEmitFiltersChanged = (): void => {
-  debouncedEmit({ ...localFilters })
-}
-
-// Immediate emit for important changes
-const immediateEmitFiltersChanged = (): void => {
-  immediateEmit({ ...localFilters })
-}
-
-// Cleanup on unmount
-onUnmounted(() => {
-  cleanup()
-})
-</script>

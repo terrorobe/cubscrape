@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -12,10 +12,18 @@
     "noEmit": true,
     "jsx": "preserve",
     
+    /* Performance optimizations */
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    
     /* TypeScript migration - transitioning to stricter settings */
     "allowJs": true,
     "checkJs": false,
     "strict": false,  // Keep false during migration, plan to enable later
+    "noImplicitAny": false,  // Gradually enable as migration progresses
+    "strictNullChecks": false,  // Will enable in phase 5
+    "strictFunctionTypes": true,  // Safe to enable now
+    "strictBindCallApply": true,  // Safe to enable now
     "noUnusedLocals": false,  // Enable after fixing all type issues
     "noUnusedParameters": false,  // Enable after fixing all type issues
     "noFallthroughCasesInSwitch": true,
@@ -24,6 +32,8 @@
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": false,  // May enable later for extra safety
     "exactOptionalPropertyTypes": false,  // Too strict for current codebase
+    "noImplicitOverride": true,  // Modern class best practices
+    "noPropertyAccessFromIndexSignature": false,  // Too restrictive during migration
     
     /* Path mapping for clean imports */
     "baseUrl": ".",
@@ -50,13 +60,5 @@
     "node_modules",
     "dist"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  
-  // TypeScript Migration Roadmap:
-  // Phase 1: ✅ Convert all .js files to .ts (completed)
-  // Phase 2: ✅ Add comprehensive type definitions (completed)
-  // Phase 3: ✅ Configure build pipeline and CI/CD (completed)
-  // Phase 4: 🚧 Fix remaining type errors in Vue components (in progress)
-  // Phase 5: 📋 Enable strict mode and stricter type checking (future)
-  // Phase 6: 📋 Add noUncheckedIndexedAccess for extra runtime safety (future)
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

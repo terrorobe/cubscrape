@@ -1,3 +1,502 @@
+<script setup lang="ts">
+import { ref, watch, computed, type Ref } from 'vue'
+import {
+  HIDDEN_GEM_CRITERIA,
+  getRatingClass as getRatingClassConfig,
+  getRatingStyle as getRatingStyleConfig,
+  isHiddenGem as isHiddenGemConfig,
+  type GameForRating,
+} from '../utils/ratingConfig'
+import {
+  getAvailablePlatforms,
+  getPlatformConfig,
+  type AvailablePlatform,
+} from '../config/platforms'
+import { UI_LIMITS } from '../config/index'
+import type { ParsedGameData } from '../types/database'
+import { databaseManager } from '../utils/databaseManager'
+
+// Component props interface
+interface Props {
+  game: ParsedGameData
+  currency?: 'eur' | 'usd'
+  isHighlighted?: boolean
+}
+
+// Component events interface
+interface Emits {
+  tagClick: [tag: string]
+}
+
+// Define props with defaults
+const props = withDefaults(defineProps<Props>(), {
+  currency: 'eur',
+  isHighlighted: false,
+})
+
+// Define emits
+const emit = defineEmits<Emits>()
+
+// Video data interfaces
+interface VideoData {
+  video_title: string
+  video_id: string
+  video_date: string
+  channel_name: string
+}
+
+interface ChannelGroup {
+  name: string
+  videos: VideoData[]
+}
+
+interface VideosByChannel {
+  [channelName: string]: ChannelGroup
+}
+
+// Reactive state with proper typing
+const showingVideos: Ref<Record<number, boolean>> = ref({})
+const loadingVideos: Ref<Record<number, boolean>> = ref({})
+const gameVideos: Ref<Record<number, VideoData[]>> = ref({})
+const copyFeedback: Ref<boolean> = ref(false)
+const showCopyOverlay: Ref<boolean> = ref(false)
+const highlightFading: Ref<boolean> = ref(false)
+
+// Check if game qualifies as a hidden gem
+const isHiddenGem = computed((): boolean =>
+  isHiddenGemConfig(props.game as GameForRating),
+)
+
+// Compute available platforms using centralized configuration
+const availablePlatforms = computed((): AvailablePlatform[] =>
+  getAvailablePlatforms(props.game),
+)
+
+const toggleVideos = async (gameId: number): Promise<void> => {
+  if (showingVideos.value[gameId]) {
+    showingVideos.value[gameId] = false
+    return
+  }
+
+  showingVideos.value[gameId] = true
+
+  // If videos already loaded, don't reload
+  if (gameVideos.value[gameId]) {
+    return
+  }
+
+  loadingVideos.value[gameId] = true
+
+  try {
+    // Get database instance from database manager
+    const db = databaseManager.getDatabase()
+    if (!db) {
+      console.error('Database not available')
+      return
+    }
+
+    const query = `
+      SELECT video_title, video_id, video_date, channel_name
+      FROM game_videos
+      WHERE game_id = ?
+      ORDER BY video_date DESC
+    `
+    const results = db.exec(query, [gameId])
+
+    if (results.length > 0) {
+      const videos: VideoData[] = results[0].values.map(
+        (row): VideoData => ({
+          video_title: row[0] as string,
+          video_id: row[1] as string,
+          video_date: row[2] as string,
+          channel_name: row[3] as string,
+        }),
+      )
+      gameVideos.value[gameId] = videos
+    } else {
+      gameVideos.value[gameId] = []
+    }
+  } catch (error) {
+    console.error('Error loading videos:', error)
+    gameVideos.value[gameId] = []
+  } finally {
+    loadingVideos.value[gameId] = false
+  }
+}
+
+const getChannelText = (game: ParsedGameData): string => {
+  const uniqueChannels = game.unique_channels || []
+  if (uniqueChannels.length === 0) {
+    return 'Channel: Unknown'
+  }
+  return uniqueChannels.length > 1
+    ? `Channels: ${uniqueChannels.join(', ')}`
+    : `Channel: ${uniqueChannels[0]}`
+}
+
+const shouldShowRating = (game: ParsedGameData): boolean =>
+  // Show if there's any rating info at all
+  !!game.review_summary ||
+  game.review_count !== undefined ||
+  game.insufficient_reviews
+
+const getRatingNumbers = (game: ParsedGameData): string => {
+  // Handle "No user reviews" case
+  if (game.review_summary === 'No user reviews' || game.review_count === 0) {
+    return 'No user reviews'
+  }
+
+  // Handle "Too few reviews" case
+  if (
+    game.insufficient_reviews ||
+    (game.review_count !== undefined &&
+      game.review_count > 0 &&
+      !game.positive_review_percentage)
+  ) {
+    return `Too few reviews (${game.review_count || 0})`
+  }
+
+  // Normal percentage display
+  if (game.positive_review_percentage) {
+    return `${game.positive_review_percentage}% ${game.review_count ? `(${game.review_count.toLocaleString()})` : ''}`
+  }
+
+  return ''
+}
+
+const getRatingSummary = (game: ParsedGameData): string => {
+  // For "No user reviews" and "Too few reviews", don't show summary
+  if (game.review_summary === 'No user reviews' || game.review_count === 0) {
+    return ''
+  }
+
+  if (
+    game.insufficient_reviews ||
+    (game.review_count !== undefined &&
+      game.review_count > 0 &&
+      !game.positive_review_percentage)
+  ) {
+    return ''
+  }
+
+  // Show summary with inferred indicator
+  const isInferred =
+    game.is_inferred_summary ||
+    (game.platform !== 'steam' && !!game.review_summary)
+  return game.review_summary
+    ? `${game.review_summary}${isInferred ? ' *' : ''}`
+    : ''
+}
+
+const getRatingTooltip = (game: ParsedGameData): string => {
+  let tooltipText = ''
+
+  // Add tooltip for inferred summaries
+  const isInferred =
+    game.is_inferred_summary ||
+    (game.platform !== 'steam' && !!game.review_summary)
+  if (isInferred) {
+    tooltipText = 'Review summary inferred from rating data'
+  }
+
+  // Add supplementary review info
+  if (game.review_tooltip) {
+    tooltipText = tooltipText
+      ? `${tooltipText}. ${game.review_tooltip}`
+      : game.review_tooltip
+  }
+
+  return tooltipText
+}
+
+const getRatingClass = (
+  percentage?: number | null,
+  reviewSummary?: string | null,
+): string => getRatingClassConfig(percentage, reviewSummary)
+
+const getRatingStyle = (
+  percentage?: number | null,
+  reviewSummary?: string | null,
+): { backgroundColor: string } =>
+  getRatingStyleConfig(percentage, reviewSummary)
+
+const getPrice = (game: ParsedGameData): string | null => {
+  if (game.is_free) {
+    return 'Free'
+  }
+
+  // Get the appropriate price based on selected currency
+  if (game.display_price !== undefined) {
+    return game.display_price
+  } else if (props.currency === 'usd' && game.price_usd) {
+    return `$${game.price_usd}`
+  } else if (game.price_eur) {
+    return `€${game.price_eur}`
+  }
+
+  return null
+}
+
+const getReleaseInfo = (game: ParsedGameData): string => {
+  // Platform-specific games - show release date if available
+  if (game.platform === 'itch') {
+    if (game.release_date) {
+      return `Released ${game.release_date}`
+    }
+    return 'Available on Itch.io'
+  }
+  if (game.platform === 'crazygames') {
+    if (game.release_date) {
+      return `Released ${game.release_date}`
+    }
+    return 'Play on CrazyGames'
+  }
+
+  // Steam games - handle special cases first
+
+  // If Steam game has Itch URL and is coming soon, Itch acts as demo
+  if (game.itch_url && game.coming_soon) {
+    const fullGameDate = game.planned_release_date || 'coming soon'
+    return `Demo • ${fullGameDate}`
+  }
+
+  // Handle actual Steam demos
+  if (game.is_demo) {
+    if (game.coming_soon) {
+      const fullGameDate = game.planned_release_date || 'coming soon'
+      return `Demo • Full game ${fullGameDate}`
+    }
+    return 'Demo'
+  }
+
+  // For non-demo games, decouple release type and date
+  const releaseType = getReleaseType(game)
+  const releaseDate = getReleaseDate(game)
+
+  if (releaseType && releaseDate) {
+    return `${releaseType} • ${releaseDate}`
+  }
+  return releaseType || 'Released'
+}
+
+const getReleaseType = (game: ParsedGameData): string => {
+  if (game.is_early_access) {
+    return 'Early Access'
+  }
+  if (game.coming_soon) {
+    return 'Unreleased'
+  }
+  return 'Released'
+}
+
+const getReleaseDate = (game: ParsedGameData): string | null => {
+  // Priority order for date selection
+  if (game.planned_release_date) {
+    return game.planned_release_date
+  }
+  if (game.release_date) {
+    return game.release_date
+  }
+  return null
+}
+
+const formatDate = (dateString?: string | null): string => {
+  if (!dateString) {
+    return ''
+  }
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
+const getMainPlatformUrl = (game: ParsedGameData): string | null => {
+  // Use unified display links if available
+  if (game.display_links && game.display_links.main) {
+    return game.display_links.main
+  }
+
+  // Use platform configuration to get URL field name
+  const platformConfig = getPlatformConfig(game.platform)
+  if (platformConfig && platformConfig.urlField) {
+    return (
+      ((game as unknown as Record<string, unknown>)[
+        platformConfig.urlField
+      ] as string) || null
+    )
+  }
+
+  // Fallback to steam_url if no configuration found
+  return game.steam_url || null
+}
+
+const getMainPlatformName = (game: ParsedGameData): string => {
+  const platformConfig = getPlatformConfig(game.platform)
+  return platformConfig ? platformConfig.displayName : 'Unknown Platform'
+}
+
+const getDemoUrl = (game: ParsedGameData): string | null => {
+  // Use unified display links if available
+  if (game.display_links && game.display_links.demo) {
+    return game.display_links.demo
+  }
+
+  // Fallback to Steam demo URL
+  if (game.demo_steam_app_id && game.demo_steam_url) {
+    return game.demo_steam_url
+  }
+
+  return null
+}
+
+const getPlatformName = (platform: string): string => {
+  const platformConfig = getPlatformConfig(platform)
+  return platformConfig ? platformConfig.displayName : platform
+}
+
+const getSteamParentUrl = (game: ParsedGameData): string | null => {
+  // For absorbed games, construct Steam URL from absorbed_into key
+  if (game.is_absorbed && game.absorbed_into) {
+    // absorbed_into contains the steam app ID
+    return `https://store.steampowered.com/app/${game.absorbed_into}`
+  }
+  return null
+}
+
+const handleCardClick = async (event: MouseEvent): Promise<void> => {
+  // Don't handle clicks on links, buttons, or video toggles
+  if (
+    (event.target as Element)?.closest('a') ||
+    (event.target as Element)?.closest('button') ||
+    (event.target as Element)?.closest('.video-expand-toggle')
+  ) {
+    return
+  }
+
+  event.preventDefault()
+
+  const deeplinkUrl = generateDeeplink(props.game)
+  if (!deeplinkUrl) {
+    console.warn('Could not generate deeplink for this game')
+    return
+  }
+
+  try {
+    await navigator.clipboard.writeText(deeplinkUrl)
+
+    // Show visual feedback
+    copyFeedback.value = true
+    showCopyOverlay.value = true
+
+    // Hide card scale feedback after short time
+    setTimeout(() => {
+      copyFeedback.value = false
+    }, 300)
+
+    // Hide overlay after animation completes
+    setTimeout(() => {
+      showCopyOverlay.value = false
+    }, 600)
+
+    console.log('Copied deeplink:', deeplinkUrl)
+  } catch (err) {
+    console.error('Failed to copy link:', err)
+  }
+}
+
+const slugifyForFragment = (text: string): string =>
+  // RFC 3986 allowed characters in URL fragments:
+  // unreserved: A-Z a-z 0-9 - . _ ~
+  // sub-delims: ! $ & ' ( ) * + , ; =
+  // also allowed in fragments: : @ / ?
+  // Replace spaces with underscores, everything else forbidden gets replaced with hyphen
+
+  text
+    // First, replace spaces with underscores
+    .replace(/ /g, '_')
+    // Then replace any other forbidden characters with hyphens
+    .replace(/[^A-Za-z0-9\-._~!$&'()*+,;=:@/?]/g, '-')
+    // Replace multiple consecutive hyphens with single hyphen
+    .replace(/-+/g, '-')
+    // Remove leading/trailing hyphens
+    .replace(/^-+|-+$/g, '')
+
+const generateDeeplink = (game: ParsedGameData): string | null => {
+  const baseUrl = window.location.origin + window.location.pathname
+  const searchParams = window.location.search
+
+  // Generate platform-specific deeplink with readable slug
+  if (game.platform === 'steam' && game.steam_app_id) {
+    const slug = slugifyForFragment(game.name)
+    return `${baseUrl}${searchParams}#steam-${game.steam_app_id}-${slug}`
+  }
+
+  if (game.platform === 'itch' && game.itch_url) {
+    // Extract game slug from itch URL
+    const match = game.itch_url.match(/itch\.io\/games\/([^/?]+)/)
+    if (match) {
+      const slug = slugifyForFragment(game.name)
+      return `${baseUrl}${searchParams}#itch-${match[1]}-${slug}`
+    }
+  }
+
+  if (game.platform === 'crazygames' && game.crazygames_url) {
+    // Extract game slug from CrazyGames URL
+    const match = game.crazygames_url.match(/crazygames\.com\/game\/([^/?]+)/)
+    if (match) {
+      const slug = slugifyForFragment(game.name)
+      return `${baseUrl}${searchParams}#crazygames-${match[1]}-${slug}`
+    }
+  }
+
+  return null
+}
+
+const handleTagClick = (tag: string): void => {
+  emit('tagClick', tag)
+}
+
+const groupVideosByChannel = (videos?: VideoData[]): VideosByChannel => {
+  if (!videos || !Array.isArray(videos)) {
+    return {}
+  }
+
+  const videosByChannel: VideosByChannel = {}
+
+  videos.forEach((video) => {
+    const channelKey = video.channel_name || 'Unknown Channel'
+    if (!videosByChannel[channelKey]) {
+      videosByChannel[channelKey] = {
+        name: video.channel_name || 'Unknown Channel',
+        videos: [],
+      }
+    }
+    videosByChannel[channelKey].videos.push(video)
+  })
+
+  return videosByChannel
+}
+
+// Watch for highlight changes to manage fade-out animation
+watch(
+  () => props.isHighlighted,
+  (newVal: boolean, oldVal: boolean) => {
+    if (oldVal && !newVal) {
+      // Starting to fade out
+      highlightFading.value = true
+      setTimeout(() => {
+        highlightFading.value = false
+      }, 1000) // Match CSS animation duration
+    } else if (newVal) {
+      // Reset fade state when highlighting
+      highlightFading.value = false
+    }
+  },
+)
+</script>
+
 <template>
   <div
     class="game-card relative flex size-full cursor-pointer flex-col overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
@@ -332,514 +831,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, watch, computed, type Ref } from 'vue'
-import {
-  HIDDEN_GEM_CRITERIA,
-  getRatingClass as getRatingClassConfig,
-  getRatingStyle as getRatingStyleConfig,
-  isHiddenGem as isHiddenGemConfig,
-  type GameForRating,
-} from '../utils/ratingConfig'
-import {
-  getAvailablePlatforms,
-  getPlatformConfig,
-  type AvailablePlatform,
-} from '../config/platforms'
-import { UI_LIMITS } from '../config/index'
-import type { ParsedGameData } from '../types/database'
-import { databaseManager } from '../utils/databaseManager'
-
-// Component props interface
-interface Props {
-  game: ParsedGameData
-  currency?: 'eur' | 'usd'
-  isHighlighted?: boolean
-}
-
-// Component events interface
-interface Emits {
-  'tag-click': [tag: string]
-}
-
-// Define props with defaults
-const props = withDefaults(defineProps<Props>(), {
-  currency: 'eur',
-  isHighlighted: false,
-})
-
-// Define emits
-const emit = defineEmits<Emits>()
-
-// Video data interfaces
-interface VideoData {
-  video_title: string
-  video_id: string
-  video_date: string
-  channel_name: string
-}
-
-interface ChannelGroup {
-  name: string
-  videos: VideoData[]
-}
-
-interface VideosByChannel {
-  [channelName: string]: ChannelGroup
-}
-
-// Reactive state with proper typing
-const showingVideos: Ref<Record<number, boolean>> = ref({})
-const loadingVideos: Ref<Record<number, boolean>> = ref({})
-const gameVideos: Ref<Record<number, VideoData[]>> = ref({})
-const copyFeedback: Ref<boolean> = ref(false)
-const showCopyOverlay: Ref<boolean> = ref(false)
-const highlightFading: Ref<boolean> = ref(false)
-
-// Check if game qualifies as a hidden gem
-const isHiddenGem = computed((): boolean => {
-  return isHiddenGemConfig(props.game as GameForRating)
-})
-
-// Compute available platforms using centralized configuration
-const availablePlatforms = computed((): AvailablePlatform[] => {
-  return getAvailablePlatforms(props.game)
-})
-
-const toggleVideos = async (gameId: number): Promise<void> => {
-  if (showingVideos.value[gameId]) {
-    showingVideos.value[gameId] = false
-    return
-  }
-
-  showingVideos.value[gameId] = true
-
-  // If videos already loaded, don't reload
-  if (gameVideos.value[gameId]) {
-    return
-  }
-
-  loadingVideos.value[gameId] = true
-
-  try {
-    // Get database instance from database manager
-    const db = databaseManager.getDatabase()
-    if (!db) {
-      console.error('Database not available')
-      return
-    }
-
-    const query = `
-      SELECT video_title, video_id, video_date, channel_name
-      FROM game_videos
-      WHERE game_id = ?
-      ORDER BY video_date DESC
-    `
-    const results = db.exec(query, [gameId])
-
-    if (results.length > 0) {
-      const videos: VideoData[] = results[0].values.map(
-        (row): VideoData => ({
-          video_title: row[0] as string,
-          video_id: row[1] as string,
-          video_date: row[2] as string,
-          channel_name: row[3] as string,
-        }),
-      )
-      gameVideos.value[gameId] = videos
-    } else {
-      gameVideos.value[gameId] = []
-    }
-  } catch (error) {
-    console.error('Error loading videos:', error)
-    gameVideos.value[gameId] = []
-  } finally {
-    loadingVideos.value[gameId] = false
-  }
-}
-
-const getChannelText = (game: ParsedGameData): string => {
-  const uniqueChannels = game.unique_channels || []
-  if (uniqueChannels.length === 0) {
-    return 'Channel: Unknown'
-  }
-  return uniqueChannels.length > 1
-    ? `Channels: ${uniqueChannels.join(', ')}`
-    : `Channel: ${uniqueChannels[0]}`
-}
-
-const shouldShowRating = (game: ParsedGameData): boolean => {
-  // Show if there's any rating info at all
-  return (
-    !!game.review_summary ||
-    game.review_count !== undefined ||
-    game.insufficient_reviews
-  )
-}
-
-const getRatingNumbers = (game: ParsedGameData): string => {
-  // Handle "No user reviews" case
-  if (game.review_summary === 'No user reviews' || game.review_count === 0) {
-    return 'No user reviews'
-  }
-
-  // Handle "Too few reviews" case
-  if (
-    game.insufficient_reviews ||
-    (game.review_count !== undefined &&
-      game.review_count > 0 &&
-      !game.positive_review_percentage)
-  ) {
-    return `Too few reviews (${game.review_count || 0})`
-  }
-
-  // Normal percentage display
-  if (game.positive_review_percentage) {
-    return `${game.positive_review_percentage}% ${game.review_count ? `(${game.review_count.toLocaleString()})` : ''}`
-  }
-
-  return ''
-}
-
-const getRatingSummary = (game: ParsedGameData): string => {
-  // For "No user reviews" and "Too few reviews", don't show summary
-  if (game.review_summary === 'No user reviews' || game.review_count === 0) {
-    return ''
-  }
-
-  if (
-    game.insufficient_reviews ||
-    (game.review_count !== undefined &&
-      game.review_count > 0 &&
-      !game.positive_review_percentage)
-  ) {
-    return ''
-  }
-
-  // Show summary with inferred indicator
-  const isInferred =
-    game.is_inferred_summary ||
-    (game.platform !== 'steam' && !!game.review_summary)
-  return game.review_summary
-    ? `${game.review_summary}${isInferred ? ' *' : ''}`
-    : ''
-}
-
-const getRatingTooltip = (game: ParsedGameData): string => {
-  let tooltipText = ''
-
-  // Add tooltip for inferred summaries
-  const isInferred =
-    game.is_inferred_summary ||
-    (game.platform !== 'steam' && !!game.review_summary)
-  if (isInferred) {
-    tooltipText = 'Review summary inferred from rating data'
-  }
-
-  // Add supplementary review info
-  if (game.review_tooltip) {
-    tooltipText = tooltipText
-      ? `${tooltipText}. ${game.review_tooltip}`
-      : game.review_tooltip
-  }
-
-  return tooltipText
-}
-
-const getRatingClass = (
-  percentage?: number | null,
-  reviewSummary?: string | null,
-): string => {
-  return getRatingClassConfig(percentage, reviewSummary)
-}
-
-const getRatingStyle = (
-  percentage?: number | null,
-  reviewSummary?: string | null,
-): { backgroundColor: string } => {
-  return getRatingStyleConfig(percentage, reviewSummary)
-}
-
-const getPrice = (game: ParsedGameData): string | null => {
-  if (game.is_free) {
-    return 'Free'
-  }
-
-  // Get the appropriate price based on selected currency
-  if (game.display_price !== undefined) {
-    return game.display_price
-  } else if (props.currency === 'usd' && game.price_usd) {
-    return `$${game.price_usd}`
-  } else if (game.price_eur) {
-    return `€${game.price_eur}`
-  }
-
-  return null
-}
-
-const getReleaseInfo = (game: ParsedGameData): string => {
-  // Platform-specific games - show release date if available
-  if (game.platform === 'itch') {
-    if (game.release_date) {
-      return `Released ${game.release_date}`
-    }
-    return 'Available on Itch.io'
-  }
-  if (game.platform === 'crazygames') {
-    if (game.release_date) {
-      return `Released ${game.release_date}`
-    }
-    return 'Play on CrazyGames'
-  }
-
-  // Steam games - handle special cases first
-
-  // If Steam game has Itch URL and is coming soon, Itch acts as demo
-  if (game.itch_url && game.coming_soon) {
-    const fullGameDate = game.planned_release_date || 'coming soon'
-    return `Demo • ${fullGameDate}`
-  }
-
-  // Handle actual Steam demos
-  if (game.is_demo) {
-    if (game.coming_soon) {
-      const fullGameDate = game.planned_release_date || 'coming soon'
-      return `Demo • Full game ${fullGameDate}`
-    }
-    return 'Demo'
-  }
-
-  // For non-demo games, decouple release type and date
-  const releaseType = getReleaseType(game)
-  const releaseDate = getReleaseDate(game)
-
-  if (releaseType && releaseDate) {
-    return `${releaseType} • ${releaseDate}`
-  }
-  return releaseType || 'Released'
-}
-
-const getReleaseType = (game: ParsedGameData): string => {
-  if (game.is_early_access) {
-    return 'Early Access'
-  }
-  if (game.coming_soon) {
-    return 'Unreleased'
-  }
-  return 'Released'
-}
-
-const getReleaseDate = (game: ParsedGameData): string | null => {
-  // Priority order for date selection
-  if (game.planned_release_date) {
-    return game.planned_release_date
-  }
-  if (game.release_date) {
-    return game.release_date
-  }
-  return null
-}
-
-const formatDate = (dateString?: string | null): string => {
-  if (!dateString) {
-    return ''
-  }
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
-
-const getMainPlatformUrl = (game: ParsedGameData): string | null => {
-  // Use unified display links if available
-  if (game.display_links && game.display_links.main) {
-    return game.display_links.main
-  }
-
-  // Use platform configuration to get URL field name
-  const platformConfig = getPlatformConfig(game.platform)
-  if (platformConfig && platformConfig.urlField) {
-    return (
-      ((game as unknown as Record<string, unknown>)[
-        platformConfig.urlField
-      ] as string) || null
-    )
-  }
-
-  // Fallback to steam_url if no configuration found
-  return game.steam_url || null
-}
-
-const getMainPlatformName = (game: ParsedGameData): string => {
-  const platformConfig = getPlatformConfig(game.platform)
-  return platformConfig ? platformConfig.displayName : 'Unknown Platform'
-}
-
-const getDemoUrl = (game: ParsedGameData): string | null => {
-  // Use unified display links if available
-  if (game.display_links && game.display_links.demo) {
-    return game.display_links.demo
-  }
-
-  // Fallback to Steam demo URL
-  if (game.demo_steam_app_id && game.demo_steam_url) {
-    return game.demo_steam_url
-  }
-
-  return null
-}
-
-const getPlatformName = (platform: string): string => {
-  const platformConfig = getPlatformConfig(platform)
-  return platformConfig ? platformConfig.displayName : platform
-}
-
-const getSteamParentUrl = (game: ParsedGameData): string | null => {
-  // For absorbed games, construct Steam URL from absorbed_into key
-  if (game.is_absorbed && game.absorbed_into) {
-    // absorbed_into contains the steam app ID
-    return `https://store.steampowered.com/app/${game.absorbed_into}`
-  }
-  return null
-}
-
-const handleCardClick = async (event: MouseEvent): Promise<void> => {
-  // Don't handle clicks on links, buttons, or video toggles
-  if (
-    (event.target as Element)?.closest('a') ||
-    (event.target as Element)?.closest('button') ||
-    (event.target as Element)?.closest('.video-expand-toggle')
-  ) {
-    return
-  }
-
-  event.preventDefault()
-
-  const deeplinkUrl = generateDeeplink(props.game)
-  if (!deeplinkUrl) {
-    console.warn('Could not generate deeplink for this game')
-    return
-  }
-
-  try {
-    await navigator.clipboard.writeText(deeplinkUrl)
-
-    // Show visual feedback
-    copyFeedback.value = true
-    showCopyOverlay.value = true
-
-    // Hide card scale feedback after short time
-    setTimeout(() => {
-      copyFeedback.value = false
-    }, 300)
-
-    // Hide overlay after animation completes
-    setTimeout(() => {
-      showCopyOverlay.value = false
-    }, 600)
-
-    console.log('Copied deeplink:', deeplinkUrl)
-  } catch (err) {
-    console.error('Failed to copy link:', err)
-  }
-}
-
-const slugifyForFragment = (text: string): string => {
-  // RFC 3986 allowed characters in URL fragments:
-  // unreserved: A-Z a-z 0-9 - . _ ~
-  // sub-delims: ! $ & ' ( ) * + , ; =
-  // also allowed in fragments: : @ / ?
-  // Replace spaces with underscores, everything else forbidden gets replaced with hyphen
-
-  return (
-    text
-      // First, replace spaces with underscores
-      .replace(/ /g, '_')
-      // Then replace any other forbidden characters with hyphens
-      .replace(/[^A-Za-z0-9\-._~!$&'()*+,;=:@/?]/g, '-')
-      // Replace multiple consecutive hyphens with single hyphen
-      .replace(/-+/g, '-')
-      // Remove leading/trailing hyphens
-      .replace(/^-+|-+$/g, '')
-  )
-}
-
-const generateDeeplink = (game: ParsedGameData): string | null => {
-  const baseUrl = window.location.origin + window.location.pathname
-  const searchParams = window.location.search
-
-  // Generate platform-specific deeplink with readable slug
-  if (game.platform === 'steam' && game.steam_app_id) {
-    const slug = slugifyForFragment(game.name)
-    return `${baseUrl}${searchParams}#steam-${game.steam_app_id}-${slug}`
-  }
-
-  if (game.platform === 'itch' && game.itch_url) {
-    // Extract game slug from itch URL
-    const match = game.itch_url.match(/itch\.io\/games\/([^/?]+)/)
-    if (match) {
-      const slug = slugifyForFragment(game.name)
-      return `${baseUrl}${searchParams}#itch-${match[1]}-${slug}`
-    }
-  }
-
-  if (game.platform === 'crazygames' && game.crazygames_url) {
-    // Extract game slug from CrazyGames URL
-    const match = game.crazygames_url.match(/crazygames\.com\/game\/([^/?]+)/)
-    if (match) {
-      const slug = slugifyForFragment(game.name)
-      return `${baseUrl}${searchParams}#crazygames-${match[1]}-${slug}`
-    }
-  }
-
-  return null
-}
-
-const handleTagClick = (tag: string): void => {
-  emit('tag-click', tag)
-}
-
-const groupVideosByChannel = (videos?: VideoData[]): VideosByChannel => {
-  if (!videos || !Array.isArray(videos)) {
-    return {}
-  }
-
-  const videosByChannel: VideosByChannel = {}
-
-  videos.forEach((video) => {
-    const channelKey = video.channel_name || 'Unknown Channel'
-    if (!videosByChannel[channelKey]) {
-      videosByChannel[channelKey] = {
-        name: video.channel_name || 'Unknown Channel',
-        videos: [],
-      }
-    }
-    videosByChannel[channelKey].videos.push(video)
-  })
-
-  return videosByChannel
-}
-
-// Watch for highlight changes to manage fade-out animation
-watch(
-  () => props.isHighlighted,
-  (newVal: boolean, oldVal: boolean) => {
-    if (oldVal && !newVal) {
-      // Starting to fade out
-      highlightFading.value = true
-      setTimeout(() => {
-        highlightFading.value = false
-      }, 1000) // Match CSS animation duration
-    } else if (newVal) {
-      // Reset fade state when highlighting
-      highlightFading.value = false
-    }
-  },
-)
-</script>
 
 <style scoped>
 .line-clamp-2 {

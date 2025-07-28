@@ -1,302 +1,3 @@
-<template>
-  <!-- Backdrop -->
-  <div
-    v-if="isOpen"
-    class="fixed inset-0 z-40 bg-black/50 transition-opacity duration-300"
-    :class="{ 'opacity-100': isAnimating, 'opacity-0': !isAnimating }"
-    @click="closeModal"
-  ></div>
-
-  <!-- Modal -->
-  <div
-    v-if="isOpen"
-    class="fixed inset-x-0 bottom-0 z-50 transform transition-transform duration-300 ease-out"
-    :class="{ 'translate-y-0': isAnimating, 'translate-y-full': !isAnimating }"
-    @touchstart="handleTouchStart"
-    @touchmove="handleTouchMove"
-    @touchend="handleTouchEnd"
-  >
-    <!-- Handle/Grip -->
-    <div class="flex justify-center pt-2 pb-1">
-      <div class="h-1 w-10 rounded-full bg-gray-400"></div>
-    </div>
-
-    <!-- Modal Content -->
-    <div class="rounded-t-xl bg-bg-secondary shadow-xl">
-      <!-- Header -->
-      <div
-        class="flex items-center justify-between border-b border-gray-600 px-4 py-3"
-      >
-        <h2 class="text-lg font-semibold text-text-primary">Filters</h2>
-        <div class="flex items-center gap-3">
-          <span
-            v-if="activeFilterCount > 0"
-            class="text-sm text-text-secondary"
-          >
-            {{ activeFilterCount }} active
-          </span>
-          <button
-            @click="clearAllFilters"
-            class="text-sm text-accent hover:text-accent-hover disabled:opacity-50"
-            :disabled="activeFilterCount === 0"
-          >
-            Clear All
-          </button>
-          <button
-            @click="closeModal"
-            class="rounded-full p-1 text-text-secondary hover:bg-bg-primary hover:text-text-primary"
-          >
-            <svg
-              class="size-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Tabs -->
-      <div class="border-b border-gray-600 bg-bg-primary">
-        <div class="scrollbar-none flex overflow-x-auto">
-          <button
-            v-for="tab in tabs"
-            :key="tab.id"
-            @click="activeTab = tab.id"
-            class="shrink-0 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors"
-            :class="
-              activeTab === tab.id
-                ? 'border-b-2 border-accent text-accent'
-                : 'text-text-secondary hover:text-text-primary'
-            "
-          >
-            {{ tab.label }}
-            <span v-if="tab.count > 0" class="ml-1 text-xs opacity-75"
-              >({{ tab.count }})</span
-            >
-          </button>
-        </div>
-      </div>
-
-      <!-- Tab Content -->
-      <div class="overflow-y-auto p-4" style="max-height: 70vh">
-        <!-- Presets Tab -->
-        <div v-if="activeTab === 'presets'">
-          <MobileFilterPresets
-            :current-filters="localFilters"
-            @apply-preset="handleApplyPreset"
-          />
-        </div>
-
-        <!-- Basic Filters Tab -->
-        <div v-else-if="activeTab === 'basic'" class="space-y-6">
-          <!-- Release Status -->
-          <div>
-            <label class="mb-2 block text-sm font-medium text-text-secondary"
-              >Release Status</label
-            >
-            <div class="space-y-2">
-              <label
-                v-for="option in releaseStatusOptions"
-                :key="option.value"
-                class="flex items-center"
-              >
-                <input
-                  v-model="localFilters.releaseStatus"
-                  :value="option.value"
-                  type="radio"
-                  name="releaseStatus"
-                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
-                  @change="emitFiltersChanged"
-                />
-                <span class="text-text-primary">{{ option.label }}</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Platform -->
-          <div>
-            <label class="mb-2 block text-sm font-medium text-text-secondary"
-              >Platform</label
-            >
-            <div class="space-y-2">
-              <label
-                v-for="option in platformOptions"
-                :key="option.value"
-                class="flex items-center"
-              >
-                <input
-                  v-model="localFilters.platform"
-                  :value="option.value"
-                  type="radio"
-                  name="platform"
-                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
-                  @change="emitFiltersChanged"
-                />
-                <span class="text-text-primary">{{ option.label }}</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Cross-Platform -->
-          <div>
-            <label class="mb-2 block text-sm font-medium text-text-secondary"
-              >Cross-Platform</label
-            >
-            <div class="flex items-center">
-              <input
-                id="crossPlatformMobile"
-                v-model="localFilters.crossPlatform"
-                type="checkbox"
-                class="mr-3 size-4 rounded-sm text-accent focus:ring-2 focus:ring-accent"
-                @change="emitFiltersChanged"
-              />
-              <label for="crossPlatformMobile" class="text-text-primary">
-                Show only multi-platform games
-              </label>
-            </div>
-          </div>
-
-          <!-- Hidden Gems -->
-          <div>
-            <label class="mb-2 block text-sm font-medium text-text-secondary"
-              >Hidden Gems</label
-            >
-            <div class="flex items-center">
-              <input
-                id="hiddenGemsMobile"
-                v-model="localFilters.hiddenGems"
-                type="checkbox"
-                class="mr-3 size-4 rounded-sm text-accent focus:ring-2 focus:ring-accent"
-                @change="emitFiltersChanged"
-              />
-              <label for="hiddenGemsMobile" class="text-text-primary">
-                High quality, low coverage games
-              </label>
-            </div>
-            <p class="mt-1 text-xs text-text-secondary">
-              80%+ rating, 1-3 videos, 50+ reviews
-            </p>
-          </div>
-
-          <!-- Rating -->
-          <div>
-            <label class="mb-2 block text-sm font-medium text-text-secondary"
-              >Minimum Rating</label
-            >
-            <div class="space-y-2">
-              <label
-                v-for="option in ratingOptions"
-                :key="option.value"
-                class="flex items-center"
-              >
-                <input
-                  v-model="localFilters.rating"
-                  :value="option.value"
-                  type="radio"
-                  name="rating"
-                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
-                  @change="emitFiltersChanged"
-                />
-                <span class="text-text-primary">{{ option.label }}</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Advanced Sort -->
-          <div>
-            <MobileSortingOptions
-              :initial-sort="localFilters.sortBy"
-              :initial-sort-spec="localFilters.sortSpec"
-              @sort-changed="handleSortChanged"
-            />
-          </div>
-
-          <!-- Currency -->
-          <div>
-            <label class="mb-2 block text-sm font-medium text-text-secondary"
-              >Currency</label
-            >
-            <div class="space-y-2">
-              <label
-                v-for="option in currencyOptions"
-                :key="option.value"
-                class="flex items-center"
-              >
-                <input
-                  v-model="localFilters.currency"
-                  :value="option.value"
-                  type="radio"
-                  name="currency"
-                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
-                  @change="emitFiltersChanged"
-                />
-                <span class="text-text-primary">{{ option.label }}</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tags Tab -->
-        <div v-else-if="activeTab === 'tags'">
-          <MobileTagFilter
-            :tags-with-counts="tags"
-            :initial-selected-tags="localFilters.selectedTags || []"
-            :initial-tag-logic="localFilters.tagLogic || 'and'"
-            @tags-changed="handleTagsChanged"
-          />
-        </div>
-
-        <!-- Channels Tab -->
-        <div v-else-if="activeTab === 'channels'">
-          <MobileChannelFilter
-            :channels-with-counts="channelsWithCounts"
-            :initial-selected-channels="localFilters.selectedChannels || []"
-            @channels-changed="handleChannelsChanged"
-          />
-        </div>
-
-        <!-- Time Tab -->
-        <div v-else-if="activeTab === 'time'">
-          <MobileTimeFilterSimple
-            :initial-time-filter="localFilters.timeFilter || {}"
-            @time-filter-changed="handleTimeFilterChanged"
-          />
-        </div>
-
-        <!-- Price Tab -->
-        <div v-else-if="activeTab === 'price'">
-          <MobilePriceFilter
-            :currency="localFilters.currency"
-            :initial-price-filter="localFilters.priceFilter || {}"
-            :game-stats="gameStats"
-            @price-filter-changed="handlePriceFilterChanged"
-          />
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="border-t border-gray-600 px-4 py-3">
-        <div class="flex gap-3">
-          <button
-            @click="closeModal"
-            class="flex-1 rounded-lg bg-accent px-4 py-3 font-medium text-white transition-colors hover:bg-accent-hover active:bg-accent-active"
-          >
-            Apply Filters
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import {
   ref,
@@ -335,7 +36,7 @@ interface Props {
 // Component events interface
 interface Emits {
   close: []
-  'filters-changed': [filters: FilterConfig]
+  filtersChanged: [filters: FilterConfig]
 }
 
 // Define props with defaults
@@ -670,7 +371,7 @@ const handleSortChanged = (sortEvent: SortChangeEvent): void => {
 }
 
 const emitFiltersChanged = (): void => {
-  emit('filters-changed', { ...localFilters })
+  emit('filtersChanged', { ...localFilters })
 }
 
 const handleApplyPreset = (presetFilters: FilterConfig): void => {
@@ -732,6 +433,305 @@ watch(
   { deep: true },
 )
 </script>
+
+<template>
+  <!-- Backdrop -->
+  <div
+    v-if="isOpen"
+    class="fixed inset-0 z-40 bg-black/50 transition-opacity duration-300"
+    :class="{ 'opacity-100': isAnimating, 'opacity-0': !isAnimating }"
+    @click="closeModal"
+  ></div>
+
+  <!-- Modal -->
+  <div
+    v-if="isOpen"
+    class="fixed inset-x-0 bottom-0 z-50 transform transition-transform duration-300 ease-out"
+    :class="{ 'translate-y-0': isAnimating, 'translate-y-full': !isAnimating }"
+    @touchstart="handleTouchStart"
+    @touchmove="handleTouchMove"
+    @touchend="handleTouchEnd"
+  >
+    <!-- Handle/Grip -->
+    <div class="flex justify-center pt-2 pb-1">
+      <div class="h-1 w-10 rounded-full bg-gray-400"></div>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="rounded-t-xl bg-bg-secondary shadow-xl">
+      <!-- Header -->
+      <div
+        class="flex items-center justify-between border-b border-gray-600 px-4 py-3"
+      >
+        <h2 class="text-lg font-semibold text-text-primary">Filters</h2>
+        <div class="flex items-center gap-3">
+          <span
+            v-if="activeFilterCount > 0"
+            class="text-sm text-text-secondary"
+          >
+            {{ activeFilterCount }} active
+          </span>
+          <button
+            @click="clearAllFilters"
+            class="text-sm text-accent hover:text-accent-hover disabled:opacity-50"
+            :disabled="activeFilterCount === 0"
+          >
+            Clear All
+          </button>
+          <button
+            @click="closeModal"
+            class="rounded-full p-1 text-text-secondary hover:bg-bg-primary hover:text-text-primary"
+          >
+            <svg
+              class="size-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="border-b border-gray-600 bg-bg-primary">
+        <div class="scrollbar-none flex overflow-x-auto">
+          <button
+            v-for="tab in tabs"
+            :key="tab.id"
+            @click="activeTab = tab.id"
+            class="shrink-0 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors"
+            :class="
+              activeTab === tab.id
+                ? 'border-b-2 border-accent text-accent'
+                : 'text-text-secondary hover:text-text-primary'
+            "
+          >
+            {{ tab.label }}
+            <span v-if="tab.count > 0" class="ml-1 text-xs opacity-75"
+              >({{ tab.count }})</span
+            >
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="overflow-y-auto p-4" style="max-height: 70vh">
+        <!-- Presets Tab -->
+        <div v-if="activeTab === 'presets'">
+          <MobileFilterPresets
+            :current-filters="localFilters"
+            @apply-preset="handleApplyPreset"
+          />
+        </div>
+
+        <!-- Basic Filters Tab -->
+        <div v-else-if="activeTab === 'basic'" class="space-y-6">
+          <!-- Release Status -->
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-secondary"
+              >Release Status</label
+            >
+            <div class="space-y-2">
+              <label
+                v-for="option in releaseStatusOptions"
+                :key="option.value"
+                class="flex items-center"
+              >
+                <input
+                  v-model="localFilters.releaseStatus"
+                  :value="option.value"
+                  type="radio"
+                  name="releaseStatus"
+                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
+                  @change="emitFiltersChanged"
+                />
+                <span class="text-text-primary">{{ option.label }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Platform -->
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-secondary"
+              >Platform</label
+            >
+            <div class="space-y-2">
+              <label
+                v-for="option in platformOptions"
+                :key="option.value"
+                class="flex items-center"
+              >
+                <input
+                  v-model="localFilters.platform"
+                  :value="option.value"
+                  type="radio"
+                  name="platform"
+                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
+                  @change="emitFiltersChanged"
+                />
+                <span class="text-text-primary">{{ option.label }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Cross-Platform -->
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-secondary"
+              >Cross-Platform</label
+            >
+            <div class="flex items-center">
+              <input
+                id="crossPlatformMobile"
+                v-model="localFilters.crossPlatform"
+                type="checkbox"
+                class="mr-3 size-4 rounded-sm text-accent focus:ring-2 focus:ring-accent"
+                @change="emitFiltersChanged"
+              />
+              <label for="crossPlatformMobile" class="text-text-primary">
+                Show only multi-platform games
+              </label>
+            </div>
+          </div>
+
+          <!-- Hidden Gems -->
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-secondary"
+              >Hidden Gems</label
+            >
+            <div class="flex items-center">
+              <input
+                id="hiddenGemsMobile"
+                v-model="localFilters.hiddenGems"
+                type="checkbox"
+                class="mr-3 size-4 rounded-sm text-accent focus:ring-2 focus:ring-accent"
+                @change="emitFiltersChanged"
+              />
+              <label for="hiddenGemsMobile" class="text-text-primary">
+                High quality, low coverage games
+              </label>
+            </div>
+            <p class="mt-1 text-xs text-text-secondary">
+              80%+ rating, 1-3 videos, 50+ reviews
+            </p>
+          </div>
+
+          <!-- Rating -->
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-secondary"
+              >Minimum Rating</label
+            >
+            <div class="space-y-2">
+              <label
+                v-for="option in ratingOptions"
+                :key="option.value"
+                class="flex items-center"
+              >
+                <input
+                  v-model="localFilters.rating"
+                  :value="option.value"
+                  type="radio"
+                  name="rating"
+                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
+                  @change="emitFiltersChanged"
+                />
+                <span class="text-text-primary">{{ option.label }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Advanced Sort -->
+          <div>
+            <MobileSortingOptions
+              :initial-sort="localFilters.sortBy"
+              :initial-sort-spec="localFilters.sortSpec"
+              @sort-changed="handleSortChanged"
+            />
+          </div>
+
+          <!-- Currency -->
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-secondary"
+              >Currency</label
+            >
+            <div class="space-y-2">
+              <label
+                v-for="option in currencyOptions"
+                :key="option.value"
+                class="flex items-center"
+              >
+                <input
+                  v-model="localFilters.currency"
+                  :value="option.value"
+                  type="radio"
+                  name="currency"
+                  class="mr-3 size-4 text-accent focus:ring-2 focus:ring-accent"
+                  @change="emitFiltersChanged"
+                />
+                <span class="text-text-primary">{{ option.label }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tags Tab -->
+        <div v-else-if="activeTab === 'tags'">
+          <MobileTagFilter
+            :tags-with-counts="tags"
+            :initial-selected-tags="localFilters.selectedTags || []"
+            :initial-tag-logic="localFilters.tagLogic || 'and'"
+            @tags-changed="handleTagsChanged"
+          />
+        </div>
+
+        <!-- Channels Tab -->
+        <div v-else-if="activeTab === 'channels'">
+          <MobileChannelFilter
+            :channels-with-counts="channelsWithCounts"
+            :initial-selected-channels="localFilters.selectedChannels || []"
+            @channels-changed="handleChannelsChanged"
+          />
+        </div>
+
+        <!-- Time Tab -->
+        <div v-else-if="activeTab === 'time'">
+          <MobileTimeFilterSimple
+            :initial-time-filter="localFilters.timeFilter || {}"
+            @time-filter-changed="handleTimeFilterChanged"
+          />
+        </div>
+
+        <!-- Price Tab -->
+        <div v-else-if="activeTab === 'price'">
+          <MobilePriceFilter
+            :currency="localFilters.currency"
+            :initial-price-filter="localFilters.priceFilter || {}"
+            :game-stats="gameStats"
+            @price-filter-changed="handlePriceFilterChanged"
+          />
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-gray-600 px-4 py-3">
+        <div class="flex gap-3">
+          <button
+            @click="closeModal"
+            class="flex-1 rounded-lg bg-accent px-4 py-3 font-medium text-white transition-colors hover:bg-accent-hover active:bg-accent-active"
+          >
+            Apply Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 /* Hide scrollbar while keeping functionality */

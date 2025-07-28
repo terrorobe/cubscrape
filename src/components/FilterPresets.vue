@@ -1,3 +1,331 @@
+<script setup lang="ts">
+import {
+  ref,
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  watch,
+  type Ref,
+} from 'vue'
+import { UI_LIMITS } from '../config/index'
+import {
+  getAllPresets,
+  saveUserPreset,
+  deleteUserPreset as deleteUserPresetUtil,
+  generateShareableURL,
+  exportPresets as exportPresetsUtil,
+  importPresets,
+  findMatchingPreset,
+  areFiltersEqual,
+  createDefaultFilters,
+  POPULAR_PRESETS,
+  type Preset,
+  type FilterConfig,
+  type ImportResult,
+} from '../utils/presetManager'
+
+// Component props interface
+interface Props {
+  currentFilters: FilterConfig
+}
+
+// Component events interface
+interface Emits {
+  applyPreset: [filters: FilterConfig]
+}
+
+// Define props
+const props = defineProps<Props>()
+
+// Define emits
+const emit = defineEmits<Emits>()
+
+// Notification interface
+interface Notification {
+  message: string
+  type: 'success' | 'error' | 'info'
+}
+
+// Save form interface
+interface SaveForm {
+  name: string
+  description: string
+  category: string
+}
+
+// Reactive state with proper typing
+const showDropdown: Ref<boolean> = ref(false)
+const showSaveDialog: Ref<boolean> = ref(false)
+const showImportDialog: Ref<boolean> = ref(false)
+const showManageDialog: Ref<boolean> = ref(false)
+const searchQuery: Ref<string> = ref('')
+const searchInput: Ref<HTMLInputElement | null> = ref(null)
+const saveNameInput: Ref<HTMLInputElement | null> = ref(null)
+const fileInput: Ref<HTMLInputElement | null> = ref(null)
+const notification: Ref<Notification | null> = ref(null)
+
+const saveForm: Ref<SaveForm> = ref({
+  name: '',
+  description: '',
+  category: 'custom',
+})
+
+const importData: Ref<string> = ref('')
+const importOverwrite: Ref<boolean> = ref(false)
+
+// Reactive preset data
+const allPresets: Ref<Preset[]> = ref(getAllPresets())
+const userPresets = computed((): Preset[] =>
+  allPresets.value.filter((p) => p.isUser),
+)
+const popularPresets = computed((): Preset[] => POPULAR_PRESETS)
+
+// Filtered presets based on search
+const filteredPopularPresets = computed((): Preset[] => {
+  if (!searchQuery.value.trim()) {
+    return popularPresets.value
+  }
+
+  const query = searchQuery.value.toLowerCase()
+  return popularPresets.value.filter(
+    (preset) =>
+      preset.name.toLowerCase().includes(query) ||
+      preset.description.toLowerCase().includes(query) ||
+      preset.tags.some((tag) => tag.toLowerCase().includes(query)),
+  )
+})
+
+const filteredUserPresets = computed((): Preset[] => {
+  if (!searchQuery.value.trim()) {
+    return userPresets.value
+  }
+
+  const query = searchQuery.value.toLowerCase()
+  return userPresets.value.filter(
+    (preset) =>
+      preset.name.toLowerCase().includes(query) ||
+      preset.description.toLowerCase().includes(query) ||
+      (preset.tags &&
+        preset.tags.some((tag) => tag.toLowerCase().includes(query))),
+  )
+})
+
+// Current preset detection
+const currentPreset = computed((): Preset | undefined =>
+  findMatchingPreset(props.currentFilters),
+)
+
+const currentPresetName = computed(
+  (): string | null => currentPreset.value?.name || null,
+)
+
+const isCurrentFiltersSaved = computed(
+  (): boolean => currentPreset.value !== undefined,
+)
+
+const hasActiveFilters = computed((): boolean => {
+  const defaultFilters = createDefaultFilters()
+  return !areFiltersEqual(props.currentFilters, defaultFilters)
+})
+
+// Methods
+const showNotification = (
+  message: string,
+  type: 'success' | 'error' | 'info' = 'info',
+): void => {
+  notification.value = { message, type }
+  setTimeout(() => {
+    notification.value = null
+  }, 3000)
+}
+
+const refreshPresets = (): void => {
+  allPresets.value = getAllPresets()
+}
+
+const handleBlur = (event: FocusEvent): void => {
+  // Delay hiding dropdown to allow clicking on dropdown items
+  setTimeout(() => {
+    if (!(event?.relatedTarget as Element)?.closest('.absolute')) {
+      showDropdown.value = false
+    }
+  }, 200)
+}
+
+const applyPreset = (preset: Preset): void => {
+  emit('applyPreset', preset.filters)
+  showDropdown.value = false
+  showNotification(`Applied preset: ${preset.name}`, 'success')
+}
+
+const isCurrentPreset = (preset: Preset): boolean =>
+  currentPreset.value?.id === preset.id
+
+const saveCurrentPreset = async (): Promise<void> => {
+  if (!saveForm.value.name.trim()) {
+    return
+  }
+
+  const result = saveUserPreset(
+    saveForm.value.name,
+    saveForm.value.description,
+    props.currentFilters,
+    saveForm.value.category,
+    [],
+  )
+
+  if (result) {
+    refreshPresets()
+    showSaveDialog.value = false
+    saveForm.value = { name: '', description: '', category: 'custom' }
+    showNotification(`Saved preset: ${result.name}`, 'success')
+  } else {
+    showNotification('Failed to save preset', 'error')
+  }
+}
+
+const editPreset = (preset: Preset): void => {
+  saveForm.value = {
+    name: preset.name,
+    description: preset.description || '',
+    category: preset.category || 'custom',
+  }
+  showSaveDialog.value = true
+  showDropdown.value = false
+}
+
+const deletePreset = async (preset: Preset): Promise<void> => {
+  if (!confirm(`Delete preset "${preset.name}"?`)) {
+    return
+  }
+
+  if (deleteUserPresetUtil(preset.id)) {
+    refreshPresets()
+    showNotification(`Deleted preset: ${preset.name}`, 'success')
+  } else {
+    showNotification('Failed to delete preset', 'error')
+  }
+}
+
+const shareCurrentFilters = async (): Promise<void> => {
+  try {
+    const url = generateShareableURL(props.currentFilters)
+    await navigator.clipboard.writeText(url)
+    showNotification('Share URL copied to clipboard!', 'success')
+  } catch (error) {
+    console.error('Failed to copy to clipboard:', error)
+    showNotification('Failed to copy share URL', 'error')
+  }
+  showDropdown.value = false
+}
+
+const exportPresets = (): void => {
+  const data = exportPresetsUtil()
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: 'application/json',
+  })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `cubscrape-presets-${new Date().toISOString().split('T')[0]}.json`
+  link.click()
+
+  URL.revokeObjectURL(url)
+  showDropdown.value = false
+  showNotification('Presets exported successfully', 'success')
+}
+
+const handleFileSelect = (event: Event): void => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) {
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    importData.value = e.target?.result as string
+  }
+  reader.readAsText(file)
+}
+
+const importUserPresets = (): void => {
+  if (!importData.value.trim()) {
+    return
+  }
+
+  try {
+    const data = JSON.parse(importData.value)
+    const result: ImportResult = importPresets(data, {
+      overwrite: importOverwrite.value,
+    })
+
+    if (result.success) {
+      refreshPresets()
+      showImportDialog.value = false
+      importData.value = ''
+      importOverwrite.value = false
+      showNotification(
+        `Imported ${result.count} presets successfully`,
+        'success',
+      )
+    } else {
+      showNotification(`Import failed: ${result.error}`, 'error')
+    }
+  } catch {
+    showNotification('Invalid JSON data', 'error')
+  }
+}
+
+// Handle clicks outside to close dropdown
+const handleDocumentClick = (event: Event): void => {
+  if (!(event.target as Element)?.closest('.relative')) {
+    showDropdown.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleDocumentClick)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleDocumentClick)
+})
+
+// Auto-focus search when dropdown opens
+const focusSearch = async (): Promise<void> => {
+  if (showDropdown.value) {
+    await nextTick()
+    searchInput.value?.focus()
+  }
+}
+
+// Auto-focus name input when save dialog opens
+const focusSaveInput = async (): Promise<void> => {
+  if (showSaveDialog.value) {
+    await nextTick()
+    saveNameInput.value?.focus()
+  }
+}
+
+// Watch for dropdown changes
+watch(showDropdown, (newValue: boolean) => {
+  if (newValue) {
+    focusSearch()
+  } else {
+    searchQuery.value = ''
+  }
+})
+
+// Watch for save dialog changes
+watch(showSaveDialog, (newValue: boolean) => {
+  if (newValue) {
+    focusSaveInput()
+  }
+})
+</script>
+
 <template>
   <div class="space-y-3">
     <h3 class="text-sm font-semibold text-text-primary">Filter Presets</h3>
@@ -392,335 +720,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import {
-  ref,
-  computed,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  watch,
-  type Ref,
-} from 'vue'
-import { UI_LIMITS } from '../config/index'
-import {
-  getAllPresets,
-  saveUserPreset,
-  deleteUserPreset as deleteUserPresetUtil,
-  generateShareableURL,
-  exportPresets as exportPresetsUtil,
-  importPresets,
-  findMatchingPreset,
-  areFiltersEqual,
-  createDefaultFilters,
-  POPULAR_PRESETS,
-  type Preset,
-  type FilterConfig,
-  type ImportResult,
-} from '../utils/presetManager'
-
-// Component props interface
-interface Props {
-  currentFilters: FilterConfig
-}
-
-// Component events interface
-interface Emits {
-  'apply-preset': [filters: FilterConfig]
-}
-
-// Define props
-const props = defineProps<Props>()
-
-// Define emits
-const emit = defineEmits<Emits>()
-
-// Notification interface
-interface Notification {
-  message: string
-  type: 'success' | 'error' | 'info'
-}
-
-// Save form interface
-interface SaveForm {
-  name: string
-  description: string
-  category: string
-}
-
-// Reactive state with proper typing
-const showDropdown: Ref<boolean> = ref(false)
-const showSaveDialog: Ref<boolean> = ref(false)
-const showImportDialog: Ref<boolean> = ref(false)
-const showManageDialog: Ref<boolean> = ref(false)
-const searchQuery: Ref<string> = ref('')
-const searchInput: Ref<HTMLInputElement | null> = ref(null)
-const saveNameInput: Ref<HTMLInputElement | null> = ref(null)
-const fileInput: Ref<HTMLInputElement | null> = ref(null)
-const notification: Ref<Notification | null> = ref(null)
-
-const saveForm: Ref<SaveForm> = ref({
-  name: '',
-  description: '',
-  category: 'custom',
-})
-
-const importData: Ref<string> = ref('')
-const importOverwrite: Ref<boolean> = ref(false)
-
-// Reactive preset data
-const allPresets: Ref<Preset[]> = ref(getAllPresets())
-const userPresets = computed((): Preset[] =>
-  allPresets.value.filter((p) => p.isUser),
-)
-const popularPresets = computed((): Preset[] => POPULAR_PRESETS)
-
-// Filtered presets based on search
-const filteredPopularPresets = computed((): Preset[] => {
-  if (!searchQuery.value.trim()) {
-    return popularPresets.value
-  }
-
-  const query = searchQuery.value.toLowerCase()
-  return popularPresets.value.filter(
-    (preset) =>
-      preset.name.toLowerCase().includes(query) ||
-      preset.description.toLowerCase().includes(query) ||
-      preset.tags.some((tag) => tag.toLowerCase().includes(query)),
-  )
-})
-
-const filteredUserPresets = computed((): Preset[] => {
-  if (!searchQuery.value.trim()) {
-    return userPresets.value
-  }
-
-  const query = searchQuery.value.toLowerCase()
-  return userPresets.value.filter(
-    (preset) =>
-      preset.name.toLowerCase().includes(query) ||
-      preset.description.toLowerCase().includes(query) ||
-      (preset.tags &&
-        preset.tags.some((tag) => tag.toLowerCase().includes(query))),
-  )
-})
-
-// Current preset detection
-const currentPreset = computed((): Preset | undefined => {
-  return findMatchingPreset(props.currentFilters)
-})
-
-const currentPresetName = computed((): string | null => {
-  return currentPreset.value?.name || null
-})
-
-const isCurrentFiltersSaved = computed((): boolean => {
-  return currentPreset.value !== undefined
-})
-
-const hasActiveFilters = computed((): boolean => {
-  const defaultFilters = createDefaultFilters()
-  return !areFiltersEqual(props.currentFilters, defaultFilters)
-})
-
-// Methods
-const showNotification = (
-  message: string,
-  type: 'success' | 'error' | 'info' = 'info',
-): void => {
-  notification.value = { message, type }
-  setTimeout(() => {
-    notification.value = null
-  }, 3000)
-}
-
-const refreshPresets = (): void => {
-  allPresets.value = getAllPresets()
-}
-
-const handleBlur = (event: FocusEvent): void => {
-  // Delay hiding dropdown to allow clicking on dropdown items
-  setTimeout(() => {
-    if (!(event?.relatedTarget as Element)?.closest('.absolute')) {
-      showDropdown.value = false
-    }
-  }, 200)
-}
-
-const applyPreset = (preset: Preset): void => {
-  emit('apply-preset', preset.filters)
-  showDropdown.value = false
-  showNotification(`Applied preset: ${preset.name}`, 'success')
-}
-
-const isCurrentPreset = (preset: Preset): boolean => {
-  return currentPreset.value?.id === preset.id
-}
-
-const saveCurrentPreset = async (): Promise<void> => {
-  if (!saveForm.value.name.trim()) {
-    return
-  }
-
-  const result = saveUserPreset(
-    saveForm.value.name,
-    saveForm.value.description,
-    props.currentFilters,
-    saveForm.value.category,
-    [],
-  )
-
-  if (result) {
-    refreshPresets()
-    showSaveDialog.value = false
-    saveForm.value = { name: '', description: '', category: 'custom' }
-    showNotification(`Saved preset: ${result.name}`, 'success')
-  } else {
-    showNotification('Failed to save preset', 'error')
-  }
-}
-
-const editPreset = (preset: Preset): void => {
-  saveForm.value = {
-    name: preset.name,
-    description: preset.description || '',
-    category: preset.category || 'custom',
-  }
-  showSaveDialog.value = true
-  showDropdown.value = false
-}
-
-const deletePreset = async (preset: Preset): Promise<void> => {
-  if (!confirm(`Delete preset "${preset.name}"?`)) {
-    return
-  }
-
-  if (deleteUserPresetUtil(preset.id)) {
-    refreshPresets()
-    showNotification(`Deleted preset: ${preset.name}`, 'success')
-  } else {
-    showNotification('Failed to delete preset', 'error')
-  }
-}
-
-const shareCurrentFilters = async (): Promise<void> => {
-  try {
-    const url = generateShareableURL(props.currentFilters)
-    await navigator.clipboard.writeText(url)
-    showNotification('Share URL copied to clipboard!', 'success')
-  } catch (error) {
-    console.error('Failed to copy to clipboard:', error)
-    showNotification('Failed to copy share URL', 'error')
-  }
-  showDropdown.value = false
-}
-
-const exportPresets = (): void => {
-  const data = exportPresetsUtil()
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: 'application/json',
-  })
-  const url = URL.createObjectURL(blob)
-
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `cubscrape-presets-${new Date().toISOString().split('T')[0]}.json`
-  link.click()
-
-  URL.revokeObjectURL(url)
-  showDropdown.value = false
-  showNotification('Presets exported successfully', 'success')
-}
-
-const handleFileSelect = (event: Event): void => {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (!file) {
-    return
-  }
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    importData.value = e.target?.result as string
-  }
-  reader.readAsText(file)
-}
-
-const importUserPresets = (): void => {
-  if (!importData.value.trim()) {
-    return
-  }
-
-  try {
-    const data = JSON.parse(importData.value)
-    const result: ImportResult = importPresets(data, {
-      overwrite: importOverwrite.value,
-    })
-
-    if (result.success) {
-      refreshPresets()
-      showImportDialog.value = false
-      importData.value = ''
-      importOverwrite.value = false
-      showNotification(
-        `Imported ${result.count} presets successfully`,
-        'success',
-      )
-    } else {
-      showNotification(`Import failed: ${result.error}`, 'error')
-    }
-  } catch {
-    showNotification('Invalid JSON data', 'error')
-  }
-}
-
-// Handle clicks outside to close dropdown
-const handleDocumentClick = (event: Event): void => {
-  if (!(event.target as Element)?.closest('.relative')) {
-    showDropdown.value = false
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleDocumentClick)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleDocumentClick)
-})
-
-// Auto-focus search when dropdown opens
-const focusSearch = async (): Promise<void> => {
-  if (showDropdown.value) {
-    await nextTick()
-    searchInput.value?.focus()
-  }
-}
-
-// Auto-focus name input when save dialog opens
-const focusSaveInput = async (): Promise<void> => {
-  if (showSaveDialog.value) {
-    await nextTick()
-    saveNameInput.value?.focus()
-  }
-}
-
-// Watch for dropdown changes
-watch(showDropdown, (newValue: boolean) => {
-  if (newValue) {
-    focusSearch()
-  } else {
-    searchQuery.value = ''
-  }
-})
-
-// Watch for save dialog changes
-watch(showSaveDialog, (newValue: boolean) => {
-  if (newValue) {
-    focusSaveInput()
-  }
-})
-</script>
 
 <style scoped>
 /* Ensure dropdown appears above all other elements */

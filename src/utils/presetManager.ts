@@ -429,7 +429,7 @@ export function saveUserPresets(presets: Preset[]): boolean {
   try {
     const data: PresetStorageData = {
       version: PRESET_VERSION,
-      presets: presets,
+      presets,
       lastUpdated: new Date().toISOString(),
     }
     localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(data))
@@ -455,8 +455,8 @@ export function createUserPreset(
     name: name.trim(),
     description: description.trim(),
     filters: { ...createDefaultFilters(), ...filters },
-    category: category,
-    tags: tags,
+    category,
+    tags,
     isPopular: false,
     isUser: true,
     createdAt: new Date().toISOString(),

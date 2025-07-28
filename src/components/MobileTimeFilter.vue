@@ -1,3 +1,147 @@
+<script>
+import { ref, watch } from 'vue'
+
+export default {
+  name: 'MobileTimeFilter',
+  props: {
+    initialTimeFilter: {
+      type: Object,
+      default: () => ({
+        type: null,
+        preset: null,
+        startDate: null,
+        endDate: null,
+        smartLogic: null,
+      }),
+    },
+  },
+  emits: ['timeFilterChanged'],
+  setup(props, { emit }) {
+    const selectedType = ref(props.initialTimeFilter.type || '')
+    const selectedPreset = ref(props.initialTimeFilter.preset || '')
+    const selectedSmartFilter = ref(props.initialTimeFilter.smartLogic || '')
+    const customStartDate = ref(props.initialTimeFilter.startDate || '')
+    const customEndDate = ref(props.initialTimeFilter.endDate || '')
+
+    const getFilterDescription = () => {
+      if (!selectedType.value) {
+        return 'No filter applied'
+      }
+
+      const typeLabel =
+        selectedType.value === 'video' ? 'Video Date' : 'Release Date'
+
+      if (selectedPreset.value === 'custom') {
+        const start = customStartDate.value || 'Not set'
+        const end = customEndDate.value || 'Not set'
+        return `${typeLabel}: ${start} to ${end}`
+      }
+
+      if (selectedPreset.value) {
+        const presetLabels = {
+          'last-week': 'Last Week',
+          'last-month': 'Last Month',
+          'last-3-months': 'Last 3 Months',
+          'last-6-months': 'Last 6 Months',
+          'last-year': 'Last Year',
+        }
+        return `${typeLabel}: ${presetLabels[selectedPreset.value] || selectedPreset.value}`
+      }
+
+      if (selectedSmartFilter.value) {
+        const smartLabels = {
+          'recently-released': 'Recently Released Games',
+          'new-discoveries': 'New Game Discoveries',
+          trending: 'Trending Games',
+          'hidden-gems-time': 'Time-based Hidden Gems',
+        }
+        return (
+          smartLabels[selectedSmartFilter.value] || selectedSmartFilter.value
+        )
+      }
+
+      return `${typeLabel} filter selected`
+    }
+
+    const handleChange = () => {
+      const timeFilter = {
+        type: selectedType.value || null,
+        preset: selectedPreset.value || null,
+        startDate: null,
+        endDate: null,
+        smartLogic: selectedSmartFilter.value || null,
+      }
+
+      // Generate date range for preset
+      if (
+        selectedType.value &&
+        selectedPreset.value &&
+        selectedPreset.value !== 'custom'
+      ) {
+        const ranges = {
+          'last-week': 7,
+          'last-month': 30,
+          'last-3-months': 90,
+          'last-6-months': 180,
+          'last-year': 365,
+        }
+
+        const days = ranges[selectedPreset.value]
+        if (days) {
+          const endDate = new Date()
+          const startDate = new Date(
+            endDate.getTime() - days * 24 * 60 * 60 * 1000,
+          )
+          timeFilter.startDate = startDate.toISOString().split('T')[0]
+          timeFilter.endDate = endDate.toISOString().split('T')[0]
+        }
+      }
+
+      // Handle custom date range
+      if (selectedPreset.value === 'custom') {
+        timeFilter.startDate = customStartDate.value || null
+        timeFilter.endDate = customEndDate.value || null
+      }
+
+      emit('timeFilterChanged', timeFilter)
+    }
+
+    // Watch for prop changes
+    watch(
+      () => props.initialTimeFilter,
+      (newFilter) => {
+        if (newFilter.type !== selectedType.value) {
+          selectedType.value = newFilter.type || ''
+        }
+        if (newFilter.preset !== selectedPreset.value) {
+          selectedPreset.value = newFilter.preset || ''
+        }
+        if (newFilter.smartLogic !== selectedSmartFilter.value) {
+          selectedSmartFilter.value = newFilter.smartLogic || ''
+        }
+        if (newFilter.startDate !== customStartDate.value) {
+          customStartDate.value = newFilter.startDate || ''
+        }
+        if (newFilter.endDate !== customEndDate.value) {
+          customEndDate.value = newFilter.endDate || ''
+        }
+      },
+      { deep: true },
+    )
+
+    return {
+      selectedType,
+      selectedPreset,
+      selectedSmartFilter,
+      customStartDate,
+      customEndDate,
+      handleChange,
+      getFilterDescription,
+    }
+  },
+}
+</script>
+
 <template>
   <div class="space-y-4">
     <div class="mb-2 text-sm font-medium text-text-secondary">Time Filter</div>
@@ -109,147 +253,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import { ref, watch } from 'vue'
-
-export default {
-  name: 'MobileTimeFilter',
-  props: {
-    initialTimeFilter: {
-      type: Object,
-      default: () => ({
-        type: null,
-        preset: null,
-        startDate: null,
-        endDate: null,
-        smartLogic: null,
-      }),
-    },
-  },
-  emits: ['time-filter-changed'],
-  setup(props, { emit }) {
-    const selectedType = ref(props.initialTimeFilter.type || '')
-    const selectedPreset = ref(props.initialTimeFilter.preset || '')
-    const selectedSmartFilter = ref(props.initialTimeFilter.smartLogic || '')
-    const customStartDate = ref(props.initialTimeFilter.startDate || '')
-    const customEndDate = ref(props.initialTimeFilter.endDate || '')
-
-    const getFilterDescription = () => {
-      if (!selectedType.value) {
-        return 'No filter applied'
-      }
-
-      const typeLabel =
-        selectedType.value === 'video' ? 'Video Date' : 'Release Date'
-
-      if (selectedPreset.value === 'custom') {
-        const start = customStartDate.value || 'Not set'
-        const end = customEndDate.value || 'Not set'
-        return `${typeLabel}: ${start} to ${end}`
-      }
-
-      if (selectedPreset.value) {
-        const presetLabels = {
-          'last-week': 'Last Week',
-          'last-month': 'Last Month',
-          'last-3-months': 'Last 3 Months',
-          'last-6-months': 'Last 6 Months',
-          'last-year': 'Last Year',
-        }
-        return `${typeLabel}: ${presetLabels[selectedPreset.value] || selectedPreset.value}`
-      }
-
-      if (selectedSmartFilter.value) {
-        const smartLabels = {
-          'recently-released': 'Recently Released Games',
-          'new-discoveries': 'New Game Discoveries',
-          trending: 'Trending Games',
-          'hidden-gems-time': 'Time-based Hidden Gems',
-        }
-        return (
-          smartLabels[selectedSmartFilter.value] || selectedSmartFilter.value
-        )
-      }
-
-      return `${typeLabel} filter selected`
-    }
-
-    const handleChange = () => {
-      const timeFilter = {
-        type: selectedType.value || null,
-        preset: selectedPreset.value || null,
-        startDate: null,
-        endDate: null,
-        smartLogic: selectedSmartFilter.value || null,
-      }
-
-      // Generate date range for preset
-      if (
-        selectedType.value &&
-        selectedPreset.value &&
-        selectedPreset.value !== 'custom'
-      ) {
-        const ranges = {
-          'last-week': 7,
-          'last-month': 30,
-          'last-3-months': 90,
-          'last-6-months': 180,
-          'last-year': 365,
-        }
-
-        const days = ranges[selectedPreset.value]
-        if (days) {
-          const endDate = new Date()
-          const startDate = new Date(
-            endDate.getTime() - days * 24 * 60 * 60 * 1000,
-          )
-          timeFilter.startDate = startDate.toISOString().split('T')[0]
-          timeFilter.endDate = endDate.toISOString().split('T')[0]
-        }
-      }
-
-      // Handle custom date range
-      if (selectedPreset.value === 'custom') {
-        timeFilter.startDate = customStartDate.value || null
-        timeFilter.endDate = customEndDate.value || null
-      }
-
-      emit('time-filter-changed', timeFilter)
-    }
-
-    // Watch for prop changes
-    watch(
-      () => props.initialTimeFilter,
-      (newFilter) => {
-        if (newFilter.type !== selectedType.value) {
-          selectedType.value = newFilter.type || ''
-        }
-        if (newFilter.preset !== selectedPreset.value) {
-          selectedPreset.value = newFilter.preset || ''
-        }
-        if (newFilter.smartLogic !== selectedSmartFilter.value) {
-          selectedSmartFilter.value = newFilter.smartLogic || ''
-        }
-        if (newFilter.startDate !== customStartDate.value) {
-          customStartDate.value = newFilter.startDate || ''
-        }
-        if (newFilter.endDate !== customEndDate.value) {
-          customEndDate.value = newFilter.endDate || ''
-        }
-      },
-      { deep: true },
-    )
-
-    return {
-      selectedType,
-      selectedPreset,
-      selectedSmartFilter,
-      customStartDate,
-      customEndDate,
-      handleChange,
-      getFilterDescription,
-    }
-  },
-}
-</script>

@@ -1,149 +1,7 @@
-<template>
-  <div v-if="appliedFilters.length > 0" class="mb-4">
-    <!-- Mobile: Horizontal scrollable bar -->
-    <div class="flex items-center gap-3 md:hidden">
-      <span class="shrink-0 text-sm font-medium text-text-secondary">
-        Filters:
-      </span>
-      <div class="scrollbar-thin flex gap-2 overflow-x-auto pb-2">
-        <button
-          v-for="filter in appliedFilters"
-          :key="filter.key"
-          @click="removeFilter(filter)"
-          class="flex shrink-0 items-center gap-2 rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover active:bg-accent-active"
-        >
-          <span>{{ filter.label }}</span>
-          <svg
-            class="size-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
-        </button>
-
-        <!-- Clear all button -->
-        <button
-          v-if="appliedFilters.length > 1"
-          @click="clearAllFilters"
-          class="shrink-0 rounded-full border border-gray-500 px-3 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
-        >
-          Clear All
-        </button>
-      </div>
-    </div>
-
-    <!-- Desktop: Card-style sidebar display -->
-    <div class="hidden md:block">
-      <div
-        class="rounded-lg border border-gray-600 bg-bg-card p-4 transition-all duration-300 ease-in-out"
-      >
-        <div class="mb-3 flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-text-primary">
-            Active Filters
-          </h3>
-          <span
-            class="flex size-6 items-center justify-center rounded-full bg-accent text-xs font-medium text-white"
-          >
-            {{ appliedFilters.length }}
-          </span>
-        </div>
-
-        <!-- Results Count Preview -->
-        <div
-          v-if="gameCount !== undefined"
-          class="mb-3 text-sm text-text-secondary"
-        >
-          {{ gameCount }} games found
-        </div>
-
-        <div
-          v-if="appliedFilters.length > 0"
-          class="space-y-2 transition-all duration-300"
-        >
-          <button
-            v-for="filter in appliedFilters"
-            :key="filter.key"
-            @click="removeFilter(filter)"
-            class="flex w-full items-center justify-between rounded-sm bg-accent/10 px-3 py-2 text-sm transition-colors hover:bg-accent/20"
-          >
-            <span class="truncate text-text-primary">{{ filter.label }}</span>
-            <svg
-              class="size-4 shrink-0 text-text-secondary hover:text-accent"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-
-          <!-- Clear all button -->
-          <button
-            @click="clearAllFilters"
-            class="mt-2 w-full rounded-sm border border-gray-500 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
-          >
-            Clear All Filters
-          </button>
-        </div>
-
-        <div v-else class="text-sm text-text-secondary">No active filters</div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { FilterConfig } from '../utils/presetManager'
-
-/**
- * Filter value types that can be applied
- */
-export type FilterValue =
-  | string
-  | string[]
-  | number
-  | boolean
-  | { min: number; max: number }
-  | {
-      type: string | null
-      preset: string | null
-      startDate: string | null
-      endDate: string | null
-      smartLogic: string | null
-    }
-  | { minPrice: number; maxPrice: number; includeFree: boolean }
-  | null
-
-/**
- * Applied filter item interface
- */
-export interface AppliedFilter {
-  key: string
-  type: string
-  label: string
-  value: FilterValue
-}
-
-/**
- * Filter remove event payload
- */
-export interface FilterRemoveEvent {
-  type: string
-  value: FilterValue
-}
+import type { FilterValue, FilterRemoveEvent, AppliedFilter } from '../types/filters'
 
 /**
  * Props interface for AppliedFiltersBar component
@@ -158,8 +16,8 @@ const props = withDefaults(defineProps<AppliedFiltersBarProps>(), {
 })
 
 const emit = defineEmits<{
-  'remove-filter': [event: FilterRemoveEvent]
-  'clear-all-filters': []
+  removeFilter: [event: FilterRemoveEvent]
+  clearAllFilters: []
 }>()
 const appliedFilters = computed((): AppliedFilter[] => {
   const filters: AppliedFilter[] = []
@@ -320,7 +178,7 @@ const appliedFilters = computed((): AppliedFilter[] => {
     filters.push({
       key: 'timeFilter',
       type: 'timeFilter',
-      label: label,
+      label,
       value: {
         type: null,
         preset: null,
@@ -366,7 +224,7 @@ const appliedFilters = computed((): AppliedFilter[] => {
     filters.push({
       key: 'priceFilter',
       type: 'priceFilter',
-      label: label,
+      label,
       value: { minPrice: 0, maxPrice: 70, includeFree: true },
     })
   }
@@ -385,16 +243,122 @@ const formatChannelName = (channel: string): string => {
 }
 
 const removeFilter = (filter: AppliedFilter): void => {
-  emit('remove-filter', {
+  emit('removeFilter', {
     type: filter.type,
     value: filter.value,
   })
 }
 
 const clearAllFilters = (): void => {
-  emit('clear-all-filters')
+  emit('clearAllFilters')
 }
 </script>
+
+<template>
+  <div v-if="appliedFilters.length > 0" class="mb-4">
+    <!-- Mobile: Horizontal scrollable bar -->
+    <div class="flex items-center gap-3 md:hidden">
+      <span class="shrink-0 text-sm font-medium text-text-secondary">
+        Filters:
+      </span>
+      <div class="scrollbar-thin flex gap-2 overflow-x-auto pb-2">
+        <button
+          v-for="filter in appliedFilters"
+          :key="filter.key"
+          @click="removeFilter(filter)"
+          class="flex shrink-0 items-center gap-2 rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover active:bg-accent-active"
+        >
+          <span>{{ filter.label }}</span>
+          <svg
+            class="size-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Clear all button -->
+        <button
+          v-if="appliedFilters.length > 1"
+          @click="clearAllFilters"
+          class="shrink-0 rounded-full border border-gray-500 px-3 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
+        >
+          Clear All
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop: Card-style sidebar display -->
+    <div class="hidden md:block">
+      <div
+        class="rounded-lg border border-gray-600 bg-bg-card p-4 transition-all duration-300 ease-in-out"
+      >
+        <div class="mb-3 flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-text-primary">
+            Active Filters
+          </h3>
+          <span
+            class="flex size-6 items-center justify-center rounded-full bg-accent text-xs font-medium text-white"
+          >
+            {{ appliedFilters.length }}
+          </span>
+        </div>
+
+        <!-- Results Count Preview -->
+        <div
+          v-if="gameCount !== undefined"
+          class="mb-3 text-sm text-text-secondary"
+        >
+          {{ gameCount }} games found
+        </div>
+
+        <div
+          v-if="appliedFilters.length > 0"
+          class="space-y-2 transition-all duration-300"
+        >
+          <button
+            v-for="filter in appliedFilters"
+            :key="filter.key"
+            @click="removeFilter(filter)"
+            class="flex w-full items-center justify-between rounded-sm bg-accent/10 px-3 py-2 text-sm transition-colors hover:bg-accent/20"
+          >
+            <span class="truncate text-text-primary">{{ filter.label }}</span>
+            <svg
+              class="size-4 shrink-0 text-text-secondary hover:text-accent"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Clear all button -->
+          <button
+            @click="clearAllFilters"
+            class="mt-2 w-full rounded-sm border border-gray-500 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
+          >
+            Clear All Filters
+          </button>
+        </div>
+
+        <div v-else class="text-sm text-text-secondary">No active filters</div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 /* Custom scrollbar for mobile horizontal scroll */

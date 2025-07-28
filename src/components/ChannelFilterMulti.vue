@@ -1,3 +1,187 @@
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { UI_LIMITS } from '../config/index'
+
+/**
+ * Channel item interface with name and count
+ */
+export interface ChannelWithCount {
+  name: string
+  count: number
+}
+
+/**
+ * Channel filter change event payload
+ */
+export interface ChannelFilterChangeEvent {
+  selectedChannels: string[]
+}
+
+/**
+ * Props interface for ChannelFilterMulti component
+ */
+export interface ChannelFilterMultiProps {
+  channelsWithCounts?: ChannelWithCount[]
+  initialSelectedChannels?: string[]
+}
+
+const props = withDefaults(defineProps<ChannelFilterMultiProps>(), {
+  channelsWithCounts: () => [],
+  initialSelectedChannels: () => [],
+})
+
+const emit = defineEmits<{
+  channelsChanged: [event: ChannelFilterChangeEvent]
+}>()
+const searchInput = ref<HTMLInputElement | null>(null)
+const searchQuery = ref<string>('')
+const showDropdown = ref<boolean>(false)
+const selectedChannels = ref<string[]>([...props.initialSelectedChannels])
+const showAll = ref<boolean>(false)
+const initialShowCount: number = UI_LIMITS.CHANNEL_FILTER_INITIAL_SHOW_COUNT
+
+// Define consistent colors for channels
+const channelColors: Record<string, string> = {
+  'videos-dextag': 'bg-red-500',
+  'videos-nookrium': 'bg-blue-500',
+  'videos-wanderbots': 'bg-green-500',
+  'videos-aliensrock': 'bg-purple-500',
+  'videos-olexa': 'bg-yellow-500',
+  'videos-idlecub': 'bg-pink-500',
+  'videos-orbitalpotato': 'bg-indigo-500',
+  'videos-splattercatgaming': 'bg-orange-500',
+}
+
+const getChannelColor = (channelName: string): string =>
+  channelColors[channelName] || 'bg-gray-500'
+
+// Filtered channels based on search query
+const filteredChannels = computed((): ChannelWithCount[] => {
+  if (!searchQuery.value.trim()) {
+    // Sort by popularity (game count) when not searching
+    return props.channelsWithCounts.slice().sort((a, b) => b.count - a.count)
+  }
+
+  const query = searchQuery.value.toLowerCase()
+  return props.channelsWithCounts
+    .filter((channel) => {
+      const formattedName = formatChannelName(channel.name).toLowerCase()
+      return (
+        formattedName.includes(query) ||
+        channel.name.toLowerCase().includes(query)
+      )
+    })
+    .sort((a, b) => b.count - a.count)
+})
+
+// Visible channels (with show more/less functionality)
+const visibleChannels = computed((): ChannelWithCount[] => {
+  if (searchQuery.value.trim() || showAll.value) {
+    return filteredChannels.value
+  }
+  return filteredChannels.value.slice(0, initialShowCount)
+})
+
+// Top channels by game count (for quick select)
+const popularChannels = computed((): ChannelWithCount[] =>
+  props.channelsWithCounts
+    .slice()
+    .sort((a, b) => b.count - a.count)
+    .slice(0, UI_LIMITS.POPULAR_CHANNELS_COUNT),
+)
+
+const toggleChannel = (channelName: string): void => {
+  const index = selectedChannels.value.indexOf(channelName)
+  if (index > -1) {
+    selectedChannels.value.splice(index, 1)
+  } else {
+    selectedChannels.value.push(channelName)
+  }
+  emitFiltersChanged()
+}
+
+const removeChannel = (channelName: string): void => {
+  const index = selectedChannels.value.indexOf(channelName)
+  if (index > -1) {
+    selectedChannels.value.splice(index, 1)
+    emitFiltersChanged()
+  }
+}
+
+const clearAllChannels = (): void => {
+  selectedChannels.value = []
+  emitFiltersChanged()
+}
+
+const selectAllChannels = (): void => {
+  selectedChannels.value = props.channelsWithCounts.map((c) => c.name)
+  emitFiltersChanged()
+}
+
+const selectPopularChannels = (): void => {
+  // Add popular channels that aren't already selected
+  const popularChannelNames = popularChannels.value.map((c) => c.name)
+  popularChannelNames.forEach((channel) => {
+    if (!selectedChannels.value.includes(channel)) {
+      selectedChannels.value.push(channel)
+    }
+  })
+  emitFiltersChanged()
+}
+
+const toggleShowAll = (): void => {
+  showAll.value = !showAll.value
+}
+
+const clearSearch = (): void => {
+  searchQuery.value = ''
+  if (searchInput.value) {
+    searchInput.value.focus()
+  }
+}
+
+const formatChannelName = (channel: string): string => {
+  if (!channel || typeof channel !== 'string') {
+    return 'Unknown Channel'
+  }
+  return channel
+    .replace(/^videos-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (l) => l.toUpperCase())
+}
+
+const emitFiltersChanged = (): void => {
+  emit('channelsChanged', {
+    selectedChannels: [...selectedChannels.value],
+  })
+}
+
+// Handle clicking outside to close dropdown
+const handleClickOutside = (event: Event): void => {
+  const input = searchInput.value
+  if (input && event.target && !input.contains(event.target as Node)) {
+    showDropdown.value = false
+  }
+}
+
+// Watch for changes in initial props
+watch(
+  () => props.initialSelectedChannels,
+  (newChannels: string[]) => {
+    selectedChannels.value = [...newChannels]
+  },
+  { deep: true },
+)
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+</script>
+
 <template>
   <div class="space-y-3">
     <h3 class="text-sm font-semibold text-text-primary">Channels</h3>
@@ -150,188 +334,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { UI_LIMITS } from '../config/index'
-
-/**
- * Channel item interface with name and count
- */
-export interface ChannelWithCount {
-  name: string
-  count: number
-}
-
-/**
- * Channel filter change event payload
- */
-export interface ChannelFilterChangeEvent {
-  selectedChannels: string[]
-}
-
-/**
- * Props interface for ChannelFilterMulti component
- */
-export interface ChannelFilterMultiProps {
-  channelsWithCounts?: ChannelWithCount[]
-  initialSelectedChannels?: string[]
-}
-
-const props = withDefaults(defineProps<ChannelFilterMultiProps>(), {
-  channelsWithCounts: () => [],
-  initialSelectedChannels: () => [],
-})
-
-const emit = defineEmits<{
-  'channels-changed': [event: ChannelFilterChangeEvent]
-}>()
-const searchInput = ref<HTMLInputElement | null>(null)
-const searchQuery = ref<string>('')
-const showDropdown = ref<boolean>(false)
-const selectedChannels = ref<string[]>([...props.initialSelectedChannels])
-const showAll = ref<boolean>(false)
-const initialShowCount: number = UI_LIMITS.CHANNEL_FILTER_INITIAL_SHOW_COUNT
-
-// Define consistent colors for channels
-const channelColors: Record<string, string> = {
-  'videos-dextag': 'bg-red-500',
-  'videos-nookrium': 'bg-blue-500',
-  'videos-wanderbots': 'bg-green-500',
-  'videos-aliensrock': 'bg-purple-500',
-  'videos-olexa': 'bg-yellow-500',
-  'videos-idlecub': 'bg-pink-500',
-  'videos-orbitalpotato': 'bg-indigo-500',
-  'videos-splattercatgaming': 'bg-orange-500',
-}
-
-const getChannelColor = (channelName: string): string => {
-  return channelColors[channelName] || 'bg-gray-500'
-}
-
-// Filtered channels based on search query
-const filteredChannels = computed((): ChannelWithCount[] => {
-  if (!searchQuery.value.trim()) {
-    // Sort by popularity (game count) when not searching
-    return props.channelsWithCounts.slice().sort((a, b) => b.count - a.count)
-  }
-
-  const query = searchQuery.value.toLowerCase()
-  return props.channelsWithCounts
-    .filter((channel) => {
-      const formattedName = formatChannelName(channel.name).toLowerCase()
-      return (
-        formattedName.includes(query) ||
-        channel.name.toLowerCase().includes(query)
-      )
-    })
-    .sort((a, b) => b.count - a.count)
-})
-
-// Visible channels (with show more/less functionality)
-const visibleChannels = computed((): ChannelWithCount[] => {
-  if (searchQuery.value.trim() || showAll.value) {
-    return filteredChannels.value
-  }
-  return filteredChannels.value.slice(0, initialShowCount)
-})
-
-// Top channels by game count (for quick select)
-const popularChannels = computed((): ChannelWithCount[] => {
-  return props.channelsWithCounts
-    .slice()
-    .sort((a, b) => b.count - a.count)
-    .slice(0, UI_LIMITS.POPULAR_CHANNELS_COUNT)
-})
-
-const toggleChannel = (channelName: string): void => {
-  const index = selectedChannels.value.indexOf(channelName)
-  if (index > -1) {
-    selectedChannels.value.splice(index, 1)
-  } else {
-    selectedChannels.value.push(channelName)
-  }
-  emitFiltersChanged()
-}
-
-const removeChannel = (channelName: string): void => {
-  const index = selectedChannels.value.indexOf(channelName)
-  if (index > -1) {
-    selectedChannels.value.splice(index, 1)
-    emitFiltersChanged()
-  }
-}
-
-const clearAllChannels = (): void => {
-  selectedChannels.value = []
-  emitFiltersChanged()
-}
-
-const selectAllChannels = (): void => {
-  selectedChannels.value = props.channelsWithCounts.map((c) => c.name)
-  emitFiltersChanged()
-}
-
-const selectPopularChannels = (): void => {
-  // Add popular channels that aren't already selected
-  const popularChannelNames = popularChannels.value.map((c) => c.name)
-  popularChannelNames.forEach((channel) => {
-    if (!selectedChannels.value.includes(channel)) {
-      selectedChannels.value.push(channel)
-    }
-  })
-  emitFiltersChanged()
-}
-
-const toggleShowAll = (): void => {
-  showAll.value = !showAll.value
-}
-
-const clearSearch = (): void => {
-  searchQuery.value = ''
-  if (searchInput.value) {
-    searchInput.value.focus()
-  }
-}
-
-const formatChannelName = (channel: string): string => {
-  if (!channel || typeof channel !== 'string') {
-    return 'Unknown Channel'
-  }
-  return channel
-    .replace(/^videos-/, '')
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (l) => l.toUpperCase())
-}
-
-const emitFiltersChanged = (): void => {
-  emit('channels-changed', {
-    selectedChannels: [...selectedChannels.value],
-  })
-}
-
-// Handle clicking outside to close dropdown
-const handleClickOutside = (event: Event): void => {
-  const input = searchInput.value
-  if (input && event.target && !input.contains(event.target as Node)) {
-    showDropdown.value = false
-  }
-}
-
-// Watch for changes in initial props
-watch(
-  () => props.initialSelectedChannels,
-  (newChannels: string[]) => {
-    selectedChannels.value = [...newChannels]
-  },
-  { deep: true },
-)
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
-</script>

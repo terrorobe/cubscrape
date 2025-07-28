@@ -18,7 +18,7 @@ function stopDevServer() {
 
     try {
         const lockData = JSON.parse(readFileSync(DEV_LOCK_FILE, 'utf8'));
-        const pid = lockData.pid;
+        const {pid} = lockData;
 
         console.log(`🔍 Found dev server with PID: ${pid}`);
 

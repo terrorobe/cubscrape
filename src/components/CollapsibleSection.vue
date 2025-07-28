@@ -1,3 +1,27 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+/**
+ * Props interface for CollapsibleSection component
+ */
+export interface CollapsibleSectionProps {
+  title: string
+  activeCount?: number
+  defaultExpanded?: boolean
+}
+
+const props = withDefaults(defineProps<CollapsibleSectionProps>(), {
+  activeCount: 0,
+  defaultExpanded: true,
+})
+
+const isExpanded = ref(props.defaultExpanded)
+
+const toggleExpanded = (): void => {
+  isExpanded.value = !isExpanded.value
+}
+</script>
+
 <template>
   <div class="rounded-lg border border-gray-600 bg-bg-card">
     <!-- Section Header -->
@@ -39,27 +63,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-/**
- * Props interface for CollapsibleSection component
- */
-export interface CollapsibleSectionProps {
-  title: string
-  activeCount?: number
-  defaultExpanded?: boolean
-}
-
-const props = withDefaults(defineProps<CollapsibleSectionProps>(), {
-  activeCount: 0,
-  defaultExpanded: true,
-})
-
-const isExpanded = ref(props.defaultExpanded)
-
-const toggleExpanded = (): void => {
-  isExpanded.value = !isExpanded.value
-}
-</script>

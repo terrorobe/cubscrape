@@ -17,7 +17,7 @@ function createLockFile() {
     if (existsSync(DEV_LOCK_FILE)) {
         try {
             const lockData = JSON.parse(readFileSync(DEV_LOCK_FILE, 'utf8'));
-            const pid = lockData.pid;
+            const {pid} = lockData;
 
             // Check if process is still running
             try {
