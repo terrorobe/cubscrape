@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 import { spawn } from 'child_process';
 import { statSync, existsSync, readdirSync, writeFileSync, unlinkSync, readFileSync } from 'fs';
 import { join } from 'path';
@@ -17,13 +18,13 @@ function createLockFile() {
     if (existsSync(DEV_LOCK_FILE)) {
         try {
             const lockData = JSON.parse(readFileSync(DEV_LOCK_FILE, 'utf8'));
-            const {pid} = lockData;
+            const {pid, vitePid} = lockData;
 
             // Check if process is still running
             try {
                 // On Unix, sending signal 0 checks if process exists
                 process.kill(pid, 0);
-                console.log(`✅ Dev server is already running (PID: ${pid})`);
+                console.log(`✅ Dev server is already running (Parent PID: ${pid}, Vite PID: ${vitePid || 'unknown'})`);
                 console.log('   Access at: http://localhost:5173');
                 console.log('   Stop with: npm run stop-dev');
                 process.exit(0);
@@ -42,12 +43,24 @@ function createLockFile() {
     // Create new lock file
     const lockData = {
         pid: process.pid,
+        vitePid: null, // Will be updated when Vite starts
         startTime: new Date().toISOString(),
         command: 'npm run dev'
     };
 
     writeFileSync(DEV_LOCK_FILE, JSON.stringify(lockData, null, 2));
     console.log(`🔒 Created dev server lock file (PID: ${process.pid})`);
+}
+
+function updateLockFileWithVitePid(vitePid) {
+    try {
+        const lockData = JSON.parse(readFileSync(DEV_LOCK_FILE, 'utf8'));
+        lockData.vitePid = vitePid;
+        writeFileSync(DEV_LOCK_FILE, JSON.stringify(lockData, null, 2));
+        console.log(`📝 Updated lock file with Vite PID: ${vitePid}`);
+    } catch (error) {
+        console.warn('⚠️  Failed to update lock file with Vite PID:', error.message);
+    }
 }
 
 function removeLockFile() {
@@ -99,7 +112,7 @@ function shouldRebuildDatabase() {
 let childProcesses = [];
 
 // Run a command and wait for it to complete
-function runCommand(command, args = []) {
+function runCommand(command, args = [], captureChildPid = false) {
     return new Promise((resolve, reject) => {
         const proc = spawn(command, args, {
             stdio: 'inherit',
@@ -110,6 +123,11 @@ function runCommand(command, args = []) {
 
         // Track child process for cleanup
         childProcesses.push(proc);
+
+        // If we need to capture the child PID (for Vite)
+        if (captureChildPid) {
+            updateLockFileWithVitePid(proc.pid);
+        }
 
         // Monitor child process and clean up lock file if it dies unexpectedly
         proc.on('close', (code, signal) => {
@@ -178,7 +196,7 @@ async function main() {
         console.log('🌐 Starting Vue dev server...');
         console.log('Press Ctrl+C to stop the server\n');
 
-        await runCommand('vite');
+        await runCommand('vite', [], true); // true to capture Vite PID
 
     } catch (error) {
         console.error('\n❌ Error:', error.message);

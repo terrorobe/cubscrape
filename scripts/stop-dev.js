@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 import { existsSync, readFileSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
@@ -10,7 +11,36 @@ const projectRoot = dirname(__dirname);
 
 const DEV_LOCK_FILE = join(projectRoot, 'data', '.dev-server.lock');
 
-function stopDevServer() {
+function killProcess(pid, name) {
+    return new Promise((resolve) => {
+        try {
+            process.kill(pid, 'SIGTERM');
+            console.log(`📤 Sent SIGTERM to ${name} process ${pid}`);
+
+            // Check if process died after 2 seconds
+            setTimeout(() => {
+                try {
+                    process.kill(pid, 0);
+                    console.log(`⚠️  ${name} process ${pid} still running, sending SIGKILL...`);
+                    process.kill(pid, 'SIGKILL');
+                    resolve(true);
+                } catch {
+                    console.log(`✅ ${name} process ${pid} stopped`);
+                    resolve(true);
+                }
+            }, 2000);
+        } catch (error) {
+            if (error.code === 'ESRCH') {
+                console.log(`ℹ️  ${name} process ${pid} not found - already stopped`);
+            } else {
+                console.error(`❌ Failed to stop ${name} process:`, error.message);
+            }
+            resolve(false);
+        }
+    });
+}
+
+async function stopDevServer() {
     if (!existsSync(DEV_LOCK_FILE)) {
         console.log('ℹ️  No dev server lock file found - server may not be running');
         return;
@@ -18,43 +48,32 @@ function stopDevServer() {
 
     try {
         const lockData = JSON.parse(readFileSync(DEV_LOCK_FILE, 'utf8'));
-        const {pid} = lockData;
+        const {pid, vitePid} = lockData;
 
-        console.log(`🔍 Found dev server with PID: ${pid}`);
+        console.log(`🔍 Found dev server processes:`);
+        console.log(`   Parent PID: ${pid}`);
+        console.log(`   Vite PID: ${vitePid || 'unknown'}`);
 
-        // Try to kill the process
-        try {
-            process.kill(pid, 'SIGTERM');
-            console.log(`✅ Sent SIGTERM to process ${pid}`);
+        // Kill processes in parallel
+        const promises = [];
 
-            // Give it a moment to shut down gracefully
-            setTimeout(() => {
-                try {
-                    // Check if process is still running
-                    process.kill(pid, 0);
-                    console.log(`⚠️  Process ${pid} still running, sending SIGKILL...`);
-                    process.kill(pid, 'SIGKILL');
-                } catch {
-                    // Process is gone, which is what we want
-                    console.log('✅ Dev server stopped successfully');
-                }
+        // Kill Vite process first if we have its PID
+        if (vitePid) {
+            promises.push(killProcess(vitePid, 'Vite'));
+        }
 
-                // Clean up lock file
-                if (existsSync(DEV_LOCK_FILE)) {
-                    unlinkSync(DEV_LOCK_FILE);
-                    console.log('🔓 Removed dev server lock file');
-                }
-            }, 2000);
+        // Kill parent process
+        promises.push(killProcess(pid, 'Parent'));
 
-        } catch (error) {
-            if (error.code === 'ESRCH') {
-                console.log('ℹ️  Process not found - server was already stopped');
-                // Clean up stale lock file
-                unlinkSync(DEV_LOCK_FILE);
-                console.log('🔓 Removed stale lock file');
-            } else {
-                console.error('❌ Failed to stop dev server:', error.message);
-            }
+        // Wait for all processes to be killed
+        await Promise.all(promises);
+
+        console.log('✅ All dev server processes stopped');
+
+        // Clean up lock file
+        if (existsSync(DEV_LOCK_FILE)) {
+            unlinkSync(DEV_LOCK_FILE);
+            console.log('🔓 Removed dev server lock file');
         }
 
     } catch (error) {
@@ -66,4 +85,9 @@ function stopDevServer() {
 }
 
 console.log('🛑 Stopping dev server...');
-stopDevServer();
+stopDevServer().then(() => {
+    process.exit(0);
+}).catch((error) => {
+    console.error('❌ Error stopping dev server:', error);
+    process.exit(1);
+});
