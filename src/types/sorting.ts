@@ -118,62 +118,6 @@ export function normalizeSortSpec(sortSpec: unknown): SortSpec {
     return sortSpec
   }
 
-  // Handle legacy object formats
-  if (typeof sortSpec === 'object' && sortSpec !== null) {
-    const obj = sortSpec as Record<string, unknown>
-
-    // Try to convert legacy AdvancedSortSpec without mode
-    if (
-      'primary' in obj &&
-      typeof obj.primary === 'object' &&
-      obj.primary !== null
-    ) {
-      const primary = obj.primary as Record<string, unknown>
-      if ('field' in primary && 'direction' in primary) {
-        const normalized: AdvancedSortSpec = {
-          mode: 'advanced',
-          primary: {
-            field: String(primary.field) as SortField,
-            direction: (primary.direction as string) === 'asc' ? 'asc' : 'desc',
-            weight:
-              typeof primary.weight === 'number' ? primary.weight : undefined,
-          },
-        }
-
-        // Handle secondary criteria
-        if (
-          'secondary' in obj &&
-          typeof obj.secondary === 'object' &&
-          obj.secondary !== null
-        ) {
-          const secondary = obj.secondary as Record<string, unknown>
-          if ('field' in secondary && 'direction' in secondary) {
-            normalized.secondary = {
-              field: String(secondary.field) as SortField,
-              direction:
-                (secondary.direction as string) === 'asc' ? 'asc' : 'desc',
-              weight:
-                typeof secondary.weight === 'number'
-                  ? secondary.weight
-                  : undefined,
-            }
-          }
-        }
-
-        return normalized
-      }
-    }
-
-    // Try to convert simple field/direction objects
-    if ('field' in obj && 'direction' in obj) {
-      return {
-        mode: 'simple',
-        field: String(obj.field) as SortField,
-        direction: (obj.direction as string) === 'asc' ? 'asc' : 'desc',
-      }
-    }
-  }
-
   // Fallback to null for unrecognized formats
   console.warn('Unable to normalize sort specification:', sortSpec)
   return null

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { FilterConfig } from '../utils/presetManager'
-import type { FilterValue, FilterRemoveEvent, AppliedFilter } from '../types/filters'
+import type {
+  FilterValue,
+  FilterRemoveEvent,
+  AppliedFilter,
+} from '../types/filters'
 
 /**
  * Props interface for AppliedFiltersBar component
