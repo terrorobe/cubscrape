@@ -226,7 +226,7 @@ const getPrice = (game: ParsedGameData): string | null => {
   }
 
   // Get the appropriate price based on selected currency
-  if (game.display_price !== undefined) {
+  if (game.display_price && game.display_price !== 'null') {
     return game.display_price
   } else if (props.currency === 'usd' && game.price_usd) {
     return `$${game.price_usd}`

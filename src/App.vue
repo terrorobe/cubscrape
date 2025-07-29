@@ -831,7 +831,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
 
       // Build parent lookup for absorbed games
       if (!gameData.is_absorbed) {
-        parentGameLookup.set(String(gameData.game_key), gameData)
+        parentGameLookup.set(gameData.game_key ? String(gameData.game_key) : '', gameData)
       }
     })
 
@@ -861,7 +861,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
 
       // For absorbed games, supplement with parent game data where needed
       if (gameData.is_absorbed && gameData.absorbed_into) {
-        const parentData = parentGameLookup.get(String(gameData.absorbed_into))
+        const parentData = parentGameLookup.get(gameData.absorbed_into ? String(gameData.absorbed_into) : '')
         if (parentData) {
           // Use parent's review data if absorbed game has insufficient data
           if (
@@ -893,29 +893,29 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
         id: Number(gameData.id),
         game_key: String(gameData.game_key || ''),
         name: String(gameData.name),
-        steam_app_id: String(gameData.steam_app_id),
-        header_image: String(gameData.header_image),
+        steam_app_id: gameData.steam_app_id ? String(gameData.steam_app_id) : null,
+        header_image: gameData.header_image ? String(gameData.header_image) : null,
         price_eur: Number(gameData.price_eur),
         price_usd: Number(gameData.price_usd),
         price_final: Number(gameData.price_final),
         is_free: Boolean(gameData.is_free),
-        release_date: String(gameData.release_date),
+        release_date: gameData.release_date ? String(gameData.release_date) : null,
         release_date_sortable: Number(gameData.release_date_sortable),
-        review_summary: String(gameData.review_summary),
+        review_summary: gameData.review_summary ? String(gameData.review_summary) : null,
         review_summary_priority: Number(gameData.review_summary_priority),
         positive_review_percentage: Number(gameData.positive_review_percentage),
         review_count: Number(gameData.review_count),
-        steam_url: String(gameData.steam_url),
-        itch_url: String(gameData.itch_url),
-        crazygames_url: String(gameData.crazygames_url),
-        demo_steam_app_id: String(gameData.demo_steam_app_id),
-        demo_steam_url: String(gameData.demo_steam_url),
+        steam_url: gameData.steam_url ? String(gameData.steam_url) : null,
+        itch_url: gameData.itch_url ? String(gameData.itch_url) : null,
+        crazygames_url: gameData.crazygames_url ? String(gameData.crazygames_url) : null,
+        demo_steam_app_id: gameData.demo_steam_app_id ? String(gameData.demo_steam_app_id) : null,
+        demo_steam_url: gameData.demo_steam_url ? String(gameData.demo_steam_url) : null,
         display_links:
           typeof gameData.display_links === 'object' &&
           gameData.display_links !== null
             ? (gameData.display_links as { main?: string; demo?: string })
             : null,
-        display_price: String(gameData.display_price),
+        display_price: gameData.display_price ? String(gameData.display_price) : null,
         tags: Array.isArray(gameData.tags) ? gameData.tags : [],
         genres: Array.isArray(gameData.genres) ? gameData.genres : [],
         developers: Array.isArray(gameData.developers)
@@ -925,11 +925,11 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
           ? gameData.publishers
           : [],
         platform: String(gameData.platform) as 'steam' | 'itch' | 'crazygames',
-        last_updated: String(gameData.last_updated),
-        latest_video_title: String(gameData.latest_video_title),
-        latest_video_id: String(gameData.latest_video_id),
-        latest_video_date: String(gameData.latest_video_date),
-        newest_video_date: String(gameData.latest_video_date),
+        last_updated: gameData.last_updated ? String(gameData.last_updated) : null,
+        latest_video_title: gameData.latest_video_title ? String(gameData.latest_video_title) : null,
+        latest_video_id: gameData.latest_video_id ? String(gameData.latest_video_id) : null,
+        latest_video_date: gameData.latest_video_date ? String(gameData.latest_video_date) : null,
+        newest_video_date: gameData.latest_video_date ? String(gameData.latest_video_date) : null,
         unique_channels: Array.isArray(gameData.unique_channels)
           ? gameData.unique_channels
           : [],
@@ -937,15 +937,15 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
         coming_soon: Boolean(gameData.coming_soon),
         is_early_access: Boolean(gameData.is_early_access),
         is_demo: Boolean(gameData.is_demo),
-        planned_release_date: String(gameData.planned_release_date),
+        planned_release_date: gameData.planned_release_date ? String(gameData.planned_release_date) : null,
         insufficient_reviews: Boolean(gameData.insufficient_reviews),
         is_inferred_summary: Boolean(gameData.is_inferred_summary),
-        review_tooltip: String(gameData.review_tooltip),
+        review_tooltip: gameData.review_tooltip ? String(gameData.review_tooltip) : null,
         recent_review_percentage: Number(gameData.recent_review_percentage),
         recent_review_count: Number(gameData.recent_review_count),
-        recent_review_summary: String(gameData.recent_review_summary),
+        recent_review_summary: gameData.recent_review_summary ? String(gameData.recent_review_summary) : null,
         is_absorbed: Boolean(gameData.is_absorbed),
-        absorbed_into: String(gameData.absorbed_into),
+        absorbed_into: gameData.absorbed_into ? String(gameData.absorbed_into) : null,
       }
 
       processedGames.push(game)
