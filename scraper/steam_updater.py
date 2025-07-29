@@ -544,6 +544,57 @@ class SteamDataUpdater:
                 self.steam_data['games'][app_id] = app_data
                 GameUpdateLogger.log_game_update_success(app_data.name, additional_info=app_type)
                 return True
+            else:
+                # Handle removed apps - clean up broken relationships
+                if app_type == "demo" and existing_app_data and existing_app_data.full_game_app_id:
+                    # Clear the demo reference from the full game
+                    full_game_id = existing_app_data.full_game_app_id
+                    if full_game_id in self.steam_data['games']:
+                        full_game = self.steam_data['games'][full_game_id]
+                        if full_game.demo_app_id == app_id:
+                            logging.info(f"  Clearing demo reference from full game {full_game_id}")
+                            updated_full_game = full_game.model_copy(update={
+                                'demo_app_id': None,
+                                'has_demo': False,
+                                'last_updated': datetime.now().isoformat()
+                            })
+                            self.steam_data['games'][full_game_id] = updated_full_game
+                        else:
+                            logging.warning(f"  Full game {full_game_id} doesn't reference demo {app_id} - possible data inconsistency")
+
+                elif app_type == "full game" and existing_app_data:
+                    # Find and clean up any demos that reference this removed full game
+                    demos_to_clean = []
+                    for demo_id, demo_data in self.steam_data['games'].items():
+                        if demo_data.is_demo and demo_data.full_game_app_id == app_id:
+                            demos_to_clean.append(demo_id)
+
+                    # Clean up demo references
+                    for demo_id in demos_to_clean:
+                        demo_data = self.steam_data['games'][demo_id]
+                        updated_demo = demo_data.model_copy(update={
+                            'full_game_app_id': None,
+                            'last_updated': datetime.now().isoformat()
+                        })
+                        self.steam_data['games'][demo_id] = updated_demo
+                        logging.info(f"  Cleared full game reference from demo {demo_id}")
+
+                # Mark the app as removed if it's still referenced by videos and we had existing data
+                if existing_app_data and self.data_manager.is_game_referenced_by_videos('steam', app_id):
+                    logging.info(f"  Marking {app_type} {app_id} as removed (referenced by videos)")
+                    removed_data = existing_app_data.model_copy(update={
+                        'name': existing_app_data.name + " [REMOVED]",
+                        'error': "Removed from Steam",
+                        'last_updated': datetime.now().isoformat()
+                    })
+                    self.steam_data['games'][app_id] = removed_data
+                else:
+                    # Remove the app entirely if not referenced
+                    logging.info(f"  Removing {app_type} {app_id} (not referenced by videos)")
+                    if app_id in self.steam_data['games']:
+                        del self.steam_data['games'][app_id]
+
+                return True
             return False
         except Exception as e:
             GameUpdateLogger.log_game_update_failure(app_id, "steam", f"Error fetching {app_type} data: {e}")

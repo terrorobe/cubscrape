@@ -109,7 +109,7 @@ class SteamDataFetcher(BaseFetcher):
                     game_data.price_usd = self._get_price(api_data_usd)
 
             # Fetch additional data from store page
-            store_data = self._fetch_store_page_data(steam_url, api_data_eur)
+            store_data = self._fetch_store_page_data(steam_url, api_data_eur, existing_data)
 
             # Merge store page data into game data
             self._merge_store_data(game_data, store_data)
@@ -191,7 +191,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return None
 
-    def _fetch_store_page_data(self, steam_url: str, app_data: dict[str, Any] | None = None) -> dict[str, Any]:
+    def _fetch_store_page_data(self, steam_url: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None) -> dict[str, Any]:
         """Scrape additional data from Steam store page with retry logic"""
         response = self._make_request_with_retry(
             steam_url,
@@ -210,7 +210,7 @@ class SteamDataFetcher(BaseFetcher):
 
         # Extract various data types
         result.update(self._extract_tags(soup))
-        result.update(self._extract_demo_info(soup, page_text, html_content, app_data))
+        result.update(self._extract_demo_info(soup, page_text, html_content, app_data, existing_data))
         result.update(self._extract_early_access(soup))
         result.update(self._extract_review_data(page_text))
         result.update(self._extract_release_info(soup, page_text, app_data))
@@ -227,7 +227,7 @@ class SteamDataFetcher(BaseFetcher):
                 tags.append(tag_text)
         return {'tags': tags}
 
-    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict[str, Any] | None = None) -> dict[str, Any]:
+    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None) -> dict[str, Any]:
         """Extract demo-related information"""
         result: dict[str, Any] = {}
 
@@ -243,6 +243,9 @@ class SteamDataFetcher(BaseFetcher):
             full_game_id = self._find_full_game_id(soup, page_text)
             if full_game_id:
                 result['full_game_app_id'] = full_game_id
+            elif existing_data and existing_data.full_game_app_id:
+                # Preserve existing relationship when no new one is found
+                result['full_game_app_id'] = existing_data.full_game_app_id
         else:
             # For non-demo apps, try to find demo app ID - only set has_demo if we find one
             demo_app_id = self._find_demo_app_id(soup, page_text, html_content)
@@ -400,15 +403,21 @@ class SteamDataFetcher(BaseFetcher):
 
     def _find_full_game_id(self, soup: BeautifulSoup, page_text: str) -> str | None:
         """Try to find the full game app ID from a demo page"""
-        # Look for Community Hub link
+        # Get current app ID to avoid self-references
+        current_app_id = self._get_current_app_id(soup)
+
+        # Look for Community Hub link (excluding self-references)
         community_links = soup.find_all('a', href=re.compile(r'steamcommunity\.com/app/(\d+)'))
         for link in community_links:
             href = self.safe_get_attr(link, 'href')
             match = re.search(r'/app/(\d+)', href)
             if match:
-                return match.group(1)
+                app_id = match.group(1)
+                # Skip self-references
+                if app_id != current_app_id:
+                    return app_id
 
-        # Look for main game patterns in text
+        # Look for main game patterns in text (excluding self-references)
         main_game_patterns = [
             r'main game.*?app/(\d+)',
             r'full game.*?app/(\d+)',
@@ -419,7 +428,10 @@ class SteamDataFetcher(BaseFetcher):
         for pattern in main_game_patterns:
             match = re.search(pattern, page_text, re.IGNORECASE)
             if match:
-                return match.group(1)
+                app_id = match.group(1)
+                # Skip self-references
+                if app_id != current_app_id:
+                    return app_id
 
         return None
 
