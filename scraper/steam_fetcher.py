@@ -65,7 +65,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return None
 
-    def fetch_data(self, steam_url: str, fetch_usd: bool = False, existing_data: 'SteamGameData | None' = None) -> SteamGameData | None:
+    def fetch_data(self, steam_url: str, fetch_usd: bool = False, existing_data: 'SteamGameData | None' = None, known_full_game_id: str | None = None) -> SteamGameData | None:
         """Fetch complete game data from Steam with EUR by default"""
         try:
             app_id = extract_steam_app_id(steam_url)
@@ -109,7 +109,7 @@ class SteamDataFetcher(BaseFetcher):
                     game_data.price_usd = self._get_price(api_data_usd)
 
             # Fetch additional data from store page
-            store_data = self._fetch_store_page_data(steam_url, api_data_eur, existing_data)
+            store_data = self._fetch_store_page_data(steam_url, api_data_eur, existing_data, known_full_game_id)
 
             # Merge store page data into game data
             self._merge_store_data(game_data, store_data)
@@ -191,7 +191,7 @@ class SteamDataFetcher(BaseFetcher):
 
         return None
 
-    def _fetch_store_page_data(self, steam_url: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None) -> dict[str, Any]:
+    def _fetch_store_page_data(self, steam_url: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None, known_full_game_id: str | None = None) -> dict[str, Any]:
         """Scrape additional data from Steam store page with retry logic"""
         response = self._make_request_with_retry(
             steam_url,
@@ -210,7 +210,7 @@ class SteamDataFetcher(BaseFetcher):
 
         # Extract various data types
         result.update(self._extract_tags(soup))
-        result.update(self._extract_demo_info(soup, page_text, html_content, app_data, existing_data))
+        result.update(self._extract_demo_info(soup, page_text, html_content, app_data, existing_data, known_full_game_id))
         result.update(self._extract_early_access(soup))
         result.update(self._extract_review_data(page_text))
         result.update(self._extract_release_info(soup, page_text, app_data))
@@ -227,7 +227,7 @@ class SteamDataFetcher(BaseFetcher):
                 tags.append(tag_text)
         return {'tags': tags}
 
-    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None) -> dict[str, Any]:
+    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None, known_full_game_id: str | None = None) -> dict[str, Any]:
         """Extract demo-related information"""
         result: dict[str, Any] = {}
 
@@ -240,12 +240,16 @@ class SteamDataFetcher(BaseFetcher):
 
         # If this is a demo, try to find the full game
         if is_demo:
-            full_game_id = self._find_full_game_id(soup, page_text)
-            if full_game_id:
-                result['full_game_app_id'] = full_game_id
-            elif existing_data and existing_data.full_game_app_id:
-                # Preserve existing relationship when no new one is found
-                result['full_game_app_id'] = existing_data.full_game_app_id
+            # Use known full game ID if provided (from relationship context)
+            if known_full_game_id:
+                result['full_game_app_id'] = known_full_game_id
+            else:
+                full_game_id = self._find_full_game_id(soup, page_text)
+                if full_game_id:
+                    result['full_game_app_id'] = full_game_id
+                elif existing_data and existing_data.full_game_app_id:
+                    # Preserve existing relationship when no new one is found
+                    result['full_game_app_id'] = existing_data.full_game_app_id
         else:
             # For non-demo apps, try to find demo app ID - only set has_demo if we find one
             demo_app_id = self._find_demo_app_id(soup, page_text, html_content)

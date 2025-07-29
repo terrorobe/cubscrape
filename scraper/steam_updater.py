@@ -503,7 +503,7 @@ class SteamDataUpdater:
 
             if demo_id and (force_demo_check or self._should_update_related_app(demo_id)):
                 logging.info(f"  Fetching demo {demo_id}")
-                self._fetch_related_app(demo_id, "demo")
+                self._fetch_related_app(demo_id, "demo", known_full_game_id=app_id)
 
             return True
 
@@ -523,13 +523,14 @@ class SteamDataUpdater:
                 return last_updated_date < stale_date
         return True
 
-    def _fetch_related_app(self, app_id: str, app_type: str) -> bool:
+    def _fetch_related_app(self, app_id: str, app_type: str, known_full_game_id: str | None = None) -> bool:
         """
         Fetch related app (demo or full game).
 
         Args:
             app_id: Steam app ID to fetch
             app_type: Type description for logging ("demo" or "full game")
+            known_full_game_id: If fetching a demo, the known full game ID that references it
 
         Returns:
             True if successfully fetched, False otherwise
@@ -538,7 +539,7 @@ class SteamDataUpdater:
             app_url = f"https://store.steampowered.com/app/{app_id}"
             # Always fetch both prices for related apps
             existing_app_data = self.steam_data['games'].get(app_id)
-            app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True, existing_data=existing_app_data)
+            app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True, existing_data=existing_app_data, known_full_game_id=known_full_game_id)
             if app_data:
                 app_data = app_data.model_copy(update={'last_updated': datetime.now().isoformat()})
                 self.steam_data['games'][app_id] = app_data
