@@ -237,7 +237,7 @@ export function deserializeSortSpec(serialized: string): SortSpec {
  */
 export function getSortDisplayName(sortSpec: SortSpec): string {
   if (!sortSpec) {
-    return 'Default'
+    return ''
   }
 
   if (isStringSortSpec(sortSpec)) {
