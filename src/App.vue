@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, type Ref } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, watch, type Ref } from 'vue'
 import GameCard from './components/GameCard.vue'
 import GameFilters from './components/GameFilters.vue'
 import SortIndicator from './components/SortIndicator.vue'
@@ -106,6 +106,8 @@ interface AppFilters extends Record<string, unknown> {
   currency: 'eur' | 'usd'
   timeFilter: TimeFilter
   priceFilter: PriceFilter
+  searchQuery: string
+  searchInVideoTitles: boolean
 }
 
 // Component state
@@ -114,6 +116,38 @@ const error: Ref<string | null> = ref(null)
 const currentTime: Ref<Date> = ref(new Date())
 const sidebarCollapsed: Ref<boolean> = ref(false)
 const { monitorDatabaseQuery, monitorFilterUpdate } = usePerformanceMonitoring()
+
+// Search state
+const searchQuery = ref('')
+const searchInVideoTitles = ref(true)
+const debouncedSearchQuery = ref('')
+
+// Debounce timer
+let searchDebounceTimer: NodeJS.Timeout | null = null
+
+// Watch for search query changes and debounce
+watch(searchQuery, (newQuery) => {
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer)
+  }
+
+  searchDebounceTimer = setTimeout(() => {
+    debouncedSearchQuery.value = newQuery
+    filters.value.searchQuery = newQuery
+    if (db) {
+      executeQuery(db)
+    }
+  }, 300) // 300ms debounce delay
+})
+
+// Watch for search in video titles toggle
+watch(searchInVideoTitles, (newValue) => {
+  filters.value.searchInVideoTitles = newValue
+  // Only reload if there's an active search
+  if (searchQuery.value.trim() && db) {
+    executeQuery(db)
+  }
+})
 const filters: Ref<AppFilters> = ref({
   releaseStatus: 'all',
   platform: 'all',
@@ -140,6 +174,9 @@ const filters: Ref<AppFilters> = ref({
     maxPrice: PRICING.DEFAULT_MAX_PRICE,
     includeFree: true,
   },
+  // Search filtering
+  searchQuery: '',
+  searchInVideoTitles: true,
 })
 
 const channels: Ref<string[]> = ref([])
@@ -523,6 +560,21 @@ const buildSQLQuery = (
     }
   }
 
+  // Search filtering
+  if (filterValues.searchQuery && filterValues.searchQuery.trim()) {
+    const searchPattern = `%${filterValues.searchQuery.trim()}%`
+
+    if (filterValues.searchInVideoTitles) {
+      // Search in both game names and video titles
+      query += ' AND (g.name LIKE ? OR gv.video_title LIKE ?)'
+      params.push(searchPattern, searchPattern)
+    } else {
+      // Search only in game names
+      query += ' AND g.name LIKE ?'
+      params.push(searchPattern)
+    }
+  }
+
   // Advanced Sorting Logic
   const orderByClause = buildSortClause(filterValues)
   query += ` ORDER BY ${orderByClause}`
@@ -831,7 +883,10 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
 
       // Build parent lookup for absorbed games
       if (!gameData.is_absorbed) {
-        parentGameLookup.set(gameData.game_key ? String(gameData.game_key) : '', gameData)
+        parentGameLookup.set(
+          gameData.game_key ? String(gameData.game_key) : '',
+          gameData,
+        )
       }
     })
 
@@ -861,7 +916,9 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
 
       // For absorbed games, supplement with parent game data where needed
       if (gameData.is_absorbed && gameData.absorbed_into) {
-        const parentData = parentGameLookup.get(gameData.absorbed_into ? String(gameData.absorbed_into) : '')
+        const parentData = parentGameLookup.get(
+          gameData.absorbed_into ? String(gameData.absorbed_into) : '',
+        )
         if (parentData) {
           // Use parent's review data if absorbed game has insufficient data
           if (
@@ -893,29 +950,45 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
         id: Number(gameData.id),
         game_key: String(gameData.game_key || ''),
         name: String(gameData.name),
-        steam_app_id: gameData.steam_app_id ? String(gameData.steam_app_id) : null,
-        header_image: gameData.header_image ? String(gameData.header_image) : null,
+        steam_app_id: gameData.steam_app_id
+          ? String(gameData.steam_app_id)
+          : null,
+        header_image: gameData.header_image
+          ? String(gameData.header_image)
+          : null,
         price_eur: Number(gameData.price_eur),
         price_usd: Number(gameData.price_usd),
         price_final: Number(gameData.price_final),
         is_free: Boolean(gameData.is_free),
-        release_date: gameData.release_date ? String(gameData.release_date) : null,
+        release_date: gameData.release_date
+          ? String(gameData.release_date)
+          : null,
         release_date_sortable: Number(gameData.release_date_sortable),
-        review_summary: gameData.review_summary ? String(gameData.review_summary) : null,
+        review_summary: gameData.review_summary
+          ? String(gameData.review_summary)
+          : null,
         review_summary_priority: Number(gameData.review_summary_priority),
         positive_review_percentage: Number(gameData.positive_review_percentage),
         review_count: Number(gameData.review_count),
         steam_url: gameData.steam_url ? String(gameData.steam_url) : null,
         itch_url: gameData.itch_url ? String(gameData.itch_url) : null,
-        crazygames_url: gameData.crazygames_url ? String(gameData.crazygames_url) : null,
-        demo_steam_app_id: gameData.demo_steam_app_id ? String(gameData.demo_steam_app_id) : null,
-        demo_steam_url: gameData.demo_steam_url ? String(gameData.demo_steam_url) : null,
+        crazygames_url: gameData.crazygames_url
+          ? String(gameData.crazygames_url)
+          : null,
+        demo_steam_app_id: gameData.demo_steam_app_id
+          ? String(gameData.demo_steam_app_id)
+          : null,
+        demo_steam_url: gameData.demo_steam_url
+          ? String(gameData.demo_steam_url)
+          : null,
         display_links:
           typeof gameData.display_links === 'object' &&
           gameData.display_links !== null
             ? (gameData.display_links as { main?: string; demo?: string })
             : null,
-        display_price: gameData.display_price ? String(gameData.display_price) : null,
+        display_price: gameData.display_price
+          ? String(gameData.display_price)
+          : null,
         tags: Array.isArray(gameData.tags) ? gameData.tags : [],
         genres: Array.isArray(gameData.genres) ? gameData.genres : [],
         developers: Array.isArray(gameData.developers)
@@ -925,11 +998,21 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
           ? gameData.publishers
           : [],
         platform: String(gameData.platform) as 'steam' | 'itch' | 'crazygames',
-        last_updated: gameData.last_updated ? String(gameData.last_updated) : null,
-        latest_video_title: gameData.latest_video_title ? String(gameData.latest_video_title) : null,
-        latest_video_id: gameData.latest_video_id ? String(gameData.latest_video_id) : null,
-        latest_video_date: gameData.latest_video_date ? String(gameData.latest_video_date) : null,
-        newest_video_date: gameData.latest_video_date ? String(gameData.latest_video_date) : null,
+        last_updated: gameData.last_updated
+          ? String(gameData.last_updated)
+          : null,
+        latest_video_title: gameData.latest_video_title
+          ? String(gameData.latest_video_title)
+          : null,
+        latest_video_id: gameData.latest_video_id
+          ? String(gameData.latest_video_id)
+          : null,
+        latest_video_date: gameData.latest_video_date
+          ? String(gameData.latest_video_date)
+          : null,
+        newest_video_date: gameData.latest_video_date
+          ? String(gameData.latest_video_date)
+          : null,
         unique_channels: Array.isArray(gameData.unique_channels)
           ? gameData.unique_channels
           : [],
@@ -937,15 +1020,23 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
         coming_soon: Boolean(gameData.coming_soon),
         is_early_access: Boolean(gameData.is_early_access),
         is_demo: Boolean(gameData.is_demo),
-        planned_release_date: gameData.planned_release_date ? String(gameData.planned_release_date) : null,
+        planned_release_date: gameData.planned_release_date
+          ? String(gameData.planned_release_date)
+          : null,
         insufficient_reviews: Boolean(gameData.insufficient_reviews),
         is_inferred_summary: Boolean(gameData.is_inferred_summary),
-        review_tooltip: gameData.review_tooltip ? String(gameData.review_tooltip) : null,
+        review_tooltip: gameData.review_tooltip
+          ? String(gameData.review_tooltip)
+          : null,
         recent_review_percentage: Number(gameData.recent_review_percentage),
         recent_review_count: Number(gameData.recent_review_count),
-        recent_review_summary: gameData.recent_review_summary ? String(gameData.recent_review_summary) : null,
+        recent_review_summary: gameData.recent_review_summary
+          ? String(gameData.recent_review_summary)
+          : null,
         is_absorbed: Boolean(gameData.is_absorbed),
-        absorbed_into: gameData.absorbed_into ? String(gameData.absorbed_into) : null,
+        absorbed_into: gameData.absorbed_into
+          ? String(gameData.absorbed_into)
+          : null,
       }
 
       processedGames.push(game)
@@ -1243,8 +1334,6 @@ const tryToShowGame = async (
       platform,
       releaseStatus: 'all',
       rating: '0',
-      tag: '',
-      channel: '',
       sortBy: filters.value.sortBy,
       currency: filters.value.currency,
       crossPlatform: false,
@@ -1255,6 +1344,8 @@ const tryToShowGame = async (
       sortSpec: null,
       timeFilter: null,
       priceFilter: { minPrice: 0, maxPrice: 1000, includeFree: true },
+      searchQuery: filters.value.searchQuery,
+      searchInVideoTitles: filters.value.searchInVideoTitles,
     }
 
     filters.value = newFilters
@@ -1299,7 +1390,6 @@ const handleTagClick = (tag: string): void => {
     const newFilters = {
       ...filters.value,
       selectedTags: [...currentTags, tag],
-      tag: currentTags.length === 0 ? tag : '', // Keep legacy field updated for backward compatibility
     }
     updateFilters(newFilters)
   }
@@ -1413,7 +1503,7 @@ const loadFiltersFromURL = (): void => {
     urlFilters.hiddenGems = urlParams.get('hiddenGems') === 'true'
   }
 
-  // Handle tags parameter (legacy params already migrated above)
+  // Handle tags parameter
   if (urlParams.has('tags')) {
     const tagsParam = urlParams.get('tags')
     if (tagsParam && tagsParam.includes(',')) {
@@ -1432,7 +1522,7 @@ const loadFiltersFromURL = (): void => {
     }
   }
 
-  // Handle channels parameter (legacy params already migrated above)
+  // Handle channels parameter
   if (urlParams.has('channels')) {
     const channelsParam = urlParams.get('channels')
     if (channelsParam && channelsParam.includes(',')) {
@@ -1558,6 +1648,11 @@ onUnmounted((): void => {
   if (extWindow.timestampTimer) {
     clearInterval(extWindow.timestampTimer)
     extWindow.timestampTimer = undefined
+  }
+
+  // Cleanup search debounce timer
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer)
   }
 
   // Cleanup resize handler
@@ -1689,60 +1784,136 @@ if (import.meta.hot) {
             />
           </div>
 
-          <!-- Sort & Status Info -->
-          <div class="relative mb-5 text-text-secondary">
-            <!-- Centered content - Sort indicator and game count -->
-            <div class="flex flex-col items-center gap-2 md:items-start">
+          <!-- Sort, Search & Status Info -->
+          <div class="mb-5 text-text-secondary">
+            <!-- Desktop layout -->
+            <div
+              class="hidden md:flex md:items-center md:justify-between md:gap-4"
+            >
               <!-- Sort Indicator -->
-              <SortIndicator
-                :sort-by="filters.sortBy"
-                :sort-spec="filters.sortSpec"
-                :game-count="filteredGames.length"
-                @sort-changed="handleSortChange"
-              />
+              <div class="flex items-center gap-4">
+                <SortIndicator
+                  :sort-by="filters.sortBy"
+                  :sort-spec="filters.sortSpec"
+                  :game-count="filteredGames.length"
+                  @sort-changed="handleSortChange"
+                />
+                <div class="text-sm">
+                  <span>{{ filteredGames.length }} games found</span>
+                </div>
+              </div>
 
-              <!-- Game count -->
-              <div class="hidden text-center md:block md:text-left">
-                <span>{{ filteredGames.length }} games found</span>
+              <!-- Search Bar -->
+              <div class="mx-4 max-w-lg flex-1">
+                <div class="flex items-center gap-3">
+                  <input
+                    type="text"
+                    v-model="searchQuery"
+                    placeholder="Search games..."
+                    class="border-border flex-1 rounded-lg border bg-bg-secondary px-3 py-1.5 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
+                  />
+                  <label
+                    class="flex cursor-pointer items-center gap-1.5 text-xs whitespace-nowrap text-text-secondary transition-colors hover:text-text-primary"
+                  >
+                    <input
+                      type="checkbox"
+                      v-model="searchInVideoTitles"
+                      class="border-border size-3.5 cursor-pointer rounded-sm bg-bg-secondary text-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:ring-offset-bg-primary"
+                    />
+                    <span>Video titles</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Database Status -->
+              <div class="flex items-center gap-4 text-sm">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="size-2 rounded-full"
+                    :class="
+                      databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
+                    "
+                  ></span>
+                  <span>{{ databaseStatus.games }} total</span>
+                </div>
+                <div class="text-xs text-text-secondary/70">
+                  <span
+                    v-if="databaseStatus.lastGenerated"
+                    :title="
+                      isDevelopment
+                        ? 'Click to test version mismatch'
+                        : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
+                    "
+                    :class="
+                      isDevelopment
+                        ? 'cursor-pointer hover:text-text-primary'
+                        : ''
+                    "
+                    @click="isDevelopment ? testVersionMismatch() : null"
+                  >
+                    Database:
+                    {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
+                  </span>
+                  <span
+                    v-if="databaseStatus.lastChecked && !isDevelopment"
+                    :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
+                  >
+                    • Last check:
+                    {{ formatTimestamp(databaseStatus.lastChecked) }}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <!-- Database Status - Absolute positioned to right -->
-            <div class="absolute top-0 right-0 flex items-center gap-4 text-sm">
-              <div class="flex items-center gap-2">
-                <span
-                  class="size-2 rounded-full"
-                  :class="
-                    databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
-                  "
-                ></span>
-                <span>{{ databaseStatus.games }} total</span>
+            <!-- Mobile layout -->
+            <div class="md:hidden">
+              <!-- Sort and Database Status -->
+              <div class="mb-3 flex items-center justify-between">
+                <SortIndicator
+                  :sort-by="filters.sortBy"
+                  :sort-spec="filters.sortSpec"
+                  :game-count="filteredGames.length"
+                  @sort-changed="handleSortChange"
+                />
+                <div class="flex items-center gap-2 text-sm">
+                  <span
+                    class="size-2 rounded-full"
+                    :class="
+                      databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
+                    "
+                  ></span>
+                  <span>{{ databaseStatus.games }} total</span>
+                </div>
               </div>
-              <div class="text-xs text-text-secondary/70">
-                <span
-                  v-if="databaseStatus.lastGenerated"
-                  :title="
-                    isDevelopment
-                      ? 'Click to test version mismatch'
-                      : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
-                  "
-                  :class="
-                    isDevelopment
-                      ? 'cursor-pointer hover:text-text-primary'
-                      : ''
-                  "
-                  @click="isDevelopment ? testVersionMismatch() : null"
+
+              <!-- Search Bar -->
+              <div class="flex items-center gap-2">
+                <input
+                  type="text"
+                  v-model="searchQuery"
+                  placeholder="Search games..."
+                  class="border-border flex-1 rounded-lg border bg-bg-secondary px-3 py-1.5 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
+                />
+                <label
+                  class="flex cursor-pointer items-center gap-1 text-xs text-text-secondary"
                 >
-                  Database:
-                  {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
-                </span>
-                <span
-                  v-if="databaseStatus.lastChecked && !isDevelopment"
-                  :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
-                >
-                  • Last check:
-                  {{ formatTimestamp(databaseStatus.lastChecked) }}
-                </span>
+                  <input
+                    type="checkbox"
+                    v-model="searchInVideoTitles"
+                    class="border-border size-3.5 cursor-pointer rounded-sm bg-bg-secondary text-accent"
+                  />
+                  <span class="whitespace-nowrap">Videos</span>
+                </label>
+              </div>
+
+              <!-- Search results count -->
+              <div
+                v-if="searchQuery"
+                class="mt-2 text-center text-xs text-text-secondary"
+              >
+                {{ filteredGames.length }} results
+                <span v-if="searchInVideoTitles">(games & videos)</span>
+                <span v-else>(games only)</span>
               </div>
             </div>
           </div>
