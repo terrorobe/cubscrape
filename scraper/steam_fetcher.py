@@ -210,7 +210,7 @@ class SteamDataFetcher(BaseFetcher):
 
         # Extract various data types
         result.update(self._extract_tags(soup))
-        result.update(self._extract_demo_info(soup, page_text, html_content, app_data, existing_data, known_full_game_id))
+        result.update(self._extract_demo_info(soup, page_text, html_content, steam_url, app_data, existing_data, known_full_game_id))
         result.update(self._extract_early_access(soup))
         result.update(self._extract_review_data(page_text))
         result.update(self._extract_release_info(soup, page_text, app_data))
@@ -227,7 +227,7 @@ class SteamDataFetcher(BaseFetcher):
                 tags.append(tag_text)
         return {'tags': tags}
 
-    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None, known_full_game_id: str | None = None) -> dict[str, Any]:
+    def _extract_demo_info(self, soup: BeautifulSoup, page_text: str, html_content: str, steam_url: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None, known_full_game_id: str | None = None) -> dict[str, Any]:
         """Extract demo-related information"""
         result: dict[str, Any] = {}
 
@@ -244,7 +244,10 @@ class SteamDataFetcher(BaseFetcher):
             if known_full_game_id:
                 result['full_game_app_id'] = known_full_game_id
             else:
-                full_game_id = self._find_full_game_id(soup, page_text)
+                # Extract app_id from steam_url
+                app_id_match = re.search(r'/app/(\d+)', steam_url)
+                current_app_id = app_id_match.group(1) if app_id_match else None
+                full_game_id = self._find_full_game_id(soup, page_text, current_app_id)
                 if full_game_id:
                     result['full_game_app_id'] = full_game_id
                 elif existing_data and existing_data.full_game_app_id:
@@ -252,7 +255,7 @@ class SteamDataFetcher(BaseFetcher):
                     result['full_game_app_id'] = existing_data.full_game_app_id
         else:
             # For non-demo apps, try to find demo app ID - only set has_demo if we find one
-            demo_app_id = self._find_demo_app_id(soup, page_text, html_content)
+            demo_app_id = self._find_demo_app_id(soup, html_content)
             if demo_app_id:
                 result['has_demo'] = True
                 result['demo_app_id'] = demo_app_id
@@ -387,55 +390,59 @@ class SteamDataFetcher(BaseFetcher):
 
         return None
 
-    def _find_demo_app_id(self, soup: BeautifulSoup, page_text: str, html_content: str) -> str | None:
-        """Try to find the demo app ID from a main game page"""
+    def _find_demo_app_id(self, soup: BeautifulSoup, html_content: str) -> str | None:
+        """Try to find the demo app ID from a main game page - only using steam:// protocol links"""
         current_app_id = self._get_current_app_id(soup)
 
-        # Search raw HTML for demo-related links
+        # Only search for steam://install/ protocol links - most reliable and universal
         if html_content:
-            demo_id = self._search_html_for_demo(html_content, current_app_id)
-            if demo_id:
-                return demo_id
+            steam_protocol_pattern = r'steam://install/(\d+)'
+            matches = re.findall(steam_protocol_pattern, html_content)
+            for demo_id in matches:
+                if str(demo_id) != current_app_id:
+                    return str(demo_id)
 
-        # Search page text for demo patterns
-        demo_id = self._search_text_for_demo(page_text, current_app_id)
-        if demo_id:
-            return demo_id
+        return None
 
-        # Search HTML elements for demo links
-        return self._search_elements_for_demo(soup, current_app_id)
-
-    def _find_full_game_id(self, soup: BeautifulSoup, page_text: str) -> str | None:
+    def _find_full_game_id(self, soup: BeautifulSoup, page_text: str, current_app_id: str | None = None) -> str | None:
         """Try to find the full game app ID from a demo page"""
-        # Get current app ID to avoid self-references
-        current_app_id = self._get_current_app_id(soup)
+        # Use provided app_id or try to get it from the page
+        if not current_app_id:
+            current_app_id = self._get_current_app_id(soup)
 
-        # Look for Community Hub link (excluding self-references)
-        community_links = soup.find_all('a', href=re.compile(r'steamcommunity\.com/app/(\d+)'))
-        for link in community_links:
-            href = self.safe_get_attr(link, 'href')
-            match = re.search(r'/app/(\d+)', href)
-            if match:
-                app_id = match.group(1)
-                # Skip self-references
-                if app_id != current_app_id:
-                    return app_id
+        # 1. Check for redirect - 91% of demos redirect to their main game
+        try:
+            demo_url = f"https://store.steampowered.com/app/{current_app_id}/"
+            response = requests.get(demo_url, timeout=30, allow_redirects=True)
 
-        # Look for main game patterns in text (excluding self-references)
-        main_game_patterns = [
-            r'main game.*?app/(\d+)',
-            r'full game.*?app/(\d+)',
-            r'full version.*?app/(\d+)',
-            r'complete game.*?app/(\d+)',
-        ]
+            if demo_url != response.url:
+                # Demo page redirected
+                match = re.search(r'/app/(\d+)', response.url)
+                if match:
+                    main_game_id = match.group(1)
+                    if main_game_id != current_app_id:
+                        logging.info(f"FULL_GAME_DETECTION: Found full game {main_game_id} for demo {current_app_id} via redirect")
+                        return main_game_id
+        except Exception as e:
+            logging.warning(f"FULL_GAME_DETECTION: Failed to check redirect for demo {current_app_id}: {e}")
 
-        for pattern in main_game_patterns:
-            match = re.search(pattern, page_text, re.IGNORECASE)
-            if match:
-                app_id = match.group(1)
-                # Skip self-references
-                if app_id != current_app_id:
-                    return app_id
+        # 2. Fallback: Check breadcrumbs - for the 9% that don't redirect
+        from bs4 import Tag
+        breadcrumbs = soup.find('div', class_='breadcrumbs')
+        if breadcrumbs and isinstance(breadcrumbs, Tag):
+            # Look for the game link right before "Demo" in breadcrumbs
+            breadcrumb_links = breadcrumbs.find_all('a', href=re.compile(r'/app/(\d+)'))
+            for i, link in enumerate(breadcrumb_links):
+                href = self.safe_get_attr(link, 'href')
+                match = re.search(r'/app/(\d+)', href)
+                if match:
+                    app_id = match.group(1)
+                    # Check if next breadcrumb item contains "Demo"
+                    if app_id != current_app_id and i < len(breadcrumb_links) - 1:
+                        next_text = breadcrumb_links[i + 1].get_text() if i + 1 < len(breadcrumb_links) else ""
+                        if "demo" in next_text.lower() or "demo" in page_text[page_text.find(href):page_text.find(href) + 200].lower():
+                            logging.info(f"FULL_GAME_DETECTION: Found full game {app_id} for demo {current_app_id} via breadcrumb navigation")
+                            return app_id
 
         return None
 
@@ -449,83 +456,6 @@ class SteamDataFetcher(BaseFetcher):
                 return match.group(1)
         return None
 
-    def _search_html_for_demo(self, html_content: str, current_id: str | None) -> str | None:
-        """Search HTML content for demo app IDs"""
-        # Steam protocol install links - look for any steam://install/ patterns
-        steam_protocol_pattern = r'steam://install/(\d+)'
-        matches = re.findall(steam_protocol_pattern, html_content)
-        for demo_id in matches:
-            if str(demo_id) != current_id:
-                return str(demo_id)
-
-        # JavaScript modal patterns - handle mixed quotes
-        js_modal_patterns = [
-            r'ShowGotSteamModal.*?[\'"]steam://install/(\d+)[\'"]',
-            r'ShowGotSteamModal\s*\(\s*[\'"]steam://install/(\d+)[\'"]',
-            r'steam://install/(\d+).*?ShowGotSteamModal',
-        ]
-        for pattern in js_modal_patterns:
-            matches = re.findall(pattern, html_content)
-            for demo_id in matches:
-                if str(demo_id) != current_id:
-                    return str(demo_id)
-
-        # Demo URL patterns
-        demo_url_patterns = [
-            r'store\.steampowered\.com/app/(\d+)/[^"\']*[Dd]emo[^"\'/]*/?',
-            r'/app/(\d+)/.*?[Dd]emo',
-            r'[Dd]emo.*?/app/(\d+)',
-        ]
-        for pattern in demo_url_patterns:
-            matches = re.findall(pattern, html_content)
-            for demo_id in matches:
-                if str(demo_id) != current_id:
-                    return str(demo_id)
-
-        return None
-
-    def _search_text_for_demo(self, page_text: str, current_id: str | None) -> str | None:
-        """Search page text for demo patterns"""
-        demo_patterns = [
-            r'store\.steampowered\.com/app/(\d+).*demo',
-            r'demo.*store\.steampowered\.com/app/(\d+)',
-            r'/app/(\d+)/.*demo',
-            r'Download.*Demo.*app/(\d+)',
-        ]
-
-        for pattern in demo_patterns:
-            match = re.search(pattern, page_text, re.IGNORECASE)
-            if match:
-                demo_id = match.group(1)
-                if demo_id != current_id:
-                    return demo_id
-
-        return None
-
-    def _search_elements_for_demo(self, soup: BeautifulSoup, current_id: str | None) -> str | None:
-        """Search HTML elements for demo links"""
-        # Look for demo links
-        demo_links = soup.find_all('a', href=re.compile(r'store\.steampowered\.com/app/(\d+)'))
-        for link in demo_links:
-            href = self.safe_get_attr(link, 'href')
-            link_text = self.safe_get_text(link).lower()
-            if 'demo' in link_text or 'demo' in href.lower():
-                match = re.search(r'/app/(\d+)', href)
-                if match:
-                    demo_id = match.group(1)
-                    if demo_id != current_id:
-                        return demo_id
-
-        # Look for demo button classes
-        demo_elements = soup.find_all(['a', 'div'], class_=re.compile(r'demo', re.IGNORECASE))
-        for element in demo_elements:
-            href = self.safe_get_attr(element, 'href')
-            if 'store.steampowered.com/app/' in href:
-                match = re.search(r'/app/(\d+)', href)
-                if match:
-                    return match.group(1)
-
-        return None
 
     def _merge_store_data(self, game_data: SteamGameData, store_data: dict[str, Any]) -> None:
         """Merge store page data into game data object"""
