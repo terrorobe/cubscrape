@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch, type Ref } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, watch, computed, type Ref } from 'vue'
+import { useVirtualizer } from '@tanstack/vue-virtual'
 import GameCard from './components/GameCard.vue'
 import GameFilters from './components/GameFilters.vue'
 import SortIndicator from './components/SortIndicator.vue'
@@ -183,7 +184,83 @@ const channels: Ref<string[]> = ref([])
 const channelsWithCounts: Ref<ChannelWithCount[]> = ref([])
 const allTags: Ref<TagWithCount[]> = ref([])
 const gameGrid: Ref<HTMLElement | null> = ref(null)
+const gameGridContainer: Ref<HTMLElement | null> = ref(null)
 const highlightedGameId: Ref<number | null> = ref(null)
+
+// ResizeObserver for responsive grid updates
+let resizeObserver: ResizeObserver | null = null
+
+// Virtual scrolling setup - Item-based virtualization
+const ESTIMATED_CARD_HEIGHT = 420 // Estimate based on GameCard structure + padding
+const CARDS_PER_ROW = ref(3) // Will be dynamic based on screen size
+const GRID_GAP = 20 // Gap between cards in pixels (matches gap-5)
+
+// Calculate dynamic row heights and positions for virtual scrolling
+const virtualGridMetrics = computed(() => {
+  const totalItems = filteredGames.value.length
+  const cardsPerRow = CARDS_PER_ROW.value
+  const totalRows = Math.ceil(totalItems / cardsPerRow)
+  
+  return {
+    totalItems,
+    cardsPerRow,
+    totalRows,
+    estimatedRowHeight: ESTIMATED_CARD_HEIGHT + GRID_GAP, // Card height + gap
+    totalHeight: totalRows * (ESTIMATED_CARD_HEIGHT + GRID_GAP)
+  }
+})
+
+// Calculate grid item positions and dimensions
+const getItemGridPosition = (index: number) => {
+  const { cardsPerRow } = virtualGridMetrics.value
+  const row = Math.floor(index / cardsPerRow)
+  const col = index % cardsPerRow
+  
+  return {
+    row,
+    col,
+    y: row * (ESTIMATED_CARD_HEIGHT + GRID_GAP),
+    isVisible: true // Will be determined by virtualizer
+  }
+}
+
+// Virtual scrolling for individual items with grid positioning
+const virtualizer = computed(() => {
+  if (!gameGridContainer.value) return null
+  
+  return useVirtualizer({
+    count: virtualGridMetrics.value.totalRows,
+    getScrollElement: () => gameGridContainer.value,
+    estimateSize: () => virtualGridMetrics.value.estimatedRowHeight,
+    overscan: 2, // Render 2 extra rows for smoothness
+  })
+})
+
+// Update cards per row based on container width and trigger grid recalculation
+const updateCardsPerRow = (): void => {
+  if (!gameGridContainer.value) return
+  
+  const containerWidth = gameGridContainer.value.clientWidth
+  const cardMinWidth = 320 // Use the original working minimum width
+  const gap = GRID_GAP
+  const padding = 16 // Account for container padding (8px * 2)
+  const availableWidth = containerWidth - padding
+  
+  // Calculate how many cards can fit per row based on minimum width constraint
+  // This maintains responsive behavior while still using virtual rows for performance
+  const maxCardsPerRow = Math.max(1, Math.floor((availableWidth + gap) / (cardMinWidth + gap)))
+  
+  // Cap at reasonable maximum for very wide screens
+  const cardsPerRow = Math.min(6, maxCardsPerRow)
+  
+  // Only update if it actually changed to prevent unnecessary recalculations
+  if (CARDS_PER_ROW.value !== cardsPerRow) {
+    CARDS_PER_ROW.value = cardsPerRow
+    
+    // Force virtualizer to recalculate when grid dimensions change
+    // Note: TanStack Virtual automatically handles recalculation on scroll container resize
+  }
+}
 const gameStats: Ref<GameStats> = ref({
   totalGames: 0,
   freeGames: 0,
@@ -560,18 +637,18 @@ const buildSQLQuery = (
     }
   }
 
-  // Search filtering
+  // Search filtering with FTS5 for better performance
   if (filterValues.searchQuery && filterValues.searchQuery.trim()) {
-    const searchPattern = `%${filterValues.searchQuery.trim()}%`
+    const searchTerm = filterValues.searchQuery.trim()
 
     if (filterValues.searchInVideoTitles) {
-      // Search in both game names and video titles
-      query += ' AND (g.name LIKE ? OR gv.video_title LIKE ?)'
-      params.push(searchPattern, searchPattern)
+      // Search in both game names (using FTS5) and video titles (using LIKE)
+      query += ' AND (g.id IN (SELECT rowid FROM games_fts WHERE games_fts MATCH ?) OR gv.video_title LIKE ?)'
+      params.push(searchTerm, `%${searchTerm}%`)
     } else {
-      // Search only in game names
-      query += ' AND g.name LIKE ?'
-      params.push(searchPattern)
+      // Search only in game names using FTS5
+      query += ' AND g.id IN (SELECT rowid FROM games_fts WHERE games_fts MATCH ?)'
+      params.push(searchTerm)
     }
   }
 
@@ -1596,6 +1673,23 @@ const loadFiltersFromURL = (): void => {
 
 onMounted((): void => {
   loadGames()
+  
+  // Initialize virtual scrolling grid layout
+  nextTick(() => {
+    updateCardsPerRow()
+    
+    // Set up ResizeObserver after container is available
+    if (gameGridContainer.value && window.ResizeObserver) {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.target === gameGridContainer.value) {
+            handleResize()
+          }
+        }
+      })
+      resizeObserver.observe(gameGridContainer.value)
+    }
+  })
 
   // Set up keyboard handler for clearing highlights
   const handleKeydown = (e: KeyboardEvent): void => {
@@ -1614,21 +1708,38 @@ onMounted((): void => {
   // Store timer reference for cleanup
   ;(window as ExtendedWindow).timestampTimer = timestampTimer
 
+  // Set up resize handling for virtual grid and debug info
+  const handleResize = (): void => {
+    // Update virtual grid layout with proper debouncing
+    setTimeout(() => {
+      updateCardsPerRow()
+      
+      // Force virtualizer to recalculate on resize since CSS Grid auto-fit behavior changes
+      // TanStack Virtual automatically handles resize events, but we can trigger an update
+      if (virtualizer.value) {
+        // The virtualizer automatically recalculates on container resize
+        // No manual intervention needed - it handles CSS Grid auto-fit changes
+      }
+      
+      // Update debug info in development
+      if (isDevelopment) {
+        updateGridDebugInfo()
+      }
+    }, TIMING.RESIZE_DEBOUNCE_DELAY)
+  }
+
+  window.addEventListener('resize', handleResize)
+
+  // ResizeObserver will be set up after the container is available
+  
   // Set up debug info updates for development
   if (isDevelopment) {
-    // Update debug info on resize
-    const handleResize = (): void => {
-      setTimeout(updateGridDebugInfo, TIMING.RESIZE_DEBOUNCE_DELAY) // Debounce slightly
-    }
-
-    window.addEventListener('resize', handleResize)
-
     // Initial debug info after components are mounted
     setTimeout(updateGridDebugInfo, TIMING.INITIAL_DEBUG_DELAY)
-
-    // Store for cleanup
-    ;(window as ExtendedWindow).handleResize = handleResize
   }
+  
+  // Store for cleanup
+  ;(window as ExtendedWindow).handleResize = handleResize
 })
 
 onUnmounted((): void => {
@@ -1659,6 +1770,12 @@ onUnmounted((): void => {
   if (extWindow.handleResize) {
     window.removeEventListener('resize', extWindow.handleResize)
     extWindow.handleResize = undefined
+  }
+
+  // Cleanup ResizeObserver
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
   }
 
   // Remove keyboard handler
@@ -1953,17 +2070,69 @@ if (import.meta.hot) {
             </div>
           </div>
 
-          <!-- Game Grid -->
-          <div class="game-grid grid w-full gap-5" ref="gameGrid">
-            <GameCard
-              v-for="game in filteredGames"
-              :key="game.id"
-              :game="game"
-              :currency="filters.currency"
-              :is-highlighted="highlightedGameId === game.id"
-              @click="clearHighlight"
-              @tag-click="handleTagClick"
-            />
+          <!-- Virtual Scrolling Game Grid -->
+          <div 
+            ref="gameGridContainer" 
+            class="virtual-grid-container w-full flex-1 min-h-0"
+            style="overflow: auto;"
+          >
+            <div 
+              ref="gameGrid"
+              v-if="virtualizer && filteredGames.length > 0"
+              class="game-grid-virtual-container"
+              :style="{
+                height: `${virtualizer.value?.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }"
+            >
+              <!-- Virtual row containers that maintain CSS Grid layout -->
+              <div
+                v-for="virtualRow in virtualizer.value?.getVirtualItems() || []"
+                :key="virtualRow.index"
+                class="virtual-row-container"
+                :style="{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
+                  padding: '8px', // Consistent padding
+                }"
+              >
+                <!-- CSS Grid container for this row's items with responsive layout -->
+                <div 
+                  class="game-grid"
+                  :style="{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                    gap: `${GRID_GAP}px`,
+                    width: '100%',
+                    height: '100%',
+                    alignItems: 'stretch',
+                    justifyContent: 'stretch'
+                  }"
+                >
+                  <GameCard
+                    v-for="(game, gameIndex) in filteredGames.slice(
+                      virtualRow.index * CARDS_PER_ROW, 
+                      (virtualRow.index + 1) * CARDS_PER_ROW
+                    )"
+                    :key="game.id"
+                    :game="game"
+                    :currency="filters.currency"
+                    :is-highlighted="highlightedGameId === game.id"
+                    @click="clearHighlight"
+                    @tag-click="handleTagClick"
+                    :style="{
+                      minWidth: '320px',
+                      justifySelf: 'stretch'
+                    }"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Loading/Error States -->
@@ -1989,48 +2158,83 @@ if (import.meta.hot) {
 </template>
 
 <style scoped>
-.game-grid {
-  /* Ensure proper grid container behavior */
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(v-bind('LAYOUT.CARD_MIN_WIDTH'), 1fr)
-  );
-  gap: 1.25rem; /* 20px - matches gap-5 */
+/* Virtual grid container styles */
+.game-grid-virtual-container {
+  /* Container for all virtual rows */
+  position: relative;
   width: 100%;
-  min-width: 0;
-
-  /* Force grid to use all available space */
-  justify-content: stretch;
-  align-items: stretch;
-  grid-auto-rows: auto;
 }
 
-/* Ensure grid items expand to fill their allocated space */
+.virtual-row-container {
+  /* Each virtual row positioned absolutely */
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.game-grid {
+  /* CSS Grid container for each row - maintains responsive behavior */
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  
+  /* Ensure cards stretch to fill available space */
+  align-items: stretch;
+  justify-content: stretch;
+  grid-auto-rows: 1fr;
+}
+
+/* Ensure grid items expand to fill their allocated space with responsive minimum width */
 .game-grid > * {
   width: 100%;
-  min-width: 0;
+  min-width: 320px;
   max-width: none;
   justify-self: stretch;
+  align-self: stretch;
 }
 
-/* Debug: Console-only debugging in development */
+/* Virtual scrolling container styles */
+.virtual-grid-container {
+  /* Ensure proper scrolling behavior */
+  height: 100%;
+  scrollbar-gutter: stable;
+  overflow: auto;
+  position: relative;
+}
 
-/* Responsive grid adjustments for optimal card expansion */
-@media (min-width: 1280px) and (max-width: v-bind('`${LAYOUT.CONTAINER_MAX_WIDTH_PX - 1  }px`')) {
+.virtual-grid-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.virtual-grid-container::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+}
+
+.virtual-grid-container::-webkit-scrollbar-thumb {
+  background: var(--color-text-secondary);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.virtual-grid-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-primary);
+  opacity: 0.8;
+}
+
+/* Responsive behavior for dynamic grid columns */
+@media (max-width: 359px) {
+  /* Extra small mobile: force smaller minimum */
   .game-grid {
-    /* Force equal columns where auto-fit struggles to expand cards properly */
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
   }
 }
 
-/* At very large viewports, allow auto-fit to determine optimal columns */
-@media (min-width: v-bind('LAYOUT.CONTAINER_MAX_WIDTH')) {
+@media (min-width: 360px) {
+  /* Standard responsive grid with 320px minimum */
   .game-grid {
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(v-bind('LAYOUT.CARD_MIN_WIDTH'), 1fr)
-    );
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
   }
 }
 </style>

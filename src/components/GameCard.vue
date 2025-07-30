@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed, type Ref } from 'vue'
+import { useProgressiveLoading } from '../composables/useProgressiveLoading'
 import {
   HIDDEN_GEM_CRITERIA,
   getRatingClass as getRatingClassConfig,
@@ -36,6 +37,31 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Define emits
 const emit = defineEmits<Emits>()
+
+// Progressive loading for images
+const { 
+  elementRef: cardRef, 
+  shouldLoad: shouldLoadImage, 
+  isLoaded: imageLoaded, 
+  markAsLoaded 
+} = useProgressiveLoading({
+  rootMargin: '100px',
+  threshold: 0.1
+})
+
+// Progressive loading for detailed game information
+// Start loading details immediately when image starts loading
+const shouldLoadDetails = computed(() => shouldLoadImage.value)
+const detailsLoaded = ref(false)
+
+// Auto-load details after a short delay when they should load
+watch(shouldLoadDetails, (newValue) => {
+  if (newValue) {
+    setTimeout(() => {
+      detailsLoaded.value = true
+    }, 200) // Small delay to create progressive loading effect
+  }
+})
 
 // Video data interfaces
 interface VideoData {
@@ -499,6 +525,7 @@ watch(
 
 <template>
   <div
+    ref="cardRef"
     class="game-card relative flex size-full cursor-pointer flex-col overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
     :class="{
       'scale-105': copyFeedback,
@@ -514,14 +541,33 @@ watch(
     >
       Link Copied!
     </div>
-    <!-- Game Image -->
-    <img
-      v-if="game.header_image"
-      :src="game.header_image"
-      :alt="game.name"
-      class="h-[150px] w-full bg-bg-card object-contain"
-      loading="lazy"
-    />
+    <!-- Game Image with Progressive Loading -->
+    <div class="h-[150px] w-full bg-bg-card flex items-center justify-center">
+      <img
+        v-if="game.header_image && shouldLoadImage"
+        :src="game.header_image"
+        :alt="game.name"
+        class="h-full w-full object-contain transition-opacity duration-300"
+        :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
+        loading="lazy"
+        @load="markAsLoaded"
+        @error="markAsLoaded"
+      />
+      <!-- Loading placeholder -->
+      <div 
+        v-else-if="game.header_image && !shouldLoadImage"
+        class="h-full w-full bg-bg-secondary animate-pulse flex items-center justify-center"
+      >
+        <div class="text-text-secondary text-sm">Loading...</div>
+      </div>
+      <!-- No image placeholder -->
+      <div 
+        v-else
+        class="h-full w-full bg-bg-secondary flex items-center justify-center"
+      >
+        <div class="text-text-secondary text-sm">No image</div>
+      </div>
+    </div>
 
     <!-- Game Info -->
     <div class="flex min-h-0 flex-1 flex-col p-4">
@@ -559,29 +605,36 @@ watch(
         <div class="mb-3 flex flex-col gap-2">
           <!-- Top Row: Main Rating and Price -->
           <div class="flex items-center justify-between gap-3">
-            <!-- Main Rating Display -->
-            <div
-              v-if="shouldShowRating(game)"
-              :class="
-                getRatingClass(
-                  game.positive_review_percentage,
-                  game.review_summary,
-                )
-              "
-              :style="
-                getRatingStyle(
-                  game.positive_review_percentage,
-                  game.review_summary,
-                )
-              "
-              :title="getRatingTooltip(game)"
-              class="inline-block rounded-sm px-2 py-1"
-            >
-              <div class="mb-0.5 text-sm font-bold">
-                {{ getRatingNumbers(game) }}
+            <!-- Main Rating Display with Progressive Loading -->
+            <div v-if="shouldLoadDetails && shouldShowRating(game)">
+              <div
+                v-if="detailsLoaded"
+                :class="
+                  getRatingClass(
+                    game.positive_review_percentage,
+                    game.review_summary,
+                  )
+                "
+                :style="
+                  getRatingStyle(
+                    game.positive_review_percentage,
+                    game.review_summary,
+                  )
+                "
+                :title="getRatingTooltip(game)"
+                class="inline-block rounded-sm px-2 py-1 transition-opacity duration-300"
+              >
+                <div class="mb-0.5 text-sm font-bold">
+                  {{ getRatingNumbers(game) }}
+                </div>
+                <div class="text-xs font-normal opacity-90">
+                  {{ getRatingSummary(game) }}
+                </div>
               </div>
-              <div class="text-xs font-normal opacity-90">
-                {{ getRatingSummary(game) }}
+              <!-- Rating Skeleton -->
+              <div v-else class="inline-block rounded-sm px-2 py-1 bg-bg-secondary animate-pulse">
+                <div class="mb-0.5 h-4 w-16 bg-text-secondary/20 rounded"></div>
+                <div class="h-3 w-20 bg-text-secondary/20 rounded"></div>
               </div>
             </div>
 
