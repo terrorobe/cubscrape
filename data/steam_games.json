@@ -86112,17 +86112,17 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3008340/header.jpg?t=1753807951",
-      "last_updated": "2025-07-30T08:55:46.871606",
+      "last_updated": "2025-07-30T15:04:03.208192",
       "name": "Day of the Shell",
-      "positive_review_percentage": 73,
+      "positive_review_percentage": 64,
       "price_eur": "13,49\u20ac",
       "price_usd": "$13.49",
       "publishers": [
         "Goblinz Publishing"
       ],
       "release_date": "29 Jul, 2025",
-      "review_count": 30,
-      "review_summary": "Mostly Positive",
+      "review_count": 48,
+      "review_summary": "Mixed",
       "steam_app_id": "3008340",
       "steam_url": "https://store.steampowered.com/app/3008340",
       "tags": [
@@ -88164,7 +88164,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1753776498",
       "is_early_access": true,
-      "last_updated": "2025-07-30T08:55:14.809710",
+      "last_updated": "2025-07-30T15:04:04.127792",
       "name": "Demon Hunt",
       "publishers": [
         "Massive Hug"
@@ -88182,8 +88182,8 @@
         "Casual",
         "Loot",
         "Mechs",
-        "Roguelike",
         "Top-Down Shooter",
+        "Roguelike",
         "Twin Stick Shooter"
       ]
     },
