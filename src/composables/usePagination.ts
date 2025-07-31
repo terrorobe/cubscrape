@@ -158,7 +158,7 @@ export function usePagination<T>(
     const currentFirstItem = startIndex.value
     pageSize.value = newSize
     currentPage.value = Math.floor(currentFirstItem / newSize) + 1
-    
+
     // Notify parent of page change for URL updates
     onPageChange?.()
   }

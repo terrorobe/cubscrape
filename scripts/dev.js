@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+
 import { spawn } from 'child_process';
 import { statSync, existsSync, readdirSync, writeFileSync, unlinkSync, readFileSync } from 'fs';
 import { join } from 'path';

@@ -9,6 +9,7 @@ import type {
   SortChangeEvent,
 } from '../types/sorting'
 import { isAdvancedSortSpec, normalizeSortSpec } from '../types/sorting'
+import { debug } from '../utils/debug'
 
 // Component props interface
 interface Props {
@@ -265,7 +266,7 @@ const initializeFromProps = (): void => {
       primaryCriteria.value = { ...normalizedSortSpec.primary }
     } else {
       // Fallback to default primary criteria if invalid
-      console.warn('Invalid primary sort criteria, using defaults')
+      debug.warn('Invalid primary sort criteria, using defaults')
       primaryCriteria.value = { field: 'rating', direction: 'desc' }
     }
 

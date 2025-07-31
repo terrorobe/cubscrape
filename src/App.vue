@@ -8,6 +8,7 @@ import { usePagination } from './composables/usePagination'
 import { databaseManager } from './utils/databaseManager'
 import type { VersionMismatchInfo } from './utils/databaseManager'
 import { usePerformanceMonitoring } from './utils/performanceMonitor'
+import { debug } from './utils/debug'
 import type { Database } from 'sql.js'
 import type {
   ParsedGameData,
@@ -240,7 +241,7 @@ const loadChannelsAndTags = (database: Database): void => {
           channelCounts.set(channel, (channelCounts.get(channel) || 0) + 1)
         })
       } catch {
-        console.warn('Failed to parse channels:', row[0])
+        debug.warn('Failed to parse channels:', row[0])
       }
     })
   }
@@ -270,7 +271,7 @@ const loadChannelsAndTags = (database: Database): void => {
           tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
         })
       } catch {
-        console.warn('Failed to parse tags:', row[0])
+        debug.warn('Failed to parse tags:', row[0])
       }
     })
   }
@@ -322,7 +323,7 @@ const {
 const buildSQLQuery = (
   filterValues: AppFilters,
 ): { query: string; params: (string | number)[] } => {
-  console.log('Building query with filters:', filterValues)
+  debug.log('Building query with filters:', filterValues)
 
   // Performance optimization: Track which filters are active to optimize query order
   // These variables can be used for future query optimization
@@ -871,13 +872,13 @@ const buildSmartSortClause = (sortBy: string): string => {
 const executeQuery = (db: Database): void => {
   monitorDatabaseQuery('Multi-filter Game Query', () => {
     const { query, params } = buildSQLQuery(filters.value)
-    console.log('Executing query:', query)
-    console.log('With params:', params)
+    debug.log('Executing query:', query)
+    debug.log('With params:', params)
 
     // Check for undefined params
     params.forEach((param, index) => {
       if (param === undefined) {
-        console.error(`Parameter ${index} is undefined!`)
+        debug.error(`Parameter ${index} is undefined!`)
       }
     })
 
@@ -938,7 +939,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
           String(gameData.unique_channels || '[]'),
         )
       } catch {
-        console.warn('Failed to parse JSON columns for game:', gameData.name)
+        debug.warn('Failed to parse JSON columns for game:', gameData.name)
       }
 
       // Parse JSON fields that may contain display links
@@ -1079,7 +1080,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
     })
 
     filteredGames.value = processedGames
-    console.log(`✓ Processed ${processedGames.length} games`)
+    debug.log(`✓ Processed ${processedGames.length} games`)
 
     // Update debug info after games are rendered
     if (isDevelopment) {
@@ -1089,7 +1090,7 @@ const processQueryResults = (results: DatabaseQueryResult[]): void => {
     }
   } else {
     filteredGames.value = []
-    console.log('✓ No games found matching filters')
+    debug.log('✓ No games found matching filters')
   }
 }
 
@@ -1164,13 +1165,13 @@ const onDatabaseUpdate = (database: Database): void => {
   loadChannelsAndTags(db)
   executeQuery(db)
   updateDatabaseStatus()
-  console.log('🔄 UI updated with new database')
+  debug.log('🔄 UI updated with new database')
 }
 
 const onVersionMismatch = (versionInfo: VersionMismatchInfo): void => {
   versionMismatchInfo.value = versionInfo
   showVersionMismatch.value = true
-  console.warn('🔄 App version mismatch - reload recommended')
+  debug.warn('🔄 App version mismatch - reload recommended')
 }
 
 const reloadApp = (): void => {
@@ -1182,7 +1183,7 @@ const dismissVersionMismatch = (): void => {
 }
 
 const testVersionMismatch = (): void => {
-  console.log('🧪 User clicked test version mismatch button')
+  debug.log('🧪 User clicked test version mismatch button')
   databaseManager.testVersionMismatch()
 }
 
@@ -1206,7 +1207,7 @@ const updateGridDebugInfo = (): void => {
 
   const computedStyles = window.getComputedStyle(gridElement)
 
-  console.log('🔧 Grid Debug:', {
+  debug.log('🔧 Grid Debug:', {
     viewport,
     container: containerRect?.width,
     mainContent: mainContentRect?.width,
@@ -1247,7 +1248,7 @@ const loadGames = async (): Promise<void> => {
     await nextTick()
     await processDeeplink()
   } catch (err) {
-    console.error('Error loading database:', err)
+    debug.error('Error loading database:', err)
     error.value = err.message
   } finally {
     loading.value = false
@@ -1328,7 +1329,7 @@ const scrollToGame = async (
   }
 
   if (!targetGame) {
-    console.warn('Game not found:', platform, gameId)
+    debug.warn('Game not found:', platform, gameId)
     // Try to adjust filters to show the game
     await tryToShowGame(platform, gameId)
     return
@@ -2045,8 +2046,10 @@ if (import.meta.hot) {
             <div
               ref="gameGrid"
               v-if="filteredGames.length > 0"
-              class="game-grid mb-8 grid w-full gap-5 justify-start"
-              style="grid-template-columns: repeat(auto-fit, minmax(320px, 400px));"
+              class="game-grid mb-8 grid w-full justify-start gap-5"
+              style="
+                grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
+              "
             >
               <GameCard
                 v-for="game in currentPageGames"

@@ -16,24 +16,24 @@
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     
-    /* TypeScript migration - transitioning to stricter settings */
+    /* TypeScript settings */
     "allowJs": true,
     "checkJs": false,
-    "strict": false,  // Keep false during migration, plan to enable later
-    "noImplicitAny": false,  // Gradually enable as migration progresses
-    "strictNullChecks": false,  // Will enable in phase 5
-    "strictFunctionTypes": true,  // Safe to enable now
-    "strictBindCallApply": true,  // Safe to enable now
-    "noUnusedLocals": false,  // Enable after fixing all type issues
-    "noUnusedParameters": false,  // Enable after fixing all type issues
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     
     /* Enhanced type checking for better development experience */
     "noImplicitReturns": true,
-    "noUncheckedIndexedAccess": false,  // May enable later for extra safety
-    "exactOptionalPropertyTypes": false,  // Too strict for current codebase
-    "noImplicitOverride": true,  // Modern class best practices
-    "noPropertyAccessFromIndexSignature": false,  // Too restrictive during migration
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
     
     /* Path mapping for clean imports */
     "baseUrl": ".",
@@ -45,9 +45,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "declaration": false,  // Not needed for application builds
-    "declarationMap": false,  // Not needed for application builds
-    "sourceMap": false  // Handled by Vite
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false
   },
   "include": [
     "src/**/*.ts", 

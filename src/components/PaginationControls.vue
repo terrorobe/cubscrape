@@ -76,6 +76,11 @@ const handleJumpToPage = () => {
   jumpToPageValue.value = null
 }
 
+const handlePageSizeChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement
+  emit('setPageSize', parseInt(target.value))
+}
+
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
 })
@@ -105,7 +110,7 @@ onUnmounted(() => {
             Show:
             <select
               :value="pageSize"
-              @change="emit('setPageSize', parseInt(($event.target as HTMLSelectElement).value))"
+              @change="handlePageSizeChange"
               class="border-border ml-2 rounded-sm border bg-bg-secondary px-2 py-1 text-text-primary focus:ring-2 focus:ring-accent focus:ring-offset-2"
             >
               <option value="50">50</option>

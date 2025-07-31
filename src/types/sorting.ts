@@ -3,6 +3,8 @@
  * Provides type-safe handling of all sort specifications across components
  */
 
+import { debug } from '../utils/debug'
+
 /**
  * Available sort fields for advanced sorting
  */
@@ -119,7 +121,7 @@ export function normalizeSortSpec(sortSpec: unknown): SortSpec {
   }
 
   // Fallback to null for unrecognized formats
-  console.warn('Unable to normalize sort specification:', sortSpec)
+  debug.warn('Unable to normalize sort specification:', sortSpec)
   return null
 }
 
@@ -171,7 +173,7 @@ export function deserializeSortSpec(serialized: string): SortSpec {
     const parsed = JSON.parse(serialized)
     return normalizeSortSpec(parsed)
   } catch (error) {
-    console.warn('Failed to deserialize sort specification:', serialized, error)
+    debug.warn('Failed to deserialize sort specification:', serialized, error)
     return null
   }
 }

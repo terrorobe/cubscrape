@@ -149,6 +149,22 @@ export default [
     },
   },
 
+  // CLI Scripts - allow console statements
+  {
+    files: ['scripts/**/*.js'],
+    rules: {
+      'no-console': 'off', // CLI scripts need console output
+    },
+  },
+
+  // Debug utility - allow console statements
+  {
+    files: ['src/utils/debug.ts'],
+    rules: {
+      'no-console': 'off', // Debug utility wraps console methods
+    },
+  },
+
   // Vue files
   {
     files: ['**/*.vue'],
@@ -218,7 +234,7 @@ export default [
       'no-undef': 'off',
       'no-redeclare': 'off', // TypeScript handles function overloads
 
-      // TypeScript rules for Vue files (migration-friendly, no type-aware rules)
+      // TypeScript rules for Vue files
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },

@@ -24,6 +24,7 @@ import {
   type FilterConfig,
   type ImportResult,
 } from '../utils/presetManager'
+import { debug } from '../utils/debug'
 
 // Component props interface
 interface Props {
@@ -214,7 +215,7 @@ const shareCurrentFilters = async (): Promise<void> => {
     await navigator.clipboard.writeText(url)
     showNotification('Share URL copied to clipboard!', 'success')
   } catch (error) {
-    console.error('Failed to copy to clipboard:', error)
+    debug.error('Failed to copy to clipboard:', error)
     showNotification('Failed to copy share URL', 'error')
   }
   showDropdown.value = false

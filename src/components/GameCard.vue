@@ -16,6 +16,7 @@ import {
 import { UI_LIMITS } from '../config/index'
 import type { ParsedGameData } from '../types/database'
 import { databaseManager } from '../utils/databaseManager'
+import { debug } from '../utils/debug'
 
 // Component props interface
 interface Props {
@@ -117,7 +118,7 @@ const toggleVideos = async (gameId: number): Promise<void> => {
     // Get database instance from database manager
     const db = databaseManager.getDatabase()
     if (!db) {
-      console.error('Database not available')
+      debug.error('Database not available')
       return
     }
 
@@ -143,7 +144,7 @@ const toggleVideos = async (gameId: number): Promise<void> => {
       gameVideos.value[gameId] = []
     }
   } catch (error) {
-    console.error('Error loading videos:', error)
+    debug.error('Error loading videos:', error)
     gameVideos.value[gameId] = []
   } finally {
     loadingVideos.value[gameId] = false
@@ -405,7 +406,7 @@ const handleCardClick = async (event: MouseEvent): Promise<void> => {
 
   const deeplinkUrl = generateDeeplink(props.game)
   if (!deeplinkUrl) {
-    console.warn('Could not generate deeplink for this game')
+    debug.warn('Could not generate deeplink for this game')
     return
   }
 
@@ -426,9 +427,9 @@ const handleCardClick = async (event: MouseEvent): Promise<void> => {
       showCopyOverlay.value = false
     }, 600)
 
-    console.log('Copied deeplink:', deeplinkUrl)
+    debug.log('Copied deeplink:', deeplinkUrl)
   } catch (err) {
-    console.error('Failed to copy link:', err)
+    debug.error('Failed to copy link:', err)
   }
 }
 
@@ -526,7 +527,7 @@ watch(
 <template>
   <div
     ref="cardRef"
-    class="game-card relative flex cursor-pointer flex-col overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl max-w-sm justify-self-start"
+    class="game-card relative flex max-w-sm cursor-pointer flex-col justify-self-start overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
     :class="{
       'scale-105': copyFeedback,
       highlighted: isHighlighted && !highlightFading,

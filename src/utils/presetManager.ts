@@ -6,6 +6,7 @@
 import { DEFAULT_FILTERS } from '../config/index'
 import type { SortSpec } from '../types/sorting'
 import { serializeSortSpec, deserializeSortSpec } from '../types/sorting'
+import { debug } from './debug'
 import type { GenericTimeFilter } from '../types/filters'
 
 const PRESET_STORAGE_KEY = 'cubscrape-filter-presets'
@@ -406,13 +407,13 @@ export function loadUserPresets(): Preset[] {
 
     // Version check for future compatibility
     if (data.version !== PRESET_VERSION) {
-      console.warn('Preset version mismatch, clearing old presets')
+      debug.warn('Preset version mismatch, clearing old presets')
       return []
     }
 
     return Array.isArray(data.presets) ? data.presets : []
   } catch (error) {
-    console.error('Error loading user presets:', error)
+    debug.error('Error loading user presets:', error)
     return []
   }
 }
@@ -430,7 +431,7 @@ export function saveUserPresets(presets: Preset[]): boolean {
     localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(data))
     return true
   } catch (error) {
-    console.error('Error saving user presets:', error)
+    debug.error('Error saving user presets:', error)
     return false
   }
 }
@@ -644,18 +645,18 @@ export function parseShareableURL(url: string): FilterConfig {
     // Parse basic filters
     if (params.has('release')) {
       filters.releaseStatus =
-        params.get('release') || DEFAULT_FILTERS.releaseStatus
+        params.get('release') ?? DEFAULT_FILTERS.releaseStatus
     }
     if (params.has('platform')) {
-      filters.platform = params.get('platform') || DEFAULT_FILTERS.platform
+      filters.platform = params.get('platform') ?? DEFAULT_FILTERS.platform
     }
     if (params.has('rating')) {
-      filters.rating = params.get('rating') || DEFAULT_FILTERS.rating
+      filters.rating = params.get('rating') ?? DEFAULT_FILTERS.rating
     }
 
     // Parse tags
     if (params.has('tags')) {
-      const tagsParam = params.get('tags') || ''
+      const tagsParam = params.get('tags') ?? ''
       if (tagsParam.includes(',')) {
         filters.selectedTags = tagsParam.split(',').filter((tag) => tag.trim())
       } else if (tagsParam) {
@@ -668,7 +669,7 @@ export function parseShareableURL(url: string): FilterConfig {
 
     // Parse channels
     if (params.has('channels')) {
-      const channelsParam = params.get('channels') || ''
+      const channelsParam = params.get('channels') ?? ''
       if (channelsParam.includes(',')) {
         filters.selectedChannels = channelsParam
           .split(',')
@@ -680,7 +681,7 @@ export function parseShareableURL(url: string): FilterConfig {
 
     // Parse sorting
     if (params.has('sort')) {
-      filters.sortBy = params.get('sort') || DEFAULT_FILTERS.sortBy
+      filters.sortBy = params.get('sort') ?? DEFAULT_FILTERS.sortBy
     }
     if (params.has('sortSpec')) {
       const sortSpecParam = params.get('sortSpec')
@@ -698,10 +699,10 @@ export function parseShareableURL(url: string): FilterConfig {
     if (params.has('timeType')) {
       filters.timeFilter = {
         type: params.get('timeType'),
-        preset: params.get('timePreset') || null,
-        startDate: params.get('timeStart') || null,
-        endDate: params.get('timeEnd') || null,
-        smartLogic: params.get('timeLogic') || null,
+        preset: params.get('timePreset') ?? null,
+        startDate: params.get('timeStart') ?? null,
+        endDate: params.get('timeEnd') ?? null,
+        smartLogic: params.get('timeLogic') ?? null,
       }
     }
 
@@ -714,13 +715,13 @@ export function parseShareableURL(url: string): FilterConfig {
       filters.priceFilter = {
         minPrice: params.has('priceMin')
           ? parseFloat(
-              params.get('priceMin') ||
+              params.get('priceMin') ??
                 String(DEFAULT_FILTERS.priceFilter.minPrice),
             )
           : DEFAULT_FILTERS.priceFilter.minPrice,
         maxPrice: params.has('priceMax')
           ? parseFloat(
-              params.get('priceMax') ||
+              params.get('priceMax') ??
                 String(DEFAULT_FILTERS.priceFilter.maxPrice),
             )
           : DEFAULT_FILTERS.priceFilter.maxPrice,
@@ -730,7 +731,7 @@ export function parseShareableURL(url: string): FilterConfig {
 
     return filters
   } catch (error) {
-    console.error('Error parsing shareable URL:', error)
+    debug.error('Error parsing shareable URL:', error)
     return createDefaultFilters()
   }
 }
@@ -778,7 +779,7 @@ export function importPresets(
     for (const presetData of importData.presets) {
       // Validate preset structure
       if (!presetData.name || !presetData.filters) {
-        console.warn('Skipping invalid preset:', presetData)
+        debug.warn('Skipping invalid preset:', presetData)
         continue
       }
 
@@ -800,7 +801,7 @@ export function importPresets(
           imported.push(userPresets[existingIndex])
         } else {
           // Skip existing preset
-          console.warn('Preset already exists:', presetData.name)
+          debug.warn('Preset already exists:', presetData.name)
         }
       } else {
         // Create new preset
@@ -822,7 +823,7 @@ export function importPresets(
       return { success: false, error: 'Failed to save presets' }
     }
   } catch (error) {
-    console.error('Error importing presets:', error)
+    debug.error('Error importing presets:', error)
     return { success: false, error: (error as Error).message }
   }
 }

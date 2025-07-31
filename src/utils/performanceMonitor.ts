@@ -3,6 +3,8 @@
  * Helps track query execution times and optimization effectiveness
  */
 
+import { debug } from './debug'
+
 /**
  * Performance measurement data
  */
@@ -62,7 +64,7 @@ class PerformanceMonitor {
 
     const measurement = this.measurements.get(operationName)
     if (!measurement) {
-      console.warn(`No start timer found for operation: ${operationName}`)
+      debug.warn(`No start timer found for operation: ${operationName}`)
       return undefined
     }
 
@@ -71,15 +73,13 @@ class PerformanceMonitor {
 
     // Log performance if it's notable
     if (measurement.duration > 100) {
-      console.warn(
+      debug.warn(
         `🐌 Slow operation detected: ${operationName} took ${measurement.duration.toFixed(2)}ms`,
       )
     } else if (measurement.duration > 50) {
-      console.log(
-        `⚠️ ${operationName} took ${measurement.duration.toFixed(2)}ms`,
-      )
+      debug.log(`⚠️ ${operationName} took ${measurement.duration.toFixed(2)}ms`)
     } else {
-      console.log(
+      debug.log(
         `✅ ${operationName} completed in ${measurement.duration.toFixed(2)}ms`,
       )
     }

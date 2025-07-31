@@ -9,6 +9,7 @@
  */
 
 import type { Database } from 'sql.js'
+import { debug } from './debug'
 
 /**
  * SQL.js Database-like interface for type checking
@@ -170,9 +171,9 @@ export class DatabaseManager {
     // In development, listen for Vite HMR events
     if (this.isDevelopment && import.meta.hot) {
       // Listen for database file changes via custom HMR event
-      import.meta.hot.on('database-updated', async () => {
-        console.log('🔄 Database updated, reloading...')
-        await this.reloadDatabase()
+      import.meta.hot.on('database-updated', () => {
+        debug.log('🔄 Database updated, reloading...')
+        void this.reloadDatabase() // Explicitly handle promise without awaiting
       })
     }
   }
@@ -186,10 +187,10 @@ export class DatabaseManager {
         "SELECT value FROM app_metadata WHERE key = 'app_version'",
       )
       const version = extractSingleValue(result, 'unknown')
-      console.log('🗄️ Database app version:', version)
+      debug.log('🗄️ Database app version:', version)
       return String(version)
     } catch (error) {
-      console.warn('⚠️ Could not extract database version:', error)
+      debug.warn('⚠️ Could not extract database version:', error)
     }
 
     return 'unknown'
@@ -263,13 +264,13 @@ export class DatabaseManager {
       if (!this.currentAppVersion) {
         // Initial load: use database version as current version
         this.currentAppVersion = newDatabaseVersion
-        console.log(
+        debug.log(
           '📱 INITIAL LOAD: Set app version from database:',
           this.currentAppVersion,
         )
       } else {
         // Subsequent load: check compatibility
-        console.log('🔍 VERSION CHECK:', {
+        debug.log('🔍 VERSION CHECK:', {
           cached: this.currentAppVersion,
           database: newDatabaseVersion,
           compatible: this.currentAppVersion === newDatabaseVersion,
@@ -280,17 +281,17 @@ export class DatabaseManager {
         if (!isCompatible) {
           // Don't update the database, keep the old one
           tempDb.close()
-          console.error('🚫 VERSION MISMATCH DETECTED:', {
+          debug.error('🚫 VERSION MISMATCH DETECTED:', {
             current: this.currentAppVersion,
             database: newDatabaseVersion,
           })
 
           // Stop checking since we'll never be compatible again
           this.stopProductionChecking()
-          console.warn('🛑 Stopped database checking due to version mismatch')
+          debug.warn('🛑 Stopped database checking due to version mismatch')
 
           // Notify about version mismatch
-          console.log('📢 Notifying version mismatch listeners...')
+          debug.log('📢 Notifying version mismatch listeners...')
           this.notifyVersionMismatchListeners({
             currentVersion: this.currentAppVersion,
             databaseVersion: newDatabaseVersion,
@@ -316,14 +317,14 @@ export class DatabaseManager {
         this.db.exec('SELECT COUNT(*) FROM games'),
         0,
       )
-      console.log('🗄️ Database loaded, total games:', totalGames)
+      debug.log('🗄️ Database loaded, total games:', totalGames)
 
       // Notify listeners that database has been updated
       this.notifyListeners()
 
       return true
     } catch (error) {
-      console.error('❌ Error loading database:', error)
+      debug.error('❌ Error loading database:', error)
       throw error
     }
   }
@@ -345,20 +346,22 @@ export class DatabaseManager {
       clearInterval(this.checkInterval)
     }
 
-    this.checkInterval = setInterval(async () => {
-      try {
-        const wasUpdated = await this.loadDatabase()
-        if (wasUpdated) {
-          console.log('🔄 Database automatically updated in production')
+    this.checkInterval = setInterval(() => {
+      void (async () => {
+        try {
+          const wasUpdated = await this.loadDatabase()
+          if (wasUpdated) {
+            debug.info('🔄 Database automatically updated in production')
+          }
+          // Always notify listeners to update UI timestamps, even if no content changed
+          this.notifyListeners()
+        } catch (error) {
+          debug.error('❌ Error checking for database updates:', error)
         }
-        // Always notify listeners to update UI timestamps, even if no content changed
-        this.notifyListeners()
-      } catch (error) {
-        console.error('❌ Error checking for database updates:', error)
-      }
+      })()
     }, this.PRODUCTION_CHECK_INTERVAL)
 
-    console.log(
+    debug.log(
       `⏰ Started production database checking (every ${this.PRODUCTION_CHECK_INTERVAL / 60000}m)`,
     )
   }
@@ -370,7 +373,7 @@ export class DatabaseManager {
     if (this.checkInterval) {
       clearInterval(this.checkInterval)
       this.checkInterval = null
-      console.log('⏹️ Stopped production database checking')
+      debug.log('⏹️ Stopped production database checking')
     }
   }
 
@@ -410,7 +413,7 @@ export class DatabaseManager {
       try {
         callback(this.db)
       } catch (error) {
-        console.error('❌ Error in database update listener:', error)
+        debug.error('❌ Error in database update listener:', error)
       }
     })
   }
@@ -423,7 +426,7 @@ export class DatabaseManager {
       try {
         callback(info)
       } catch (error) {
-        console.error('❌ Error in version mismatch listener:', error)
+        debug.error('❌ Error in version mismatch listener:', error)
       }
     })
   }
@@ -474,7 +477,7 @@ export class DatabaseManager {
           dataModified = String(extractedData)
         }
       } catch (error) {
-        console.debug('Could not read data_last_modified from metadata:', error)
+        debug.log('Could not read data_last_modified from metadata:', error)
       }
 
       return {
@@ -485,7 +488,7 @@ export class DatabaseManager {
         isDevelopment: this.isDevelopment,
       }
     } catch (error) {
-      console.error('❌ Error getting database stats:', error)
+      debug.error('❌ Error getting database stats:', error)
       return null
     }
   }
@@ -498,17 +501,17 @@ export class DatabaseManager {
       return
     }
 
-    console.log('🧪 TESTING VERSION MISMATCH')
-    console.log('Current cached version:', this.currentAppVersion)
+    debug.log('🧪 TESTING VERSION MISMATCH')
+    debug.log('Current cached version:', this.currentAppVersion)
 
     // Manually trigger a version mismatch by pretending database has different version
     const fakeVersion = 'test-mismatch-version'
-    console.log('Simulating database with version:', fakeVersion)
+    debug.log('Simulating database with version:', fakeVersion)
 
     if (this.currentAppVersion !== fakeVersion) {
-      console.log('📢 Triggering version mismatch notification...')
+      debug.log('📢 Triggering version mismatch notification...')
       this.notifyVersionMismatchListeners({
-        currentVersion: this.currentAppVersion || 'unknown',
+        currentVersion: this.currentAppVersion ?? 'unknown',
         databaseVersion: fakeVersion,
       })
     }

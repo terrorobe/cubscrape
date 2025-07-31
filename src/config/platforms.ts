@@ -173,7 +173,7 @@ export function getPlatformConfig(platformId: string): PlatformConfig | null {
  */
 export function getPlatformDisplayName(platformId: string): string {
   const platform = getPlatformConfig(platformId)
-  return platform?.displayName || platformId
+  return platform?.displayName ?? platformId
 }
 
 /**
@@ -181,7 +181,7 @@ export function getPlatformDisplayName(platformId: string): string {
  */
 export function getPlatformIcon(platformId: string): string {
   const platform = getPlatformConfig(platformId)
-  return platform?.icon || platformId.charAt(0).toUpperCase()
+  return platform?.icon ?? platformId.charAt(0).toUpperCase()
 }
 
 /**
@@ -189,7 +189,7 @@ export function getPlatformIcon(platformId: string): string {
  */
 export function isPlatformUrl(url: string, platformId: string): boolean {
   const platform = getPlatformConfig(platformId)
-  return platform?.urlPattern?.test(url) || false
+  return platform?.urlPattern?.test(url) ?? false
 }
 
 /**

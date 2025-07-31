@@ -16,6 +16,7 @@ import {
   type FilterConfig,
   type ImportResult,
 } from '../utils/presetManager'
+import { debug } from '../utils/debug'
 
 // Component props interface
 interface Props {
@@ -193,7 +194,7 @@ const shareCurrentFilters = async (): Promise<void> => {
     await navigator.clipboard.writeText(url)
     showNotification('Link copied!', 'success')
   } catch (error) {
-    console.error('Failed to copy to clipboard:', error)
+    debug.error('Failed to copy to clipboard:', error)
     showNotification('Copy failed', 'error')
   }
 }
@@ -204,7 +205,7 @@ const sharePreset = async (preset: Preset): Promise<void> => {
     await navigator.clipboard.writeText(url)
     showNotification(`Link copied: ${preset.name}`, 'success')
   } catch (error) {
-    console.error('Failed to copy to clipboard:', error)
+    debug.error('Failed to copy to clipboard:', error)
     showNotification('Copy failed', 'error')
   }
 }
