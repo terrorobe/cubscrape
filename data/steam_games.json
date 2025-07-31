@@ -27738,7 +27738,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928080/header.jpg?t=1753452198",
-      "last_updated": "2025-07-31T03:08:19.495868",
+      "last_updated": "2025-07-31T08:54:17.668482",
       "name": "Prospector",
       "publishers": [
         "HypeTrain Digital"
@@ -40627,16 +40627,19 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2224120/header.jpg?t=1750820855",
-      "last_updated": "2025-07-24T08:53:38.009925",
+      "last_updated": "2025-07-31T08:54:15.171153",
       "name": "Zombie Rollerz: The Last Ship",
-      "positive_review_percentage": 68,
+      "positive_review_percentage": 67,
       "price_eur": "9,75\u20ac",
       "price_usd": "$9.99",
       "publishers": [
         "Wandering Wizard"
       ],
+      "recent_review_count": 32,
+      "recent_review_percentage": 59,
+      "recent_review_summary": "Mixed",
       "release_date": "24 Jun, 2025",
-      "review_count": 83,
+      "review_count": 87,
       "review_summary": "Mixed",
       "steam_app_id": "2224120",
       "steam_url": "https://store.steampowered.com/app/2224120",
@@ -46812,16 +46815,19 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2338110/2fb04360e6fb0d47c40b16bf7f9d3a680d9b0835/header.jpg?t=1749442944",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-24T08:53:39.131249",
+      "last_updated": "2025-07-31T08:54:16.182594",
       "name": "Zombie Rollerz: The Last Ship - Demo",
-      "positive_review_percentage": 68,
+      "positive_review_percentage": 67,
       "price_eur": "Free",
       "price_usd": "Free",
       "publishers": [
         "Wandering Wizard"
       ],
+      "recent_review_count": 32,
+      "recent_review_percentage": 59,
+      "recent_review_summary": "Mixed",
       "release_date": "5 May, 2025",
-      "review_count": 83,
+      "review_count": 87,
       "review_summary": "Mixed",
       "steam_app_id": "2338110",
       "steam_url": "https://store.steampowered.com/app/2338110",
@@ -47502,7 +47508,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2347080/c6c09a8eb1a0fac5ac8e0d2ea0a228c8303d8967/header.jpg?t=1752771280",
       "is_early_access": true,
-      "last_updated": "2025-07-31T03:08:22.201886",
+      "last_updated": "2025-07-31T08:54:21.961052",
       "name": "Frosthaven",
       "publishers": [
         "Arc Games"
@@ -57850,7 +57856,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2513490/header.jpg?t=1753113920",
       "is_early_access": true,
-      "last_updated": "2025-07-31T03:08:18.564440",
+      "last_updated": "2025-07-31T08:54:14.392693",
       "name": "HELL GALAXY",
       "publishers": [
         "Italian Games Factory"
@@ -71905,7 +71911,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2760790/header.jpg?t=1753870567",
-      "last_updated": "2025-07-31T03:08:20.596513",
+      "last_updated": "2025-07-31T08:54:18.607515",
       "name": "Another Farm Roguelike: Rebirth",
       "publishers": [
         "Thermite Games"
@@ -78513,19 +78519,19 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2857000/header.jpg?t=1751904891",
-      "last_updated": "2025-07-24T08:53:37.107446",
+      "last_updated": "2025-07-31T08:54:20.232413",
       "name": "refarm",
-      "positive_review_percentage": 89,
-      "price_eur": "3,99\u20ac",
-      "price_usd": "$3.99",
+      "positive_review_percentage": 88,
+      "price_eur": "2,99\u20ac",
+      "price_usd": "$2.99",
       "publishers": [
         "otterhands"
       ],
-      "recent_review_count": 47,
-      "recent_review_percentage": 91,
+      "recent_review_count": 46,
+      "recent_review_percentage": 89,
       "recent_review_summary": "Very Positive",
       "release_date": "1 Nov, 2024",
-      "review_count": 211,
+      "review_count": 224,
       "review_summary": "Very Positive",
       "steam_app_id": "2857000",
       "steam_url": "https://store.steampowered.com/app/2857000",
@@ -88215,16 +88221,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1753887620",
       "is_early_access": true,
-      "last_updated": "2025-07-31T03:08:21.249115",
+      "last_updated": "2025-07-31T08:54:16.785110",
       "name": "Demon Hunt",
-      "positive_review_percentage": 86,
+      "positive_review_percentage": 88,
       "price_eur": "5,51\u20ac",
       "price_usd": "$5.59",
       "publishers": [
         "Massive Hug"
       ],
       "release_date": "30 Jul, 2025",
-      "review_count": 15,
+      "review_count": 18,
       "review_summary": "Positive",
       "steam_app_id": "3039910",
       "steam_url": "https://store.steampowered.com/app/3039910",
@@ -107243,7 +107249,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451380/f3967338826c1be6bb7c5677680137fa5c921730/header.jpg?t=1753911587",
-      "last_updated": "2025-07-31T03:08:12.539355",
+      "last_updated": "2025-07-31T08:54:21.080410",
       "name": "Game of Grass",
       "publishers": [
         "Hipsterdufus"
@@ -118350,7 +118356,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3868720/bbbe96e2cb7f1749c4c60ca15d7e57f42cc96643/header.jpg?t=1752591881",
-      "last_updated": "2025-07-31T03:08:23.189364",
+      "last_updated": "2025-07-31T08:54:13.440975",
       "name": "Doomfields",
       "publishers": [
         "KJGames"
