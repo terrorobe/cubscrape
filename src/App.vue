@@ -3,6 +3,8 @@ import { ref, onMounted, onUnmounted, nextTick, watch, type Ref } from 'vue'
 import GameCard from './components/GameCard.vue'
 import GameFilters from './components/GameFilters.vue'
 import SortIndicator from './components/SortIndicator.vue'
+import PaginationControls from './components/PaginationControls.vue'
+import { usePagination } from './composables/usePagination'
 import { databaseManager } from './utils/databaseManager'
 import type { VersionMismatchInfo } from './utils/databaseManager'
 import { usePerformanceMonitoring } from './utils/performanceMonitor'
@@ -119,7 +121,7 @@ const { monitorDatabaseQuery, monitorFilterUpdate } = usePerformanceMonitoring()
 
 // Search state
 const searchQuery = ref('')
-const searchInVideoTitles = ref(true)
+const searchInVideoTitles = ref(false)
 const debouncedSearchQuery = ref('')
 
 // Debounce timer
@@ -134,6 +136,7 @@ watch(searchQuery, (newQuery) => {
   searchDebounceTimer = setTimeout(() => {
     debouncedSearchQuery.value = newQuery
     filters.value.searchQuery = newQuery
+    updateURLParams(filters.value)
     if (db) {
       executeQuery(db)
     }
@@ -143,6 +146,7 @@ watch(searchQuery, (newQuery) => {
 // Watch for search in video titles toggle
 watch(searchInVideoTitles, (newValue) => {
   filters.value.searchInVideoTitles = newValue
+  updateURLParams(filters.value)
   // Only reload if there's an active search
   if (searchQuery.value.trim() && db) {
     executeQuery(db)
@@ -176,7 +180,7 @@ const filters: Ref<AppFilters> = ref({
   },
   // Search filtering
   searchQuery: '',
-  searchInVideoTitles: true,
+  searchInVideoTitles: false,
 })
 
 const channels: Ref<string[]> = ref([])
@@ -184,6 +188,8 @@ const channelsWithCounts: Ref<ChannelWithCount[]> = ref([])
 const allTags: Ref<TagWithCount[]> = ref([])
 const gameGrid: Ref<HTMLElement | null> = ref(null)
 const highlightedGameId: Ref<number | null> = ref(null)
+
+// Pagination will be set up after filteredGames is declared
 const gameStats: Ref<GameStats> = ref({
   totalGames: 0,
   freeGames: 0,
@@ -282,6 +288,36 @@ const loadChannelsAndTags = (database: Database): void => {
 }
 
 const filteredGames: Ref<AppGameData[]> = ref([])
+
+// Modern pagination setup
+const {
+  currentPage,
+  pageSize,
+  totalPages,
+  startIndex,
+  endIndex,
+  currentPageItems: currentPageGames,
+  hasNextPage,
+  hasPrevPage,
+  remainingItems,
+  loading: paginationLoading,
+  loadMoreVisible,
+  visiblePages,
+  showFirstPage,
+  showLastPage,
+  showLeftEllipsis,
+  showRightEllipsis,
+  goToPage,
+  loadMore,
+  handleJumpToPage,
+  setPageSize,
+  getPageButtonClass,
+  getNavButtonClass,
+} = usePagination(filteredGames, {
+  pageSize: 150,
+  enableLoadMore: true,
+  onPageChange: () => updateURLParams(filters.value),
+})
 
 const buildSQLQuery = (
   filterValues: AppFilters,
@@ -560,18 +596,18 @@ const buildSQLQuery = (
     }
   }
 
-  // Search filtering
+  // Search filtering using LIKE queries
   if (filterValues.searchQuery && filterValues.searchQuery.trim()) {
-    const searchPattern = `%${filterValues.searchQuery.trim()}%`
+    const searchTerm = filterValues.searchQuery.trim()
 
     if (filterValues.searchInVideoTitles) {
-      // Search in both game names and video titles
+      // Search in both game names and video titles using LIKE
       query += ' AND (g.name LIKE ? OR gv.video_title LIKE ?)'
-      params.push(searchPattern, searchPattern)
+      params.push(`%${searchTerm}%`, `%${searchTerm}%`)
     } else {
-      // Search only in game names
+      // Search only in game names using LIKE
       query += ' AND g.name LIKE ?'
-      params.push(searchPattern)
+      params.push(`%${searchTerm}%`)
     }
   }
 
@@ -1463,6 +1499,12 @@ const updateURLParams = (filterValues: AppFilters): void => {
         : null,
     includeFree:
       filterValues.priceFilter?.includeFree === false ? 'false' : null,
+    // Search parameters
+    search: filterValues.searchQuery?.trim() || null,
+    searchVideos: filterValues.searchInVideoTitles === true ? 'true' : null,
+    // Pagination parameters
+    page: currentPage.value > 1 ? currentPage.value.toString() : null,
+    size: pageSize.value !== 150 ? pageSize.value.toString() : null,
   }
 
   Object.keys(params).forEach((key) => {
@@ -1588,6 +1630,38 @@ const loadFiltersFromURL = (): void => {
     }
   }
 
+  // Handle search parameters
+  if (urlParams.has('search')) {
+    const searchParam = urlParams.get('search')
+    if (searchParam) {
+      urlFilters.searchQuery = searchParam
+      searchQuery.value = searchParam
+      debouncedSearchQuery.value = searchParam
+    }
+  }
+
+  if (urlParams.has('searchVideos')) {
+    urlFilters.searchInVideoTitles = urlParams.get('searchVideos') === 'true'
+    searchInVideoTitles.value = urlParams.get('searchVideos') === 'true'
+  }
+
+  // Handle pagination parameters
+  if (urlParams.has('page')) {
+    const pageParam = urlParams.get('page')
+    const pageNumber = pageParam ? parseInt(pageParam, 10) : 1
+    if (pageNumber > 0) {
+      currentPage.value = pageNumber
+    }
+  }
+
+  if (urlParams.has('size')) {
+    const sizeParam = urlParams.get('size')
+    const sizeNumber = sizeParam ? parseInt(sizeParam, 10) : 150
+    if ([50, 100, 150, 200].includes(sizeNumber)) {
+      pageSize.value = sizeNumber
+    }
+  }
+
   // Update filters with URL values
   if (Object.keys(urlFilters).length > 0) {
     filters.value = { ...filters.value, ...urlFilters }
@@ -1614,21 +1688,31 @@ onMounted((): void => {
   // Store timer reference for cleanup
   ;(window as ExtendedWindow).timestampTimer = timestampTimer
 
+  // Set up resize handling for responsive layout
+  const handleResize = (): void => {
+    // Debounce resize handling to prevent excessive recalculations
+    setTimeout(() => {
+      // CSS Grid auto-fit handles responsive layout automatically
+
+      // Update debug info in development
+      if (isDevelopment) {
+        updateGridDebugInfo()
+      }
+    }, TIMING.RESIZE_DEBOUNCE_DELAY)
+  }
+
+  window.addEventListener('resize', handleResize)
+
+  // ResizeObserver will be set up after the container is available
+
   // Set up debug info updates for development
   if (isDevelopment) {
-    // Update debug info on resize
-    const handleResize = (): void => {
-      setTimeout(updateGridDebugInfo, TIMING.RESIZE_DEBOUNCE_DELAY) // Debounce slightly
-    }
-
-    window.addEventListener('resize', handleResize)
-
     // Initial debug info after components are mounted
     setTimeout(updateGridDebugInfo, TIMING.INITIAL_DEBUG_DELAY)
-
-    // Store for cleanup
-    ;(window as ExtendedWindow).handleResize = handleResize
   }
+
+  // Store for cleanup
+  ;(window as ExtendedWindow).handleResize = handleResize
 })
 
 onUnmounted((): void => {
@@ -1660,6 +1744,8 @@ onUnmounted((): void => {
     window.removeEventListener('resize', extWindow.handleResize)
     extWindow.handleResize = undefined
   }
+
+  // No ResizeObserver cleanup needed for pagination
 
   // Remove keyboard handler
   const handleKeydown = (e: KeyboardEvent): void => {
@@ -1953,16 +2039,51 @@ if (import.meta.hot) {
             </div>
           </div>
 
-          <!-- Game Grid -->
-          <div class="game-grid grid w-full gap-5" ref="gameGrid">
-            <GameCard
-              v-for="game in filteredGames"
-              :key="game.id"
-              :game="game"
-              :currency="filters.currency"
-              :is-highlighted="highlightedGameId === game.id"
-              @click="clearHighlight"
-              @tag-click="handleTagClick"
+          <!-- Modern Game Grid with Pagination -->
+          <div class="game-discovery-container min-h-0 w-full flex-1">
+            <!-- Game Grid -->
+            <div
+              ref="gameGrid"
+              v-if="filteredGames.length > 0"
+              class="game-grid mb-8 grid w-full gap-5 justify-start"
+              style="grid-template-columns: repeat(auto-fit, minmax(320px, 400px));"
+            >
+              <GameCard
+                v-for="game in currentPageGames"
+                :key="game.id"
+                :game="game"
+                :currency="filters.currency"
+                :is-highlighted="highlightedGameId === game.id"
+                @click="clearHighlight"
+                @tag-click="handleTagClick"
+              />
+            </div>
+
+            <!-- Pagination Controls -->
+            <PaginationControls
+              v-if="filteredGames.length > 0"
+              :current-page="currentPage"
+              :total-pages="totalPages"
+              :total-items="filteredGames.length"
+              :start-index="startIndex"
+              :end-index="endIndex"
+              :remaining-items="remainingItems"
+              :page-size="pageSize"
+              :has-next-page="hasNextPage"
+              :has-prev-page="hasPrevPage"
+              :loading="paginationLoading"
+              :visible-pages="visiblePages"
+              :show-first-page="showFirstPage"
+              :show-last-page="showLastPage"
+              :show-left-ellipsis="showLeftEllipsis"
+              :show-right-ellipsis="showRightEllipsis"
+              :load-more-visible="loadMoreVisible"
+              :get-page-button-class="getPageButtonClass"
+              :get-nav-button-class="getNavButtonClass"
+              @go-to-page="goToPage"
+              @load-more="loadMore"
+              @jump-to-page="handleJumpToPage"
+              @set-page-size="setPageSize"
             />
           </div>
 
@@ -1978,9 +2099,12 @@ if (import.meta.hot) {
           <!-- No Results State -->
           <div
             v-if="!loading && !error && filteredGames.length === 0"
-            class="py-10 text-center text-text-secondary"
+            class="py-20 text-center text-text-secondary"
           >
-            No games found matching your criteria.
+            <div class="mb-2 text-xl">No games found</div>
+            <div class="text-sm">
+              Try adjusting your filters to see more results.
+            </div>
           </div>
         </div>
       </div>
@@ -1989,6 +2113,7 @@ if (import.meta.hot) {
 </template>
 
 <style scoped>
+/* Modern game grid styles - return to master's proven approach */
 .game-grid {
   /* Ensure proper grid container behavior */
   display: grid;
@@ -1999,38 +2124,31 @@ if (import.meta.hot) {
   gap: 1.25rem; /* 20px - matches gap-5 */
   width: 100%;
   min-width: 0;
-
-  /* Force grid to use all available space */
-  justify-content: stretch;
-  align-items: stretch;
-  grid-auto-rows: auto;
 }
 
-/* Ensure grid items expand to fill their allocated space */
-.game-grid > * {
+/* Grid items inherit proper sizing from GameCard component */
+
+/* Game discovery container */
+.game-discovery-container {
+  /* Clean container for pagination layout */
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  min-width: 0;
-  max-width: none;
-  justify-self: stretch;
+  min-height: 0;
 }
 
-/* Debug: Console-only debugging in development */
-
-/* Responsive grid adjustments for optimal card expansion */
-@media (min-width: 1280px) and (max-width: v-bind('`${LAYOUT.CONTAINER_MAX_WIDTH_PX - 1  }px`')) {
+/* Responsive behavior for dynamic grid columns */
+@media (max-width: 359px) {
+  /* Extra small mobile: force smaller minimum */
   .game-grid {
-    /* Force equal columns where auto-fit struggles to expand cards properly */
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
   }
 }
 
-/* At very large viewports, allow auto-fit to determine optimal columns */
-@media (min-width: v-bind('LAYOUT.CONTAINER_MAX_WIDTH')) {
+@media (min-width: 360px) {
+  /* Standard responsive grid with 320px minimum */
   .game-grid {
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(v-bind('LAYOUT.CARD_MIN_WIDTH'), 1fr)
-    );
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
   }
 }
 </style>

@@ -18,6 +18,10 @@ import type {
 } from '../types/database'
 import type { FilterRemoveEvent } from '../types/filters'
 import type { SortChangeEvent } from '../types/sorting'
+import {
+  convertToTimeFilterConfig,
+  convertFromTimeFilterConfig,
+} from '../types/filters'
 import CollapsibleSection from './CollapsibleSection.vue'
 import TagFilterMulti from './TagFilterMulti.vue'
 import ChannelFilterMulti from './ChannelFilterMulti.vue'
@@ -70,13 +74,8 @@ interface ChannelChangedData {
   selectedChannels: string[]
 }
 
-interface TimeFilterData {
-  type: string | null
-  preset: string | null
-  startDate: string | null
-  endDate: string | null
-  smartLogic: string | null
-}
+// Import the TimeFilterConfig from shared types
+import type { TimeFilterConfig } from '../types/timeFilter'
 
 interface PriceFilterData {
   minPrice: number
@@ -286,8 +285,9 @@ const handleChannelsChanged = (channelData: ChannelChangedData): void => {
   debouncedEmitFiltersChanged()
 }
 
-const handleTimeFilterChanged = (timeFilterData: TimeFilterData): void => {
-  localFilters.timeFilter = { ...timeFilterData }
+const handleTimeFilterChanged = (timeFilterData: TimeFilterConfig): void => {
+  // Convert component-specific type to generic storage type
+  localFilters.timeFilter = convertFromTimeFilterConfig(timeFilterData)
   debouncedEmitFiltersChanged()
 }
 
@@ -505,7 +505,7 @@ onUnmounted(() => {
     <CollapsibleSection
       title="Basic Filters"
       :active-count="basicFiltersCount"
-      :default-expanded="true"
+      default-expanded
     >
       <div class="space-y-4">
         <!-- Release Status Filter -->
@@ -638,14 +638,7 @@ onUnmounted(() => {
     >
       <TimeFilterSimple
         :initial-time-filter="
-          localFilters.timeFilter ||
-          ({
-            type: null,
-            preset: null,
-            startDate: null,
-            endDate: null,
-            smartLogic: null,
-          } as any)
+          convertToTimeFilterConfig(localFilters.timeFilter)
         "
         @time-filter-changed="handleTimeFilterChanged"
       />

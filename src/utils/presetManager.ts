@@ -6,6 +6,7 @@
 import { DEFAULT_FILTERS } from '../config/index'
 import type { SortSpec } from '../types/sorting'
 import { serializeSortSpec, deserializeSortSpec } from '../types/sorting'
+import type { GenericTimeFilter } from '../types/filters'
 
 const PRESET_STORAGE_KEY = 'cubscrape-filter-presets'
 const PRESET_VERSION = '1.0'
@@ -36,13 +37,7 @@ export interface FilterConfig extends Record<string, unknown> {
   sortBy: string
   sortSpec: SortSpec
   currency: 'eur' | 'usd'
-  timeFilter: {
-    type: string | null
-    preset: string | null
-    startDate: string | null
-    endDate: string | null
-    smartLogic: string | null
-  }
+  timeFilter: GenericTimeFilter
   priceFilter: {
     minPrice: number
     maxPrice: number
