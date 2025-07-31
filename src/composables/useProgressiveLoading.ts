@@ -10,7 +10,7 @@ export function useProgressiveLoading(options: ProgressiveLoadingOptions = {}) {
   const {
     rootMargin = '100px',
     threshold = 0.1,
-    loadImmediately = false
+    loadImmediately = false,
   } = options
 
   const elementRef: Ref<HTMLElement | undefined> = ref()
@@ -44,8 +44,8 @@ export function useProgressiveLoading(options: ProgressiveLoadingOptions = {}) {
       },
       {
         rootMargin,
-        threshold
-      }
+        threshold,
+      },
     )
 
     observer.observe(elementRef.value)
@@ -60,6 +60,6 @@ export function useProgressiveLoading(options: ProgressiveLoadingOptions = {}) {
     shouldLoad,
     isLoaded,
     startLoading,
-    markAsLoaded
+    markAsLoaded,
   }
 }

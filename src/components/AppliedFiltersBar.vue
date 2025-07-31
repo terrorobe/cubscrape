@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import type { FilterConfig } from '../utils/presetManager'
 import type {
-  FilterValue,
+  FilterValue as _FilterValue,
   FilterRemoveEvent,
   AppliedFilter,
 } from '../types/filters'

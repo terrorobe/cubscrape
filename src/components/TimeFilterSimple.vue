@@ -1,32 +1,15 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-/**
- * Time filter type options
- */
-export type TimeFilterType = 'video' | 'release' | null
+// Import shared types
+import type {
+  TimeFilterType,
+  TimeFilterPreset,
+  TimeFilterConfig,
+} from '../types/timeFilter'
 
-/**
- * Time filter preset options
- */
-export type TimeFilterPreset =
-  | 'last-week'
-  | 'last-month'
-  | 'last-3-months'
-  | 'last-6-months'
-  | 'last-year'
-  | null
-
-/**
- * Time filter configuration
- */
-export interface TimeFilterConfig {
-  type: TimeFilterType
-  preset: TimeFilterPreset
-  startDate: string | null
-  endDate: string | null
-  smartLogic: string | null
-}
+// Re-export for backward compatibility
+export type { TimeFilterType, TimeFilterPreset, TimeFilterConfig }
 
 /**
  * Props interface for TimeFilterSimple component

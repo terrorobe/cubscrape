@@ -39,14 +39,14 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 // Progressive loading for images
-const { 
-  elementRef: cardRef, 
-  shouldLoad: shouldLoadImage, 
-  isLoaded: imageLoaded, 
-  markAsLoaded 
+const {
+  elementRef: cardRef,
+  shouldLoad: shouldLoadImage,
+  isLoaded: imageLoaded,
+  markAsLoaded,
 } = useProgressiveLoading({
   rootMargin: '100px',
-  threshold: 0.1
+  threshold: 0.1,
 })
 
 // Progressive loading for detailed game information
@@ -526,7 +526,7 @@ watch(
 <template>
   <div
     ref="cardRef"
-    class="game-card relative flex size-full cursor-pointer flex-col overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
+    class="game-card relative flex cursor-pointer flex-col overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl max-w-sm justify-self-start"
     :class="{
       'scale-105': copyFeedback,
       highlighted: isHighlighted && !highlightFading,
@@ -542,30 +542,30 @@ watch(
       Link Copied!
     </div>
     <!-- Game Image with Progressive Loading -->
-    <div class="h-[150px] w-full bg-bg-card flex items-center justify-center">
+    <div class="flex h-[150px] w-full items-center justify-center bg-bg-card">
       <img
         v-if="game.header_image && shouldLoadImage"
         :src="game.header_image"
         :alt="game.name"
-        class="h-full w-full object-contain transition-opacity duration-300"
+        class="size-full object-contain transition-opacity duration-300"
         :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
         loading="lazy"
         @load="markAsLoaded"
         @error="markAsLoaded"
       />
       <!-- Loading placeholder -->
-      <div 
+      <div
         v-else-if="game.header_image && !shouldLoadImage"
-        class="h-full w-full bg-bg-secondary animate-pulse flex items-center justify-center"
+        class="flex size-full animate-pulse items-center justify-center bg-bg-secondary"
       >
-        <div class="text-text-secondary text-sm">Loading...</div>
+        <div class="text-sm text-text-secondary">Loading...</div>
       </div>
       <!-- No image placeholder -->
-      <div 
+      <div
         v-else
-        class="h-full w-full bg-bg-secondary flex items-center justify-center"
+        class="flex size-full items-center justify-center bg-bg-secondary"
       >
-        <div class="text-text-secondary text-sm">No image</div>
+        <div class="text-sm text-text-secondary">No image</div>
       </div>
     </div>
 
@@ -632,9 +632,14 @@ watch(
                 </div>
               </div>
               <!-- Rating Skeleton -->
-              <div v-else class="inline-block rounded-sm px-2 py-1 bg-bg-secondary animate-pulse">
-                <div class="mb-0.5 h-4 w-16 bg-text-secondary/20 rounded"></div>
-                <div class="h-3 w-20 bg-text-secondary/20 rounded"></div>
+              <div
+                v-else
+                class="inline-block animate-pulse rounded-sm bg-bg-secondary px-2 py-1"
+              >
+                <div
+                  class="mb-0.5 h-4 w-16 rounded-sm bg-text-secondary/20"
+                ></div>
+                <div class="h-3 w-20 rounded-sm bg-text-secondary/20"></div>
               </div>
             </div>
 
@@ -712,6 +717,7 @@ watch(
             <a
               :href="`https://www.youtube.com/watch?v=${game.latest_video_id}`"
               target="_blank"
+              rel="noopener noreferrer"
               class="text-text-primary hover:text-accent hover:underline"
             >
               {{ game.latest_video_title }}
@@ -776,6 +782,7 @@ watch(
                     <a
                       :href="`https://www.youtube.com/watch?v=${video.video_id}`"
                       target="_blank"
+                      rel="noopener noreferrer"
                       class="flex-1 pr-2 text-xs leading-tight text-text-primary hover:text-accent"
                     >
                       {{ video.video_title }}
@@ -813,6 +820,7 @@ watch(
           <a
             :href="getMainPlatformUrl(game)"
             target="_blank"
+            rel="noopener noreferrer"
             class="text-sm text-accent hover:underline"
           >
             {{ getMainPlatformName(game) }}
@@ -823,6 +831,7 @@ watch(
             v-if="getDemoUrl(game)"
             :href="getDemoUrl(game)"
             target="_blank"
+            rel="noopener noreferrer"
             class="text-sm text-accent hover:underline"
           >
             Demo
@@ -833,6 +842,7 @@ watch(
             v-if="game.is_absorbed && getSteamParentUrl(game)"
             :href="getSteamParentUrl(game)"
             target="_blank"
+            rel="noopener noreferrer"
             class="text-sm font-medium text-accent hover:underline"
           >
             Steam Version
@@ -845,6 +855,7 @@ watch(
             "
             :href="game.itch_url"
             target="_blank"
+            rel="noopener noreferrer"
             class="text-sm text-accent hover:underline"
           >
             Itch.io
@@ -857,6 +868,7 @@ watch(
             "
             :href="game.crazygames_url"
             target="_blank"
+            rel="noopener noreferrer"
             class="text-sm text-accent hover:underline"
           >
             CrazyGames
@@ -867,6 +879,7 @@ watch(
             v-if="game.latest_video_id"
             :href="`https://www.youtube.com/watch?v=${game.latest_video_id}`"
             target="_blank"
+            rel="noopener noreferrer"
             class="text-sm text-accent hover:underline"
           >
             YouTube
