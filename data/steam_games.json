@@ -27738,7 +27738,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928080/header.jpg?t=1753452198",
-      "last_updated": "2025-07-31T01:01:16.070029",
+      "last_updated": "2025-07-31T03:08:19.495868",
       "name": "Prospector",
       "publishers": [
         "HypeTrain Digital"
@@ -47502,7 +47502,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2347080/c6c09a8eb1a0fac5ac8e0d2ea0a228c8303d8967/header.jpg?t=1752771280",
       "is_early_access": true,
-      "last_updated": "2025-07-31T01:01:22.454449",
+      "last_updated": "2025-07-31T03:08:22.201886",
       "name": "Frosthaven",
       "publishers": [
         "Arc Games"
@@ -57850,7 +57850,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2513490/header.jpg?t=1753113920",
       "is_early_access": true,
-      "last_updated": "2025-07-31T01:01:20.325783",
+      "last_updated": "2025-07-31T03:08:18.564440",
       "name": "HELL GALAXY",
       "publishers": [
         "Italian Games Factory"
@@ -71905,7 +71905,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2760790/header.jpg?t=1753870567",
-      "last_updated": "2025-07-31T01:01:30.125801",
+      "last_updated": "2025-07-31T03:08:20.596513",
       "name": "Another Farm Roguelike: Rebirth",
       "publishers": [
         "Thermite Games"
@@ -84807,16 +84807,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983410/c3c3f64cf373361772582ec43a01c26fbb1e7640/header.jpg?t=1752775739",
       "is_early_access": true,
-      "last_updated": "2025-07-24T02:48:04.409689",
+      "last_updated": "2025-07-31T03:08:16.273854",
       "name": "Xenopurge",
-      "positive_review_percentage": 91,
-      "price_eur": "9,74\u20ac",
-      "price_usd": "$9.74",
+      "positive_review_percentage": 92,
+      "price_eur": "12,49\u20ac",
+      "price_usd": "$12.49",
       "publishers": [
         "Firesquid"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 94,
+      "review_count": 107,
       "review_summary": "Very Positive",
       "steam_app_id": "2983410",
       "steam_url": "https://store.steampowered.com/app/2983410",
@@ -88215,16 +88215,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1753887620",
       "is_early_access": true,
-      "last_updated": "2025-07-31T01:01:14.472673",
+      "last_updated": "2025-07-31T03:08:21.249115",
       "name": "Demon Hunt",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 86,
       "price_eur": "5,51\u20ac",
       "price_usd": "$5.59",
       "publishers": [
         "Massive Hug"
       ],
       "release_date": "30 Jul, 2025",
-      "review_count": 12,
+      "review_count": 15,
       "review_summary": "Positive",
       "steam_app_id": "3039910",
       "steam_url": "https://store.steampowered.com/app/3039910",
@@ -95036,35 +95036,34 @@
         "Indie",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3175750/bd0722feb82c6629566f409d1992957c2b27885b/header.jpg?t=1752241954",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3175750/bd0722feb82c6629566f409d1992957c2b27885b/header.jpg?t=1753801494",
       "is_demo": true,
+      "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-07-19T20:15:22.781011",
+      "last_updated": "2025-07-31T03:08:17.520552",
       "name": "Xenopurge Demo",
-      "positive_review_percentage": 88,
+      "positive_review_percentage": 92,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Firesquid"
       ],
-      "recent_review_count": 17,
-      "recent_review_percentage": 64,
-      "recent_review_summary": "Mixed",
       "release_date": "30 May, 2025",
-      "review_count": 81,
+      "review_count": 107,
       "review_summary": "Very Positive",
       "steam_app_id": "3175750",
       "steam_url": "https://store.steampowered.com/app/3175750",
       "tags": [
-        "Strategy",
+        "Early Access",
         "Real Time Tactics",
-        "Singleplayer",
         "Roguelite",
+        "Strategy",
+        "Management",
+        "Programming",
+        "Space",
+        "RTS",
         "2D",
-        "Aliens",
-        "Auto Battler",
-        "Automation",
-        "FMV",
-        "Horror"
+        "Perma Death"
       ]
     },
     "3176230": {
@@ -104606,16 +104605,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3391190/5eb950f7f6cfda1dd507dc48d8db2b615951df49/header.jpg?t=1753284003",
-      "last_updated": "2025-07-24T02:47:59.751016",
+      "last_updated": "2025-07-31T03:08:10.313302",
       "name": "OREBLAZE",
-      "positive_review_percentage": 92,
-      "price_eur": "4,49\u20ac",
-      "price_usd": "$4.49",
+      "positive_review_percentage": 93,
+      "price_eur": "4,99\u20ac",
+      "price_usd": "$4.99",
       "publishers": [
         "Ludiminal Games"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 26,
+      "review_count": 31,
       "review_summary": "Positive",
       "steam_app_id": "3391190",
       "steam_url": "https://store.steampowered.com/app/3391190",
@@ -105451,18 +105450,18 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3415580/header.jpg?t=1752225108",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3415580/header.jpg?t=1753768508",
       "is_early_access": true,
-      "last_updated": "2025-07-24T02:48:05.873937",
+      "last_updated": "2025-07-31T03:08:13.269428",
       "name": "Death Ring: Second Impact",
-      "positive_review_percentage": 91,
+      "positive_review_percentage": 92,
       "price_eur": "19,50\u20ac",
       "price_usd": "$19.99",
       "publishers": [
         "Rouge Mecha"
       ],
       "release_date": "11 Jul, 2025",
-      "review_count": 105,
+      "review_count": 109,
       "review_summary": "Very Positive",
       "steam_app_id": "3415580",
       "steam_url": "https://store.steampowered.com/app/3415580",
@@ -107069,15 +107068,16 @@
       "is_demo": true,
       "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-07-19T20:15:25.205941",
+      "last_updated": "2025-07-31T03:08:14.539304",
       "name": "Death Ring: Second Impact Demo",
-      "positive_review_percentage": 94,
+      "positive_review_percentage": 92,
       "price_eur": "Free",
+      "price_usd": "Free",
       "publishers": [
         "Rouge Mecha"
       ],
       "release_date": "14 Feb, 2025",
-      "review_count": 88,
+      "review_count": 109,
       "review_summary": "Very Positive",
       "steam_app_id": "3450200",
       "steam_url": "https://store.steampowered.com/app/3450200",
@@ -107243,7 +107243,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451380/f3967338826c1be6bb7c5677680137fa5c921730/header.jpg?t=1753911587",
-      "last_updated": "2025-07-31T01:01:29.123593",
+      "last_updated": "2025-07-31T03:08:12.539355",
       "name": "Game of Grass",
       "publishers": [
         "Hipsterdufus"
@@ -113718,16 +113718,16 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3630650/79dcc74e975d12267bfe22b472bf5c512a68e0f4/header.jpg?t=1743840098",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-22T22:32:46.215879",
+      "last_updated": "2025-07-31T03:08:11.606442",
       "name": "OREBLAZE Demo",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 93,
       "price_eur": "Free",
       "price_usd": "Free",
       "publishers": [
         "Ludiminal Games"
       ],
       "release_date": "5 Apr, 2025",
-      "review_count": 26,
+      "review_count": 31,
       "review_summary": "Positive",
       "steam_app_id": "3630650",
       "steam_url": "https://store.steampowered.com/app/3630650",
@@ -118350,7 +118350,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3868720/bbbe96e2cb7f1749c4c60ca15d7e57f42cc96643/header.jpg?t=1752591881",
-      "last_updated": "2025-07-31T01:01:11.881135",
+      "last_updated": "2025-07-31T03:08:23.189364",
       "name": "Doomfields",
       "publishers": [
         "KJGames"
