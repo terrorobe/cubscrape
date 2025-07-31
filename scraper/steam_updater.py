@@ -503,7 +503,20 @@ class SteamDataUpdater:
 
             if demo_id and (force_demo_check or self._should_update_related_app(demo_id)):
                 logging.info(f"  Fetching demo {demo_id}")
-                self._fetch_related_app(demo_id, "demo", known_full_game_id=app_id)
+                demo_fetched = self._fetch_related_app(demo_id, "demo", known_full_game_id=app_id)
+
+                # If we force-fetched a demo that was removed from sale but still exists,
+                # restore the bidirectional relationship
+                if demo_fetched and force_demo_check and demo_id in self.steam_data['games']:
+                    demo_data = self.steam_data['games'][demo_id]
+                    if demo_data.full_game_app_id == app_id:
+                        # Demo still points to this full game, restore the relationship
+                        logging.info(f"  Restoring demo relationship for game {app_id} -> demo {demo_id}")
+                        updated_game = steam_data.model_copy(update={
+                            'demo_app_id': demo_id,
+                            'has_demo': True
+                        })
+                        self.steam_data['games'][app_id] = updated_game
 
             return True
 
