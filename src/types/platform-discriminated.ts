@@ -458,13 +458,16 @@ export const PlatformValidation = {
     const gameData = data as { platform: unknown }
 
     if (gameData.platform === 'steam') {
-      return this.validateSteam(gameData)
+      return this.validateSteam({ ...gameData, platform: 'steam' as const })
     }
     if (gameData.platform === 'itch') {
-      return this.validateItch(gameData)
+      return this.validateItch({ ...gameData, platform: 'itch' as const })
     }
     if (gameData.platform === 'crazygames') {
-      return this.validateCrazyGames(gameData)
+      return this.validateCrazyGames({
+        ...gameData,
+        platform: 'crazygames' as const,
+      })
     }
     return false
   },

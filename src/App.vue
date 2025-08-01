@@ -1,895 +1,140 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch, type Ref } from 'vue'
-import GameCard from './components/GameCard.vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, type Ref } from 'vue'
 import GameFilters from './components/GameFilters.vue'
-import SortIndicator from './components/SortIndicator.vue'
-import PaginationControls from './components/PaginationControls.vue'
-import { usePagination } from './composables/usePagination'
+import GameDiscoveryContainer, {
+  type SearchState,
+  type PaginationConfig,
+} from './components/GameDiscoveryContainer.vue'
+import DatabaseStatus from './components/DatabaseStatus.vue'
+import ToastNotifications from './components/ToastNotifications.vue'
+import { useGameSearch } from './composables/useGameSearch'
 import { databaseManager } from './utils/databaseManager'
-import type { VersionMismatchInfo } from './utils/databaseManager'
 import { usePerformanceMonitoring } from './utils/performanceMonitor'
 import { debug } from './utils/debug'
+import type { DatabaseQueryResult } from './services/GameDatabaseService'
+import {
+  gameDataProcessingService,
+  type ProcessedGameData,
+} from './services/GameDataProcessingService'
+import { queryBuilderService } from './services/QueryBuilderService'
+import { useURLState } from './composables/useURLState'
+import { useDeepLinking } from './composables/useDeepLinking'
+import { useToast } from './composables/useToast'
+import { useFilterState } from './composables/useFilterState'
+import { useDatabaseLifecycle } from './composables/useDatabaseLifecycle'
 import type { Database } from 'sql.js'
-import type {
-  ParsedGameData,
-  ChannelWithCount,
-  TagWithCount,
-} from './types/database'
-import type { SortSpec, SortChangeEvent } from './types/sorting'
-import {
-  normalizeSortSpec,
-  serializeSortSpec,
-  deserializeSortSpec,
-  isAdvancedSortSpec,
-} from './types/sorting'
-import {
-  TIMING,
-  PRICING,
-  RATINGS,
-  HIDDEN_GEMS,
-  TIME_RANGES,
-  VIDEO_COVERAGE,
-  LAYOUT,
-} from './config/index'
+import { TIMING, LAYOUT } from './config/index'
 
 // Component interfaces
-interface GameStats {
-  totalGames: number
-  freeGames: number
-  maxPrice: number
-}
-
-// Extended game interface for App component usage
-interface AppGameData extends ParsedGameData {
-  // Additional properties used in the component
-  price_eur?: number
-  price_usd?: number
-  is_free: boolean
-  release_date?: string
-  review_summary?: string
-  review_summary_priority?: number
-  positive_review_percentage?: number
-  review_count?: number
-  steam_url?: string
-  itch_url?: string
-  crazygames_url?: string
-  demo_steam_app_id?: string
-  demo_steam_url?: string
-  last_updated?: string
-  latest_video_date?: string
-  newest_video_date?: string
-  video_count: number
-  coming_soon: boolean
-  is_early_access: boolean
-  is_demo: boolean
-  planned_release_date?: string
-  insufficient_reviews: boolean
-  is_inferred_summary: boolean
-  review_tooltip?: string
-  recent_review_percentage?: number
-  recent_review_count?: number
-  is_absorbed: boolean
-  absorbed_into?: string
-}
-
-interface DatabaseStatus {
-  connected: boolean
-  games: number
-  lastGenerated: Date | null
-  lastChecked: Date | null
-}
-
-// SortChangeEvent is now imported from types/sorting
-
-interface TimeFilter {
-  type: string | null
-  preset: string | null
-  startDate: string | null
-  endDate: string | null
-  smartLogic: string | null
-}
-
-interface PriceFilter {
-  minPrice: number
-  maxPrice: number
-  includeFree: boolean
-}
-
-interface AppFilters extends Record<string, unknown> {
-  releaseStatus: string
-  platform: string
-  rating: string
-  crossPlatform: boolean
-  hiddenGems: boolean
-  selectedTags: string[]
-  tagLogic: 'and' | 'or'
-  selectedChannels: string[]
-  sortBy: string
-  sortSpec: SortSpec
-  currency: 'eur' | 'usd'
-  timeFilter: TimeFilter
-  priceFilter: PriceFilter
-  searchQuery: string
-  searchInVideoTitles: boolean
-}
 
 // Component state
-const loading: Ref<boolean> = ref(true)
-const error: Ref<string | null> = ref(null)
 const currentTime: Ref<Date> = ref(new Date())
 const sidebarCollapsed: Ref<boolean> = ref(false)
-const { monitorDatabaseQuery, monitorFilterUpdate } = usePerformanceMonitoring()
+const { monitorDatabaseQuery } = usePerformanceMonitoring()
 
-// Search state
-const searchQuery = ref('')
-const searchInVideoTitles = ref(false)
-const debouncedSearchQuery = ref('')
+// Database Lifecycle Management
+const {
+  db,
+  databaseStatus,
+  gameStats,
+  channels,
+  channelsWithCounts,
+  allTags,
+  showVersionMismatch,
+  versionMismatchInfo,
+  loading,
+  error,
+  initialize: initializeDatabase,
+  executeQuery: databaseExecuteQuery,
+  testVersionMismatch,
+  reloadApp,
+  dismissVersionMismatch,
+} = useDatabaseLifecycle()
 
-// Debounce timer
-let searchDebounceTimer: NodeJS.Timeout | null = null
-
-// Watch for search query changes and debounce
-watch(searchQuery, (newQuery) => {
-  if (searchDebounceTimer) {
-    clearTimeout(searchDebounceTimer)
+// Initialize search state with debounced query execution callback
+const {
+  searchQuery,
+  searchInVideoTitles,
+  debouncedSearchQuery,
+  buildSearchQuery,
+  setSearchState,
+} = useGameSearch({ debounceDelay: 300 }, (_searchState) => {
+  // This callback is triggered after debouncing completes
+  // Execute query with the debounced search terms
+  const currentDb = db.get()
+  if (currentDb) {
+    executeQuery(currentDb)
   }
-
-  searchDebounceTimer = setTimeout(() => {
-    debouncedSearchQuery.value = newQuery
-    filters.value.searchQuery = newQuery
-    updateURLParams(filters.value)
-    if (db) {
-      executeQuery(db)
-    }
-  }, 300) // 300ms debounce delay
 })
-
-// Watch for search in video titles toggle
-watch(searchInVideoTitles, (newValue) => {
-  filters.value.searchInVideoTitles = newValue
-  updateURLParams(filters.value)
-  // Only reload if there's an active search
-  if (searchQuery.value.trim() && db) {
-    executeQuery(db)
-  }
-})
-const filters: Ref<AppFilters> = ref({
-  releaseStatus: 'all',
-  platform: 'all',
-  rating: '0',
-  crossPlatform: false,
-  hiddenGems: false,
-  selectedTags: [], // Multi-select tags
-  tagLogic: 'and', // 'and' or 'or'
-  selectedChannels: [], // Multi-select channels
-  sortBy: 'date',
-  sortSpec: null, // Advanced sorting specification
-  currency: 'eur',
-  // Time-based filtering
-  timeFilter: {
-    type: null, // 'video', 'release', 'smart'
-    preset: null, // preset key or 'custom'
-    startDate: null, // YYYY-MM-DD format
-    endDate: null, // YYYY-MM-DD format
-    smartLogic: null, // for smart filters
-  },
-  // Price-based filtering
-  priceFilter: {
-    minPrice: PRICING.MIN_PRICE,
-    maxPrice: PRICING.DEFAULT_MAX_PRICE,
-    includeFree: true,
-  },
-  // Search filtering
-  searchQuery: '',
-  searchInVideoTitles: false,
-})
-
-const channels: Ref<string[]> = ref([])
-const channelsWithCounts: Ref<ChannelWithCount[]> = ref([])
-const allTags: Ref<TagWithCount[]> = ref([])
-const gameGrid: Ref<HTMLElement | null> = ref(null)
-const highlightedGameId: Ref<number | null> = ref(null)
+// URL State Management
+const urlState = useURLState()
 
 // Pagination will be set up after filteredGames is declared
-const gameStats: Ref<GameStats> = ref({
-  totalGames: 0,
-  freeGames: 0,
-  maxPrice: PRICING.DEFAULT_MAX_PRICE,
-})
 const isDevelopment: boolean = import.meta.env.DEV
-const databaseStatus: Ref<DatabaseStatus> = ref({
-  connected: false,
-  games: 0,
-  lastGenerated: null,
-  lastChecked: null,
-})
-const showVersionMismatch: Ref<boolean> = ref(false)
-const versionMismatchInfo: Ref<VersionMismatchInfo | null> = ref(null)
 
-const loadGameStats = (database: Database): void => {
-  // Get game statistics for price filtering
-  const statsResults = database.exec(`
-        SELECT 
-          COUNT(*) as total_games,
-          COUNT(CASE WHEN is_free = 1 OR price_final = 0 THEN 1 END) as free_games,
-          MAX(CASE WHEN price_final > 0 THEN price_final ELSE 0 END) as max_price
-        FROM games 
-        WHERE is_absorbed = 0
-      `)
+const filteredGames: Ref<ProcessedGameData[]> = ref([])
 
-  if (statsResults.length > 0 && statsResults[0].values.length > 0) {
-    const stats = statsResults[0].values[0]
-    gameStats.value = {
-      totalGames: stats[0] || 0,
-      freeGames: stats[1] || 0,
-      maxPrice: Math.ceil(stats[2] || PRICING.DEFAULT_MAX_PRICE),
-    }
-  }
+// Pagination state management (now handled inside GameDiscoveryContainer)
+const currentPage = ref(1)
+const pageSize = ref(150)
+
+// Pagination change handler for URL updates
+const handlePaginationChange = (paginationData: {
+  currentPage: number
+  pageSize: number
+}) => {
+  currentPage.value = paginationData.currentPage
+  pageSize.value = paginationData.pageSize
 }
 
-const loadChannelsAndTags = (database: Database): void => {
-  // Get all unique channels with counts
-  const channelResults = database.exec(
-    "SELECT unique_channels FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]' AND is_absorbed = 0",
-  )
-  const channelCounts = new Map()
-  if (channelResults.length > 0) {
-    channelResults[0].values.forEach((row) => {
-      try {
-        const channelArray = JSON.parse(row[0] || '[]')
-        channelArray.forEach((channel) => {
-          channelCounts.set(channel, (channelCounts.get(channel) || 0) + 1)
-        })
-      } catch {
-        debug.warn('Failed to parse channels:', row[0])
-      }
-    })
-  }
-
-  // Convert to sorted arrays
-  channels.value = Array.from(channelCounts.keys()).sort()
-  channelsWithCounts.value = Array.from(channelCounts.entries())
-    .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => {
-      // Sort by count (descending) then by name (ascending)
-      if (a.count !== b.count) {
-        return b.count - a.count
-      }
-      return a.name.localeCompare(b.name)
-    })
-
-  // Get all unique tags with counts
-  const tagResults = database.exec(
-    "SELECT tags FROM games WHERE tags IS NOT NULL AND tags != '[]' AND is_absorbed = 0",
-  )
-  const tagCounts = new Map()
-  if (tagResults.length > 0) {
-    tagResults[0].values.forEach((row) => {
-      try {
-        const tags = JSON.parse(row[0] || '[]')
-        tags.forEach((tag) => {
-          tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
-        })
-      } catch {
-        debug.warn('Failed to parse tags:', row[0])
-      }
-    })
-  }
-
-  // Convert to sorted array of tag objects with counts
-  allTags.value = Array.from(tagCounts.entries())
-    .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => {
-      // Sort by count (descending) then by name (ascending)
-      if (a.count !== b.count) {
-        return b.count - a.count
-      }
-      return a.name.localeCompare(b.name)
-    })
-}
-
-const filteredGames: Ref<AppGameData[]> = ref([])
-
-// Modern pagination setup
+// Filter State Management - initialized after pagination
 const {
+  filters,
+  updateFilters,
+  handleTagClick,
+  handleSortChange: filterHandleSortChange,
+  toQueryFilters,
+} = useFilterState({
+  executeQuery: (database: Database) => executeQuery(database),
+  updateURLParams: (filterValues, currentPageRef, pageSizeRef) =>
+    urlState.updateURLParams(filterValues, currentPageRef, pageSizeRef),
   currentPage,
   pageSize,
-  totalPages,
-  startIndex,
-  endIndex,
-  currentPageItems: currentPageGames,
-  hasNextPage,
-  hasPrevPage,
-  remainingItems,
-  loading: paginationLoading,
-  loadMoreVisible,
-  visiblePages,
-  showFirstPage,
-  showLastPage,
-  showLeftEllipsis,
-  showRightEllipsis,
-  goToPage,
-  loadMore,
-  handleJumpToPage,
-  setPageSize,
-  getPageButtonClass,
-  getNavButtonClass,
-} = usePagination(filteredGames, {
-  pageSize: 150,
-  enableLoadMore: true,
-  onPageChange: () => updateURLParams(filters.value),
+  database: () => db.get(),
 })
 
-const buildSQLQuery = (
-  filterValues: AppFilters,
-): { query: string; params: (string | number)[] } => {
-  debug.log('Building query with filters:', filterValues)
+// Toast notifications
+const { toasts, showToast, removeToast } = useToast()
 
-  // Performance optimization: Track which filters are active to optimize query order
-  // These variables can be used for future query optimization
+// Create grouped props for GameDiscoveryContainer
+const searchState = computed<SearchState>(() => ({
+  query: searchQuery.value,
+  searchInVideoTitles: searchInVideoTitles.value,
+}))
 
-  let query = `
-        SELECT g.*,
-               gv.video_title as latest_video_title,
-               gv.video_id as latest_video_id
-        FROM games g
-        LEFT JOIN game_videos gv ON g.id = gv.game_id
-        AND gv.video_date = g.latest_video_date
-        WHERE 1=1
-      `
-  const params = []
+const paginationConfig = computed<PaginationConfig>(() => ({
+  initialPageSize: 150,
+  enableLoadMore: true,
+  onPageChange: () => {
+    // Handle URL updates when pagination changes
+    urlState.updateURLParams(filters.value, currentPage, pageSize)
+  },
+}))
 
-  // Start with most selective conditions first for better performance
+const buildSQLQuery = (): { query: string; params: (string | number)[] } => {
+  // Use the filter state composable to get query filters
+  const queryFilters = toQueryFilters()
 
-  // For release date sorting, only include games with sortable dates
-  if (
-    filterValues.sortBy === 'release-new' ||
-    filterValues.sortBy === 'release-old'
-  ) {
-    query += ' AND g.release_date_sortable IS NOT NULL'
-  }
-
-  // Platform filter early (highly selective)
-  if (filterValues.platform && filterValues.platform !== 'all') {
-    if (filterValues.platform === 'itch') {
-      // Special handling for itch filter: show both itch games and absorbed itch games
-      query +=
-        " AND ((g.platform = ? AND g.is_absorbed = 0) OR (g.platform = 'steam' AND g.itch_url IS NOT NULL) OR (g.platform = 'itch' AND g.is_absorbed = 1))"
-      params.push(filterValues.platform)
-    } else {
-      // For steam/crazygames: exclude absorbed games by default
-      query += ' AND g.platform = ? AND g.is_absorbed = 0'
-      params.push(filterValues.platform)
-    }
-  } else if (!filterValues.crossPlatform) {
-    // Default filter: exclude absorbed games when showing all platforms (unless cross-platform filter is active)
-    query += ' AND g.is_absorbed = 0'
-  }
-
-  // Cross-platform filter (if not already handled by platform filter)
-  if (
-    filterValues.crossPlatform &&
-    (filterValues.platform === 'all' || !filterValues.platform)
-  ) {
-    // Count how many platform URLs are non-null
-    query += ` AND (
-          (CASE WHEN g.steam_url IS NOT NULL THEN 1 ELSE 0 END +
-           CASE WHEN g.itch_url IS NOT NULL THEN 1 ELSE 0 END +
-           CASE WHEN g.crazygames_url IS NOT NULL THEN 1 ELSE 0 END) >= 2
-        ) AND g.is_absorbed = 0`
-  }
-
-  // Rating filter (highly selective, place early)
-  if (filterValues.rating && filterValues.rating !== '0') {
-    const ratingValue = parseInt(filterValues.rating)
-    if (!isNaN(ratingValue)) {
-      query += ' AND g.positive_review_percentage >= ?'
-      params.push(ratingValue)
-    }
-  }
-
-  // Hidden Gems filter (very selective)
-  if (filterValues.hiddenGems) {
-    query += ` AND g.positive_review_percentage >= ${HIDDEN_GEMS.MIN_RATING} AND g.video_count >= ${HIDDEN_GEMS.MIN_VIDEOS} AND g.video_count <= ${HIDDEN_GEMS.MAX_VIDEOS} AND g.review_count >= ${HIDDEN_GEMS.MIN_REVIEWS}`
-  }
-
-  // Release status filter
-  if (filterValues.releaseStatus && filterValues.releaseStatus !== 'all') {
-    if (filterValues.releaseStatus === 'released') {
-      query +=
-        " AND (g.platform IN ('itch', 'crazygames') OR (g.platform = 'steam' AND g.coming_soon = 0 AND g.is_early_access = 0 AND g.is_demo = 0))"
-    } else if (filterValues.releaseStatus === 'early-access') {
-      query +=
-        " AND g.platform = 'steam' AND g.is_early_access = 1 AND g.coming_soon = 0"
-    } else if (filterValues.releaseStatus === 'coming-soon') {
-      query += " AND g.platform = 'steam' AND g.coming_soon = 1"
-    }
-  }
-
-  // Tag filter with AND/OR logic
-  // Note: These are expensive LIKE queries on JSON columns - consider placing them later for better performance
-  if (filterValues.selectedTags && filterValues.selectedTags.length > 0) {
-    const tagConditions = filterValues.selectedTags.map(() => 'g.tags LIKE ?')
-    if (filterValues.tagLogic === 'or') {
-      query += ` AND (${tagConditions.join(' OR ')})`
-    } else {
-      // AND logic - each tag must be present
-      query += ` AND (${tagConditions.join(' AND ')})`
-    }
-    filterValues.selectedTags.forEach((tag) => {
-      params.push(`%"${tag}"%`)
-    })
-  }
-
-  // Channel filter with OR logic (games featured by ANY selected channel)
-  // Note: These are expensive LIKE queries on JSON columns - consider placing them later for better performance
-  if (
-    filterValues.selectedChannels &&
-    filterValues.selectedChannels.length > 0
-  ) {
-    const channelConditions = filterValues.selectedChannels.map(
-      () => 'g.unique_channels LIKE ?',
-    )
-    query += ` AND (${channelConditions.join(' OR ')})`
-    filterValues.selectedChannels.forEach((channel) => {
-      params.push(`%"${channel}"%`)
-    })
-  }
-
-  // Price-based filtering
-  if (filterValues.priceFilter) {
-    const { priceFilter } = filterValues
-    const currencyField =
-      filterValues.currency === 'usd' ? 'price_usd' : 'price_eur'
-
-    // Handle free games inclusion
-    if (!priceFilter.includeFree) {
-      query += ' AND (g.is_free = 0 OR g.is_free IS NULL)'
-    }
-
-    // Handle price range filtering for paid games
-    if (
-      priceFilter.minPrice > 0 ||
-      priceFilter.maxPrice < PRICING.DEFAULT_MAX_PRICE
-    ) {
-      // Create a combined condition for price filtering
-      const priceConditions = []
-
-      // Free games condition (if including free games and min price is 0)
-      if (priceFilter.includeFree && priceFilter.minPrice === 0) {
-        priceConditions.push(`(g.is_free = 1 OR g.${currencyField} = 0)`)
-      }
-
-      // Paid games price range condition
-      if (priceFilter.maxPrice > 0) {
-        const paidCondition = `(g.is_free = 0 AND g.${currencyField} IS NOT NULL AND g.${currencyField} >= ? AND g.${currencyField} <= ?)`
-        priceConditions.push(paidCondition)
-        params.push(priceFilter.minPrice)
-        params.push(priceFilter.maxPrice)
-      }
-
-      if (priceConditions.length > 0) {
-        query += ` AND (${priceConditions.join(' OR ')})`
-      }
-    }
-  }
-
-  // Time-based filtering
-  if (filterValues.timeFilter && filterValues.timeFilter.type) {
-    const { timeFilter } = filterValues
-
-    if (
-      timeFilter.type === 'video' &&
-      (timeFilter.startDate || timeFilter.endDate)
-    ) {
-      // Filter by video publication date
-      if (timeFilter.startDate && timeFilter.endDate) {
-        query += ' AND g.latest_video_date >= ? AND g.latest_video_date <= ?'
-        params.push(`${timeFilter.startDate}T00:00:00`)
-        params.push(`${timeFilter.endDate}T23:59:59`)
-      } else if (timeFilter.startDate) {
-        query += ' AND g.latest_video_date >= ?'
-        params.push(`${timeFilter.startDate}T00:00:00`)
-      } else if (timeFilter.endDate) {
-        query += ' AND g.latest_video_date <= ?'
-        params.push(`${timeFilter.endDate}T23:59:59`)
-      }
-    } else if (
-      timeFilter.type === 'release' &&
-      (timeFilter.startDate || timeFilter.endDate)
-    ) {
-      // Filter by game release date using sortable date format
-      query += ' AND g.release_date_sortable IS NOT NULL'
-
-      if (timeFilter.startDate && timeFilter.endDate) {
-        const startSortable = parseInt(timeFilter.startDate.replace(/-/g, ''))
-        const endSortable = parseInt(timeFilter.endDate.replace(/-/g, ''))
-        query +=
-          ' AND g.release_date_sortable >= ? AND g.release_date_sortable <= ?'
-        params.push(startSortable)
-        params.push(endSortable)
-      } else if (timeFilter.startDate) {
-        const startSortable = parseInt(timeFilter.startDate.replace(/-/g, ''))
-        query += ' AND g.release_date_sortable >= ?'
-        params.push(startSortable)
-      } else if (timeFilter.endDate) {
-        const endSortable = parseInt(timeFilter.endDate.replace(/-/g, ''))
-        query += ' AND g.release_date_sortable <= ?'
-        params.push(endSortable)
-      }
-    } else if (timeFilter.type === 'smart' && timeFilter.smartLogic) {
-      // Smart filtering logic
-      const now = new Date()
-      const thirtyDaysAgo = new Date(
-        now.getTime() - TIME_RANGES.MONTHLY * 24 * 60 * 60 * 1000,
-      )
-      const sevenDaysAgo = new Date(
-        now.getTime() - TIME_RANGES.RECENT * 24 * 60 * 60 * 1000,
-      )
-      const oneYearAgo = new Date(
-        now.getTime() - TIME_RANGES.YEARLY * 24 * 60 * 60 * 1000,
-      )
-      const twoThousandTwenty = new Date('2020-01-01')
-
-      switch (timeFilter.smartLogic) {
-        case 'release-and-video-recent':
-          // Recently released games with video coverage
-          query += ' AND g.release_date_sortable IS NOT NULL'
-          query += ' AND g.release_date_sortable >= ?'
-          query += ' AND g.latest_video_date >= ?'
-          params.push(
-            parseInt(
-              thirtyDaysAgo.toISOString().slice(0, 10).replace(/-/g, ''),
-            ),
-          )
-          params.push(thirtyDaysAgo.toISOString())
-          break
-
-        case 'first-video-recent':
-          // Games with first video coverage recently - need to join with game_videos
-          query = query.replace(
-            'LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date',
-            `LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date
-                 LEFT JOIN (
-                   SELECT game_id, MIN(video_date) as first_video_date 
-                   FROM game_videos 
-                   GROUP BY game_id
-                 ) fv ON g.id = fv.game_id`,
-          )
-          query += ' AND fv.first_video_date >= ?'
-          params.push(thirtyDaysAgo.toISOString())
-          break
-
-        case 'multiple-videos-recent':
-          // Games with multiple videos in last 7 days (trending)
-          query = query.replace(
-            'LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date',
-            `LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date
-                 LEFT JOIN (
-                   SELECT game_id, COUNT(*) as recent_video_count 
-                   FROM game_videos 
-                   WHERE video_date >= ? 
-                   GROUP BY game_id 
-                   HAVING COUNT(*) >= 2
-                 ) rv ON g.id = rv.game_id`,
-          )
-          query += ' AND rv.recent_video_count >= 2'
-          params.push(sevenDaysAgo.toISOString())
-          break
-
-        case 'old-game-new-attention':
-          // Older games (2020+) with recent video attention
-          query += ' AND g.release_date_sortable IS NOT NULL'
-          query +=
-            ' AND g.release_date_sortable >= ? AND g.release_date_sortable <= ?'
-          query += ' AND g.latest_video_date >= ?'
-          params.push(
-            parseInt(
-              twoThousandTwenty.toISOString().slice(0, 10).replace(/-/g, ''),
-            ),
-          )
-          params.push(
-            parseInt(oneYearAgo.toISOString().slice(0, 10).replace(/-/g, '')),
-          )
-          params.push(thirtyDaysAgo.toISOString())
-          break
-      }
-    }
-  }
-
-  // Search filtering using LIKE queries
-  if (filterValues.searchQuery && filterValues.searchQuery.trim()) {
-    const searchTerm = filterValues.searchQuery.trim()
-
-    if (filterValues.searchInVideoTitles) {
-      // Search in both game names and video titles using LIKE
-      query += ' AND (g.name LIKE ? OR gv.video_title LIKE ?)'
-      params.push(`%${searchTerm}%`, `%${searchTerm}%`)
-    } else {
-      // Search only in game names using LIKE
-      query += ' AND g.name LIKE ?'
-      params.push(`%${searchTerm}%`)
-    }
-  }
-
-  // Advanced Sorting Logic
-  const orderByClause = buildSortClause(filterValues)
-  query += ` ORDER BY ${orderByClause}`
-
-  return { query, params }
+  // Use the query builder service
+  return queryBuilderService.buildSQLQuery(queryFilters, buildSearchQuery)
 }
 
-const buildSortClause = (filterValues: AppFilters): string => {
-  // Handle advanced sorting with multi-criteria
-  if (filterValues.sortBy === 'advanced' && filterValues.sortSpec) {
-    return buildAdvancedSortClause(filterValues.sortSpec)
-  }
-
-  // Handle smart discovery sorting presets
-  if (isSmartSortPreset(filterValues.sortBy)) {
-    return buildSmartSortClause(filterValues.sortBy)
-  }
-
-  // Traditional single-criteria sorting
-  const sortMappings = {
-    'rating-score': 'positive_review_percentage DESC',
-    'rating-category':
-      'review_summary_priority ASC, positive_review_percentage DESC, review_count DESC',
-    date: 'latest_video_date DESC',
-    name: 'name ASC',
-    'release-new': 'release_date_sortable DESC',
-    'release-old': 'release_date_sortable ASC',
-  }
-
-  return sortMappings[filterValues.sortBy] || 'latest_video_date DESC'
-}
-
-const buildAdvancedSortClause = (sortSpec: SortSpec): string => {
-  const normalized = normalizeSortSpec(sortSpec)
-
-  // If it's a string, treat as simple sort
-  if (typeof normalized === 'string') {
-    return getSortFieldClause(normalized, 'desc') || 'latest_video_date DESC'
-  }
-
-  if (!normalized) {
-    return 'latest_video_date DESC'
-  }
-
-  // Handle advanced sort object
-  if (!isAdvancedSortSpec(normalized)) {
-    // If it's not an advanced spec, fall back to default sorting
-    return (
-      getSortFieldClause('latest_video_date', 'desc') ||
-      'latest_video_date DESC'
-    )
-  }
-
-  const clauses = []
-
-  // Primary sorting criteria
-  const primaryClause = getSortFieldClause(
-    normalized.primary?.field || 'latest_video_date',
-    normalized.primary?.direction || 'desc',
-  )
-  if (primaryClause) {
-    clauses.push(primaryClause)
-  }
-
-  // Secondary sorting criteria
-  if (normalized.secondary) {
-    const secondaryClause = getSortFieldClause(
-      normalized.secondary.field,
-      normalized.secondary.direction,
-    )
-    if (secondaryClause) {
-      clauses.push(secondaryClause)
-    }
-  }
-
-  // Add fallback sorts for consistency
-  clauses.push('latest_video_date DESC') // Recency fallback
-  clauses.push('name ASC') // Alphabetical fallback
-
-  return clauses.join(', ')
-}
-
-const getSortFieldClause = (
-  field: string,
-  direction: string,
-): string | null => {
-  const dir = direction.toUpperCase()
-
-  switch (field) {
-    case 'rating':
-      return `positive_review_percentage ${dir}`
-    case 'coverage':
-      return `video_count ${dir}`
-    case 'recency':
-      return `latest_video_date ${dir}`
-    case 'release':
-      return `release_date_sortable ${dir}`
-    case 'price':
-      // Price sorting: free games first if ASC, paid games first if DESC
-      if (direction === 'asc') {
-        return 'CASE WHEN is_free = 1 OR price_final = 0 THEN 0 ELSE price_final END ASC'
-      } else {
-        return 'CASE WHEN is_free = 1 OR price_final = 0 THEN 99999 ELSE price_final END DESC'
-      }
-    case 'channels':
-      // Channel count sorting (derived from unique_channels JSON length)
-      return `LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1 ${dir}`
-    case 'reviews':
-      return `review_count ${dir}`
-    default:
-      return null
-  }
-}
-
-const isSmartSortPreset = (sortBy: string): boolean =>
-  [
-    'best-value',
-    'hidden-gems',
-    'most-covered',
-    'trending',
-    'creator-consensus',
-    'recent-discoveries',
-    'video-recency',
-    'time-range-releases',
-    'price-value',
-    'steam-optimized',
-    'itch-discoveries',
-    'premium-quality',
-    'tag-match',
-    'channel-picks',
-  ].includes(sortBy)
-
-const buildSmartSortClause = (sortBy: string): string => {
-  switch (sortBy) {
-    case 'best-value':
-      // High rating + reasonable price (prioritize quality over cheapness)
-      return `
-            CASE 
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.BUDGET}) THEN 1
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.MODERATE}) THEN 2
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MIXED} THEN 3
-              ELSE 4
-            END ASC,
-            positive_review_percentage DESC,
-            CASE WHEN is_free = 1 OR price_final = 0 THEN 0 ELSE price_final END ASC
-          `
-
-    case 'hidden-gems':
-      // High rating + low video coverage (undiscovered quality games)
-      return `
-            CASE 
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.EXCELLENT} AND video_count <= ${VIDEO_COVERAGE.LOW} THEN 1
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND video_count <= ${VIDEO_COVERAGE.MEDIUM} THEN 2
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.POSITIVE} AND video_count <= ${VIDEO_COVERAGE.HIGH} THEN 3
-              ELSE 4
-            END ASC,
-            positive_review_percentage DESC,
-            video_count ASC
-          `
-
-    case 'most-covered':
-      // High video coverage + good ratings (community favorites)
-      return `video_count DESC, positive_review_percentage DESC, latest_video_date DESC`
-
-    case 'trending':
-      // Recent videos + increasing coverage (games gaining momentum)
-      return `
-            CASE 
-              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.RECENT} days') AND video_count >= ${VIDEO_COVERAGE.TRENDING_MIN} THEN 1
-              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.SEMI_RECENT} days') AND video_count >= ${VIDEO_COVERAGE.STRONG_CONSENSUS} THEN 2
-              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.MONTHLY} days') AND video_count >= ${VIDEO_COVERAGE.TRENDING_MIN} THEN 3
-              ELSE 4
-            END ASC,
-            latest_video_date DESC,
-            video_count DESC
-          `
-
-    case 'creator-consensus':
-      // Multiple channels + high ratings (broadly appreciated games)
-      return `
-            CASE 
-              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.STRONG_CONSENSUS} AND positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} THEN 1
-              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.CONSENSUS_MIN} AND positive_review_percentage >= ${RATINGS.SMART_SORT.POSITIVE} THEN 2
-              WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.CONSENSUS_MIN} THEN 3
-              ELSE 4
-            END ASC,
-            positive_review_percentage DESC,
-            LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1 DESC
-          `
-
-    case 'recent-discoveries':
-      // Recently covered games worth checking out
-      return `
-            CASE 
-              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.SEMI_RECENT} days') THEN 1
-              WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.MONTHLY} days') THEN 2
-              ELSE 3
-            END ASC,
-            latest_video_date DESC,
-            CASE 
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} THEN 1
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} THEN 2
-              ELSE 3
-            END ASC
-          `
-
-    // Contextual sorting cases
-    case 'video-recency':
-      // Video time range focused sorting
-      return `latest_video_date DESC, positive_review_percentage DESC`
-
-    case 'time-range-releases':
-      // Release time range with quality priority
-      return `positive_review_percentage DESC, release_date_sortable DESC, video_count DESC`
-
-    case 'price-value':
-      // Price range value optimization
-      return `
-            positive_review_percentage DESC,
-            CASE WHEN is_free = 1 OR price_final = 0 THEN 0 ELSE price_final END ASC,
-            video_count DESC
-          `
-
-    case 'steam-optimized':
-      // Steam-specific quality sorting
-      return `
-            review_summary_priority ASC,
-            positive_review_percentage DESC,
-            review_count DESC,
-            latest_video_date DESC
-          `
-
-    case 'itch-discoveries':
-      // Itch.io creative discoveries
-      return `video_count DESC, latest_video_date DESC, positive_review_percentage DESC`
-
-    case 'premium-quality':
-      // High-rating focused with review depth
-      return `
-            review_count DESC,
-            positive_review_percentage DESC,
-            latest_video_date DESC
-          `
-
-    case 'tag-match':
-      // Tag relevance sorting
-      return `positive_review_percentage DESC, video_count DESC, latest_video_date DESC`
-
-    case 'channel-picks':
-      // Channel-specific selections
-      return `positive_review_percentage DESC, video_count DESC, latest_video_date DESC`
-
-    default:
-      return 'latest_video_date DESC'
-  }
-}
-
-const executeQuery = (db: Database): void => {
+const executeQuery = (database: Database): void => {
   monitorDatabaseQuery('Multi-filter Game Query', () => {
-    const { query, params } = buildSQLQuery(filters.value)
-    debug.log('Executing query:', query)
-    debug.log('With params:', params)
-
-    // Check for undefined params
-    params.forEach((param, index) => {
-      if (param === undefined) {
-        debug.error(`Parameter ${index} is undefined!`)
-      }
-    })
-
-    const results = db.exec(query, params)
+    const { query, params } = buildSQLQuery()
+    const results = databaseExecuteQuery(database, query, params)
     processQueryResults(results)
   })
-}
-
-interface DatabaseQueryResult {
-  columns: string[]
-  values: (string | number | null)[][]
 }
 
 interface ExtendedWindow extends Window {
@@ -898,781 +143,103 @@ interface ExtendedWindow extends Window {
 }
 
 const processQueryResults = (results: DatabaseQueryResult[]): void => {
-  if (results.length > 0) {
-    const processedGames: AppGameData[] = []
+  // Use the game data processing service to transform raw results
+  const processedGames = gameDataProcessingService.processQueryResults(results)
+  filteredGames.value = processedGames
 
-    // First pass: collect all games and build a lookup for parent data resolution
-    const allGameData: Record<string, string | number | null>[] = []
-    const parentGameLookup = new Map<
-      string,
-      Record<string, string | number | null>
-    >()
-
-    results[0].values.forEach((row: (string | number | null)[]) => {
-      const { columns } = results[0]
-      const gameData: Record<string, string | number | null> = {}
-
-      columns.forEach((col, index) => {
-        gameData[col] = row[index]
-      })
-
-      allGameData.push(gameData)
-
-      // Build parent lookup for absorbed games
-      if (!gameData.is_absorbed) {
-        parentGameLookup.set(
-          gameData.game_key ? String(gameData.game_key) : '',
-          gameData,
-        )
-      }
+  if (isDevelopment && processedGames.length > 0) {
+    nextTick(() => {
+      setTimeout(updateGridDebugInfo, TIMING.DEBUG_UPDATE_DELAY)
     })
-
-    // Second pass: process games and resolve parent data for absorbed games
-    allGameData.forEach((gameData) => {
-      // Parse JSON columns
-      try {
-        gameData.genres = JSON.parse(String(gameData.genres || '[]'))
-        gameData.tags = JSON.parse(String(gameData.tags || '[]'))
-        gameData.developers = JSON.parse(String(gameData.developers || '[]'))
-        gameData.publishers = JSON.parse(String(gameData.publishers || '[]'))
-        gameData.unique_channels = JSON.parse(
-          String(gameData.unique_channels || '[]'),
-        )
-      } catch {
-        debug.warn('Failed to parse JSON columns for game:', gameData.name)
-      }
-
-      // Parse JSON fields that may contain display links
-      try {
-        gameData.display_links = gameData.display_links
-          ? JSON.parse(String(gameData.display_links))
-          : null
-      } catch {
-        gameData.display_links = null
-      }
-
-      // For absorbed games, supplement with parent game data where needed
-      if (gameData.is_absorbed && gameData.absorbed_into) {
-        const parentData = parentGameLookup.get(
-          gameData.absorbed_into ? String(gameData.absorbed_into) : '',
-        )
-        if (parentData) {
-          // Use parent's review data if absorbed game has insufficient data
-          if (
-            !gameData.review_summary ||
-            gameData.review_summary === 'No user reviews'
-          ) {
-            gameData.review_summary = parentData.review_summary
-            gameData.positive_review_percentage =
-              parentData.positive_review_percentage
-            gameData.review_count = parentData.review_count
-            gameData.review_summary_priority =
-              parentData.review_summary_priority
-          }
-
-          // Use parent's header image if absorbed game doesn't have one
-          if (!gameData.header_image && parentData.header_image) {
-            gameData.header_image = parentData.header_image
-          }
-
-          // Use parent's release date if absorbed game doesn't have one
-          if (!gameData.release_date && parentData.release_date) {
-            gameData.release_date = parentData.release_date
-          }
-        }
-      }
-
-      // Create game object matching the original data structure
-      const game: AppGameData = {
-        id: Number(gameData.id),
-        game_key: String(gameData.game_key || ''),
-        name: String(gameData.name),
-        steam_app_id: gameData.steam_app_id
-          ? String(gameData.steam_app_id)
-          : null,
-        header_image: gameData.header_image
-          ? String(gameData.header_image)
-          : null,
-        price_eur: Number(gameData.price_eur),
-        price_usd: Number(gameData.price_usd),
-        price_final: Number(gameData.price_final),
-        is_free: Boolean(gameData.is_free),
-        release_date: gameData.release_date
-          ? String(gameData.release_date)
-          : null,
-        release_date_sortable: Number(gameData.release_date_sortable),
-        review_summary: gameData.review_summary
-          ? String(gameData.review_summary)
-          : null,
-        review_summary_priority: Number(gameData.review_summary_priority),
-        positive_review_percentage: Number(gameData.positive_review_percentage),
-        review_count: Number(gameData.review_count),
-        steam_url: gameData.steam_url ? String(gameData.steam_url) : null,
-        itch_url: gameData.itch_url ? String(gameData.itch_url) : null,
-        crazygames_url: gameData.crazygames_url
-          ? String(gameData.crazygames_url)
-          : null,
-        demo_steam_app_id: gameData.demo_steam_app_id
-          ? String(gameData.demo_steam_app_id)
-          : null,
-        demo_steam_url: gameData.demo_steam_url
-          ? String(gameData.demo_steam_url)
-          : null,
-        display_links:
-          typeof gameData.display_links === 'object' &&
-          gameData.display_links !== null
-            ? (gameData.display_links as { main?: string; demo?: string })
-            : null,
-        display_price: gameData.display_price
-          ? String(gameData.display_price)
-          : null,
-        tags: Array.isArray(gameData.tags) ? gameData.tags : [],
-        genres: Array.isArray(gameData.genres) ? gameData.genres : [],
-        developers: Array.isArray(gameData.developers)
-          ? gameData.developers
-          : [],
-        publishers: Array.isArray(gameData.publishers)
-          ? gameData.publishers
-          : [],
-        platform: String(gameData.platform) as 'steam' | 'itch' | 'crazygames',
-        last_updated: gameData.last_updated
-          ? String(gameData.last_updated)
-          : null,
-        latest_video_title: gameData.latest_video_title
-          ? String(gameData.latest_video_title)
-          : null,
-        latest_video_id: gameData.latest_video_id
-          ? String(gameData.latest_video_id)
-          : null,
-        latest_video_date: gameData.latest_video_date
-          ? String(gameData.latest_video_date)
-          : null,
-        newest_video_date: gameData.latest_video_date
-          ? String(gameData.latest_video_date)
-          : null,
-        unique_channels: Array.isArray(gameData.unique_channels)
-          ? gameData.unique_channels
-          : [],
-        video_count: Number(gameData.video_count) || 0,
-        coming_soon: Boolean(gameData.coming_soon),
-        is_early_access: Boolean(gameData.is_early_access),
-        is_demo: Boolean(gameData.is_demo),
-        planned_release_date: gameData.planned_release_date
-          ? String(gameData.planned_release_date)
-          : null,
-        insufficient_reviews: Boolean(gameData.insufficient_reviews),
-        is_inferred_summary: Boolean(gameData.is_inferred_summary),
-        review_tooltip: gameData.review_tooltip
-          ? String(gameData.review_tooltip)
-          : null,
-        recent_review_percentage: Number(gameData.recent_review_percentage),
-        recent_review_count: Number(gameData.recent_review_count),
-        recent_review_summary: gameData.recent_review_summary
-          ? String(gameData.recent_review_summary)
-          : null,
-        is_absorbed: Boolean(gameData.is_absorbed),
-        absorbed_into: gameData.absorbed_into
-          ? String(gameData.absorbed_into)
-          : null,
-      }
-
-      processedGames.push(game)
-    })
-
-    filteredGames.value = processedGames
-    debug.log(`✓ Processed ${processedGames.length} games`)
-
-    // Update debug info after games are rendered
-    if (isDevelopment) {
-      nextTick(() => {
-        setTimeout(updateGridDebugInfo, TIMING.DEBUG_UPDATE_DELAY)
-      })
-    }
-  } else {
-    filteredGames.value = []
-    debug.log('✓ No games found matching filters')
   }
 }
 
-let db: Database | null = null
+// Deep Linking System (initialized after db and executeQuery are defined)
+const {
+  highlightedGameId,
+  processDeeplink,
+  clearHighlight,
+  copyCurrentFiltersLink,
+} = useDeepLinking({
+  filteredGames,
+  filters: filters as Record<string, unknown>, // Type compatibility bridge - will be resolved in a future refactor
+  executeQuery,
+  getDb: () => db.get(),
+  currentPage,
+  pageSize,
+})
 
-const loadDatabase = async (): Promise<void> => {
-  await databaseManager.init()
-  db = databaseManager.getDatabase()
-}
-
-const updateDatabaseStatus = (): void => {
-  const stats = databaseManager.getStats()
-  if (stats) {
-    databaseStatus.value.connected = true
-    databaseStatus.value.games = stats.games
-    databaseStatus.value.lastGenerated = stats.lastModified
-      ? new Date(stats.lastModified)
-      : null
-    databaseStatus.value.lastChecked = stats.lastCheckTime
-  } else {
-    databaseStatus.value.connected = false
-    databaseStatus.value.games = 0
-    databaseStatus.value.lastGenerated = null
-    databaseStatus.value.lastChecked = null
+// Custom database update handler that triggers UI updates
+const onDatabaseUpdate = (database: Database | null): void => {
+  if (!database) {
+    debug.warn('⚠️ Database update received null database in App.vue')
+    return
   }
-}
-
-const formatTimestamp = (
-  timestamp: Date | string | null,
-  useOld = false,
-): string => {
-  if (!timestamp) {
-    return 'Unknown'
-  }
-  const date = new Date(timestamp)
-  const now = currentTime.value // Use reactive current time
-  const diffMs = now.getTime() - date.getTime()
-  const diffMins = Math.floor(diffMs / TIMING.MINUTE_IN_MS)
-  const diffHours = Math.floor(diffMs / TIMING.HOUR_IN_MS)
-
-  const suffix = useOld ? ' old' : ' ago'
-
-  if (diffMins < 1) {
-    return 'just now'
-  }
-  if (diffMins < 60) {
-    return `${diffMins}m${suffix}`
-  }
-  if (diffHours < 24) {
-    return `${diffHours}h${suffix}`
-  }
-  return date.toLocaleDateString()
-}
-
-const formatExactTimestamp = (timestamp: Date | string | null): string => {
-  if (!timestamp) {
-    return 'Unknown'
-  }
-  const date = new Date(timestamp)
-  return date.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
-const onDatabaseUpdate = (database: Database): void => {
-  db = database
-  loadGameStats(db)
-  loadChannelsAndTags(db)
-  executeQuery(db)
-  updateDatabaseStatus()
+  executeQuery(database)
   debug.log('🔄 UI updated with new database')
 }
 
-const onVersionMismatch = (versionInfo: VersionMismatchInfo): void => {
-  versionMismatchInfo.value = versionInfo
-  showVersionMismatch.value = true
-  debug.warn('🔄 App version mismatch - reload recommended')
-}
-
-const reloadApp = (): void => {
-  window.location.reload()
-}
-
-const dismissVersionMismatch = (): void => {
-  showVersionMismatch.value = false
-}
-
-const testVersionMismatch = (): void => {
-  debug.log('🧪 User clicked test version mismatch button')
-  databaseManager.testVersionMismatch()
-}
-
 const updateGridDebugInfo = (): void => {
-  if (!gameGrid.value || !isDevelopment) {
+  if (!isDevelopment) {
     return
   }
-
-  const gridElement = gameGrid.value
-  const containerElement = gridElement.closest('.container')
-  const mainContentElement = gridElement.closest('.flex-1')
-
-  const viewport = {
-    width: window.innerWidth,
-    height: window.innerHeight,
+  const gridElement = document.querySelector('.game-grid')
+  if (gridElement) {
+    debug.log('🔧 Grid updated')
   }
-
-  const containerRect = containerElement?.getBoundingClientRect()
-  const mainContentRect = mainContentElement?.getBoundingClientRect()
-  const gridRect = gridElement.getBoundingClientRect()
-
-  const computedStyles = window.getComputedStyle(gridElement)
-
-  debug.log('🔧 Grid Debug:', {
-    viewport,
-    container: containerRect?.width,
-    mainContent: mainContentRect?.width,
-    grid: gridRect?.width,
-    gridColumns: computedStyles.gridTemplateColumns,
-    gridGap: computedStyles.gap,
-    availableSpace:
-      mainContentRect?.width -
-      parseFloat(computedStyles.paddingLeft) -
-      parseFloat(computedStyles.paddingRight),
-  })
 }
 
 const loadGames = async (): Promise<void> => {
   try {
-    // Check if database is already loaded (from HMR preservation)
-    if (!databaseManager.isLoaded()) {
-      await loadDatabase()
-    } else {
-      // Reuse existing database
-      db = databaseManager.getDatabase()
-    }
+    // Initialize database lifecycle
+    await initializeDatabase()
 
-    // Set up listener for database updates (safe to call multiple times)
+    // Set up custom database update listener for UI-specific actions
     databaseManager.addUpdateListener(onDatabaseUpdate)
-    databaseManager.addVersionMismatchListener(onVersionMismatch)
-
-    loadGameStats(db)
-    loadChannelsAndTags(db)
-    updateDatabaseStatus()
 
     // Load filters from URL before executing query
-    loadFiltersFromURL()
+    const urlFilters = urlState.loadFiltersFromURL(
+      searchQuery,
+      debouncedSearchQuery,
+      searchInVideoTitles,
+      currentPage,
+      pageSize,
+    )
 
-    executeQuery(db)
+    // Update search state if URL contains search parameters
+    if (
+      urlFilters.searchQuery !== undefined ||
+      urlFilters.searchInVideoTitles !== undefined
+    ) {
+      setSearchState({
+        searchQuery: urlFilters.searchQuery || '',
+        searchInVideoTitles: urlFilters.searchInVideoTitles || false,
+        debouncedSearchQuery: urlFilters.searchQuery || '',
+      })
+    }
+    if (Object.keys(urlFilters).length > 0) {
+      updateFilters(urlFilters as Record<string, unknown>)
+    } // Type compatibility bridge
 
-    // Process deeplink after loading games
+    // Execute initial query if database is available
+    const currentDb = db.get()
+    if (currentDb) {
+      executeQuery(currentDb)
+    }
+
     await nextTick()
     await processDeeplink()
   } catch (err) {
     debug.error('Error loading database:', err)
-    error.value = err.message
-  } finally {
-    loading.value = false
+    // Error is already handled by the composable, no need to set it here
   }
 }
 
-const processDeeplink = async (): Promise<void> => {
-  const { hash } = window.location
-  if (!hash || hash.length <= 1) {
-    return
-  }
-
-  // Wait for next frame to ensure DOM is ready
-  await new Promise((resolve) => requestAnimationFrame(resolve))
-
-  // Parse deeplink format:
-  // Old format: #steam-123456 or #itch-game-slug
-  // New format: #steam-123456-Game-Name or #itch-game-slug-Game-Name
-  const deeplinkParts = hash.substring(1).split('-')
-  if (deeplinkParts.length < 2) {
-    return
-  }
-
-  const platform = deeplinkParts[0]
-  let gameId
-
-  // For Steam, the ID is numeric, so we can detect where it ends
-  if (platform === 'steam') {
-    // Find the first non-numeric part after platform
-    let idEndIndex = 1
-    while (
-      idEndIndex < deeplinkParts.length &&
-      /^\d+$/.test(deeplinkParts[idEndIndex])
-    ) {
-      idEndIndex++
-    }
-    gameId = deeplinkParts.slice(1, idEndIndex).join('-')
-  } else {
-    // For other platforms, we need to be more careful
-    // The game ID could contain hyphens, so we look for a part that looks like a slugified name
-    // As a heuristic, if we have more than 2 parts, assume the last parts are the name slug
-    // This maintains backward compatibility with old URLs
-    if (deeplinkParts.length === 2) {
-      // Old format: just platform and ID
-      gameId = deeplinkParts[1]
-    } else {
-      // New format: try to intelligently split
-      // For now, assume single-part IDs (can be refined based on platform patterns)
-      gameId = deeplinkParts[1]
-    }
-  }
-
-  // Find and scroll to the game
-  await scrollToGame(platform, gameId)
-}
-
-const scrollToGame = async (
-  platform: string,
-  gameId: string,
-): Promise<void> => {
-  // Find the game in our current filtered list
-  let targetGame = null
-
-  if (platform === 'steam') {
-    targetGame = filteredGames.value.find(
-      (game) => game.steam_app_id && game.steam_app_id.toString() === gameId,
-    )
-  } else if (platform === 'itch') {
-    targetGame = filteredGames.value.find(
-      (game) => game.itch_url && game.itch_url.includes(`${gameId}.itch.io`),
-    )
-  } else if (platform === 'crazygames') {
-    targetGame = filteredGames.value.find(
-      (game) =>
-        game.crazygames_url &&
-        game.crazygames_url.includes(`crazygames.com/game/${gameId}`),
-    )
-  }
-
-  if (!targetGame) {
-    debug.warn('Game not found:', platform, gameId)
-    // Try to adjust filters to show the game
-    await tryToShowGame(platform, gameId)
-    return
-  }
-
-  // Highlight the game
-  highlightGame(targetGame)
-
-  // Wait for next tick to ensure the game card is rendered
-  await nextTick()
-
-  // Find the game card element and scroll to it
-  const gameCards = document.querySelectorAll('.game-card')
-  for (const card of gameCards) {
-    // Find the card by checking if it contains our target game data
-    const cardTitle = card.querySelector('h3')?.textContent
-    if (cardTitle === targetGame.name) {
-      card.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      })
-      break
-    }
-  }
-}
-
-const tryToShowGame = async (
-  platform: string,
-  gameId: string,
-): Promise<void> => {
-  // If we can't find the game, it might be filtered out
-  // Try setting platform filter and clearing others
-  if (
-    platform === 'steam' ||
-    platform === 'itch' ||
-    platform === 'crazygames'
-  ) {
-    const newFilters: AppFilters = {
-      platform,
-      releaseStatus: 'all',
-      rating: '0',
-      sortBy: filters.value.sortBy,
-      currency: filters.value.currency,
-      crossPlatform: false,
-      hiddenGems: false,
-      selectedTags: [],
-      tagLogic: 'and',
-      selectedChannels: [],
-      sortSpec: null,
-      timeFilter: null,
-      priceFilter: { minPrice: 0, maxPrice: 1000, includeFree: true },
-      searchQuery: filters.value.searchQuery,
-      searchInVideoTitles: filters.value.searchInVideoTitles,
-    }
-
-    filters.value = newFilters
-
-    // Re-execute query with new filters
-    if (db) {
-      executeQuery(db)
-    }
-
-    // Wait a moment then try again
-    await new Promise((resolve) =>
-      setTimeout(resolve, TIMING.SCROLL_RETRY_DELAY),
-    )
-    await scrollToGame(platform, gameId)
-  }
-}
-
-const highlightGame = (game: AppGameData): void => {
-  // Clear any existing highlights
-  clearHighlight()
-
-  // Set highlighted game
-  highlightedGameId.value = game.id
-
-  // Set up auto-fade after configured duration
-  setTimeout(() => {
-    if (highlightedGameId.value === game.id) {
-      // Start fade-out process
-      highlightedGameId.value = null
-    }
-  }, TIMING.GAME_HIGHLIGHT_DURATION)
-}
-
-const clearHighlight = (): void => {
-  highlightedGameId.value = null
-}
-
-const handleTagClick = (tag: string): void => {
-  // Add the clicked tag to the selected tags
-  const currentTags = filters.value.selectedTags || []
-  if (!currentTags.includes(tag)) {
-    const newFilters = {
-      ...filters.value,
-      selectedTags: [...currentTags, tag],
-    }
-    updateFilters(newFilters)
-  }
-}
-
-const updateFilters = (newFilters: Partial<AppFilters>): void => {
-  monitorFilterUpdate('Complete Filter Update', () => {
-    filters.value = { ...filters.value, ...newFilters }
-    updateURLParams(filters.value)
-    if (db) {
-      executeQuery(db)
-    }
-  })
-}
-
-const handleSortChange = (sortData: SortChangeEvent): void => {
-  filters.value.sortBy = sortData.sortBy
-  filters.value.sortSpec = sortData.sortSpec
-  updateURLParams(filters.value)
-  if (db) {
-    executeQuery(db)
-  }
-}
-
-const updateURLParams = (filterValues: AppFilters): void => {
-  const url = new URL(window.location.href)
-
-  // Remove null/undefined values and update URL
-  const params = {
-    release:
-      filterValues.releaseStatus !== 'all' ? filterValues.releaseStatus : null,
-    platform: filterValues.platform !== 'all' ? filterValues.platform : null,
-    rating: filterValues.rating !== '0' ? filterValues.rating : null,
-    crossPlatform: filterValues.crossPlatform ? 'true' : null,
-    hiddenGems: filterValues.hiddenGems ? 'true' : null,
-    // Multi-tag format
-    tags:
-      filterValues.selectedTags && filterValues.selectedTags.length > 0
-        ? filterValues.selectedTags.join(',')
-        : null,
-    tagLogic:
-      filterValues.selectedTags &&
-      filterValues.selectedTags.length > 1 &&
-      filterValues.tagLogic !== 'and'
-        ? filterValues.tagLogic
-        : null,
-    // Multi-channel format
-    channels:
-      filterValues.selectedChannels && filterValues.selectedChannels.length > 0
-        ? filterValues.selectedChannels.join(',')
-        : null,
-    sort: filterValues.sortBy !== 'date' ? filterValues.sortBy : null,
-    sortSpec: filterValues.sortSpec
-      ? serializeSortSpec(filterValues.sortSpec)
-      : null,
-    currency: filterValues.currency !== 'eur' ? filterValues.currency : null,
-    // Time filter parameters
-    timeType: filterValues.timeFilter?.type || null,
-    timePreset: filterValues.timeFilter?.preset || null,
-    timeStart: filterValues.timeFilter?.startDate || null,
-    timeEnd: filterValues.timeFilter?.endDate || null,
-    timeLogic: filterValues.timeFilter?.smartLogic || null,
-    // Price filter parameters
-    priceMin:
-      filterValues.priceFilter?.minPrice > 0
-        ? filterValues.priceFilter.minPrice
-        : null,
-    priceMax:
-      filterValues.priceFilter?.maxPrice < PRICING.DEFAULT_MAX_PRICE
-        ? filterValues.priceFilter.maxPrice
-        : null,
-    includeFree:
-      filterValues.priceFilter?.includeFree === false ? 'false' : null,
-    // Search parameters
-    search: filterValues.searchQuery?.trim() || null,
-    searchVideos: filterValues.searchInVideoTitles === true ? 'true' : null,
-    // Pagination parameters
-    page: currentPage.value > 1 ? currentPage.value.toString() : null,
-    size: pageSize.value !== 150 ? pageSize.value.toString() : null,
-  }
-
-  Object.keys(params).forEach((key) => {
-    if (params[key] === null || params[key] === undefined) {
-      url.searchParams.delete(key)
-    } else {
-      url.searchParams.set(key, params[key])
-    }
-  })
-
-  // Update URL without page reload
-  window.history.replaceState({}, '', url)
-}
-
-const loadFiltersFromURL = (): void => {
-  const urlParams = new URLSearchParams(window.location.search)
-
-  // Load each filter from URL if present
-  const urlFilters: Partial<AppFilters> = {}
-
-  if (urlParams.has('release')) {
-    urlFilters.releaseStatus = urlParams.get('release')
-  }
-
-  if (urlParams.has('platform')) {
-    urlFilters.platform = urlParams.get('platform')
-  }
-
-  if (urlParams.has('rating')) {
-    urlFilters.rating = urlParams.get('rating')
-  }
-
-  if (urlParams.has('crossPlatform')) {
-    urlFilters.crossPlatform = urlParams.get('crossPlatform') === 'true'
-  }
-
-  if (urlParams.has('hiddenGems')) {
-    urlFilters.hiddenGems = urlParams.get('hiddenGems') === 'true'
-  }
-
-  // Handle tags parameter
-  if (urlParams.has('tags')) {
-    const tagsParam = urlParams.get('tags')
-    if (tagsParam && tagsParam.includes(',')) {
-      // Multi-tag format: "tag1,tag2,tag3"
-      urlFilters.selectedTags = tagsParam.split(',').filter((tag) => tag.trim())
-    } else if (tagsParam) {
-      // Single tag format
-      urlFilters.selectedTags = [tagsParam]
-    }
-  }
-
-  if (urlParams.has('tagLogic')) {
-    const tagLogic = urlParams.get('tagLogic')
-    if (tagLogic === 'and' || tagLogic === 'or') {
-      urlFilters.tagLogic = tagLogic
-    }
-  }
-
-  // Handle channels parameter
-  if (urlParams.has('channels')) {
-    const channelsParam = urlParams.get('channels')
-    if (channelsParam && channelsParam.includes(',')) {
-      // Multi-channel format: "channel1,channel2,channel3"
-      urlFilters.selectedChannels = channelsParam
-        .split(',')
-        .filter((channel) => channel.trim())
-    } else if (channelsParam) {
-      // Single channel format
-      urlFilters.selectedChannels = [channelsParam]
-    }
-  }
-
-  if (urlParams.has('sort')) {
-    urlFilters.sortBy = urlParams.get('sort')
-  }
-
-  if (urlParams.has('sortSpec')) {
-    const sortSpecParam = urlParams.get('sortSpec')
-    if (sortSpecParam) {
-      urlFilters.sortSpec = deserializeSortSpec(sortSpecParam)
-    }
-  }
-
-  if (urlParams.has('currency')) {
-    const currency = urlParams.get('currency')
-    if (currency === 'eur' || currency === 'usd') {
-      urlFilters.currency = currency
-    }
-  }
-
-  // Handle time filter parameters
-  if (
-    urlParams.has('timeType') ||
-    urlParams.has('timePreset') ||
-    urlParams.has('timeStart') ||
-    urlParams.has('timeEnd') ||
-    urlParams.has('timeLogic')
-  ) {
-    urlFilters.timeFilter = {
-      type: urlParams.get('timeType') || null,
-      preset: urlParams.get('timePreset') || null,
-      startDate: urlParams.get('timeStart') || null,
-      endDate: urlParams.get('timeEnd') || null,
-      smartLogic: urlParams.get('timeLogic') || null,
-    }
-  }
-
-  // Handle price filter parameters
-  if (
-    urlParams.has('priceMin') ||
-    urlParams.has('priceMax') ||
-    urlParams.has('includeFree')
-  ) {
-    urlFilters.priceFilter = {
-      minPrice: urlParams.has('priceMin')
-        ? parseFloat(urlParams.get('priceMin'))
-        : 0,
-      maxPrice: urlParams.has('priceMax')
-        ? parseFloat(urlParams.get('priceMax'))
-        : PRICING.DEFAULT_MAX_PRICE,
-      includeFree: urlParams.get('includeFree') !== 'false',
-    }
-  }
-
-  // Handle search parameters
-  if (urlParams.has('search')) {
-    const searchParam = urlParams.get('search')
-    if (searchParam) {
-      urlFilters.searchQuery = searchParam
-      searchQuery.value = searchParam
-      debouncedSearchQuery.value = searchParam
-    }
-  }
-
-  if (urlParams.has('searchVideos')) {
-    urlFilters.searchInVideoTitles = urlParams.get('searchVideos') === 'true'
-    searchInVideoTitles.value = urlParams.get('searchVideos') === 'true'
-  }
-
-  // Handle pagination parameters
-  if (urlParams.has('page')) {
-    const pageParam = urlParams.get('page')
-    const pageNumber = pageParam ? parseInt(pageParam, 10) : 1
-    if (pageNumber > 0) {
-      currentPage.value = pageNumber
-    }
-  }
-
-  if (urlParams.has('size')) {
-    const sizeParam = urlParams.get('size')
-    const sizeNumber = sizeParam ? parseInt(sizeParam, 10) : 150
-    if ([50, 100, 150, 200].includes(sizeNumber)) {
-      pageSize.value = sizeNumber
-    }
-  }
-
-  // Update filters with URL values
-  if (Object.keys(urlFilters).length > 0) {
-    filters.value = { ...filters.value, ...urlFilters }
-  }
-}
+const handleSortChange = filterHandleSortChange
 
 onMounted((): void => {
   loadGames()
 
-  // Set up keyboard handler for clearing highlights
   const handleKeydown = (e: KeyboardEvent): void => {
     if (e.key === 'Escape') {
       clearHighlight()
@@ -1681,21 +248,14 @@ onMounted((): void => {
 
   document.addEventListener('keydown', handleKeydown)
 
-  // Update timestamps at configured interval
   const timestampTimer = setInterval(() => {
     currentTime.value = new Date()
   }, TIMING.TIMESTAMP_UPDATE_INTERVAL)
 
-  // Store timer reference for cleanup
   ;(window as ExtendedWindow).timestampTimer = timestampTimer
 
-  // Set up resize handling for responsive layout
   const handleResize = (): void => {
-    // Debounce resize handling to prevent excessive recalculations
     setTimeout(() => {
-      // CSS Grid auto-fit handles responsive layout automatically
-
-      // Update debug info in development
       if (isDevelopment) {
         updateGridDebugInfo()
       }
@@ -1703,90 +263,58 @@ onMounted((): void => {
   }
 
   window.addEventListener('resize', handleResize)
-
-  // ResizeObserver will be set up after the container is available
-
-  // Set up debug info updates for development
   if (isDevelopment) {
-    // Initial debug info after components are mounted
     setTimeout(updateGridDebugInfo, TIMING.INITIAL_DEBUG_DELAY)
   }
-
-  // Store for cleanup
   ;(window as ExtendedWindow).handleResize = handleResize
 })
 
 onUnmounted((): void => {
-  // Cleanup database manager
+  // Remove custom database update listener
   if (databaseManager.isLoaded()) {
     databaseManager.removeUpdateListener(onDatabaseUpdate)
-    databaseManager.removeVersionMismatchListener(onVersionMismatch)
-
-    // Only destroy if not in HMR mode
-    if (!import.meta.hot) {
-      databaseManager.destroy()
-    }
   }
 
-  // Cleanup timestamp timer
+  // Database lifecycle cleanup is handled by the composable automatically
+
+  // Cleanup timers and handlers
   const extWindow = window as ExtendedWindow
   if (extWindow.timestampTimer) {
     clearInterval(extWindow.timestampTimer)
     extWindow.timestampTimer = undefined
   }
-
-  // Cleanup search debounce timer
-  if (searchDebounceTimer) {
-    clearTimeout(searchDebounceTimer)
-  }
-
-  // Cleanup resize handler
   if (extWindow.handleResize) {
     window.removeEventListener('resize', extWindow.handleResize)
     extWindow.handleResize = undefined
   }
+})
 
-  // No ResizeObserver cleanup needed for pagination
+// Search state update handler
+const handleSearchStateUpdate = (newSearchState: SearchState): void => {
+  setSearchState({
+    searchQuery: newSearchState.query,
+    searchInVideoTitles: newSearchState.searchInVideoTitles,
+  })
+  // Update filters for URL state but skip immediate query execution
+  // The search composable will handle debounced query execution
+  updateFilters(
+    {
+      searchQuery: newSearchState.query,
+      searchInVideoTitles: newSearchState.searchInVideoTitles,
+    },
+    true,
+  ) // skipQuery = true
+}
 
-  // Remove keyboard handler
-  const handleKeydown = (e: KeyboardEvent): void => {
-    if (e.key === 'Escape') {
-      clearHighlight()
-    }
+// Sharing functionality with toast feedback
+const handleCopyCurrentFiltersLink = async (): Promise<void> => {
+  const success = await copyCurrentFiltersLink()
+  if (success) {
+    showToast('Current filters copied to clipboard!', 'success')
+  } else {
+    showToast('Failed to copy link. Please try again.', 'error')
   }
-  document.removeEventListener('keydown', handleKeydown)
-})
-
-// Export reactive state and methods for template
-defineExpose({
-  loading,
-  error,
-  filters,
-  channels,
-  channelsWithCounts,
-  allTags,
-  filteredGames,
-  gameStats,
-  gameGrid,
-  highlightedGameId,
-  databaseStatus,
-  isDevelopment,
-  databaseManager,
-  formatTimestamp,
-  formatExactTimestamp,
-  updateFilters,
-  clearHighlight,
-  handleTagClick,
-  showVersionMismatch,
-  versionMismatchInfo,
-  reloadApp,
-  dismissVersionMismatch,
-  testVersionMismatch,
-  updateGridDebugInfo,
-  sidebarCollapsed,
-  handleSortChange,
-  LAYOUT,
-})
+}
 
 // HMR support - accept module updates
 if (import.meta.hot) {
@@ -1871,287 +399,53 @@ if (import.meta.hot) {
             />
           </div>
 
-          <!-- Sort, Search & Status Info -->
-          <div class="mb-5 text-text-secondary">
-            <!-- Desktop layout -->
-            <div
-              class="hidden md:flex md:items-center md:justify-between md:gap-4"
-            >
-              <!-- Sort Indicator -->
-              <div class="flex items-center gap-4">
-                <SortIndicator
-                  :sort-by="filters.sortBy"
-                  :sort-spec="filters.sortSpec"
-                  :game-count="filteredGames.length"
-                  @sort-changed="handleSortChange"
-                />
-                <div class="text-sm">
-                  <span>{{ filteredGames.length }} games found</span>
-                </div>
-              </div>
-
-              <!-- Search Bar -->
-              <div class="mx-4 max-w-lg flex-1">
-                <div class="flex items-center gap-3">
-                  <input
-                    type="text"
-                    v-model="searchQuery"
-                    placeholder="Search games..."
-                    class="border-border flex-1 rounded-lg border bg-bg-secondary px-3 py-1.5 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
-                  />
-                  <label
-                    class="flex cursor-pointer items-center gap-1.5 text-xs whitespace-nowrap text-text-secondary transition-colors hover:text-text-primary"
-                  >
-                    <input
-                      type="checkbox"
-                      v-model="searchInVideoTitles"
-                      class="border-border size-3.5 cursor-pointer rounded-sm bg-bg-secondary text-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:ring-offset-bg-primary"
-                    />
-                    <span>Video titles</span>
-                  </label>
-                </div>
-              </div>
-
-              <!-- Database Status -->
-              <div class="flex items-center gap-4 text-sm">
-                <div class="flex items-center gap-2">
-                  <span
-                    class="size-2 rounded-full"
-                    :class="
-                      databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
-                    "
-                  ></span>
-                  <span>{{ databaseStatus.games }} total</span>
-                </div>
-                <div class="text-xs text-text-secondary/70">
-                  <span
-                    v-if="databaseStatus.lastGenerated"
-                    :title="
-                      isDevelopment
-                        ? 'Click to test version mismatch'
-                        : `Database generation time: ${formatExactTimestamp(databaseStatus.lastGenerated)}. Database should roughly update every 6 hours.`
-                    "
-                    :class="
-                      isDevelopment
-                        ? 'cursor-pointer hover:text-text-primary'
-                        : ''
-                    "
-                    @click="isDevelopment ? testVersionMismatch() : null"
-                  >
-                    Database:
-                    {{ formatTimestamp(databaseStatus.lastGenerated, true) }}
-                  </span>
-                  <span
-                    v-if="databaseStatus.lastChecked && !isDevelopment"
-                    :title="`Last database update check: ${formatExactTimestamp(databaseStatus.lastChecked)}. Checks happen every ${Math.round(databaseManager.PRODUCTION_CHECK_INTERVAL / 60000)} minutes.`"
-                  >
-                    • Last check:
-                    {{ formatTimestamp(databaseStatus.lastChecked) }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Mobile layout -->
-            <div class="md:hidden">
-              <!-- Sort and Database Status -->
-              <div class="mb-3 flex items-center justify-between">
-                <SortIndicator
-                  :sort-by="filters.sortBy"
-                  :sort-spec="filters.sortSpec"
-                  :game-count="filteredGames.length"
-                  @sort-changed="handleSortChange"
-                />
-                <div class="flex items-center gap-2 text-sm">
-                  <span
-                    class="size-2 rounded-full"
-                    :class="
-                      databaseStatus.connected ? 'bg-green-500' : 'bg-red-500'
-                    "
-                  ></span>
-                  <span>{{ databaseStatus.games }} total</span>
-                </div>
-              </div>
-
-              <!-- Search Bar -->
-              <div class="flex items-center gap-2">
-                <input
-                  type="text"
-                  v-model="searchQuery"
-                  placeholder="Search games..."
-                  class="border-border flex-1 rounded-lg border bg-bg-secondary px-3 py-1.5 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
-                />
-                <label
-                  class="flex cursor-pointer items-center gap-1 text-xs text-text-secondary"
-                >
-                  <input
-                    type="checkbox"
-                    v-model="searchInVideoTitles"
-                    class="border-border size-3.5 cursor-pointer rounded-sm bg-bg-secondary text-accent"
-                  />
-                  <span class="whitespace-nowrap">Videos</span>
-                </label>
-              </div>
-
-              <!-- Search results count -->
-              <div
-                v-if="searchQuery"
-                class="mt-2 text-center text-xs text-text-secondary"
-              >
-                {{ filteredGames.length }} results
-                <span v-if="searchInVideoTitles">(games & videos)</span>
-                <span v-else>(games only)</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Version Mismatch Notification -->
-          <div
-            v-if="showVersionMismatch"
-            class="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-900/20"
-          >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">🔄</span>
-                <div>
-                  <h3 class="font-semibold text-amber-800 dark:text-amber-200">
-                    New Version Available
-                  </h3>
-                  <p class="text-sm text-amber-700 dark:text-amber-300">
-                    The app has been updated. Please reload to get the latest
-                    features and fixes.
-                  </p>
-                </div>
-              </div>
-              <div class="flex gap-2">
-                <button
-                  @click="dismissVersionMismatch"
-                  class="rounded-sm px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-800/50"
-                >
-                  Dismiss
-                </button>
-                <button
-                  @click="reloadApp"
-                  class="rounded-sm bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
-                >
-                  Reload Now
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modern Game Grid with Pagination -->
-          <div class="game-discovery-container min-h-0 w-full flex-1">
-            <!-- Game Grid -->
-            <div
-              ref="gameGrid"
-              v-if="filteredGames.length > 0"
-              class="game-grid mb-8 grid w-full justify-start gap-5"
-              style="
-                grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
-              "
-            >
-              <GameCard
-                v-for="game in currentPageGames"
-                :key="game.id"
-                :game="game"
-                :currency="filters.currency"
-                :is-highlighted="highlightedGameId === game.id"
-                @click="clearHighlight"
-                @tag-click="handleTagClick"
+          <!-- Database Status -->
+          <div class="mb-5">
+            <div class="flex justify-center md:justify-end">
+              <DatabaseStatus
+                :connected="databaseStatus.connected"
+                :games="databaseStatus.games"
+                :last-generated="databaseStatus.lastGenerated"
+                :last-checked="databaseStatus.lastChecked"
+                :show-version-mismatch="showVersionMismatch"
+                :version-mismatch-info="versionMismatchInfo"
+                :is-development="isDevelopment"
+                :current-time="currentTime"
+                :production-check-interval="
+                  databaseManager.PRODUCTION_CHECK_INTERVAL
+                "
+                @test-version-mismatch="testVersionMismatch"
+                @reload-app="reloadApp"
+                @dismiss-version-mismatch="dismissVersionMismatch"
               />
             </div>
-
-            <!-- Pagination Controls -->
-            <PaginationControls
-              v-if="filteredGames.length > 0"
-              :current-page="currentPage"
-              :total-pages="totalPages"
-              :total-items="filteredGames.length"
-              :start-index="startIndex"
-              :end-index="endIndex"
-              :remaining-items="remainingItems"
-              :page-size="pageSize"
-              :has-next-page="hasNextPage"
-              :has-prev-page="hasPrevPage"
-              :loading="paginationLoading"
-              :visible-pages="visiblePages"
-              :show-first-page="showFirstPage"
-              :show-last-page="showLastPage"
-              :show-left-ellipsis="showLeftEllipsis"
-              :show-right-ellipsis="showRightEllipsis"
-              :load-more-visible="loadMoreVisible"
-              :get-page-button-class="getPageButtonClass"
-              :get-nav-button-class="getNavButtonClass"
-              @go-to-page="goToPage"
-              @load-more="loadMore"
-              @jump-to-page="handleJumpToPage"
-              @set-page-size="setPageSize"
-            />
           </div>
 
-          <!-- Loading/Error States -->
-          <div v-if="loading" class="py-10 text-center text-text-secondary">
-            Loading games...
-          </div>
-
-          <div v-if="error" class="py-10 text-center text-red-500">
-            Error loading games: {{ error }}
-          </div>
-
-          <!-- No Results State -->
-          <div
-            v-if="!loading && !error && filteredGames.length === 0"
-            class="py-20 text-center text-text-secondary"
-          >
-            <div class="mb-2 text-xl">No games found</div>
-            <div class="text-sm">
-              Try adjusting your filters to see more results.
-            </div>
-          </div>
+          <!-- Game Discovery Container -->
+          <GameDiscoveryContainer
+            :search-state="searchState"
+            :currency="filters.currency"
+            :sort-by="filters.sortBy"
+            :sort-spec="filters.sortSpec"
+            :filtered-games="filteredGames"
+            :highlighted-game-id="
+              highlightedGameId ? String(highlightedGameId) : null
+            "
+            :pagination-config="paginationConfig"
+            :loading="loading"
+            :error="error"
+            @update:search-state="handleSearchStateUpdate"
+            @sort-changed="handleSortChange"
+            @clear-highlight="clearHighlight"
+            @tag-click="handleTagClick"
+            @pagination-changed="handlePaginationChange"
+            @copy-current-filters-link="handleCopyCurrentFiltersLink"
+          />
         </div>
       </div>
     </div>
+
+    <!-- Toast Notifications -->
+    <ToastNotifications :toasts="toasts" @remove="removeToast" />
   </div>
 </template>
-
-<style scoped>
-/* Modern game grid styles - return to master's proven approach */
-.game-grid {
-  /* Ensure proper grid container behavior */
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(v-bind('LAYOUT.CARD_MIN_WIDTH'), 1fr)
-  );
-  gap: 1.25rem; /* 20px - matches gap-5 */
-  width: 100%;
-  min-width: 0;
-}
-
-/* Grid items inherit proper sizing from GameCard component */
-
-/* Game discovery container */
-.game-discovery-container {
-  /* Clean container for pagination layout */
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 0;
-}
-
-/* Responsive behavior for dynamic grid columns */
-@media (max-width: 359px) {
-  /* Extra small mobile: force smaller minimum */
-  .game-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
-  }
-}
-
-@media (min-width: 360px) {
-  /* Standard responsive grid with 320px minimum */
-  .game-grid {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
-  }
-}
-</style>

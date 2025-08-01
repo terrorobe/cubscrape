@@ -536,11 +536,12 @@ export class DatabaseManager {
 }
 
 // Create HMR-safe singleton instance
-let _databaseManager: DatabaseManager
+let _databaseManager!: DatabaseManager
 
 if (import.meta.hot && (window as WindowWithGameDatabase).__databaseManager) {
   // Reuse existing instance during HMR
-  _databaseManager = (window as WindowWithGameDatabase).__databaseManager
+  _databaseManager = (window as WindowWithGameDatabase)
+    .__databaseManager as DatabaseManager
 } else {
   // Create new instance
   _databaseManager = new DatabaseManager()

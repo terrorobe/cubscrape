@@ -527,7 +527,7 @@ watch(
 <template>
   <div
     ref="cardRef"
-    class="game-card relative flex max-w-sm cursor-pointer flex-col justify-self-start overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
+    class="game-card relative flex w-full cursor-pointer flex-col justify-self-start overflow-hidden rounded-lg bg-bg-card transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
     :class="{
       'scale-105': copyFeedback,
       highlighted: isHighlighted && !highlightFading,
