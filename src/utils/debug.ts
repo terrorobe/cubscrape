@@ -8,7 +8,8 @@
 
 const DEBUG =
   import.meta.env.DEV ||
-  (import.meta.env as Record<string, unknown>).VITE_DEBUG === 'true' ||
+  (import.meta.env as unknown as Record<string, unknown>).VITE_DEBUG ===
+    'true' ||
   (typeof localStorage !== 'undefined' &&
     localStorage.getItem('debug') === 'true')
 
