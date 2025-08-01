@@ -5360,9 +5360,9 @@
         "Simulation",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1209970/2a78b2ad9dbc443e4d8df15e49be792e64a01287/header.jpg?t=1753448025",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1209970/7ae2188510fb873d26dcdc7c42846973e7ce0b9b/header_alt_assets_0.jpg?t=1753951621",
       "is_early_access": true,
-      "last_updated": "2025-07-26T20:57:26.236368",
+      "last_updated": "2025-08-01T15:03:36.974279",
       "name": "Blind Descent",
       "planned_release_date": "To be announced",
       "publishers": [
@@ -5378,8 +5378,8 @@
         "Action",
         "Building",
         "3D",
-        "Exploration",
         "FPS",
+        "Exploration",
         "Multiplayer",
         "Open World Survival Craft",
         "Sandbox",
@@ -24146,9 +24146,9 @@
         "Strategy",
         "Free To Play"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1827240/header.jpg?t=1753265834",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1827240/header.jpg?t=1753961664",
       "is_free": true,
-      "last_updated": "2025-07-25T09:01:26.490937",
+      "last_updated": "2025-08-01T15:03:41.421164",
       "name": "Plague Lords: Witch Hunt",
       "planned_release_date": "2025",
       "price_eur": "Free",
@@ -27199,7 +27199,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1910600/header.jpg?t=1742420324",
-      "last_updated": "2025-07-25T09:01:16.277659",
+      "last_updated": "2025-08-01T15:03:34.441580",
       "name": "ONE BTN BOSSES",
       "positive_review_percentage": 89,
       "price_eur": "10,99\u20ac",
@@ -27209,7 +27209,7 @@
         "Outersloth"
       ],
       "release_date": "6 Aug, 2024",
-      "review_count": 150,
+      "review_count": 151,
       "review_summary": "Very Positive",
       "steam_app_id": "1910600",
       "steam_url": "https://store.steampowered.com/app/1910600",
@@ -27739,8 +27739,8 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928080/header.jpg?t=1753977899",
-      "last_updated": "2025-08-01T08:56:23.368878",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928080/header.jpg?t=1754034632",
+      "last_updated": "2025-08-01T15:03:44.186933",
       "name": "Prospector",
       "positive_review_percentage": 100,
       "price_eur": "11,99\u20ac",
@@ -27749,7 +27749,7 @@
         "HypeTrain Digital"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 11,
+      "review_count": 14,
       "review_summary": "Positive",
       "steam_app_id": "1928080",
       "steam_url": "https://store.steampowered.com/app/1928080",
@@ -34585,7 +34585,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2109270/924711e3b0fe4336ecb4cebb19e610d5a21673b2/header.jpg?t=1749478819",
-      "last_updated": "2025-07-25T09:01:29.449972",
+      "last_updated": "2025-08-01T15:03:32.118009",
       "name": "Preserve",
       "positive_review_percentage": 93,
       "price_eur": "12,49\u20ac",
@@ -34593,11 +34593,11 @@
       "publishers": [
         "Grindstone"
       ],
-      "recent_review_count": 20,
-      "recent_review_percentage": 95,
+      "recent_review_count": 17,
+      "recent_review_percentage": 94,
       "recent_review_summary": "Very Positive",
       "release_date": "15 May, 2025",
-      "review_count": 497,
+      "review_count": 500,
       "review_summary": "Very Positive",
       "steam_app_id": "2109270",
       "steam_url": "https://store.steampowered.com/app/2109270",
@@ -45260,7 +45260,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2305840/7e02d4cb6070270b6654935eb177ca3dddb1b225/header_alt_assets_1.jpg?t=1751893295",
-      "last_updated": "2025-07-25T09:01:20.571175",
+      "last_updated": "2025-08-01T15:03:35.154387",
       "name": "Cat Quest III",
       "positive_review_percentage": 94,
       "price_eur": "19,99\u20ac",
@@ -45268,11 +45268,11 @@
       "publishers": [
         "Kepler Interactive"
       ],
-      "recent_review_count": 74,
+      "recent_review_count": 68,
       "recent_review_percentage": 98,
       "recent_review_summary": "Very Positive",
       "release_date": "8 Aug, 2024",
-      "review_count": 2436,
+      "review_count": 2448,
       "review_summary": "Very Positive",
       "steam_app_id": "2305840",
       "steam_url": "https://store.steampowered.com/app/2305840",
@@ -47500,7 +47500,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2347080/c6c09a8eb1a0fac5ac8e0d2ea0a228c8303d8967/header.jpg?t=1753981492",
       "is_early_access": true,
-      "last_updated": "2025-08-01T08:56:11.917885",
+      "last_updated": "2025-08-01T15:03:29.399399",
       "name": "Frosthaven",
       "positive_review_percentage": 72,
       "price_eur": "35,09\u20ac",
@@ -47509,7 +47509,7 @@
         "Arc Games"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 22,
+      "review_count": 37,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2347080",
       "steam_url": "https://store.steampowered.com/app/2347080",
@@ -54157,7 +54157,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2455460/header.jpg?t=1748512997",
       "is_early_access": true,
-      "last_updated": "2025-07-25T09:01:40.202741",
+      "last_updated": "2025-08-01T15:03:44.938068",
       "name": "Milord",
       "positive_review_percentage": 75,
       "price_eur": "9,75\u20ac",
@@ -54166,7 +54166,7 @@
         "iBright Games"
       ],
       "release_date": "14 Apr, 2025",
-      "review_count": 86,
+      "review_count": 88,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2455460",
       "steam_url": "https://store.steampowered.com/app/2455460",
@@ -57887,10 +57887,10 @@
         "RPG",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2513490/header.jpg?t=1753957350",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2513490/header.jpg?t=1754045001",
       "insufficient_reviews": true,
       "is_early_access": true,
-      "last_updated": "2025-08-01T08:56:41.662548",
+      "last_updated": "2025-08-01T15:03:43.522502",
       "name": "HELL GALAXY",
       "price_eur": "14,79\u20ac",
       "price_usd": "$14.99",
@@ -58427,33 +58427,32 @@
         "Strategy",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523890/header.jpg?t=1751961469",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523890/header.jpg?t=1754042143",
       "is_early_access": true,
-      "last_updated": "2025-07-25T09:01:17.797470",
+      "last_updated": "2025-08-01T15:03:42.893262",
       "name": "Whispers of the Eyeless",
       "positive_review_percentage": 83,
       "price_eur": "19,50\u20ac",
       "price_usd": "$19.99",
       "publishers": [
-        "Venris",
-        "Evil Gingerbread Studio"
+        "Anshar Publishing"
       ],
       "release_date": "30 Jan, 2025",
-      "review_count": 98,
+      "review_count": 99,
       "review_summary": "Very Positive",
       "steam_app_id": "2523890",
       "steam_url": "https://store.steampowered.com/app/2523890",
       "tags": [
         "Early Access",
         "Roguelike",
-        "Atmospheric",
-        "Adventure",
-        "Lovecraftian",
-        "Turn-Based Combat",
-        "Dungeon Crawler",
         "Dark Fantasy",
-        "Tactical RPG",
-        "Turn-Based Tactics"
+        "Turn-Based Combat",
+        "Roguelite",
+        "Adventure",
+        "Strategy RPG",
+        "Atmospheric",
+        "Lovecraftian",
+        "Dungeon Crawler"
       ]
     },
     "2525310": {
@@ -71979,7 +71978,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "2945540",
       "developers": [
         "Zabbo Games"
@@ -71990,15 +71988,18 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2760790/header.jpg?t=1754022249",
-      "last_updated": "2025-08-01T08:56:50.820166",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2760790/header.jpg?t=1754042305",
+      "last_updated": "2025-08-01T15:03:37.846258",
       "name": "Another Farm Roguelike: Rebirth",
+      "positive_review_percentage": 90,
+      "price_eur": "6,20\u20ac",
+      "price_usd": "$6.29",
       "publishers": [
         "Thermite Games"
       ],
-      "release_date": "31 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "release_date": "1 Aug, 2025",
+      "review_count": 20,
+      "review_summary": "Positive",
       "steam_app_id": "2760790",
       "steam_url": "https://store.steampowered.com/app/2760790",
       "tags": [
@@ -72199,7 +72200,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2764830/header.jpg?t=1726581370",
-      "last_updated": "2025-07-25T09:01:37.338358",
+      "last_updated": "2025-08-01T15:03:42.189602",
       "name": "Shift Legacy Collection",
       "positive_review_percentage": 100,
       "price_eur": "4,99\u20ac",
@@ -72208,7 +72209,7 @@
         "Armor Games Studios"
       ],
       "release_date": "7 Aug, 2024",
-      "review_count": 27,
+      "review_count": 28,
       "review_summary": "Positive",
       "steam_app_id": "2764830",
       "steam_url": "https://store.steampowered.com/app/2764830",
@@ -77398,12 +77399,11 @@
       ],
       "genres": [
         "Action",
-        "Casual",
         "Simulation"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2836100/320d9c40cbdb81d3f82cc6c363ff785e91bbdb26/header.jpg?t=1753297761",
-      "last_updated": "2025-07-25T09:01:58.370099",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2836100/320d9c40cbdb81d3f82cc6c363ff785e91bbdb26/header.jpg?t=1753923183",
+      "last_updated": "2025-08-01T15:03:40.658761",
       "name": "Gemporium: A Cute Mining Sim",
       "publishers": [
         "Merge Conflict Studio"
@@ -77414,16 +77414,16 @@
       "steam_app_id": "2836100",
       "steam_url": "https://store.steampowered.com/app/2836100",
       "tags": [
+        "Cartoon",
+        "Simulation",
+        "Life Sim",
+        "Hand-drawn",
+        "Cute",
+        "Management",
         "Mining",
         "Time Management",
-        "Life Sim",
-        "Job Simulator",
-        "Simulation",
-        "Hand-drawn",
-        "Management",
-        "Colorful",
-        "Stylized",
-        "Cute"
+        "Resource Management",
+        "Colorful"
       ]
     },
     "2836860": {
@@ -77665,7 +77665,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2841870/header.jpg?t=1746002663",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-25T09:01:30.323613",
+      "last_updated": "2025-08-01T15:03:33.092000",
       "name": "Preserve Demo",
       "positive_review_percentage": 90,
       "price_eur": "Free",
@@ -81790,7 +81790,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2921660/header.jpg?t=1718097415",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-25T09:01:22.083804",
+      "last_updated": "2025-08-01T15:03:36.179384",
       "name": "Cat Quest III: Demo",
       "positive_review_percentage": 94,
       "price_eur": "Free",
@@ -81798,11 +81798,11 @@
       "publishers": [
         "Kepler Interactive"
       ],
-      "recent_review_count": 74,
+      "recent_review_count": 68,
       "recent_review_percentage": 98,
       "recent_review_summary": "Very Positive",
       "release_date": "4 Jun, 2024",
-      "review_count": 2436,
+      "review_count": 2448,
       "review_summary": "Very Positive",
       "steam_app_id": "2921660",
       "steam_url": "https://store.steampowered.com/app/2921660",
@@ -83061,33 +83061,33 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2945540/header.jpg?t=1740441014",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2945540/header.jpg?t=1754032519",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-01T08:56:51.841444",
+      "last_updated": "2025-08-01T15:03:38.874929",
       "name": "Another Farm Roguelike: Rebirth Demo",
-      "positive_review_percentage": 93,
+      "positive_review_percentage": 90,
       "price_eur": "Free",
       "price_usd": "Free",
       "publishers": [
         "Thermite Games"
       ],
       "release_date": "19 Apr, 2024",
-      "review_count": 63,
-      "review_summary": "Very Positive",
+      "review_count": 20,
+      "review_summary": "Positive",
       "steam_app_id": "2945540",
       "steam_url": "https://store.steampowered.com/app/2945540",
       "tags": [
-        "Strategy",
-        "Farming Sim",
-        "Management",
-        "Resource Management",
-        "Roguelike",
+        "Roguelike Deckbuilder",
         "Turn-Based Strategy",
-        "Simulation",
-        "Inventory Management",
-        "Crafting",
-        "Farming"
+        "Deckbuilding",
+        "Farming Sim",
+        "Strategy",
+        "Roguelike",
+        "Pixel Graphics",
+        "Roguelite",
+        "Replay Value",
+        "Resource Management"
       ]
     },
     "2946880": {
@@ -96828,7 +96828,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3208110/header.jpg?t=1754015631",
-      "last_updated": "2025-08-01T08:55:59.774995",
+      "last_updated": "2025-08-01T15:03:28.215605",
       "name": "Luck & Loot",
       "publishers": [
         "GrabTheGames"
@@ -107339,7 +107339,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451380/f3967338826c1be6bb7c5677680137fa5c921730/header.jpg?t=1753971148",
-      "last_updated": "2025-08-01T08:55:40.149418",
+      "last_updated": "2025-08-01T15:03:28.799222",
       "name": "Game of Grass",
       "positive_review_percentage": 100,
       "price_eur": "5,85\u20ac",
@@ -108172,7 +108172,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3466550/7b0f45f19a5f2191b9fe5faaf23a074eac6fb9a3/header.jpg?t=1749076074",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-25T09:01:57.185989",
+      "last_updated": "2025-08-01T15:03:39.795862",
       "name": "Gemporium Demo",
       "positive_review_percentage": 93,
       "price_eur": "Free",
@@ -108180,11 +108180,8 @@
       "publishers": [
         "Merge Conflict Studio"
       ],
-      "recent_review_count": 10,
-      "recent_review_percentage": 80,
-      "recent_review_summary": "Very Positive",
       "release_date": "10 Feb, 2025",
-      "review_count": 94,
+      "review_count": 95,
       "review_summary": "Very Positive",
       "steam_app_id": "3466550",
       "steam_url": "https://store.steampowered.com/app/3466550",
@@ -108244,6 +108241,49 @@
         "Roguelite",
         "2D",
         "Cartoon"
+      ]
+    },
+    "3467710": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "Alawar"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3467710/ef791e4a3898480a5e2aee1c23d2c6f90c7a7f3e/header_alt_assets_1.jpg?t=1754044420",
+      "last_updated": "2025-08-01T15:03:30.334909",
+      "name": "Wall World 2",
+      "planned_release_date": "2025",
+      "publishers": [
+        "Alawar"
+      ],
+      "release_date": "2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3467710",
+      "steam_url": "https://store.steampowered.com/app/3467710",
+      "tags": [
+        "Roguelite",
+        "Mining",
+        "Pixel Graphics",
+        "Tower Defense",
+        "Roguelike",
+        "Strategy",
+        "Exploration",
+        "Procedural Generation",
+        "Action-Adventure",
+        "Action"
       ]
     },
     "3469750": {
@@ -114514,7 +114554,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "3781660",
       "developers": [
         "Priory Games"
@@ -114523,9 +114562,11 @@
         "Simulation"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667850/7a9162a5387cb56bf8bd69f1538259b9d6f8089f/header.jpg?t=1752857374",
-      "last_updated": "2025-08-01T08:55:54.444838",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667850/7a9162a5387cb56bf8bd69f1538259b9d6f8089f/header.jpg?t=1754049862",
+      "last_updated": "2025-08-01T15:03:31.412455",
       "name": "Silk Roads II: Paths of Fortune",
+      "price_eur": "8,99\u20ac",
+      "price_usd": "$9.99",
       "publishers": [
         "Priory Games"
       ],
@@ -118585,7 +118626,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3868720/bbbe96e2cb7f1749c4c60ca15d7e57f42cc96643/header.jpg?t=1753977317",
       "insufficient_reviews": true,
-      "last_updated": "2025-08-01T08:56:22.696564",
+      "last_updated": "2025-08-01T15:03:33.719057",
       "name": "Doomfields",
       "price_eur": "9,90\u20ac",
       "price_usd": "$10.04",
@@ -118593,7 +118634,7 @@
         "KJGames"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 6,
+      "review_count": 7,
       "review_summary": "Need more reviews for score",
       "steam_app_id": "3868720",
       "steam_url": "https://store.steampowered.com/app/3868720",
