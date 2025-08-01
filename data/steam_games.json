@@ -14857,7 +14857,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1569580/header.jpg?t=1751379489",
-      "last_updated": "2025-07-26T20:14:17.830583",
+      "last_updated": "2025-08-01T20:54:00.397342",
       "name": "Blue Prince",
       "positive_review_percentage": 86,
       "price_eur": "29,99\u20ac",
@@ -14865,11 +14865,11 @@
       "publishers": [
         "Raw Fury"
       ],
-      "recent_review_count": 816,
-      "recent_review_percentage": 85,
+      "recent_review_count": 748,
+      "recent_review_percentage": 84,
       "recent_review_summary": "Very Positive",
       "release_date": "10 Apr, 2025",
-      "review_count": 9012,
+      "review_count": 9133,
       "review_summary": "Very Positive",
       "steam_app_id": "1569580",
       "steam_url": "https://store.steampowered.com/app/1569580",
@@ -26491,7 +26491,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1893440/header.jpg?t=1747476354",
-      "last_updated": "2025-07-25T15:09:17.555888",
+      "last_updated": "2025-08-01T20:53:50.160565",
       "name": "INTO EVIL",
       "planned_release_date": "2025",
       "publishers": [
@@ -27740,7 +27740,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1928080/header.jpg?t=1754034632",
-      "last_updated": "2025-08-01T15:03:44.186933",
+      "last_updated": "2025-08-01T20:54:01.013569",
       "name": "Prospector",
       "positive_review_percentage": 100,
       "price_eur": "11,99\u20ac",
@@ -27749,7 +27749,7 @@
         "HypeTrain Digital"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 14,
+      "review_count": 16,
       "review_summary": "Positive",
       "steam_app_id": "1928080",
       "steam_url": "https://store.steampowered.com/app/1928080",
@@ -33114,7 +33114,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2083240/header.jpg?t=1732118566",
-      "last_updated": "2025-07-25T15:09:29.290907",
+      "last_updated": "2025-08-01T20:53:57.601683",
       "name": "Asterogues",
       "positive_review_percentage": 90,
       "price_eur": "13,99\u20ac",
@@ -33898,7 +33898,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2097030/2d42aec127646ab25ecc6a07a4fa115c82f7f440/header.jpg?t=1750236759",
-      "last_updated": "2025-07-25T15:09:00.252277",
+      "last_updated": "2025-08-01T20:53:41.612712",
       "name": "Union of Gnomes",
       "positive_review_percentage": 82,
       "price_eur": "14,79\u20ac",
@@ -33907,7 +33907,7 @@
         "HeroCraft PC"
       ],
       "release_date": "29 May, 2025",
-      "review_count": 255,
+      "review_count": 256,
       "review_summary": "Very Positive",
       "steam_app_id": "2097030",
       "steam_url": "https://store.steampowered.com/app/2097030",
@@ -47500,17 +47500,17 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2347080/c6c09a8eb1a0fac5ac8e0d2ea0a228c8303d8967/header.jpg?t=1753981492",
       "is_early_access": true,
-      "last_updated": "2025-08-01T15:03:29.399399",
+      "last_updated": "2025-08-01T20:53:39.993580",
       "name": "Frosthaven",
-      "positive_review_percentage": 72,
+      "positive_review_percentage": 67,
       "price_eur": "35,09\u20ac",
       "price_usd": "$35.99",
       "publishers": [
         "Arc Games"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 37,
-      "review_summary": "Mostly Positive",
+      "review_count": 46,
+      "review_summary": "Mixed",
       "steam_app_id": "2347080",
       "steam_url": "https://store.steampowered.com/app/2347080",
       "tags": [
@@ -50286,20 +50286,20 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2396240/header.jpg?t=1751285399",
-      "last_updated": "2025-07-25T15:09:32.580850",
+      "last_updated": "2025-08-01T20:53:53.809785",
       "name": "SteamWorld Heist II",
-      "positive_review_percentage": 95,
-      "price_eur": "29,99\u20ac",
-      "price_usd": "$29.99",
+      "positive_review_percentage": 94,
+      "price_eur": "9,89\u20ac",
+      "price_usd": "$9.89",
       "publishers": [
         "Thunderful Publishing"
       ],
-      "recent_review_count": 72,
-      "recent_review_percentage": 88,
+      "recent_review_count": 73,
+      "recent_review_percentage": 87,
       "recent_review_summary": "Very Positive",
       "release_date": "8 Aug, 2024",
-      "review_count": 1772,
-      "review_summary": "Overwhelmingly Positive",
+      "review_count": 1788,
+      "review_summary": "Very Positive",
       "steam_app_id": "2396240",
       "steam_url": "https://store.steampowered.com/app/2396240",
       "tags": [
@@ -57890,7 +57890,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2513490/header.jpg?t=1754045001",
       "insufficient_reviews": true,
       "is_early_access": true,
-      "last_updated": "2025-08-01T15:03:43.522502",
+      "last_updated": "2025-08-01T20:53:56.789460",
       "name": "HELL GALAXY",
       "price_eur": "14,79\u20ac",
       "price_usd": "$14.99",
@@ -60771,7 +60771,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2563670/header.jpg?t=1692464174",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-25T15:09:18.707640",
+      "last_updated": "2025-08-01T20:53:51.112487",
       "name": "INTO EVIL Demo",
       "price_eur": "Free",
       "price_usd": "Free",
@@ -63940,7 +63940,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2626620/header.jpg?t=1742209730",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-25T15:09:01.793289",
+      "last_updated": "2025-08-01T20:53:42.648443",
       "name": "Union of Gnomes Demo",
       "positive_review_percentage": 82,
       "price_eur": "Free",
@@ -63949,7 +63949,7 @@
         "HeroCraft PC"
       ],
       "release_date": "2 Oct, 2023",
-      "review_count": 255,
+      "review_count": 256,
       "review_summary": "Very Positive",
       "steam_app_id": "2626620",
       "steam_url": "https://store.steampowered.com/app/2626620",
@@ -63985,7 +63985,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2626860/header.jpg?t=1733560418",
-      "last_updated": "2025-07-25T15:09:22.127825",
+      "last_updated": "2025-08-01T20:53:59.647549",
       "name": "Dragon Eclipse",
       "positive_review_percentage": 63,
       "price_eur": "12,79\u20ac",
@@ -71989,16 +71989,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2760790/header.jpg?t=1754042305",
-      "last_updated": "2025-08-01T15:03:37.846258",
+      "last_updated": "2025-08-01T20:53:55.032322",
       "name": "Another Farm Roguelike: Rebirth",
-      "positive_review_percentage": 90,
+      "positive_review_percentage": 80,
       "price_eur": "6,20\u20ac",
       "price_usd": "$6.29",
       "publishers": [
         "Thermite Games"
       ],
       "release_date": "1 Aug, 2025",
-      "review_count": 20,
+      "review_count": 35,
       "review_summary": "Positive",
       "steam_app_id": "2760790",
       "steam_url": "https://store.steampowered.com/app/2760790",
@@ -72354,6 +72354,47 @@
         "Stylized"
       ]
     },
+    "2768380": {
+      "categories": [
+        "Single-player",
+        "Steam Achievements",
+        "Full controller support",
+        "Steam Cloud",
+        "Steam Leaderboards",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "developers": [
+        "Chute Apps"
+      ],
+      "genres": [
+        "Strategy"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2768380/71e3e40465dfa21bc53b18d8d9bf647f5b55e225/header.jpg?t=1752614480",
+      "last_updated": "2025-08-01T20:53:47.485784",
+      "name": "Repterra",
+      "planned_release_date": "Coming soon",
+      "publishers": [
+        "Chute Apps"
+      ],
+      "release_date": "Coming soon",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2768380",
+      "steam_url": "https://store.steampowered.com/app/2768380",
+      "tags": [
+        "Colony Sim",
+        "Base Building",
+        "Real-Time with Pause",
+        "Dinosaurs",
+        "RTS",
+        "Strategy",
+        "Grand Strategy",
+        "City Builder",
+        "Outbreak Sim",
+        "Exploration"
+      ]
+    },
     "2768430": {
       "categories": [
         "Single-player",
@@ -72463,20 +72504,22 @@
       "coming_soon": true,
       "demo_app_id": "3130820",
       "developers": [
-        "Humanyoyo Studios"
+        "Humanyoyo"
       ],
       "genres": [
         "Action",
         "Adventure",
         "Indie",
-        "Strategy"
+        "Strategy",
+        "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2769780/0e9662970e09dd410bc96ba10327996d9217bb06/header.jpg?t=1752365761",
-      "last_updated": "2025-07-25T15:09:14.324399",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2769780/0e9662970e09dd410bc96ba10327996d9217bb06/header.jpg?t=1753997373",
+      "is_early_access": true,
+      "last_updated": "2025-08-01T20:53:45.073116",
       "name": "CleanFall",
       "publishers": [
-        "Humanyoyo Studios"
+        "Humanyoyo"
       ],
       "release_date": "8 Aug, 2025",
       "review_count": 0,
@@ -72484,16 +72527,16 @@
       "steam_app_id": "2769780",
       "steam_url": "https://store.steampowered.com/app/2769780",
       "tags": [
-        "Tower Defense",
-        "Open World",
-        "Stylized",
-        "Post-apocalyptic",
-        "Roguelike",
-        "Open World Survival Craft",
-        "Underground",
-        "Difficult",
-        "Roguelite",
-        "Dungeon Crawler"
+        "Early Access",
+        "Perma Death",
+        "Survival",
+        "Crafting",
+        "Physics",
+        "Singleplayer",
+        "Atmospheric",
+        "Adventure",
+        "Combat",
+        "Difficult"
       ]
     },
     "2769820": {
@@ -74889,7 +74932,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2803280/2f4992193b3cacfdd9dd3fdf65eaf58a5d6005aa/header.jpg?t=1751874140",
-      "last_updated": "2025-07-25T15:09:05.015873",
+      "last_updated": "2025-08-01T20:53:43.338665",
       "name": "Dragon Is Dead",
       "positive_review_percentage": 77,
       "price_eur": "19,50\u20ac",
@@ -74897,11 +74940,11 @@
       "publishers": [
         "PM Studios, inc."
       ],
-      "recent_review_count": 39,
-      "recent_review_percentage": 84,
+      "recent_review_count": 27,
+      "recent_review_percentage": 88,
       "recent_review_summary": "Very Positive",
       "release_date": "6 Jun, 2025",
-      "review_count": 571,
+      "review_count": 572,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2803280",
       "steam_url": "https://store.steampowered.com/app/2803280",
@@ -77263,7 +77306,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2833530/header.jpg?t=1744608461",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-25T15:08:58.911009",
+      "last_updated": "2025-08-01T20:53:49.177376",
       "name": "Tavern Keeper \ud83c\udf7b Demo",
       "positive_review_percentage": 96,
       "price_eur": "Free",
@@ -77271,11 +77314,11 @@
       "publishers": [
         "Greenheart Games \ud83d\udc9a"
       ],
-      "recent_review_count": 12,
-      "recent_review_percentage": 91,
+      "recent_review_count": 14,
+      "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "22 Jul, 2024",
-      "review_count": 293,
+      "review_count": 296,
       "review_summary": "Very Positive",
       "steam_app_id": "2833530",
       "steam_url": "https://store.steampowered.com/app/2833530",
@@ -83064,17 +83107,17 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2945540/header.jpg?t=1754032519",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-01T15:03:38.874929",
+      "last_updated": "2025-08-01T20:53:56.113019",
       "name": "Another Farm Roguelike: Rebirth Demo",
-      "positive_review_percentage": 90,
+      "positive_review_percentage": 73,
       "price_eur": "Free",
       "price_usd": "Free",
       "publishers": [
         "Thermite Games"
       ],
       "release_date": "19 Apr, 2024",
-      "review_count": 20,
-      "review_summary": "Positive",
+      "review_count": 41,
+      "review_summary": "Mostly Positive",
       "steam_app_id": "2945540",
       "steam_url": "https://store.steampowered.com/app/2945540",
       "tags": [
@@ -92721,7 +92764,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3130820/header.jpg?t=1750649735",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-25T15:09:15.660217",
+      "last_updated": "2025-08-01T20:53:45.985130",
       "name": "CleanFall Demo",
       "positive_review_percentage": 94,
       "price_eur": "Free",
@@ -92730,7 +92773,7 @@
         "Humanyoyo Studios"
       ],
       "release_date": "26 Jul, 2024",
-      "review_count": 109,
+      "review_count": 110,
       "review_summary": "Very Positive",
       "steam_app_id": "3130820",
       "steam_url": "https://store.steampowered.com/app/3130820",
@@ -92926,7 +92969,6 @@
         "Single-player",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "developers": [
         "Can Can Can a Man"
       ],
@@ -92937,17 +92979,19 @@
         "Strategy",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3133650/12b0a444d4d3f385c72a8ef0085270b28533aba7/header.jpg?t=1753829363",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3133650/12b0a444d4d3f385c72a8ef0085270b28533aba7/header.jpg?t=1753984810",
       "is_early_access": true,
-      "last_updated": "2025-07-31T01:01:17.116444",
+      "last_updated": "2025-08-01T20:53:40.800178",
       "name": "Gold Gold Adventure Gold",
-      "planned_release_date": "Coming soon",
+      "positive_review_percentage": 83,
+      "price_eur": "17,77\u20ac",
+      "price_usd": "$19.99",
       "publishers": [
         "Can Can Can a Man"
       ],
-      "release_date": "Coming soon",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "release_date": "31 Jul, 2025",
+      "review_count": 42,
+      "review_summary": "Positive",
       "steam_app_id": "3133650",
       "steam_url": "https://store.steampowered.com/app/3133650",
       "tags": [
@@ -96816,7 +96860,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "3517800",
       "developers": [
         "SMARTcreative"
@@ -96827,15 +96870,18 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3208110/header.jpg?t=1754015631",
-      "last_updated": "2025-08-01T15:03:28.215605",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3208110/header.jpg?t=1754070995",
+      "insufficient_reviews": true,
+      "last_updated": "2025-08-01T20:53:58.522383",
       "name": "Luck & Loot",
+      "price_eur": "7,01\u20ac",
+      "price_usd": "$7.19",
       "publishers": [
         "GrabTheGames"
       ],
       "release_date": "1 Aug, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 1,
+      "review_summary": "Need more reviews for score",
       "steam_app_id": "3208110",
       "steam_url": "https://store.steampowered.com/app/3208110",
       "tags": [
@@ -107338,8 +107384,8 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451380/f3967338826c1be6bb7c5677680137fa5c921730/header.jpg?t=1753971148",
-      "last_updated": "2025-08-01T15:03:28.799222",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451380/f3967338826c1be6bb7c5677680137fa5c921730/header.jpg?t=1754065680",
+      "last_updated": "2025-08-01T20:53:46.595526",
       "name": "Game of Grass",
       "positive_review_percentage": 100,
       "price_eur": "5,85\u20ac",
@@ -107348,7 +107394,7 @@
         "Hipsterdufus"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 18,
+      "review_count": 24,
       "review_summary": "Positive",
       "steam_app_id": "3451380",
       "steam_url": "https://store.steampowered.com/app/3451380",
@@ -114563,7 +114609,8 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667850/7a9162a5387cb56bf8bd69f1538259b9d6f8089f/header.jpg?t=1754049862",
-      "last_updated": "2025-08-01T15:03:31.412455",
+      "insufficient_reviews": true,
+      "last_updated": "2025-08-01T20:53:44.013645",
       "name": "Silk Roads II: Paths of Fortune",
       "price_eur": "8,99\u20ac",
       "price_usd": "$9.99",
@@ -114571,8 +114618,8 @@
         "Priory Games"
       ],
       "release_date": "1 Aug, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 1,
+      "review_summary": "Need more reviews for score",
       "steam_app_id": "3667850",
       "steam_url": "https://store.steampowered.com/app/3667850",
       "tags": [
@@ -118625,17 +118672,17 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3868720/bbbe96e2cb7f1749c4c60ca15d7e57f42cc96643/header.jpg?t=1753977317",
-      "insufficient_reviews": true,
-      "last_updated": "2025-08-01T15:03:33.719057",
+      "last_updated": "2025-08-01T20:53:54.420555",
       "name": "Doomfields",
+      "positive_review_percentage": 91,
       "price_eur": "9,90\u20ac",
       "price_usd": "$10.04",
       "publishers": [
         "KJGames"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 7,
-      "review_summary": "Need more reviews for score",
+      "review_count": 12,
+      "review_summary": "Positive",
       "steam_app_id": "3868720",
       "steam_url": "https://store.steampowered.com/app/3868720",
       "tags": [
@@ -119353,7 +119400,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/436780/header.jpg?t=1753137268",
-      "last_updated": "2025-07-25T15:08:57.726326",
+      "last_updated": "2025-08-01T20:53:48.310975",
       "name": "Tavern Keeper \ud83c\udf7b",
       "planned_release_date": "2025",
       "publishers": [
