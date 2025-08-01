@@ -819,7 +819,7 @@ watch(
 
           <!-- Main platform link -->
           <a
-            :href="getMainPlatformUrl(game)"
+            :href="getMainPlatformUrl(game) ?? undefined"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sm text-accent hover:underline"
@@ -830,7 +830,7 @@ watch(
           <!-- Demo link -->
           <a
             v-if="getDemoUrl(game)"
-            :href="getDemoUrl(game)"
+            :href="getDemoUrl(game) ?? undefined"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sm text-accent hover:underline"
@@ -841,7 +841,7 @@ watch(
           <!-- Absorbed game link to Steam parent -->
           <a
             v-if="game.is_absorbed && getSteamParentUrl(game)"
-            :href="getSteamParentUrl(game)"
+            :href="getSteamParentUrl(game) ?? undefined"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sm font-medium text-accent hover:underline"

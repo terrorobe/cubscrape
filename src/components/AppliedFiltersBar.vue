@@ -133,7 +133,7 @@ const appliedFilters = computed((): AppliedFilter[] => {
 
   // Sort
   if (props.filters.sortBy && props.filters.sortBy !== 'date') {
-    const sortLabels = {
+    const sortLabels: Record<string, string> = {
       'rating-score': 'Rating Score',
       'rating-category': 'Rating Category',
       name: 'Game Name',
@@ -166,13 +166,15 @@ const appliedFilters = computed((): AppliedFilter[] => {
     let label = 'Time Filter'
 
     if (props.filters.timeFilter.type === 'smart') {
-      const smartLabels = {
+      const smartLabels: Record<string, string> = {
         'release-and-video-recent': 'Recently Released',
         'first-video-recent': 'Newly Discovered',
         'multiple-videos-recent': 'Trending',
         'old-game-new-attention': 'Rediscovered',
       }
-      label = smartLabels[props.filters.timeFilter.smartLogic] || 'Smart Filter'
+      label = props.filters.timeFilter.smartLogic
+        ? smartLabels[props.filters.timeFilter.smartLogic] || 'Smart Filter'
+        : 'Smart Filter'
     } else if (props.filters.timeFilter.type === 'video') {
       label = 'Video Date Filter'
     } else if (props.filters.timeFilter.type === 'release') {

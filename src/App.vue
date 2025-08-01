@@ -18,7 +18,7 @@ import {
 } from './services/GameDataProcessingService'
 import { queryBuilderService } from './services/QueryBuilderService'
 import { useURLState } from './composables/useURLState'
-import { useDeepLinking } from './composables/useDeepLinking'
+import { useDeepLinking, type AppFilters } from './composables/useDeepLinking'
 import { useToast } from './composables/useToast'
 import { useFilterState } from './composables/useFilterState'
 import { useDatabaseLifecycle } from './composables/useDatabaseLifecycle'
@@ -162,7 +162,7 @@ const {
   copyCurrentFiltersLink,
 } = useDeepLinking({
   filteredGames,
-  filters: filters as Record<string, unknown>, // Type compatibility bridge - will be resolved in a future refactor
+  filters: filters as Ref<AppFilters>, // Type compatibility bridge
   executeQuery,
   getDb: () => db.get(),
   currentPage,
