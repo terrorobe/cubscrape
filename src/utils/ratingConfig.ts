@@ -48,7 +48,7 @@ export const REVIEW_SUMMARY_COLORS: Record<string, RatingColor> = {
   'overwhelmingly positive': { hsl: 'hsl(120, 70%, 40%)', textColor: 'black' },
   'very positive': { hsl: 'hsl(100, 60%, 50%)', textColor: 'black' },
   'mostly positive': { hsl: 'hsl(80, 60%, 50%)', textColor: 'black' },
-  positive: { hsl: 'hsl(60, 60%, 50%)', textColor: 'black' },
+  positive: { hsl: 'hsl(90, 60%, 50%)', textColor: 'black' },
   mixed: { hsl: 'hsl(45, 60%, 50%)', textColor: 'black' },
   'mostly negative': { hsl: 'hsl(20, 60%, 50%)', textColor: 'white' },
   'overwhelmingly negative': { hsl: 'hsl(0, 80%, 40%)', textColor: 'white' },
