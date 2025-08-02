@@ -131,6 +131,26 @@ export function useDatabaseLifecycle(
   }
 
   /**
+   * Load only channels from database (for lazy loading)
+   */
+  const loadChannelsOnly = (): void => {
+    if (!db) {
+      debug.warn('⚠️ Cannot load channels: database not available')
+      return
+    }
+
+    try {
+      const result = gameDatabaseService.loadChannelsAndTags(db)
+      channels.value = result.channels
+      channelsWithCounts.value = result.channelsWithCounts
+      debug.log('📺 Lazy loaded channels:', channels.value.length)
+    } catch (err) {
+      debug.error('❌ Failed to load channels:', err)
+      error.value = `Failed to load channels: ${err instanceof Error ? err.message : String(err)}`
+    }
+  }
+
+  /**
    * Update database status information
    */
   const updateDatabaseStatus = (): void => {
@@ -176,7 +196,15 @@ export function useDatabaseLifecycle(
       }
       db = database
       loadGameStats(db)
-      loadChannelsAndTags(db)
+      // Only reload tags on database update, channels remain lazily loaded
+      const result = gameDatabaseService.loadChannelsAndTags(db)
+      allTags.value = result.allTags
+      // Only update channels if they were already loaded
+      if (channelsWithCounts.value.length > 0) {
+        channels.value = result.channels
+        channelsWithCounts.value = result.channelsWithCounts
+        debug.log('📺 Reloaded channels:', channels.value.length)
+      }
       updateDatabaseStatus()
       debug.log('✅ Database update handled successfully')
     } catch (err) {
@@ -223,7 +251,10 @@ export function useDatabaseLifecycle(
       // Initialize data if database is available
       if (db) {
         loadGameStats(db)
-        loadChannelsAndTags(db)
+        // Load only tags initially, channels will be loaded lazily
+        const result = gameDatabaseService.loadChannelsAndTags(db)
+        allTags.value = result.allTags
+        debug.log('🏷️ Loaded tags:', allTags.value.length)
         updateDatabaseStatus()
       } else {
         throw new Error('Database initialization failed: db is null')
@@ -358,6 +389,7 @@ export function useDatabaseLifecycle(
     loadDatabase,
     loadGameStats,
     loadChannelsAndTags,
+    loadChannelsOnly,
     updateDatabaseStatus,
   }
 }

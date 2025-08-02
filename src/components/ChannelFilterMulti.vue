@@ -126,7 +126,7 @@ watch(
     </div>
 
     <!-- Channel List (Simplified for Sidebar) -->
-    <div class="space-y-1">
+    <div v-if="channelsWithCounts.length > 0" class="space-y-1">
       <label
         v-for="channel in sortedChannels"
         :key="channel.name"
@@ -168,12 +168,16 @@ watch(
       </label>
     </div>
 
-    <!-- Empty State -->
+    <!-- Loading State -->
     <div
-      v-if="channelsWithCounts.length === 0"
-      class="py-6 text-center text-sm text-text-secondary"
+      v-else
+      class="flex items-center justify-center py-6 text-sm text-text-secondary"
     >
-      No channels available
+      <div class="flex items-center gap-2">
+        <div class="size-4 animate-spin rounded-full border-2 border-accent border-t-transparent"></div>
+        <span>Loading channels...</span>
+      </div>
     </div>
+
   </div>
 </template>

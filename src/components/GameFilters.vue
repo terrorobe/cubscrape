@@ -40,6 +40,7 @@ interface Props {
   initialFilters?: Partial<FilterConfig>
   gameCount?: number
   gameStats?: DatabaseStats
+  loadChannels?: () => void
 }
 
 // Component events interface
@@ -59,6 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
     freeGames: 0,
     maxPrice: 70,
   }),
+  loadChannels: () => {},
 })
 
 // Define emits
@@ -622,6 +624,7 @@ onUnmounted(() => {
       title="Channels"
       :active-count="channelsCount"
       :default-expanded="false"
+      @expanded="loadChannels"
     >
       <ChannelFilterMulti
         :channels-with-counts="channelsWithCounts"

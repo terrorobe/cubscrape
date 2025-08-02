@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 /**
  * Props interface for CollapsibleSection component
@@ -15,11 +15,24 @@ const props = withDefaults(defineProps<CollapsibleSectionProps>(), {
   defaultExpanded: true,
 })
 
+const emit = defineEmits<{
+  expanded: []
+}>()
+
 const isExpanded = ref(props.defaultExpanded)
+const hasBeenExpanded = ref(props.defaultExpanded)
 
 const toggleExpanded = (): void => {
   isExpanded.value = !isExpanded.value
 }
+
+// Watch for first expansion
+watch(isExpanded, (newValue) => {
+  if (newValue && !hasBeenExpanded.value) {
+    hasBeenExpanded.value = true
+    emit('expanded')
+  }
+})
 </script>
 
 <template>

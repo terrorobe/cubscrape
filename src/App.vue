@@ -46,6 +46,7 @@ const {
   error,
   initialize: initializeDatabase,
   executeQuery: databaseExecuteQuery,
+  loadChannelsOnly,
   testVersionMismatch,
   reloadApp,
   dismissVersionMismatch,
@@ -379,6 +380,7 @@ if (import.meta.hot) {
               :initial-filters="filters"
               :game-count="filteredGames.length"
               :game-stats="gameStats"
+              :load-channels="loadChannelsOnly"
               @filters-changed="updateFilters"
             />
           </div>
@@ -395,6 +397,7 @@ if (import.meta.hot) {
               :initial-filters="filters"
               :game-count="filteredGames.length"
               :game-stats="gameStats"
+              :load-channels="loadChannelsOnly"
               @filters-changed="updateFilters"
             />
           </div>
