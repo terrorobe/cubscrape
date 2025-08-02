@@ -269,9 +269,9 @@ onUnmounted(() => {
     <!-- Logic Toggle -->
     <div class="mb-3 flex items-center gap-4 rounded-lg border border-gray-600 bg-bg-card p-3">
       <span class="text-sm text-text-secondary">Match:</span>
-      <div class="flex gap-3">
+      <div class="flex gap-4">
         <label 
-          class="flex cursor-pointer items-center gap-1.5"
+          class="flex cursor-pointer items-center gap-1.5 min-w-[3.5rem]"
           title="Games must have ANY of the selected tags"
         >
           <input
@@ -284,7 +284,7 @@ onUnmounted(() => {
           <span class="text-sm font-medium">Any</span>
         </label>
         <label 
-          class="flex cursor-pointer items-center gap-1.5"
+          class="flex cursor-pointer items-center gap-1.5 min-w-[3.5rem]"
           title="Games must have ALL of the selected tags"
         >
           <input
