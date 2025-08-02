@@ -55,14 +55,14 @@ export class GameDatabaseService {
    * Load game statistics for price filtering and UI display
    */
   loadGameStats(database: Database): GameStats {
-    const statsResults = database.exec(`
+    const statsResults = this.executeQuery(database, `
       SELECT 
         COUNT(*) as total_games,
         COUNT(CASE WHEN is_free = 1 OR price_final = 0 THEN 1 END) as free_games,
         MAX(CASE WHEN price_final > 0 THEN price_final ELSE 0 END) as max_price
       FROM games 
       WHERE is_absorbed = 0
-    `)
+    `, [])
 
     if (statsResults.length > 0 && statsResults[0].values.length > 0) {
       const stats = statsResults[0].values[0]
@@ -89,8 +89,10 @@ export class GameDatabaseService {
     allTags: TagWithCount[]
   } {
     // Get all unique channels with counts
-    const channelResults = database.exec(
+    const channelResults = this.executeQuery(
+      database,
       "SELECT unique_channels FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]' AND is_absorbed = 0",
+      [],
     )
     const channelCounts = new Map()
     if (channelResults.length > 0) {
@@ -108,8 +110,10 @@ export class GameDatabaseService {
 
     // Get video counts per channel
     const videoCounts = new Map<string, number>()
-    const videoResults = database.exec(
+    const videoResults = this.executeQuery(
+      database,
       'SELECT channel_name, COUNT(*) as video_count FROM game_videos GROUP BY channel_name',
+      [],
     )
     if (videoResults.length > 0) {
       videoResults[0].values.forEach((row) => {
@@ -136,8 +140,10 @@ export class GameDatabaseService {
       })
 
     // Get all unique tags with counts
-    const tagResults = database.exec(
+    const tagResults = this.executeQuery(
+      database,
       "SELECT tags FROM games WHERE tags IS NOT NULL AND tags != '[]' AND is_absorbed = 0",
+      [],
     )
     const tagCounts = new Map()
     if (tagResults.length > 0) {
