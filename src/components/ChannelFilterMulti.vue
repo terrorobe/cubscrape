@@ -141,8 +141,6 @@ watch(
         <input
           type="checkbox"
           :checked="selectedChannels.includes(channel.name)"
-          @click.stop
-          @change="toggleChannel(channel.name)"
           class="size-4 rounded-sm border-gray-600 text-accent focus:ring-accent focus:ring-offset-0"
         />
         <div class="min-w-0 flex-1">
