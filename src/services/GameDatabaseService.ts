@@ -102,10 +102,27 @@ export class GameDatabaseService {
       })
     }
 
+    // Get video counts per channel
+    const videoCounts = new Map<string, number>()
+    const videoResults = database.exec(
+      'SELECT channel_name, COUNT(*) as video_count FROM game_videos GROUP BY channel_name',
+    )
+    if (videoResults.length > 0) {
+      videoResults[0].values.forEach((row) => {
+        const channelName = row[0] as string
+        const videoCount = row[1] as number
+        videoCounts.set(channelName, videoCount)
+      })
+    }
+
     // Convert to sorted arrays
     const channels = Array.from(channelCounts.keys()).sort()
     const channelsWithCounts = Array.from(channelCounts.entries())
-      .map(([name, count]) => ({ name, count }))
+      .map(([name, count]) => ({
+        name,
+        count,
+        videoCount: videoCounts.get(name) ?? 0,
+      }))
       .sort((a, b) => {
         // Sort by count (descending) then by name (ascending)
         if (a.count !== b.count) {

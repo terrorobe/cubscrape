@@ -7,6 +7,7 @@ import { ref, computed, watch } from 'vue'
 export interface ChannelWithCount {
   name: string
   count: number
+  videoCount?: number
 }
 
 /**
@@ -34,9 +35,13 @@ const emit = defineEmits<{
 }>()
 const selectedChannels = ref<string[]>([...props.initialSelectedChannels])
 
-// Channels sorted by popularity (game count)
+// Channels sorted alphabetically
 const sortedChannels = computed((): ChannelWithCount[] =>
-  props.channelsWithCounts.slice().sort((a, b) => b.count - a.count),
+  props.channelsWithCounts.slice().sort((a, b) => {
+    const nameA = formatChannelName(a.name)
+    const nameB = formatChannelName(b.name)
+    return nameA.localeCompare(nameB)
+  }),
 )
 
 const toggleChannel = (channelName: string): void => {
@@ -145,7 +150,19 @@ watch(
             {{ formatChannelName(channel.name) }}
           </div>
           <div class="text-xs text-text-secondary">
-            {{ channel.count }} games
+            <span
+              >{{ channel.count }}
+              {{ channel.count === 1 ? 'game' : 'games' }}</span
+            >
+            <span
+              v-if="channel.videoCount"
+              class="mx-1.5 text-text-secondary/50"
+              >•</span
+            >
+            <span v-if="channel.videoCount"
+              >{{ channel.videoCount }}
+              {{ channel.videoCount === 1 ? 'video' : 'videos' }}</span
+            >
           </div>
         </div>
       </label>

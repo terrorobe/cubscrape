@@ -140,6 +140,7 @@ export interface DatabaseStats {
 export interface ChannelWithCount {
   name: string
   count: number
+  videoCount?: number
 }
 
 /**
