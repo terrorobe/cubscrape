@@ -127,7 +127,7 @@ watch(
 
     <!-- Channel List (Simplified for Sidebar) -->
     <div v-if="channelsWithCounts.length > 0" class="space-y-1">
-      <label
+      <div
         v-for="channel in sortedChannels"
         :key="channel.name"
         class="flex cursor-pointer items-center gap-2 rounded-sm border border-transparent p-2 text-sm transition-colors hover:border-accent/30 hover:bg-accent/5"
@@ -141,6 +141,7 @@ watch(
         <input
           type="checkbox"
           :checked="selectedChannels.includes(channel.name)"
+          @click.stop
           class="size-4 rounded-sm border-gray-600 text-accent focus:ring-accent focus:ring-offset-0"
         />
         <div class="min-w-0 flex-1">
@@ -163,7 +164,7 @@ watch(
             >
           </div>
         </div>
-      </label>
+      </div>
     </div>
 
     <!-- Loading State -->
