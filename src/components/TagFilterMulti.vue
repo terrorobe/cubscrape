@@ -386,7 +386,7 @@ onUnmounted(() => {
           >
             Loading tags...
           </div>
-          <label
+          <div
             v-else
             v-for="tag in visibleFilteredTags"
             :key="tag.name"
@@ -397,7 +397,6 @@ onUnmounted(() => {
               type="checkbox"
               :checked="selectedTags.includes(tag.name)"
               @click.stop
-              @change="toggleTag(tag.name)"
               class="text-accent focus:ring-accent"
             />
             <span class="flex-1 text-sm">{{ tag.name }}</span>
@@ -409,7 +408,7 @@ onUnmounted(() => {
                 title="Popular tag"
               ></div>
             </div>
-          </label>
+          </div>
 
           <!-- Load More Button -->
           <div
