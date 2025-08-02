@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { UI_LIMITS } from '../config/index'
 
 /**
  * Channel item interface with name and count
@@ -37,23 +36,6 @@ const searchInput = ref<HTMLInputElement | null>(null)
 const searchQuery = ref<string>('')
 const showDropdown = ref<boolean>(false)
 const selectedChannels = ref<string[]>([...props.initialSelectedChannels])
-const showAll = ref<boolean>(false)
-const initialShowCount: number = UI_LIMITS.CHANNEL_FILTER_INITIAL_SHOW_COUNT
-
-// Define consistent colors for channels
-const channelColors: Record<string, string> = {
-  'videos-dextag': 'bg-red-500',
-  'videos-nookrium': 'bg-blue-500',
-  'videos-wanderbots': 'bg-green-500',
-  'videos-aliensrock': 'bg-purple-500',
-  'videos-olexa': 'bg-yellow-500',
-  'videos-idlecub': 'bg-pink-500',
-  'videos-orbitalpotato': 'bg-indigo-500',
-  'videos-splattercatgaming': 'bg-orange-500',
-}
-
-const getChannelColor = (channelName: string): string =>
-  channelColors[channelName] || 'bg-gray-500'
 
 // Filtered channels based on search query
 const filteredChannels = computed((): ChannelWithCount[] => {
@@ -74,20 +56,9 @@ const filteredChannels = computed((): ChannelWithCount[] => {
     .sort((a, b) => b.count - a.count)
 })
 
-// Visible channels (with show more/less functionality)
-const visibleChannels = computed((): ChannelWithCount[] => {
-  if (searchQuery.value.trim() || showAll.value) {
-    return filteredChannels.value
-  }
-  return filteredChannels.value.slice(0, initialShowCount)
-})
-
-// Top channels by game count (for quick select)
-const popularChannels = computed((): ChannelWithCount[] =>
-  props.channelsWithCounts
-    .slice()
-    .sort((a, b) => b.count - a.count)
-    .slice(0, UI_LIMITS.POPULAR_CHANNELS_COUNT),
+// Visible channels - always show all filtered channels
+const visibleChannels = computed(
+  (): ChannelWithCount[] => filteredChannels.value,
 )
 
 const toggleChannel = (channelName: string): void => {
@@ -111,26 +82,6 @@ const removeChannel = (channelName: string): void => {
 const clearAllChannels = (): void => {
   selectedChannels.value = []
   emitFiltersChanged()
-}
-
-const selectAllChannels = (): void => {
-  selectedChannels.value = props.channelsWithCounts.map((c) => c.name)
-  emitFiltersChanged()
-}
-
-const selectPopularChannels = (): void => {
-  // Add popular channels that aren't already selected
-  const popularChannelNames = popularChannels.value.map((c) => c.name)
-  popularChannelNames.forEach((channel) => {
-    if (!selectedChannels.value.includes(channel)) {
-      selectedChannels.value.push(channel)
-    }
-  })
-  emitFiltersChanged()
-}
-
-const toggleShowAll = (): void => {
-  showAll.value = !showAll.value
 }
 
 const clearSearch = (): void => {
@@ -248,23 +199,6 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <!-- Quick Actions -->
-    <div
-      v-if="!searchQuery && channelsWithCounts.length > 0"
-      class="flex gap-2 text-xs"
-    >
-      <button @click="selectAllChannels" class="text-accent hover:underline">
-        Select All
-      </button>
-      <span class="text-text-secondary">•</span>
-      <button
-        @click="selectPopularChannels"
-        class="text-accent hover:underline"
-      >
-        Top 4
-      </button>
-    </div>
-
     <!-- Channel List (Simplified for Sidebar) -->
     <div class="space-y-1">
       <label
@@ -285,10 +219,6 @@ onUnmounted(() => {
           @change="toggleChannel(channel.name)"
           class="size-4 rounded-sm border-gray-600 text-accent focus:ring-accent focus:ring-offset-0"
         />
-        <div
-          class="size-2 shrink-0 rounded-full"
-          :class="getChannelColor(channel.name)"
-        />
         <div class="min-w-0 flex-1">
           <div class="truncate text-text-primary">
             {{ formatChannelName(channel.name) }}
@@ -298,23 +228,6 @@ onUnmounted(() => {
           </div>
         </div>
       </label>
-    </div>
-
-    <!-- Show More/Less Button -->
-    <div
-      v-if="filteredChannels.length > initialShowCount && !searchQuery"
-      class="text-center"
-    >
-      <button
-        @click="toggleShowAll"
-        class="text-sm text-accent hover:underline"
-      >
-        {{
-          showAll
-            ? 'Show Less'
-            : `Show ${filteredChannels.length - initialShowCount} More`
-        }}
-      </button>
     </div>
 
     <!-- Empty State -->
