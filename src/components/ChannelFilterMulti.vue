@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 /**
  * Channel item interface with name and count
@@ -32,33 +32,11 @@ const props = withDefaults(defineProps<ChannelFilterMultiProps>(), {
 const emit = defineEmits<{
   channelsChanged: [event: ChannelFilterChangeEvent]
 }>()
-const searchInput = ref<HTMLInputElement | null>(null)
-const searchQuery = ref<string>('')
-const showDropdown = ref<boolean>(false)
 const selectedChannels = ref<string[]>([...props.initialSelectedChannels])
 
-// Filtered channels based on search query
-const filteredChannels = computed((): ChannelWithCount[] => {
-  if (!searchQuery.value.trim()) {
-    // Sort by popularity (game count) when not searching
-    return props.channelsWithCounts.slice().sort((a, b) => b.count - a.count)
-  }
-
-  const query = searchQuery.value.toLowerCase()
-  return props.channelsWithCounts
-    .filter((channel) => {
-      const formattedName = formatChannelName(channel.name).toLowerCase()
-      return (
-        formattedName.includes(query) ||
-        channel.name.toLowerCase().includes(query)
-      )
-    })
-    .sort((a, b) => b.count - a.count)
-})
-
-// Visible channels - always show all filtered channels
-const visibleChannels = computed(
-  (): ChannelWithCount[] => filteredChannels.value,
+// Channels sorted by popularity (game count)
+const sortedChannels = computed((): ChannelWithCount[] =>
+  props.channelsWithCounts.slice().sort((a, b) => b.count - a.count),
 )
 
 const toggleChannel = (channelName: string): void => {
@@ -84,13 +62,6 @@ const clearAllChannels = (): void => {
   emitFiltersChanged()
 }
 
-const clearSearch = (): void => {
-  searchQuery.value = ''
-  if (searchInput.value) {
-    searchInput.value.focus()
-  }
-}
-
 const formatChannelName = (channel: string): string => {
   if (!channel || typeof channel !== 'string') {
     return 'Unknown Channel'
@@ -107,14 +78,6 @@ const emitFiltersChanged = (): void => {
   })
 }
 
-// Handle clicking outside to close dropdown
-const handleClickOutside = (event: Event): void => {
-  const input = searchInput.value
-  if (input && event.target && !input.contains(event.target as Node)) {
-    showDropdown.value = false
-  }
-}
-
 // Watch for changes in initial props
 watch(
   () => props.initialSelectedChannels,
@@ -123,20 +86,10 @@ watch(
   },
   { deep: true },
 )
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
 </script>
 
 <template>
   <div class="space-y-3">
-    <h3 class="text-sm font-semibold text-text-primary">Channels</h3>
-
     <!-- Selected Channels Display -->
     <div v-if="selectedChannels.length > 0" class="mb-3">
       <div class="mb-2 flex items-center justify-between">
@@ -167,42 +120,10 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Search Input -->
-    <div class="relative">
-      <input
-        ref="searchInput"
-        type="text"
-        v-model="searchQuery"
-        placeholder="Search channels..."
-        class="w-full rounded-sm border border-gray-600 bg-bg-primary px-3 py-2 pl-9 text-sm text-text-primary placeholder-text-secondary hover:border-accent focus:border-accent focus:outline-none"
-        @focus="showDropdown = true"
-      />
-      <svg
-        class="pointer-events-none absolute top-2.5 left-3 size-4 text-text-secondary"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
-      <button
-        v-if="searchQuery"
-        @click="clearSearch"
-        class="absolute top-2.5 right-3 size-4 text-text-secondary hover:text-text-primary"
-      >
-        ×
-      </button>
-    </div>
-
     <!-- Channel List (Simplified for Sidebar) -->
     <div class="space-y-1">
       <label
-        v-for="channel in visibleChannels"
+        v-for="channel in sortedChannels"
         :key="channel.name"
         class="flex cursor-pointer items-center gap-2 rounded-sm border border-transparent p-2 text-sm transition-colors hover:border-accent/30 hover:bg-accent/5"
         :class="{
@@ -231,14 +152,6 @@ onUnmounted(() => {
     </div>
 
     <!-- Empty State -->
-    <div
-      v-if="filteredChannels.length === 0 && searchQuery"
-      class="py-4 text-center text-sm text-text-secondary"
-    >
-      No channels found for "{{ searchQuery }}"
-    </div>
-
-    <!-- Overall Empty State -->
     <div
       v-if="channelsWithCounts.length === 0"
       class="py-6 text-center text-sm text-text-secondary"
