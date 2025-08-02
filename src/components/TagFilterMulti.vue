@@ -5,6 +5,7 @@ import {
   type OptionWithCount,
 } from '../composables/useProgressiveOptions'
 import { UI_LIMITS } from '../config/index'
+import type { ProcessedGameData } from '../services/GameDataProcessingService'
 
 /**
  * Tag item interface with name, count and popularity indicator
@@ -34,6 +35,7 @@ export interface TagFilterMultiProps {
   initialSelectedTags?: string[]
   initialTagLogic?: TagLogic
   loadTags?: () => void
+  filteredGames?: ProcessedGameData[]
 }
 
 const props = withDefaults(defineProps<TagFilterMultiProps>(), {
@@ -41,6 +43,7 @@ const props = withDefaults(defineProps<TagFilterMultiProps>(), {
   initialSelectedTags: () => [],
   initialTagLogic: 'and',
   loadTags: undefined,
+  filteredGames: () => [],
 })
 
 // Loading state for lazy loading
@@ -58,12 +61,39 @@ const hasLoadedTags = ref<boolean>(props.tagsWithCounts.length > 0)
 const selectedTags = ref<string[]>([...props.initialSelectedTags])
 const tagLogic = ref<TagLogic>(props.initialTagLogic)
 
-// All tags with metadata
-const tagsWithMetadata = computed((): TagWithCount[] => {
+// Dynamic tag counts based on current filter mode and filtered games
+const dynamicTagCounts = computed((): TagWithCount[] => {
+  // In OR mode or when no filtered games available, use original counts
+  if (tagLogic.value === 'or' || !props.filteredGames || props.filteredGames.length === 0) {
+    return props.tagsWithCounts.map((tag) => ({
+      ...tag,
+      isPopular: false, // No longer using popular tags feature
+    }))
+  }
+
+  // In AND mode, calculate counts based on filtered result set
+  const tagCountMap = new Map<string, number>()
+  
+  // Count occurrences of each tag in the filtered games
+  props.filteredGames.forEach((game) => {
+    if (game.tags && Array.isArray(game.tags)) {
+      game.tags.forEach((tag: string) => {
+        tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1)
+      })
+    }
+  })
+
+  // Update counts while preserving all original tags (including zero-count ones)
   return props.tagsWithCounts.map((tag) => ({
     ...tag,
-    isPopular: false, // No longer using popular tags feature
+    count: tagCountMap.get(tag.name) || 0,
+    isPopular: false,
   }))
+})
+
+// All tags with metadata
+const tagsWithMetadata = computed((): TagWithCount[] => {
+  return dynamicTagCounts.value
 })
 
 // Filtered tags based on search query

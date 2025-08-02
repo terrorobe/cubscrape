@@ -16,6 +16,7 @@ import type {
   TagWithCount,
   DatabaseStats,
 } from '../types/database'
+import type { ProcessedGameData } from '../services/GameDataProcessingService'
 import type { FilterRemoveEvent } from '../types/filters'
 import type { SortChangeEvent } from '../types/sorting'
 import {
@@ -42,6 +43,7 @@ interface Props {
   gameStats?: DatabaseStats
   loadChannels?: () => void
   loadTags?: () => void
+  filteredGames?: ProcessedGameData[]
 }
 
 // Component events interface
@@ -63,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
   }),
   loadChannels: () => {},
   loadTags: () => {},
+  filteredGames: () => [],
 })
 
 // Define emits
@@ -618,6 +621,7 @@ onUnmounted(() => {
         :initial-selected-tags="localFilters.selectedTags || []"
         :initial-tag-logic="localFilters.tagLogic || 'and'"
         :load-tags="loadTags"
+        :filtered-games="filteredGames"
         @tags-changed="handleTagsChanged"
       />
     </CollapsibleSection>

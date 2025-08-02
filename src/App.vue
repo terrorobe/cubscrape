@@ -384,6 +384,7 @@ if (import.meta.hot) {
               :game-stats="gameStats"
               :load-channels="loadChannelsOnly"
               :load-tags="loadTagsOnly"
+              :filtered-games="filteredGames"
               @filters-changed="updateFilters"
             />
           </div>
@@ -402,6 +403,7 @@ if (import.meta.hot) {
               :game-stats="gameStats"
               :load-channels="loadChannelsOnly"
               :load-tags="loadTagsOnly"
+              :filtered-games="filteredGames"
               @filters-changed="updateFilters"
             />
           </div>
