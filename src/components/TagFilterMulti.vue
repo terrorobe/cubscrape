@@ -446,7 +446,7 @@ onUnmounted(() => {
             class="border-t border-gray-600 p-2"
           >
             <button
-              @click="loadMoreTags"
+              @click.stop="loadMoreTags"
               :disabled="isLoadingTags"
               class="w-full rounded-sm bg-bg-secondary p-2 text-sm text-text-secondary transition-colors hover:bg-accent/10 hover:text-accent disabled:opacity-50"
             >
