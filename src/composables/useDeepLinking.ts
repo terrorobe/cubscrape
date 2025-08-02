@@ -28,7 +28,7 @@ export interface AppFilters {
   selectedChannels: string[]
   sortSpec: SortSpec
   timeFilter: TimeFilterConfig
-  priceFilter: { minPrice: number; maxPrice: number; includeFree: boolean }
+  priceFilter: { minPrice: number; maxPrice: number }
   searchQuery: string
   searchInVideoTitles: boolean
 }
@@ -208,7 +208,7 @@ export function useDeepLinking(options: DeepLinkingOptions) {
           endDate: null,
           smartLogic: null,
         },
-        priceFilter: { minPrice: 0, maxPrice: 1000, includeFree: true },
+        priceFilter: { minPrice: 0, maxPrice: 1000 },
         searchQuery: filters.value.searchQuery,
         searchInVideoTitles: filters.value.searchInVideoTitles,
       }
@@ -340,9 +340,6 @@ export function useDeepLinking(options: DeepLinkingOptions) {
           'priceMax',
           currentFilters.priceFilter.maxPrice.toString(),
         )
-      }
-      if (!currentFilters.priceFilter.includeFree) {
-        url.searchParams.set('includeFree', 'false')
       }
     }
 
@@ -490,7 +487,7 @@ export function useDeepLinking(options: DeepLinkingOptions) {
       name: 'Free Games',
       description: 'Show only free games',
       filters: {
-        priceFilter: { minPrice: 0, maxPrice: 0, includeFree: true },
+        priceFilter: { minPrice: 0, maxPrice: 0 },
         platform: 'all',
         releaseStatus: 'all',
       },
@@ -580,16 +577,12 @@ export function useDeepLinking(options: DeepLinkingOptions) {
           const priceFilter = value as {
             minPrice: number
             maxPrice: number
-            includeFree: boolean
           }
           if (priceFilter.minPrice > 0) {
             url.searchParams.set('priceMin', priceFilter.minPrice.toString())
           }
           if (priceFilter.maxPrice < 1000) {
             url.searchParams.set('priceMax', priceFilter.maxPrice.toString())
-          }
-          if (!priceFilter.includeFree) {
-            url.searchParams.set('includeFree', 'false')
           }
           break
         }

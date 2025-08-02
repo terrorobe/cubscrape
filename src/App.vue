@@ -385,6 +385,9 @@ if (import.meta.hot) {
               :load-channels="loadChannelsOnly"
               :load-tags="loadTagsOnly"
               :filtered-games="filteredGames"
+              :current-filters="filters"
+              :build-search-query="buildSearchQuery"
+              :database="() => db.get()"
               @filters-changed="updateFilters"
             />
           </div>
@@ -404,6 +407,9 @@ if (import.meta.hot) {
               :load-channels="loadChannelsOnly"
               :load-tags="loadTagsOnly"
               :filtered-games="filteredGames"
+              :current-filters="filters"
+              :build-search-query="buildSearchQuery"
+              :database="() => db.get()"
               @filters-changed="updateFilters"
             />
           </div>

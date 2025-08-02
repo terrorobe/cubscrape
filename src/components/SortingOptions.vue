@@ -50,7 +50,6 @@ export interface ContextualFilters {
   priceFilter?: {
     minPrice: number
     maxPrice: number
-    includeFree: boolean
   }
 }
 

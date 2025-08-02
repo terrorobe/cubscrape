@@ -27,7 +27,6 @@ export interface TimeFilter {
 export interface PriceFilter {
   minPrice: number
   maxPrice: number
-  includeFree: boolean
 }
 
 /**
@@ -76,6 +75,7 @@ export class QueryBuilderService {
    *
    * @param filterValues - Complete filter configuration
    * @param searchQueryBuilder - Function to build search query (from useGameSearch)
+   * @param selectClause - Type of query to build ('full', 'count', 'price-only')
    * @returns Object containing SQL query string and parameters
    */
   buildSQLQuery(
@@ -84,19 +84,37 @@ export class QueryBuilderService {
       searchTerm: string,
       searchInVideoTitles: boolean,
     ) => SearchQueryParams,
+    selectClause: 'full' | 'count' | 'price-only' = 'full',
   ): QueryResult {
-    debug.log('Building query with filters:', filterValues)
+    // Only log for full queries to reduce noise during live filtering
+    if (selectClause === 'full') {
+      debug.log('Building query with filters:', filterValues)
+    }
 
     // Performance optimization: Track which filters are active to optimize query order
     // These variables can be used for future query optimization
 
-    let query = `
-        SELECT g.*,
+    // Build SELECT and FROM clauses based on query type
+    const selectClauses = {
+      full: `SELECT g.*,
                gv.video_title as latest_video_title,
-               gv.video_id as latest_video_id
-        FROM games g
+               gv.video_id as latest_video_id`,
+      count: `SELECT COUNT(*) as count`,
+      'price-only': `SELECT g.id, g.price_usd, g.price_eur, g.is_free`,
+    }
+
+    let query = `
+        ${selectClauses[selectClause]}
+        FROM games g`
+
+    // Only add JOINs for full queries that need video data
+    if (selectClause === 'full') {
+      query += `
         LEFT JOIN game_videos gv ON g.id = gv.game_id
-        AND gv.video_date = g.latest_video_date
+        AND gv.video_date = g.latest_video_date`
+    }
+
+    query += `
         WHERE 1=1
       `
     const params: (string | number)[] = []
@@ -204,21 +222,15 @@ export class QueryBuilderService {
       const currencyField =
         filterValues.currency === 'usd' ? 'price_usd' : 'price_eur'
 
-      // Handle free games inclusion
-      if (!priceFilter.includeFree) {
-        query += ' AND (g.is_free = 0 OR g.is_free IS NULL)'
-      }
-
-      // Handle price range filtering for paid games
+      // Handle price range filtering
       if (
         priceFilter.minPrice > 0 ||
         priceFilter.maxPrice < PRICING.DEFAULT_MAX_PRICE
       ) {
-        // Create a combined condition for price filtering
         const priceConditions = []
 
-        // Free games condition (if including free games and min price is 0)
-        if (priceFilter.includeFree && priceFilter.minPrice === 0) {
+        // Free games condition (when minPrice is 0, include free games)
+        if (priceFilter.minPrice === 0) {
           priceConditions.push(`(g.is_free = 1 OR g.${currencyField} = 0)`)
         }
 
@@ -258,11 +270,30 @@ export class QueryBuilderService {
       params.push(...searchQuery.params)
     }
 
-    // Advanced Sorting Logic
-    const orderByClause = this.buildSortClause(filterValues)
-    query += ` ORDER BY ${orderByClause}`
+    // Advanced Sorting Logic (only for full queries)
+    if (selectClause === 'full') {
+      const orderByClause = this.buildSortClause(filterValues)
+      query += ` ORDER BY ${orderByClause}`
+    }
 
     return { query, params }
+  }
+
+  /**
+   * Build a count-only query for live filtering (optimized for performance)
+   *
+   * @param filterValues - Complete filter configuration
+   * @param searchQueryBuilder - Function to build search query (from useGameSearch)
+   * @returns Object containing SQL query string and parameters
+   */
+  buildCountQuery(
+    filterValues: QueryFilters,
+    searchQueryBuilder: (
+      searchTerm: string,
+      searchInVideoTitles: boolean,
+    ) => SearchQueryParams,
+  ): QueryResult {
+    return this.buildSQLQuery(filterValues, searchQueryBuilder, 'count')
   }
 
   /**

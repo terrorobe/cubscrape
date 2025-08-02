@@ -32,6 +32,9 @@ import SortingOptions from './SortingOptions.vue'
 import MobileFilterModal from './MobileFilterModal.vue'
 import AppliedFiltersBar from './AppliedFiltersBar.vue'
 import FilterPresets from './FilterPresets.vue'
+import { useLivePriceCount } from '../composables/useLivePriceCount'
+import type { SearchQueryParams } from '../composables/useGameSearch'
+import type { Database } from 'sql.js'
 
 // Component props interface
 interface Props {
@@ -44,6 +47,12 @@ interface Props {
   loadChannels?: () => void
   loadTags?: () => void
   filteredGames?: ProcessedGameData[]
+  currentFilters?: FilterConfig
+  buildSearchQuery?: (
+    searchTerm: string,
+    searchInVideoTitles: boolean,
+  ) => SearchQueryParams
+  database?: () => Database | null
 }
 
 // Component events interface
@@ -66,6 +75,9 @@ const props = withDefaults(defineProps<Props>(), {
   loadChannels: () => {},
   loadTags: () => {},
   filteredGames: () => [],
+  currentFilters: undefined,
+  buildSearchQuery: undefined,
+  database: undefined,
 })
 
 // Define emits
@@ -87,7 +99,6 @@ import type { TimeFilterConfig } from '../types/timeFilter'
 interface PriceFilterData {
   minPrice: number
   maxPrice: number
-  includeFree: boolean
 }
 
 // Using shared types from ../types/sorting and ../types/filters
@@ -130,11 +141,20 @@ const initialLocalFilters: FilterConfig = {
   priceFilter: props.initialFilters.priceFilter || {
     minPrice: 0,
     maxPrice: 70,
-    includeFree: true,
   },
 }
 
 const localFilters = reactive<FilterConfig>({ ...initialLocalFilters })
+
+// Set up live price count functionality
+const { getLiveCount } =
+  props.currentFilters && props.buildSearchQuery && props.database
+    ? useLivePriceCount(
+        computed(() => props.currentFilters || localFilters),
+        props.database,
+        props.buildSearchQuery,
+      )
+    : { getLiveCount: undefined }
 
 // Watch for changes in initial filters (e.g., from URL loading)
 watch(
@@ -169,7 +189,6 @@ watch(
         priceFilter: newInitialFilters.priceFilter || {
           minPrice: 0,
           maxPrice: 70,
-          includeFree: true,
         },
       })
     }
@@ -220,8 +239,7 @@ const activeFilterCount = computed((): number => {
   if (
     localFilters.priceFilter &&
     (localFilters.priceFilter.minPrice > 0 ||
-      localFilters.priceFilter.maxPrice < 70 ||
-      !localFilters.priceFilter.includeFree)
+      localFilters.priceFilter.maxPrice < 70)
   ) {
     count++
   }
@@ -271,8 +289,7 @@ const timeFilterCount = computed((): number =>
 const priceFilterCount = computed((): number =>
   localFilters.priceFilter &&
   (localFilters.priceFilter.minPrice > 0 ||
-    localFilters.priceFilter.maxPrice < 70 ||
-    !localFilters.priceFilter.includeFree)
+    localFilters.priceFilter.maxPrice < 70)
     ? 1
     : 0,
 )
@@ -412,7 +429,6 @@ const handleClearAllFilters = (): void => {
     localFilters.priceFilter = {
       minPrice: 0,
       maxPrice: 70,
-      includeFree: true,
     }
     // Clear all should be immediate
     immediateEmitFiltersChanged()
@@ -666,10 +682,11 @@ onUnmounted(() => {
           localFilters.priceFilter || {
             minPrice: 0,
             maxPrice: 1000,
-            includeFree: true,
           }
         "
         :game-stats="gameStats"
+        :filtered-games="filteredGames"
+        :get-live-count="getLiveCount"
         @price-filter-changed="handlePriceFilterChanged"
       />
     </CollapsibleSection>

@@ -199,23 +199,13 @@ const appliedFilters = computed((): AppliedFilter[] => {
   if (
     props.filters.priceFilter &&
     (props.filters.priceFilter.minPrice > 0 ||
-      props.filters.priceFilter.maxPrice < 70 ||
-      !props.filters.priceFilter.includeFree)
+      props.filters.priceFilter.maxPrice < 70)
   ) {
     let label = 'Price Filter'
     const currency = props.filters.currency === 'usd' ? '$' : '€'
 
     // Create a descriptive label based on the filter settings
-    if (!props.filters.priceFilter.includeFree) {
-      if (
-        props.filters.priceFilter.minPrice > 0 ||
-        props.filters.priceFilter.maxPrice < 70
-      ) {
-        label = `${currency}${props.filters.priceFilter.minPrice}-${props.filters.priceFilter.maxPrice} (no free)`
-      } else {
-        label = 'Paid games only'
-      }
-    } else if (
+    if (
       props.filters.priceFilter.minPrice === 0 &&
       props.filters.priceFilter.maxPrice === 0
     ) {
@@ -231,7 +221,7 @@ const appliedFilters = computed((): AppliedFilter[] => {
       key: 'priceFilter',
       type: 'priceFilter',
       label,
-      value: { minPrice: 0, maxPrice: 70, includeFree: true },
+      value: { minPrice: 0, maxPrice: 70 },
     })
   }
 

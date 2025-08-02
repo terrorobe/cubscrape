@@ -9,7 +9,6 @@ export default {
       default: () => ({
         minPrice: 0,
         maxPrice: 70,
-        includeFree: true,
       }),
     },
     currency: {
@@ -21,15 +20,14 @@ export default {
   setup(props, { emit }) {
     const localMinPrice = ref(props.initialPriceFilter.minPrice)
     const localMaxPrice = ref(props.initialPriceFilter.maxPrice)
-    const localIncludeFree = ref(props.initialPriceFilter.includeFree)
 
     const pricePresets = [
-      { label: 'Free Only', min: 0, max: 0, includeFree: true },
-      { label: 'Under $5', min: 0, max: 5, includeFree: true },
-      { label: 'Under $10', min: 0, max: 10, includeFree: true },
-      { label: 'Under $20', min: 0, max: 20, includeFree: true },
-      { label: '$10-$30', min: 10, max: 30, includeFree: false },
-      { label: '$30+', min: 30, max: 70, includeFree: false },
+      { label: 'Free Only', min: 0, max: 0 },
+      { label: 'Under $5', min: 0, max: 5 },
+      { label: 'Under $10', min: 0, max: 10 },
+      { label: 'Under $20', min: 0, max: 20 },
+      { label: '$10-$30', min: 10, max: 30 },
+      { label: '$30+', min: 30, max: 70 },
     ]
 
     const formatPrice = (price) => {
@@ -41,12 +39,8 @@ export default {
     }
 
     const getCurrentFilterDescription = () => {
-      if (
-        localMinPrice.value === 0 &&
-        localMaxPrice.value === 70 &&
-        localIncludeFree.value
-      ) {
-        return 'All prices (including free)'
+      if (localMinPrice.value === 0 && localMaxPrice.value === 70) {
+        return 'All prices'
       }
 
       if (localMinPrice.value === 0 && localMaxPrice.value === 0) {
@@ -55,17 +49,13 @@ export default {
 
       const minStr = formatPrice(localMinPrice.value)
       const maxStr = formatPrice(localMaxPrice.value)
-      const freeNote = localIncludeFree.value
-        ? ' (including free)'
-        : ' (excluding free)'
 
-      return `${minStr} to ${maxStr}${freeNote}`
+      return `${minStr} to ${maxStr}`
     }
 
     const applyPreset = (preset) => {
       localMinPrice.value = preset.min
       localMaxPrice.value = preset.max
-      localIncludeFree.value = preset.includeFree
       handleChange()
     }
 
@@ -78,7 +68,6 @@ export default {
       const priceFilter = {
         minPrice: localMinPrice.value,
         maxPrice: localMaxPrice.value,
-        includeFree: localIncludeFree.value,
       }
 
       emit('priceFilterChanged', priceFilter)
@@ -94,9 +83,6 @@ export default {
         if (newFilter.maxPrice !== localMaxPrice.value) {
           localMaxPrice.value = newFilter.maxPrice
         }
-        if (newFilter.includeFree !== localIncludeFree.value) {
-          localIncludeFree.value = newFilter.includeFree
-        }
       },
       { deep: true },
     )
@@ -104,7 +90,6 @@ export default {
     return {
       localMinPrice,
       localMaxPrice,
-      localIncludeFree,
       pricePresets,
       formatPrice,
       getCurrentFilterDescription,
@@ -118,17 +103,6 @@ export default {
 <template>
   <div class="space-y-4">
     <div class="mb-2 text-sm font-medium text-text-secondary">Price Filter</div>
-
-    <!-- Free Games Toggle -->
-    <label class="flex items-center justify-between">
-      <span class="text-text-primary">Include Free Games</span>
-      <input
-        v-model="localIncludeFree"
-        type="checkbox"
-        class="size-4 text-accent"
-        @change="handleChange"
-      />
-    </label>
 
     <!-- Price Range Display -->
     <div class="space-y-2">

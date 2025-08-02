@@ -4,7 +4,6 @@ import {
   useProgressiveOptions,
   type OptionWithCount,
 } from '../composables/useProgressiveOptions'
-import { UI_LIMITS } from '../config/index'
 import type { ProcessedGameData } from '../services/GameDataProcessingService'
 
 /**
@@ -64,7 +63,11 @@ const tagLogic = ref<TagLogic>(props.initialTagLogic)
 // Dynamic tag counts based on current filter mode and filtered games
 const dynamicTagCounts = computed((): TagWithCount[] => {
   // In OR mode or when no filtered games available, use original counts
-  if (tagLogic.value === 'or' || !props.filteredGames || props.filteredGames.length === 0) {
+  if (
+    tagLogic.value === 'or' ||
+    !props.filteredGames ||
+    props.filteredGames.length === 0
+  ) {
     return props.tagsWithCounts.map((tag) => ({
       ...tag,
       isPopular: false, // No longer using popular tags feature
@@ -73,7 +76,7 @@ const dynamicTagCounts = computed((): TagWithCount[] => {
 
   // In AND mode, calculate counts based on filtered result set
   const tagCountMap = new Map<string, number>()
-  
+
   // Count occurrences of each tag in the filtered games
   props.filteredGames.forEach((game) => {
     if (game.tags && Array.isArray(game.tags)) {
@@ -92,9 +95,7 @@ const dynamicTagCounts = computed((): TagWithCount[] => {
 })
 
 // All tags with metadata
-const tagsWithMetadata = computed((): TagWithCount[] => {
-  return dynamicTagCounts.value
-})
+const tagsWithMetadata = computed((): TagWithCount[] => dynamicTagCounts.value)
 
 // Filtered tags based on search query
 const filteredTags = computed((): TagWithCount[] => {
@@ -212,7 +213,6 @@ const clearSearch = (): void => {
   }
 }
 
-
 const filterTags = (): void => {
   // Update the progressive loading search
   updateTagSearch(searchQuery.value)
@@ -295,13 +295,14 @@ onUnmounted(() => {
 
 <template>
   <div class="space-y-3">
-
     <!-- Logic Toggle -->
-    <div class="mb-3 flex items-center gap-4 rounded-lg border border-gray-600 bg-bg-card p-3">
+    <div
+      class="mb-3 flex items-center gap-4 rounded-lg border border-gray-600 bg-bg-card p-3"
+    >
       <span class="text-sm text-text-secondary">Match:</span>
       <div class="flex gap-4">
-        <label 
-          class="flex cursor-pointer items-center gap-1.5 min-w-[3.5rem]"
+        <label
+          class="flex min-w-[3.5rem] cursor-pointer items-center gap-1.5"
           title="Games must have ANY of the selected tags"
         >
           <input
@@ -313,8 +314,8 @@ onUnmounted(() => {
           />
           <span class="text-sm font-medium">Any</span>
         </label>
-        <label 
-          class="flex cursor-pointer items-center gap-1.5 min-w-[3.5rem]"
+        <label
+          class="flex min-w-[3.5rem] cursor-pointer items-center gap-1.5"
           title="Games must have ALL of the selected tags"
         >
           <input
@@ -393,7 +394,6 @@ onUnmounted(() => {
         ×
       </button>
     </div>
-
 
     <!-- Loading indicator -->
     <div v-if="isLoading" class="py-4 text-center text-sm text-text-secondary">

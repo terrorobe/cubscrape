@@ -36,7 +36,6 @@ export interface URLFilters extends Record<string, unknown> {
   priceFilter: {
     minPrice: number
     maxPrice: number
-    includeFree: boolean
   }
   searchQuery?: string
   searchInVideoTitles?: boolean
@@ -108,8 +107,6 @@ export function useURLState() {
         filterValues.priceFilter.maxPrice < PRICING.DEFAULT_MAX_PRICE
           ? filterValues.priceFilter.maxPrice.toString()
           : null,
-      includeFree:
-        filterValues.priceFilter.includeFree === false ? 'false' : null,
       // Search parameters
       search: filterValues.searchQuery ? filterValues.searchQuery.trim() : null,
       searchVideos: filterValues.searchInVideoTitles === true ? 'true' : null,
@@ -236,11 +233,7 @@ export function useURLState() {
     }
 
     // Handle price filter parameters
-    if (
-      urlParams.has('priceMin') ||
-      urlParams.has('priceMax') ||
-      urlParams.has('includeFree')
-    ) {
+    if (urlParams.has('priceMin') || urlParams.has('priceMax')) {
       urlFilters.priceFilter = {
         minPrice: urlParams.has('priceMin')
           ? parseFloat(urlParams.get('priceMin') ?? '0')
@@ -250,7 +243,6 @@ export function useURLState() {
               urlParams.get('priceMax') ?? PRICING.DEFAULT_MAX_PRICE.toString(),
             )
           : PRICING.DEFAULT_MAX_PRICE,
-        includeFree: urlParams.get('includeFree') !== 'false',
       }
     }
 

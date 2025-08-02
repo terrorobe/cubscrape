@@ -90,7 +90,6 @@ interface TimeFilterData {
 interface PriceFilterData {
   minPrice: number
   maxPrice: number
-  includeFree: boolean
 }
 
 // SortData interface is replaced by SortChangeEvent from types/sorting.ts
@@ -129,7 +128,6 @@ const localFilters = reactive<FilterConfig>({
   priceFilter: props.initialFilters.priceFilter || {
     minPrice: 0,
     maxPrice: 70,
-    includeFree: true,
   },
 })
 
@@ -196,8 +194,7 @@ const activeFilterCount = computed((): number => {
   if (
     localFilters.priceFilter &&
     (localFilters.priceFilter.minPrice > 0 ||
-      localFilters.priceFilter.maxPrice < 70 ||
-      !localFilters.priceFilter.includeFree)
+      localFilters.priceFilter.maxPrice < 70)
   ) {
     count++
   }
@@ -242,8 +239,7 @@ const tabs = computed((): Tab[] => [
     label: 'Price',
     count:
       localFilters.priceFilter.minPrice > 0 ||
-      localFilters.priceFilter.maxPrice < 70 ||
-      !localFilters.priceFilter.includeFree
+      localFilters.priceFilter.maxPrice < 70
         ? 1
         : 0,
   },
@@ -338,7 +334,6 @@ const clearAllFilters = (): void => {
   localFilters.priceFilter = {
     minPrice: 0,
     maxPrice: 70,
-    includeFree: true,
   }
   emitFiltersChanged()
 }

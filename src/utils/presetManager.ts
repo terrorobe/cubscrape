@@ -42,7 +42,6 @@ export interface FilterConfig extends Record<string, unknown> {
   priceFilter: {
     minPrice: number
     maxPrice: number
-    includeFree: boolean
   }
 }
 
@@ -134,7 +133,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 20,
-        includeFree: true,
       },
     },
     category: 'discovery',
@@ -165,7 +163,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 70,
-        includeFree: true,
       },
     },
     category: 'new',
@@ -196,7 +193,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 0,
-        includeFree: true,
       },
     },
     category: 'value',
@@ -227,7 +223,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 70,
-        includeFree: true,
       },
     },
     category: 'curated',
@@ -258,7 +253,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 70,
-        includeFree: true,
       },
     },
     category: 'discovery',
@@ -289,7 +283,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 10,
-        includeFree: true,
       },
     },
     category: 'value',
@@ -320,7 +313,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 70,
-        includeFree: true,
       },
     },
     category: 'trending',
@@ -351,7 +343,6 @@ export const POPULAR_PRESETS: Preset[] = [
       priceFilter: {
         minPrice: 0,
         maxPrice: 70,
-        includeFree: true,
       },
     },
     category: 'platform',
@@ -388,7 +379,6 @@ export function createDefaultFilters(): FilterConfig {
     priceFilter: {
       minPrice: 0,
       maxPrice: 70,
-      includeFree: true,
     },
   }
 }
@@ -613,15 +603,12 @@ export function generateShareableURL(
 
   // Handle price filter
   const pf = filters.priceFilter
-  if (pf && (pf.minPrice > 0 || pf.maxPrice < 70 || !pf.includeFree)) {
+  if (pf && (pf.minPrice > 0 || pf.maxPrice < 70)) {
     if (pf.minPrice > 0) {
       params.set('priceMin', pf.minPrice.toString())
     }
     if (pf.maxPrice < 70) {
       params.set('priceMax', pf.maxPrice.toString())
-    }
-    if (!pf.includeFree) {
-      params.set('includeFree', 'false')
     }
   }
 
@@ -707,11 +694,7 @@ export function parseShareableURL(url: string): FilterConfig {
     }
 
     // Parse price filter
-    if (
-      params.has('priceMin') ||
-      params.has('priceMax') ||
-      params.has('includeFree')
-    ) {
+    if (params.has('priceMin') || params.has('priceMax')) {
       filters.priceFilter = {
         minPrice: params.has('priceMin')
           ? parseFloat(
@@ -725,7 +708,6 @@ export function parseShareableURL(url: string): FilterConfig {
                 String(DEFAULT_FILTERS.priceFilter.maxPrice),
             )
           : DEFAULT_FILTERS.priceFilter.maxPrice,
-        includeFree: params.get('includeFree') !== 'false',
       }
     }
 

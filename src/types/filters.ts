@@ -25,7 +25,7 @@ export type FilterValue =
       endDate: string | null
       smartLogic: string | null
     }
-  | { minPrice: number; maxPrice: number; includeFree: boolean }
+  | { minPrice: number; maxPrice: number }
   | null
 
 /**

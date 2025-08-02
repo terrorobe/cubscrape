@@ -91,7 +91,6 @@ const createDefaultFilters = (): FilterState => ({
   priceFilter: {
     minPrice: PRICING.MIN_PRICE,
     maxPrice: PRICING.DEFAULT_MAX_PRICE,
-    includeFree: true,
   },
   // Search filtering
   searchQuery: '',
@@ -210,7 +209,6 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
       priceFilter: {
         minPrice: PRICING.MIN_PRICE,
         maxPrice: PRICING.DEFAULT_MAX_PRICE,
-        includeFree: true,
       },
     })
   }
@@ -306,8 +304,6 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
       current.timeFilter.smartLogic !== null ||
       current.priceFilter.minPrice !== defaultFilters.priceFilter.minPrice ||
       current.priceFilter.maxPrice !== defaultFilters.priceFilter.maxPrice ||
-      current.priceFilter.includeFree !==
-        defaultFilters.priceFilter.includeFree ||
       current.searchQuery.trim() !== '' ||
       current.searchInVideoTitles !== defaultFilters.searchInVideoTitles
     )
@@ -352,8 +348,7 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
     }
     if (
       current.priceFilter.minPrice > PRICING.MIN_PRICE ||
-      current.priceFilter.maxPrice < PRICING.DEFAULT_MAX_PRICE ||
-      !current.priceFilter.includeFree
+      current.priceFilter.maxPrice < PRICING.DEFAULT_MAX_PRICE
     ) {
       count++
     }

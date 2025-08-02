@@ -40,7 +40,6 @@ export type PlatformFilter = 'all' | 'steam' | 'itch' | 'crazygames' | 'other'
 export interface PriceFilter {
   minPrice: number
   maxPrice: number
-  includeFree: boolean
 }
 
 /**
@@ -93,7 +92,6 @@ export const DEFAULT_FILTERS: FilterConfig = {
   priceFilter: {
     minPrice: constants.PRICING.MIN_PRICE,
     maxPrice: constants.PRICING.DEFAULT_MAX_PRICE,
-    includeFree: true,
   },
   sortBy: 'relevance',
   sortSpec: 'relevance',
