@@ -58,21 +58,11 @@ const hasLoadedTags = ref<boolean>(props.tagsWithCounts.length > 0)
 const selectedTags = ref<string[]>([...props.initialSelectedTags])
 const tagLogic = ref<TagLogic>(props.initialTagLogic)
 
-// Popular tags (top 10 most used)
-const popularTags = computed((): TagWithCount[] =>
-  props.tagsWithCounts.slice(0, UI_LIMITS.POPULAR_TAGS_COUNT).map((tag) => ({
-    ...tag,
-    isPopular: true,
-  })),
-)
-
 // All tags with metadata
 const tagsWithMetadata = computed((): TagWithCount[] => {
-  const popularTagNames = new Set(popularTags.value.map((t) => t.name))
-
   return props.tagsWithCounts.map((tag) => ({
     ...tag,
-    isPopular: popularTagNames.has(tag.name),
+    isPopular: false, // No longer using popular tags feature
   }))
 })
 
@@ -192,16 +182,6 @@ const clearSearch = (): void => {
   }
 }
 
-const selectPopularTags = (): void => {
-  // Add popular tags that aren't already selected
-  const popularTagNames = popularTags.value.map((t) => t.name)
-  popularTagNames.forEach((tag) => {
-    if (!selectedTags.value.includes(tag)) {
-      selectedTags.value.push(tag)
-    }
-  })
-  emitFiltersChanged()
-}
 
 const filterTags = (): void => {
   // Update the progressive loading search
@@ -285,29 +265,15 @@ onUnmounted(() => {
 
 <template>
   <div class="space-y-3">
-    <h3 class="text-sm font-semibold text-text-primary">Tags</h3>
 
     <!-- Logic Toggle -->
-    <div class="mb-3 rounded-lg border border-gray-600 bg-bg-card p-3">
-      <div class="mb-2 flex items-center justify-between">
-        <span class="text-sm font-medium">Selection Logic</span>
-        <span class="text-xs text-text-secondary">How tags are combined</span>
-      </div>
-      <div class="flex gap-4">
-        <label class="flex cursor-pointer items-center gap-2">
-          <input
-            type="radio"
-            value="and"
-            v-model="tagLogic"
-            @change="emitFiltersChanged"
-            class="text-accent focus:ring-accent"
-          />
-          <div class="flex flex-col">
-            <span class="text-sm font-medium">AND</span>
-            <span class="text-xs text-text-secondary">All selected tags</span>
-          </div>
-        </label>
-        <label class="flex cursor-pointer items-center gap-2">
+    <div class="mb-3 flex items-center gap-4 rounded-lg border border-gray-600 bg-bg-card p-3">
+      <span class="text-sm text-text-secondary">Match:</span>
+      <div class="flex gap-3">
+        <label 
+          class="flex cursor-pointer items-center gap-1.5"
+          title="Games must have ANY of the selected tags"
+        >
           <input
             type="radio"
             value="or"
@@ -315,10 +281,20 @@ onUnmounted(() => {
             @change="emitFiltersChanged"
             class="text-accent focus:ring-accent"
           />
-          <div class="flex flex-col">
-            <span class="text-sm font-medium">OR</span>
-            <span class="text-xs text-text-secondary">Any selected tags</span>
-          </div>
+          <span class="text-sm font-medium">Any</span>
+        </label>
+        <label 
+          class="flex cursor-pointer items-center gap-1.5"
+          title="Games must have ALL of the selected tags"
+        >
+          <input
+            type="radio"
+            value="and"
+            v-model="tagLogic"
+            @change="emitFiltersChanged"
+            class="text-accent focus:ring-accent"
+          />
+          <span class="text-sm font-medium">All</span>
         </label>
       </div>
     </div>
@@ -388,28 +364,6 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <!-- Popular Tags (Quick Select) -->
-    <div v-if="!searchQuery && popularTags.length > 0" class="mb-2">
-      <div class="mb-2 text-xs text-text-secondary">Popular Tags:</div>
-      <div class="flex flex-wrap gap-1">
-        <button
-          v-for="tag in popularTags.slice(
-            0,
-            UI_LIMITS.TAG_FILTER_INITIAL_SHOW_COUNT,
-          )"
-          :key="tag.name"
-          @click="toggleTag(tag.name)"
-          class="rounded-sm border px-2 py-1 text-xs transition-colors"
-          :class="[
-            selectedTags.includes(tag.name)
-              ? 'border-accent/50 bg-accent/20 text-accent'
-              : 'border-gray-600 bg-bg-card text-text-secondary hover:border-accent/50 hover:text-text-primary',
-          ]"
-        >
-          {{ tag.name }} ({{ tag.count }})
-        </button>
-      </div>
-    </div>
 
     <!-- Loading indicator -->
     <div v-if="isLoading" class="py-4 text-center text-sm text-text-secondary">
@@ -475,23 +429,15 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Quick Actions Footer -->
+        <!-- Tags Count Footer -->
         <div
           v-if="filteredTags.length > 0 && hasLoadedTags"
-          class="border-t border-gray-600 bg-bg-secondary p-3"
+          class="border-t border-gray-600 bg-bg-secondary p-3 text-center"
         >
-          <div class="flex justify-between text-sm">
-            <button
-              @click="selectPopularTags"
-              class="text-accent hover:underline"
-            >
-              Select Popular Tags
-            </button>
-            <span class="text-text-secondary">
-              {{ visibleFilteredTags.length }} of {{ filteredTags.length }} tags
-              shown
-            </span>
-          </div>
+          <span class="text-sm text-text-secondary">
+            {{ visibleFilteredTags.length }} of {{ filteredTags.length }} tags
+            shown
+          </span>
         </div>
       </div>
     </div>
