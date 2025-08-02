@@ -6,6 +6,7 @@ import PaginationControls from './PaginationControls.vue'
 import { usePagination } from '../composables/usePagination'
 import type { ProcessedGameData } from '../services/GameDataProcessingService'
 import type { SortSpec, SortChangeEvent } from '../types/sorting'
+import type { VideoData } from '../types/database'
 
 // Component interfaces
 export interface SearchState {
@@ -39,6 +40,9 @@ interface Props {
   // State flags
   loading: boolean
   error: string | null
+
+  // Database functions
+  loadGameVideos?: (gameId: string) => VideoData[]
 }
 
 interface Emits {
@@ -285,6 +289,7 @@ const handleSetPageSize = (size: number): void => {
           :currency="currency"
           :is-highlighted="highlightedGameId === String(game.id)"
           :selected-tags="selectedTags"
+          :load-game-videos="loadGameVideos"
           @click="handleClearHighlight"
           @tag-click="handleTagClick"
         />

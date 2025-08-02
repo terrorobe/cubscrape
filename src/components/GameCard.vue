@@ -15,7 +15,6 @@ import {
 } from '../config/platforms'
 import { UI_LIMITS } from '../config/index'
 import type { ParsedGameData, VideoData } from '../types/database'
-import { useDatabaseLifecycle } from '../composables/useDatabaseLifecycle'
 import { debug } from '../utils/debug'
 
 // Component props interface
@@ -24,6 +23,7 @@ interface Props {
   currency?: 'eur' | 'usd'
   isHighlighted?: boolean
   selectedTags?: string[]
+  loadGameVideos?: (gameId: string) => VideoData[]
 }
 
 // Component events interface
@@ -36,6 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
   currency: 'eur',
   isHighlighted: false,
   selectedTags: () => [],
+  loadGameVideos: undefined,
 })
 
 // Define emits
@@ -66,8 +67,7 @@ watch(shouldLoadDetails, (newValue) => {
   }
 })
 
-// Get database lifecycle functions
-const { loadGameVideos } = useDatabaseLifecycle()
+// Use loadGameVideos function from props or provide fallback
 
 interface ChannelGroup {
   name: string
@@ -112,8 +112,13 @@ const toggleVideos = async (gameId: number): Promise<void> => {
   loadingVideos.value[gameId] = true
 
   try {
-    const videos = loadGameVideos(String(gameId))
-    gameVideos.value[gameId] = videos
+    if (props.loadGameVideos) {
+      const videos = props.loadGameVideos(String(gameId))
+      gameVideos.value[gameId] = videos
+    } else {
+      debug.warn('No loadGameVideos function provided to GameCard')
+      gameVideos.value[gameId] = []
+    }
   } catch (error) {
     debug.error('Error loading videos:', error)
     gameVideos.value[gameId] = []

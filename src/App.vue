@@ -48,6 +48,7 @@ const {
   executeQuery: databaseExecuteQuery,
   loadChannelsOnly,
   loadTagsOnly,
+  loadGameVideos,
   testVersionMismatch,
   reloadApp,
   dismissVersionMismatch,
@@ -441,6 +442,7 @@ if (import.meta.hot) {
             :pagination-config="paginationConfig"
             :loading="loading"
             :error="error"
+            :load-game-videos="loadGameVideos"
             @update:search-state="handleSearchStateUpdate"
             @sort-changed="handleSortChange"
             @clear-highlight="clearHighlight"
