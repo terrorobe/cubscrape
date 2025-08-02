@@ -14,8 +14,8 @@ import {
   type AvailablePlatform,
 } from '../config/platforms'
 import { UI_LIMITS } from '../config/index'
-import type { ParsedGameData } from '../types/database'
-import { databaseManager } from '../utils/databaseManager'
+import type { ParsedGameData, VideoData } from '../types/database'
+import { useDatabaseLifecycle } from '../composables/useDatabaseLifecycle'
 import { debug } from '../utils/debug'
 
 // Component props interface
@@ -66,13 +66,8 @@ watch(shouldLoadDetails, (newValue) => {
   }
 })
 
-// Video data interfaces
-interface VideoData {
-  video_title: string
-  video_id: string
-  video_date: string
-  channel_name: string
-}
+// Get database lifecycle functions
+const { loadGameVideos } = useDatabaseLifecycle()
 
 interface ChannelGroup {
   name: string
@@ -117,34 +112,8 @@ const toggleVideos = async (gameId: number): Promise<void> => {
   loadingVideos.value[gameId] = true
 
   try {
-    // Get database instance from database manager
-    const db = databaseManager.getDatabase()
-    if (!db) {
-      debug.error('Database not available')
-      return
-    }
-
-    const query = `
-      SELECT video_title, video_id, video_date, channel_name
-      FROM game_videos
-      WHERE game_id = ?
-      ORDER BY video_date DESC
-    `
-    const results = db.exec(query, [gameId])
-
-    if (results.length > 0) {
-      const videos: VideoData[] = results[0].values.map(
-        (row): VideoData => ({
-          video_title: row[0] as string,
-          video_id: row[1] as string,
-          video_date: row[2] as string,
-          channel_name: row[3] as string,
-        }),
-      )
-      gameVideos.value[gameId] = videos
-    } else {
-      gameVideos.value[gameId] = []
-    }
+    const videos = loadGameVideos(String(gameId))
+    gameVideos.value[gameId] = videos
   } catch (error) {
     debug.error('Error loading videos:', error)
     gameVideos.value[gameId] = []

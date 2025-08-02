@@ -24,7 +24,11 @@ import {
   type GameStats,
   type DatabaseQueryResult,
 } from '../services/GameDatabaseService'
-import type { ChannelWithCount, TagWithCount } from '../types/database'
+import type {
+  ChannelWithCount,
+  TagWithCount,
+  VideoData,
+} from '../types/database'
 import { debug } from '../utils/debug'
 import { PRICING } from '../config/index'
 
@@ -166,6 +170,24 @@ export function useDatabaseLifecycle(
     } catch (err) {
       debug.error('❌ Failed to load tags:', err)
       error.value = `Failed to load tags: ${err instanceof Error ? err.message : String(err)}`
+    }
+  }
+
+  /**
+   * Load video data for a specific game
+   */
+  const loadGameVideos = (gameId: string): VideoData[] => {
+    if (!db) {
+      debug.warn('⚠️ Cannot load game videos: database not available')
+      return []
+    }
+
+    try {
+      return gameDatabaseService.loadGameVideos(db, gameId)
+    } catch (err) {
+      debug.error('❌ Failed to load game videos:', err)
+      error.value = `Failed to load game videos: ${err instanceof Error ? err.message : String(err)}`
+      return []
     }
   }
 
@@ -411,6 +433,7 @@ export function useDatabaseLifecycle(
     loadChannelsAndTags,
     loadChannelsOnly,
     loadTagsOnly,
+    loadGameVideos,
     updateDatabaseStatus,
   }
 }

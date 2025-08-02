@@ -7,7 +7,11 @@ import type { Database } from 'sql.js'
 import { databaseManager } from '../utils/databaseManager'
 import { debug } from '../utils/debug'
 import { PRICING } from '../config/index'
-import type { ChannelWithCount, TagWithCount } from '../types/database'
+import type {
+  ChannelWithCount,
+  TagWithCount,
+  VideoData,
+} from '../types/database'
 
 /**
  * Game statistics from database
@@ -168,6 +172,32 @@ export class GameDatabaseService {
   }
 
   /**
+   * Load video data for a specific game
+   */
+  loadGameVideos(database: Database, gameId: string): VideoData[] {
+    const query = `
+      SELECT video_title, video_id, video_date, channel_name
+      FROM game_videos
+      WHERE game_id = ?
+      ORDER BY video_date DESC
+    `
+    const results = this.executeQuery(database, query, [gameId])
+
+    if (results.length > 0) {
+      return results[0].values.map(
+        (row): VideoData => ({
+          video_title: row[0] as string,
+          video_id: row[1] as string,
+          video_date: row[2] as string,
+          channel_name: row[3] as string,
+        }),
+      )
+    }
+
+    return []
+  }
+
+  /**
    * Execute a database query with parameters
    */
   executeQuery(
@@ -175,8 +205,12 @@ export class GameDatabaseService {
     query: string,
     params: (string | number)[],
   ): DatabaseQueryResult[] {
-    debug.log('Executing query:', query)
-    debug.log('With params:', params)
+    // Enhanced debug logging for all queries
+    const cleanQuery = query.replace(/\s+/g, ' ').trim()
+    debug.log(`🔍 SQL Query: ${cleanQuery}`)
+    if (params.length > 0) {
+      debug.log(`📋 Parameters: ${JSON.stringify(params)}`)
+    }
 
     // Check for undefined params
     params.forEach((param, index) => {
@@ -185,7 +219,15 @@ export class GameDatabaseService {
       }
     })
 
-    return database.exec(query, params)
+    const startTime = performance.now()
+    const result = database.exec(query, params)
+    const duration = performance.now() - startTime
+
+    debug.log(
+      `⏱️ Query executed in ${duration.toFixed(2)}ms, returned ${result.length} result sets`,
+    )
+
+    return result
   }
 }
 

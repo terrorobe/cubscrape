@@ -183,9 +183,9 @@ export class DatabaseManager {
    */
   private extractDatabaseAppVersion(db: Database): string {
     try {
-      const result = db.exec(
-        "SELECT value FROM app_metadata WHERE key = 'app_version'",
-      )
+      const query = "SELECT value FROM app_metadata WHERE key = 'app_version'"
+      debug.log(`🔍 SQL Query: ${query}`)
+      const result = db.exec(query)
       const version = extractSingleValue(result, 'unknown')
       debug.log('🗄️ Database app version:', version)
       return String(version)
@@ -313,10 +313,9 @@ export class DatabaseManager {
 
       // Database available through databaseManager.getDatabase() - no global access needed
 
-      const totalGames = extractSingleValue(
-        this.db.exec('SELECT COUNT(*) FROM games'),
-        0,
-      )
+      const countQuery = 'SELECT COUNT(*) FROM games'
+      debug.log(`🔍 SQL Query: ${countQuery}`)
+      const totalGames = extractSingleValue(this.db.exec(countQuery), 0)
       debug.log('🗄️ Database loaded, total games:', totalGames)
 
       // Notify listeners that database has been updated
@@ -457,21 +456,26 @@ export class DatabaseManager {
     }
 
     try {
+      const gameCountQuery = 'SELECT COUNT(*) FROM games WHERE is_absorbed = 0'
+      debug.log(`🔍 SQL Query: ${gameCountQuery}`)
       const gameCount = extractSingleValue(
-        this.db.exec('SELECT COUNT(*) FROM games WHERE is_absorbed = 0'),
+        this.db.exec(gameCountQuery),
         0,
       ) as number
-      const channelResults = this.db.exec(
-        "SELECT COUNT(DISTINCT unique_channels) FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]'",
-      )
+
+      const channelCountQuery =
+        "SELECT COUNT(DISTINCT unique_channels) FROM games WHERE unique_channels IS NOT NULL AND unique_channels != '[]'"
+      debug.log(`🔍 SQL Query: ${channelCountQuery}`)
+      const channelResults = this.db.exec(channelCountQuery)
       const channelCount = extractSingleValue(channelResults, 0) as number
 
       // Get data freshness from database metadata instead of HTTP requests
       let dataModified = this.lastModified // fallback to database file mtime
       try {
-        const metadataResult = this.db.exec(
-          "SELECT value FROM app_metadata WHERE key = 'data_last_modified'",
-        )
+        const metadataQuery =
+          "SELECT value FROM app_metadata WHERE key = 'data_last_modified'"
+        debug.log(`🔍 SQL Query: ${metadataQuery}`)
+        const metadataResult = this.db.exec(metadataQuery)
         const extractedData = extractSingleValue(metadataResult, '')
         if (extractedData) {
           dataModified = String(extractedData)

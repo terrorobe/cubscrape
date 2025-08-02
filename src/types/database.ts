@@ -153,6 +153,16 @@ export interface TagWithCount {
 }
 
 /**
+ * Simplified video data for UI components
+ */
+export interface VideoData {
+  video_title: string
+  video_id: string
+  video_date: string
+  channel_name: string
+}
+
+/**
  * Type guard to check if a value is a GameRecord
  */
 export function isGameRecord(value: unknown): value is GameRecord {
