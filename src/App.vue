@@ -427,6 +427,7 @@ if (import.meta.hot) {
             :currency="filters.currency"
             :sort-by="filters.sortBy"
             :sort-spec="filters.sortSpec"
+            :selected-tags="filters.selectedTags"
             :filtered-games="filteredGames"
             :highlighted-game-id="
               highlightedGameId ? String(highlightedGameId) : null

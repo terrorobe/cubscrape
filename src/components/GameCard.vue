@@ -23,6 +23,7 @@ interface Props {
   game: ParsedGameData
   currency?: 'eur' | 'usd'
   isHighlighted?: boolean
+  selectedTags?: string[]
 }
 
 // Component events interface
@@ -34,6 +35,7 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   currency: 'eur',
   isHighlighted: false,
+  selectedTags: () => [],
 })
 
 // Define emits
@@ -485,6 +487,9 @@ const handleTagClick = (tag: string): void => {
   emit('tagClick', tag)
 }
 
+const isTagHighlighted = (tag: string): boolean =>
+  props.selectedTags.includes(tag)
+
 const groupVideosByChannel = (videos?: VideoData[]): VideosByChannel => {
   if (!videos || !Array.isArray(videos)) {
     return {}
@@ -699,7 +704,12 @@ watch(
               UI_LIMITS.GAME_CARD_TAG_LIMIT,
             )"
             :key="tag"
-            class="my-1 mr-1 rounded-full bg-bg-secondary px-2 py-1 text-xs text-text-secondary transition-colors hover:bg-accent hover:text-white"
+            class="my-1 mr-1 rounded-full px-2 py-1 text-xs transition-colors"
+            :class="{
+              'bg-bg-secondary text-text-secondary hover:bg-accent hover:text-white':
+                !isTagHighlighted(tag),
+              'bg-accent text-white': isTagHighlighted(tag),
+            }"
             :title="`Filter by ${tag}`"
             @click.stop="handleTagClick(tag)"
           >

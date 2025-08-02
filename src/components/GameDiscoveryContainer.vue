@@ -27,6 +27,7 @@ interface Props {
   currency: 'eur' | 'usd'
   sortBy: string
   sortSpec: SortSpec
+  selectedTags: string[]
 
   // Game data
   filteredGames: ProcessedGameData[]
@@ -283,6 +284,7 @@ const handleSetPageSize = (size: number): void => {
           :game="game"
           :currency="currency"
           :is-highlighted="highlightedGameId === String(game.id)"
+          :selected-tags="selectedTags"
           @click="handleClearHighlight"
           @tag-click="handleTagClick"
         />
