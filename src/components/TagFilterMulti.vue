@@ -33,13 +33,18 @@ export interface TagFilterMultiProps {
   tagsWithCounts?: TagWithCount[]
   initialSelectedTags?: string[]
   initialTagLogic?: TagLogic
+  loadTags?: () => void
 }
 
 const props = withDefaults(defineProps<TagFilterMultiProps>(), {
   tagsWithCounts: () => [],
   initialSelectedTags: () => [],
   initialTagLogic: 'and',
+  loadTags: undefined,
 })
+
+// Loading state for lazy loading
+const isLoading = ref<boolean>(false)
 
 const emit = defineEmits<{
   tagsChanged: [event: TagFilterChangeEvent]
@@ -47,6 +52,9 @@ const emit = defineEmits<{
 const searchInput = ref<HTMLInputElement | null>(null)
 const searchQuery = ref<string>('')
 const showDropdown = ref<boolean>(false)
+
+// Track if tags have been loaded for lazy loading
+const hasLoadedTags = ref<boolean>(props.tagsWithCounts.length > 0)
 const selectedTags = ref<string[]>([...props.initialSelectedTags])
 const tagLogic = ref<TagLogic>(props.initialTagLogic)
 
@@ -205,6 +213,28 @@ watch(searchQuery, (newQuery: string) => {
   updateTagSearch(newQuery)
 })
 
+// Watch for tags prop changes to update loading state
+watch(
+  () => props.tagsWithCounts,
+  (newTags: TagWithCount[]) => {
+    if (newTags.length > 0 && !hasLoadedTags.value) {
+      hasLoadedTags.value = true
+      isLoading.value = false
+    }
+  },
+  { deep: true },
+)
+
+// Handle lazy loading when dropdown is opened
+const handleDropdownOpen = async (): Promise<void> => {
+  showDropdown.value = true
+
+  if (!hasLoadedTags.value && props.loadTags) {
+    isLoading.value = true
+    props.loadTags()
+  }
+}
+
 const emitFiltersChanged = (): void => {
   emit('tagsChanged', {
     selectedTags: [...selectedTags.value],
@@ -333,7 +363,7 @@ onUnmounted(() => {
         v-model="searchQuery"
         placeholder="Search tags..."
         class="w-full rounded-sm border border-gray-600 bg-bg-card px-4 py-2 pl-10 text-sm transition-colors hover:border-accent focus:border-accent focus:outline-none"
-        @focus="showDropdown = true"
+        @focus="handleDropdownOpen"
         @input="filterTags"
       />
       <svg
@@ -381,13 +411,29 @@ onUnmounted(() => {
       </div>
     </div>
 
+    <!-- Loading indicator -->
+    <div v-if="isLoading" class="py-4 text-center text-sm text-text-secondary">
+      Loading tags...
+    </div>
+
     <!-- Tag Dropdown -->
-    <div v-show="showDropdown && filteredTags.length > 0" class="relative z-10">
+    <div
+      v-show="showDropdown && (filteredTags.length > 0 || !hasLoadedTags)"
+      class="relative z-10"
+    >
       <div
         class="max-h-64 overflow-hidden rounded-sm border border-gray-600 bg-bg-card shadow-lg"
       >
         <div class="max-h-64 overflow-y-auto">
+          <!-- Show loading message when tags are being fetched -->
+          <div
+            v-if="isLoading && !hasLoadedTags"
+            class="p-4 text-center text-sm text-text-secondary"
+          >
+            Loading tags...
+          </div>
           <label
+            v-else
             v-for="tag in visibleFilteredTags"
             :key="tag.name"
             class="flex cursor-pointer items-center gap-3 rounded-sm p-2 transition-colors hover:bg-bg-secondary"
@@ -413,7 +459,7 @@ onUnmounted(() => {
 
           <!-- Load More Button -->
           <div
-            v-if="hasMoreTags && !searchQuery"
+            v-if="hasMoreTags && !searchQuery && hasLoadedTags"
             class="border-t border-gray-600 p-2"
           >
             <button
@@ -431,7 +477,7 @@ onUnmounted(() => {
 
         <!-- Quick Actions Footer -->
         <div
-          v-if="filteredTags.length > 0"
+          v-if="filteredTags.length > 0 && hasLoadedTags"
           class="border-t border-gray-600 bg-bg-secondary p-3"
         >
           <div class="flex justify-between text-sm">
@@ -468,7 +514,7 @@ onUnmounted(() => {
 
     <!-- Empty State -->
     <div
-      v-if="tagsWithCounts.length === 0"
+      v-if="tagsWithCounts.length === 0 && hasLoadedTags && !isLoading"
       class="py-8 text-center text-text-secondary"
     >
       <svg

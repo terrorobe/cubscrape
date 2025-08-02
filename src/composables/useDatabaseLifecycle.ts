@@ -151,6 +151,25 @@ export function useDatabaseLifecycle(
   }
 
   /**
+   * Load only tags from database (for lazy loading)
+   */
+  const loadTagsOnly = (): void => {
+    if (!db) {
+      debug.warn('⚠️ Cannot load tags: database not available')
+      return
+    }
+
+    try {
+      const result = gameDatabaseService.loadChannelsAndTags(db)
+      allTags.value = result.allTags
+      debug.log('🏷️ Lazy loaded tags:', allTags.value.length)
+    } catch (err) {
+      debug.error('❌ Failed to load tags:', err)
+      error.value = `Failed to load tags: ${err instanceof Error ? err.message : String(err)}`
+    }
+  }
+
+  /**
    * Update database status information
    */
   const updateDatabaseStatus = (): void => {
@@ -196,9 +215,13 @@ export function useDatabaseLifecycle(
       }
       db = database
       loadGameStats(db)
-      // Only reload tags on database update, channels remain lazily loaded
+      // Only reload data on database update if it was already loaded
       const result = gameDatabaseService.loadChannelsAndTags(db)
-      allTags.value = result.allTags
+      // Only update tags if they were already loaded
+      if (allTags.value.length > 0) {
+        allTags.value = result.allTags
+        debug.log('🏷️ Reloaded tags:', allTags.value.length)
+      }
       // Only update channels if they were already loaded
       if (channelsWithCounts.value.length > 0) {
         channels.value = result.channels
@@ -251,10 +274,7 @@ export function useDatabaseLifecycle(
       // Initialize data if database is available
       if (db) {
         loadGameStats(db)
-        // Load only tags initially, channels will be loaded lazily
-        const result = gameDatabaseService.loadChannelsAndTags(db)
-        allTags.value = result.allTags
-        debug.log('🏷️ Loaded tags:', allTags.value.length)
+        // Skip loading channels and tags initially - they will be loaded lazily
         updateDatabaseStatus()
       } else {
         throw new Error('Database initialization failed: db is null')
@@ -390,6 +410,7 @@ export function useDatabaseLifecycle(
     loadGameStats,
     loadChannelsAndTags,
     loadChannelsOnly,
+    loadTagsOnly,
     updateDatabaseStatus,
   }
 }

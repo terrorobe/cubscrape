@@ -174,10 +174,11 @@ watch(
       class="flex items-center justify-center py-6 text-sm text-text-secondary"
     >
       <div class="flex items-center gap-2">
-        <div class="size-4 animate-spin rounded-full border-2 border-accent border-t-transparent"></div>
+        <div
+          class="size-4 animate-spin rounded-full border-2 border-accent border-t-transparent"
+        ></div>
         <span>Loading channels...</span>
       </div>
     </div>
-
   </div>
 </template>

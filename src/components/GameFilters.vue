@@ -41,6 +41,7 @@ interface Props {
   gameCount?: number
   gameStats?: DatabaseStats
   loadChannels?: () => void
+  loadTags?: () => void
 }
 
 // Component events interface
@@ -61,6 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
     maxPrice: 70,
   }),
   loadChannels: () => {},
+  loadTags: () => {},
 })
 
 // Define emits
@@ -615,6 +617,7 @@ onUnmounted(() => {
         :tags-with-counts="tags"
         :initial-selected-tags="localFilters.selectedTags || []"
         :initial-tag-logic="localFilters.tagLogic || 'and'"
+        :load-tags="loadTags"
         @tags-changed="handleTagsChanged"
       />
     </CollapsibleSection>
