@@ -222,7 +222,10 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
     const currentTags = filters.value.selectedTags || []
     if (currentTags.includes(tag)) {
       debug.log(`🏷️ Removing tag filter: ${tag}`)
-      updateFilter('selectedTags', currentTags.filter((t) => t !== tag))
+      updateFilter(
+        'selectedTags',
+        currentTags.filter((t) => t !== tag),
+      )
     } else {
       debug.log(`🏷️ Adding tag filter: ${tag}`)
       updateFilter('selectedTags', [...currentTags, tag])

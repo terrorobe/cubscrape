@@ -371,12 +371,15 @@ const getSteamParentUrl = (game: ParsedGameData): string | null => {
 }
 
 const handleCardClick = async (event: MouseEvent): Promise<void> => {
+  debug.log('Card clicked:', props.game.name)
+
   // Don't handle clicks on links, buttons, or video toggles
   if (
     (event.target as Element)?.closest('a') ||
     (event.target as Element)?.closest('button') ||
     (event.target as Element)?.closest('.video-expand-toggle')
   ) {
+    debug.log('Click ignored - clicked on interactive element')
     return
   }
 
@@ -384,7 +387,19 @@ const handleCardClick = async (event: MouseEvent): Promise<void> => {
 
   const deeplinkUrl = generateDeeplink(props.game)
   if (!deeplinkUrl) {
-    debug.warn('Could not generate deeplink for this game')
+    debug.warn('Could not generate deeplink for this game:', props.game)
+    return
+  }
+
+  debug.log('Generated deeplink:', deeplinkUrl)
+
+  // Check if clipboard API is available
+  if (!navigator.clipboard) {
+    debug.error('Clipboard API not available. Context:', {
+      isSecureContext: window.isSecureContext,
+      protocol: window.location.protocol,
+      hostname: window.location.hostname
+    })
     return
   }
 
@@ -405,7 +420,7 @@ const handleCardClick = async (event: MouseEvent): Promise<void> => {
       showCopyOverlay.value = false
     }, 600)
 
-    debug.log('Copied deeplink:', deeplinkUrl)
+    debug.log('Successfully copied deeplink:', deeplinkUrl)
   } catch (err) {
     debug.error('Failed to copy link:', err)
   }
