@@ -42,7 +42,6 @@ export interface SteamGameData extends BaseGameData {
   // Steam-specific pricing (supports multiple currencies)
   price_eur?: number
   price_usd?: number
-  price_final?: number
   // Steam review system
   positive_review_percentage?: number
   review_count?: number
@@ -70,7 +69,6 @@ export interface ItchGameData extends BaseGameData {
   itch_url: string
   // Itch pricing (typically USD-based)
   price_usd?: number
-  price_final?: number
   // No native review system on Itch
   positive_review_percentage?: never
   review_count?: never
@@ -103,7 +101,6 @@ export interface CrazyGamesData extends BaseGameData {
   is_free: true
   price_eur?: never
   price_usd?: never
-  price_final?: never
   // No review system
   positive_review_percentage?: never
   review_count?: never
@@ -145,18 +142,15 @@ export type PlatformPricing = {
   steam: {
     price_eur?: number
     price_usd?: number
-    price_final?: number
     currency_support: ['EUR', 'USD']
   }
   itch: {
     price_usd?: number
-    price_final?: number
     currency_support: ['USD']
   }
   crazygames: {
     price_eur?: never
     price_usd?: never
-    price_final?: never
     currency_support: never
     is_free: true
   }
@@ -325,12 +319,10 @@ type SteamPricingResult = {
   currencies: ['EUR', 'USD']
   price_eur?: number
   price_usd?: number
-  price_final?: number
 }
 type ItchPricingResult = {
   currencies: ['USD']
   price_usd?: number
-  price_final?: number
 }
 type CrazyGamesPricingResult = {
   currencies: never
@@ -353,7 +345,6 @@ export function getPlatformPricing(
       currencies: ['EUR', 'USD'],
       price_eur: game.price_eur,
       price_usd: game.price_usd,
-      price_final: game.price_final,
     }
   }
 
@@ -361,7 +352,6 @@ export function getPlatformPricing(
     return {
       currencies: ['USD'],
       price_usd: game.price_usd,
-      price_final: game.price_final,
     }
   }
 

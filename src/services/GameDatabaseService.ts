@@ -60,8 +60,8 @@ export class GameDatabaseService {
       `
       SELECT
         COUNT(*) as total_games,
-        COUNT(CASE WHEN is_free = 1 OR price_final = 0 THEN 1 END) as free_games,
-        MAX(CASE WHEN price_final > 0 THEN price_final ELSE 0 END) as max_price
+        COUNT(CASE WHEN is_free = 1 THEN 1 END) as free_games,
+        MAX(CASE WHEN is_free = 0 THEN COALESCE(price_eur, price_usd, 0) ELSE 0 END) as max_price
       FROM games
       WHERE is_absorbed = 0
     `,

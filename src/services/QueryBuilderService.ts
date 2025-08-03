@@ -38,6 +38,7 @@ export interface QueryFilters {
   rating: string
   crossPlatform: boolean
   hiddenGems: boolean
+  onSale: boolean
   selectedTags: string[]
   tagLogic: 'and' | 'or'
   selectedChannels: string[]
@@ -173,6 +174,11 @@ export class QueryBuilderService {
       query += ` AND g.positive_review_percentage >= ${HIDDEN_GEMS.MIN_RATING} AND g.video_count >= ${HIDDEN_GEMS.MIN_VIDEOS} AND g.video_count <= ${HIDDEN_GEMS.MAX_VIDEOS} AND g.review_count >= ${HIDDEN_GEMS.MIN_REVIEWS}`
     }
 
+    // On Sale filter
+    if (filterValues.onSale) {
+      query += ' AND g.is_on_sale = 1'
+    }
+
     // Release status filter
     if (filterValues.releaseStatus && filterValues.releaseStatus !== 'all') {
       if (filterValues.releaseStatus === 'released') {
@@ -231,7 +237,7 @@ export class QueryBuilderService {
 
         // Free games condition (when minPrice is 0, include free games)
         if (priceFilter.minPrice === 0) {
-          priceConditions.push(`(g.is_free = 1 OR g.${currencyField} = 0)`)
+          priceConditions.push(`g.is_free = 1`)
         }
 
         // Paid games price range condition
@@ -469,7 +475,10 @@ export class QueryBuilderService {
   buildSortClause(filterValues: QueryFilters): string {
     // Handle advanced sorting with multi-criteria
     if (filterValues.sortBy === 'advanced' && filterValues.sortSpec) {
-      return this.buildAdvancedSortClause(filterValues.sortSpec)
+      return this.buildAdvancedSortClause(
+        filterValues.sortSpec,
+        filterValues.currency,
+      )
     }
 
     // Handle smart discovery sorting presets
@@ -495,15 +504,20 @@ export class QueryBuilderService {
    * Build advanced multi-criteria sort clause
    *
    * @param sortSpec - Advanced sort specification
+   * @param currency - Currency for price sorting
    * @returns SQL ORDER BY clause string
    */
-  private buildAdvancedSortClause(sortSpec: SortSpec): string {
+  private buildAdvancedSortClause(
+    sortSpec: SortSpec,
+    currency: 'eur' | 'usd' = 'eur',
+  ): string {
     const normalized = normalizeSortSpec(sortSpec)
 
     // If it's a string, treat as simple sort
     if (typeof normalized === 'string') {
       return (
-        this.getSortFieldClause(normalized, 'desc') ?? 'latest_video_date DESC'
+        this.getSortFieldClause(normalized, 'desc', currency) ??
+        'latest_video_date DESC'
       )
     }
 
@@ -515,7 +529,7 @@ export class QueryBuilderService {
     if (!isAdvancedSortSpec(normalized)) {
       // If it's not an advanced spec, fall back to default sorting
       return (
-        this.getSortFieldClause('latest_video_date', 'desc') ??
+        this.getSortFieldClause('latest_video_date', 'desc', currency) ??
         'latest_video_date DESC'
       )
     }
@@ -526,6 +540,7 @@ export class QueryBuilderService {
     const primaryClause = this.getSortFieldClause(
       normalized.primary?.field ?? 'latest_video_date',
       normalized.primary?.direction ?? 'desc',
+      currency,
     )
     if (primaryClause) {
       clauses.push(primaryClause)
@@ -536,6 +551,7 @@ export class QueryBuilderService {
       const secondaryClause = this.getSortFieldClause(
         normalized.secondary.field,
         normalized.secondary.direction,
+        currency,
       )
       if (secondaryClause) {
         clauses.push(secondaryClause)
@@ -554,9 +570,14 @@ export class QueryBuilderService {
    *
    * @param field - Sort field name
    * @param direction - Sort direction (asc/desc)
+   * @param currency - Currency for price sorting (eur/usd)
    * @returns SQL sort clause or null if field is invalid
    */
-  private getSortFieldClause(field: string, direction: string): string | null {
+  private getSortFieldClause(
+    field: string,
+    direction: string,
+    currency: 'eur' | 'usd' = 'eur',
+  ): string | null {
     const dir = direction.toUpperCase()
 
     switch (field) {
@@ -568,13 +589,16 @@ export class QueryBuilderService {
         return `latest_video_date ${dir}`
       case 'release':
         return `release_date_sortable ${dir}`
-      case 'price':
+      case 'price': {
         // Price sorting: free games first if ASC, paid games first if DESC
+        // Use currency-specific column based on user preference
+        const priceField = currency === 'usd' ? 'price_usd' : 'price_eur'
         if (direction === 'asc') {
-          return 'CASE WHEN is_free = 1 OR price_final = 0 THEN 0 ELSE price_final END ASC'
+          return `CASE WHEN is_free = 1 THEN 0 ELSE ${priceField} END ASC`
         } else {
-          return 'CASE WHEN is_free = 1 OR price_final = 0 THEN 99999 ELSE price_final END DESC'
+          return `CASE WHEN is_free = 1 THEN 99999 ELSE ${priceField} END DESC`
         }
+      }
       case 'channels':
         // Channel count sorting (derived from unique_channels JSON length)
         return `LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1 ${dir}`
@@ -625,13 +649,13 @@ export class QueryBuilderService {
         // High rating + reasonable price (prioritize quality over cheapness)
         return `
             CASE
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.BUDGET}) THEN 1
-              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.MODERATE}) THEN 2
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND (is_free = 1 OR COALESCE(price_eur, price_usd, 0) <= ${PRICING.VALUE_THRESHOLDS.BUDGET}) THEN 1
+              WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} AND (is_free = 1 OR COALESCE(price_eur, price_usd, 0) <= ${PRICING.VALUE_THRESHOLDS.MODERATE}) THEN 2
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MIXED} THEN 3
               ELSE 4
             END ASC,
             positive_review_percentage DESC,
-            CASE WHEN is_free = 1 OR price_final = 0 THEN 0 ELSE price_final END ASC
+            CASE WHEN is_free = 1 THEN 0 ELSE COALESCE(price_eur, price_usd, 0) END ASC
           `
 
       case 'hidden-gems':
@@ -706,7 +730,7 @@ export class QueryBuilderService {
         // Price range value optimization
         return `
             positive_review_percentage DESC,
-            CASE WHEN is_free = 1 OR price_final = 0 THEN 0 ELSE price_final END ASC,
+            CASE WHEN is_free = 1 THEN 0 ELSE COALESCE(price_eur, price_usd, 0) END ASC,
             video_count DESC
           `
 

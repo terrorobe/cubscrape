@@ -171,7 +171,7 @@ export class GameDataProcessingService {
     if (games.length > 0) {
       // Calculate max price (convert from cents to decimal)
       const maxPriceCents = Math.max(
-        ...games.map((game) => game.price_final ?? 0),
+        ...games.map((game) => game.price_eur ?? game.price_usd ?? 0),
       )
       stats.maxPrice = maxPriceCents / 100
 
@@ -325,7 +325,6 @@ export class GameDataProcessingService {
         : undefined,
       price_eur: Number(gameData.price_eur),
       price_usd: Number(gameData.price_usd),
-      price_final: Number(gameData.price_final),
       is_free: Boolean(gameData.is_free),
       release_date: gameData.release_date
         ? String(gameData.release_date)

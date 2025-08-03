@@ -17,9 +17,8 @@ CREATE TABLE games (
     is_early_access BOOLEAN DEFAULT 0,
     is_demo BOOLEAN DEFAULT 0,
     is_free BOOLEAN DEFAULT 0,
-    price_eur REAL,
-    price_usd REAL,
-    price_final REAL,
+    price_eur INTEGER,
+    price_usd INTEGER,
     positive_review_percentage INTEGER,
     review_count INTEGER,
     review_summary TEXT,
@@ -50,8 +49,8 @@ CREATE TABLE games (
     is_absorbed BOOLEAN DEFAULT 0,  -- Whether this game is absorbed into another game
     absorbed_into TEXT,  -- game_key of parent game (if absorbed)
     discount_percent INTEGER DEFAULT 0,
-    original_price_eur REAL,
-    original_price_usd REAL,
+    original_price_eur INTEGER,
+    original_price_usd INTEGER,
     is_on_sale BOOLEAN DEFAULT 0
 );
 
@@ -79,7 +78,7 @@ CREATE INDEX idx_channel_videos ON game_videos(channel_name);
 CREATE INDEX idx_absorbed_platform ON games(is_absorbed, platform);
 CREATE INDEX idx_latest_video_date ON games(latest_video_date);
 CREATE INDEX idx_video_count ON games(video_count);
-CREATE INDEX idx_price_filters ON games(is_free, price_final);
+CREATE INDEX idx_price_filters ON games(is_free, price_eur, price_usd);
 CREATE INDEX idx_price_eur ON games(price_eur);
 CREATE INDEX idx_price_usd ON games(price_usd);
 CREATE INDEX idx_multi_platform ON games(steam_url, itch_url, crazygames_url);

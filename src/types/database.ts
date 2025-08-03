@@ -23,7 +23,6 @@ export interface GameRecord {
   is_free: boolean
   price_eur?: number
   price_usd?: number
-  price_final?: number
   positive_review_percentage?: number
   review_count?: number
   review_summary?: string

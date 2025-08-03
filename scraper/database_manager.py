@@ -211,15 +211,15 @@ class DatabaseManager:
             if is_released:
                 sortable_date = self._convert_to_sortable_date_int(game.get('release_date', ''))
 
-            # Clean price values - convert to numeric or None for free games
-            cleaned_price_eur = None if game.get('is_free') else self._clean_price_value(game.get('price_eur'))
-            cleaned_price_usd = None if game.get('is_free') else self._clean_price_value(game.get('price_usd'))
+            # Price values are already integers in cents, just pass through for non-free games
+            cleaned_price_eur = None if game.get('is_free') else game.get('price_eur')
+            cleaned_price_usd = None if game.get('is_free') else game.get('price_usd')
 
             # Insert game record
             cursor.execute('''
                 INSERT INTO games (
                     game_key, steam_app_id, name, platform, coming_soon,
-                    is_early_access, is_demo, is_free, price_eur, price_usd, price_final,
+                    is_early_access, is_demo, is_free, price_eur, price_usd,
                     positive_review_percentage, review_count, review_summary, review_summary_priority,
                     recent_review_percentage, recent_review_count, recent_review_summary,
                     insufficient_reviews, release_date, planned_release_date, release_date_sortable, header_image, steam_url, itch_url,
@@ -227,7 +227,7 @@ class DatabaseManager:
                     unique_channels, genres, tags, developers, publishers,
                     demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary,
                     is_absorbed, absorbed_into, discount_percent, original_price_eur, original_price_usd, is_on_sale
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -239,7 +239,6 @@ class DatabaseManager:
                 game.get('is_free', False),
                 cleaned_price_eur,
                 cleaned_price_usd,
-                self._extract_price_final(game),
                 percentage,
                 game.get('review_count', 0),
                 review_summary,
@@ -270,8 +269,8 @@ class DatabaseManager:
                 game.get('is_absorbed', False),
                 game.get('absorbed_into'),
                 game.get('discount_percent', 0),
-                self._clean_price_value(game.get('original_price_eur')),
-                self._clean_price_value(game.get('original_price_usd')),
+                game.get('original_price_eur'),
+                game.get('original_price_usd'),
                 game.get('is_on_sale', False)
             ))
 
@@ -340,39 +339,6 @@ class DatabaseManager:
         }
 
         return priorities.get(review_summary, 99)
-
-    def _clean_price_value(self, price_str: str | None) -> float | None:
-        """Clean and convert price string to numeric value, returning None for free/missing prices"""
-        if not price_str:
-            return None
-
-        # Handle free games - return None for numeric fields when free
-        if isinstance(price_str, str) and price_str.lower() in ['free', 'free to play']:
-            return None
-
-        # Extract numeric value from price string like "16,79€", "$19.99", "19.99", etc.
-        # First try to match decimal numbers (with comma or period as decimal separator)
-        match = re.search(r'(\d+)[,.](\d+)', str(price_str))
-        if match:
-            return float(f"{match.group(1)}.{match.group(2)}")
-
-        # Then try to match whole numbers
-        match = re.search(r'(\d+)', str(price_str))
-        if match:
-            return float(match.group(1))
-
-        return None
-
-    def _extract_price_final(self, game: dict[str, Any]) -> float:
-        """Extract numeric price for filtering - always returns a float (0.0 for free games)"""
-        if game.get('is_free'):
-            return 0.0
-
-        # Try EUR price first, then USD
-        price = game.get('price_eur', '') or game.get('price_usd', '')
-        cleaned_price = self._clean_price_value(price)
-
-        return cleaned_price if cleaned_price is not None else 0.0
 
     def _get_latest_video_date(self, game: dict[str, Any]) -> str | None:
         """Get the most recent video date for this game"""

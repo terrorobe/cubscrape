@@ -242,8 +242,8 @@ export const SORT_SPECS: Record<string, SortSpec> = {
       ORDER BY
         search_score DESC,
         CASE
-          WHEN positive_review_percentage >= 80 AND (is_free = 1 OR price_final <= 20) THEN 1
-          WHEN positive_review_percentage >= 70 AND (is_free = 1 OR price_final <= 30) THEN 2
+          WHEN positive_review_percentage >= 80 AND (is_free = 1 OR COALESCE(price_eur, price_usd, 0) <= 2000) THEN 1
+          WHEN positive_review_percentage >= 70 AND (is_free = 1 OR COALESCE(price_eur, price_usd, 0) <= 3000) THEN 2
           WHEN positive_review_percentage >= 60 THEN 3
           ELSE 4
         END ASC,
@@ -275,10 +275,10 @@ export const SORT_SPECS: Record<string, SortSpec> = {
     `,
   },
   'price-asc': {
-    sql: 'ORDER BY is_free DESC, price_final ASC',
+    sql: 'ORDER BY is_free DESC, COALESCE(price_eur, price_usd, 0) ASC',
   },
   'price-desc': {
-    sql: 'ORDER BY price_final DESC',
+    sql: 'ORDER BY is_free ASC, COALESCE(price_eur, price_usd, 0) DESC',
   },
   'reviews-desc': {
     sql: 'ORDER BY total_reviews DESC',
