@@ -619,20 +619,35 @@ class SteamBulkPriceFetcher:
         for i, batch in enumerate(batches, 1):
             logging.info(f"Processing batch {i}/{len(batches)} ({len(batch)} apps)")
 
-            try:
-                # Fetch EUR prices if needed
-                if currencies in ['eur', 'both']:
-                    eur_batch_results = self._process_batch_fetch_only(batch, 'at')
-                    all_eur_updates.update(eur_batch_results)
+            # Fetch EUR prices if needed
+            if currencies in ['eur', 'both']:
+                eur_batch_results = self._process_batch_fetch_only(batch, 'at')
+                if not eur_batch_results:
+                    raise RuntimeError(f"Batch {i} EUR fetch failed - aborting atomic operation")
+                all_eur_updates.update(eur_batch_results)
 
-                # Fetch USD prices if needed
-                if currencies in ['usd', 'both']:
-                    usd_batch_results = self._process_batch_fetch_only(batch, 'us')
-                    all_usd_updates.update(usd_batch_results)
+            # Fetch USD prices if needed
+            if currencies in ['usd', 'both']:
+                usd_batch_results = self._process_batch_fetch_only(batch, 'us')
+                if not usd_batch_results:
+                    raise RuntimeError(f"Batch {i} USD fetch failed - aborting atomic operation")
+                all_usd_updates.update(usd_batch_results)
 
-            except Exception as e:
-                logging.error(f"Batch {i} failed: {e}")
-                # Continue processing other batches
+        # Validate that we have data for all requested apps
+        expected_apps = set(app_ids)
+        if currencies == 'both':
+            # For both currencies, we need games that have at least one currency price
+            available_apps = set(all_eur_updates.keys()) | set(all_usd_updates.keys())
+        elif currencies == 'eur':
+            available_apps = set(all_eur_updates.keys())
+        else:  # currencies == 'usd'
+            available_apps = set(all_usd_updates.keys())
+
+        missing_apps = expected_apps - available_apps
+        if missing_apps:
+            raise RuntimeError(f"Atomic operation failed: {len(missing_apps)} games have no price data. "
+                             f"Expected {len(expected_apps)} games, got {len(available_apps)} games. "
+                             f"First 10 missing: {list(missing_apps)[:10]}")
 
         # Apply all updates using the price service
         if currencies == 'both':
@@ -684,19 +699,19 @@ class SteamBulkPriceFetcher:
                         rate_limit_attempts += 1
                         continue
                     else:
-                        return {}
+                        raise RuntimeError("Rate limit exceeded - batch fetch failed") from e
                 else:
-                    self.error_handler.handle_unexpected_http_error(e.response.status_code if e.response else 0, e.response)
-                    return {}
+                    status_code = e.response.status_code if e.response else 0
+                    self.error_handler.handle_unexpected_http_error(status_code, e.response)
+                    raise RuntimeError(f"HTTP {status_code} error - batch fetch failed") from e
             except Exception as e:
                 if self.error_handler.should_retry_general_error(e, general_attempts):
                     general_attempts += 1
                     continue
                 else:
-                    return {}
+                    raise RuntimeError(f"General error after {general_attempts} retries: {e}") from e
 
         # If we get here, all retries failed
-        logging.warning(f"All retries failed for batch fetch ({country_code}): "
-                       f"attempts={general_attempts}, batch_size={current_batch_size}")
-        return {}
+        raise RuntimeError(f"All retries failed for batch fetch ({country_code}): "
+                          f"attempts={general_attempts}, batch_size={current_batch_size}")
 
