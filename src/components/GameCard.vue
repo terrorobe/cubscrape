@@ -398,7 +398,7 @@ const handleCardClick = async (event: MouseEvent): Promise<void> => {
     debug.error('Clipboard API not available. Context:', {
       isSecureContext: window.isSecureContext,
       protocol: window.location.protocol,
-      hostname: window.location.hostname
+      hostname: window.location.hostname,
     })
     return
   }

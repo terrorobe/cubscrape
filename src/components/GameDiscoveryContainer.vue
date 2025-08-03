@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, type Ref } from 'vue'
+import { ref, computed, watch, type Ref } from 'vue'
 import GameCard from './GameCard.vue'
 import SortIndicator from './SortIndicator.vue'
 import PaginationControls from './PaginationControls.vue'
@@ -138,12 +138,34 @@ const searchQueryModel = computed({
 
 const searchInVideoTitlesModel = computed({
   get: () => props.searchState.searchInVideoTitles,
-  set: (value: boolean) =>
+  set: (value: boolean) => {
     emit('update:searchState', {
       query: props.searchState.query,
       searchInVideoTitles: value,
-    }),
+    })
+    // Trigger mode change feedback
+    showModeChangeMessage.value = true
+    setTimeout(() => {
+      showModeChangeMessage.value = false
+    }, 2000)
+  },
 })
+
+// Animation state
+const showModeChangeMessage = ref(false)
+const showResultsPulse = ref(false)
+
+// Watch for filtered games changes to trigger animations
+watch(
+  () => props.filteredGames,
+  () => {
+    // Trigger pulse animation on results count
+    showResultsPulse.value = true
+    setTimeout(() => {
+      showResultsPulse.value = false
+    }, 800)
+  },
+)
 
 // Pagination event handlers (now handled internally)
 const handleGoToPage = (page: number): void => {
@@ -164,7 +186,7 @@ const handleSetPageSize = (size: number): void => {
 </script>
 
 <template>
-  <div class="game-discovery-container">
+  <div class="game-discovery-container relative">
     <!-- Sort, Search & Status Info -->
     <div class="mb-5 text-text-secondary">
       <!-- Desktop layout -->
@@ -178,29 +200,78 @@ const handleSetPageSize = (size: number): void => {
             @sort-changed="handleSortChange"
           />
           <div class="text-sm">
-            <span>{{ filteredGames.length }} games found</span>
+            <span
+              :class="{ 'bloom-pulse': showResultsPulse }"
+              class="inline-block transition-all"
+            >
+              {{ filteredGames.length }} games found
+            </span>
           </div>
         </div>
 
         <!-- Search Bar -->
         <div class="mx-4 max-w-lg flex-1">
           <div class="flex items-center gap-3">
-            <input
-              type="text"
-              v-model="searchQueryModel"
-              placeholder="Search games..."
-              class="border-border flex-1 rounded-lg border bg-bg-secondary px-3 py-1.5 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
-            />
-            <label
-              class="flex cursor-pointer items-center gap-1.5 text-xs whitespace-nowrap text-text-secondary transition-colors hover:text-text-primary"
-            >
+            <div class="relative flex-1">
               <input
-                type="checkbox"
-                v-model="searchInVideoTitlesModel"
-                class="border-border size-3.5 cursor-pointer rounded-sm bg-bg-secondary text-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:ring-offset-bg-primary"
+                type="text"
+                v-model="searchQueryModel"
+                placeholder="Search games..."
+                class="border-border w-full rounded-lg border bg-bg-secondary px-3 py-1.5 pr-8 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
               />
-              <span>Video titles</span>
-            </label>
+              <!-- Clear button -->
+              <button
+                v-if="searchQueryModel"
+                type="button"
+                @click="searchQueryModel = ''"
+                class="absolute top-1/2 right-1 -translate-y-1/2 rounded-sm p-1 text-text-secondary transition-all hover:bg-bg-secondary hover:text-text-primary"
+                title="Clear search"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="size-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <!-- Search scope toggle -->
+            <div class="flex rounded-lg bg-bg-secondary p-0.5">
+              <button
+                @click="searchInVideoTitlesModel = false"
+                class="rounded-md px-2 py-1 text-xs font-medium transition-all"
+                :class="
+                  !searchInVideoTitlesModel
+                    ? 'bg-bg-primary text-text-primary shadow-sm'
+                    : 'text-text-secondary hover:text-text-primary'
+                "
+                type="button"
+                title="Search in game names only"
+              >
+                🎮 Games
+              </button>
+              <button
+                @click="searchInVideoTitlesModel = true"
+                class="rounded-md px-2 py-1 text-xs font-medium transition-all"
+                :class="
+                  searchInVideoTitlesModel
+                    ? 'bg-bg-primary text-text-primary shadow-sm'
+                    : 'text-text-secondary hover:text-text-primary'
+                "
+                type="button"
+                title="Search in both game names and video titles"
+              >
+                🎮+🎬 All
+              </button>
+            </div>
           </div>
         </div>
 
@@ -243,22 +314,66 @@ const handleSetPageSize = (size: number): void => {
 
         <!-- Search Bar -->
         <div class="flex items-center gap-2">
-          <input
-            type="text"
-            v-model="searchQueryModel"
-            placeholder="Search games..."
-            class="border-border flex-1 rounded-lg border bg-bg-secondary px-3 py-1.5 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
-          />
-          <label
-            class="flex cursor-pointer items-center gap-1 text-xs text-text-secondary"
-          >
+          <div class="relative flex-1">
             <input
-              type="checkbox"
-              v-model="searchInVideoTitlesModel"
-              class="border-border size-3.5 cursor-pointer rounded-sm bg-bg-secondary text-accent"
+              type="text"
+              v-model="searchQueryModel"
+              placeholder="Search games..."
+              class="border-border w-full rounded-lg border bg-bg-secondary px-3 py-1.5 pr-8 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-accent focus:outline-none"
             />
-            <span class="whitespace-nowrap">Videos</span>
-          </label>
+            <!-- Clear button -->
+            <button
+              v-if="searchQueryModel"
+              type="button"
+              @click="searchQueryModel = ''"
+              class="absolute top-1/2 right-1 -translate-y-1/2 rounded-sm p-1 text-text-secondary transition-all hover:bg-bg-secondary hover:text-text-primary"
+              title="Clear search"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="size-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <!-- Search scope toggle (compact for mobile) -->
+          <div class="flex rounded-lg bg-bg-secondary p-0.5">
+            <button
+              @click="searchInVideoTitlesModel = false"
+              class="rounded-md px-1.5 py-1 text-xs font-medium transition-all"
+              :class="
+                !searchInVideoTitlesModel
+                  ? 'bg-bg-primary text-text-primary shadow-sm'
+                  : 'text-text-secondary'
+              "
+              type="button"
+              title="Search games only"
+            >
+              🎮
+            </button>
+            <button
+              @click="searchInVideoTitlesModel = true"
+              class="rounded-md px-1.5 py-1 text-xs font-medium transition-all"
+              :class="
+                searchInVideoTitlesModel
+                  ? 'bg-bg-primary text-text-primary shadow-sm'
+                  : 'text-text-secondary'
+              "
+              type="button"
+              title="Search games and video titles"
+            >
+              🎮+🎬
+            </button>
+          </div>
         </div>
 
         <!-- Search results count -->
@@ -272,6 +387,20 @@ const handleSetPageSize = (size: number): void => {
         </div>
       </div>
     </div>
+
+    <!-- Mode Change Message (absolute positioned) -->
+    <Transition name="fade">
+      <div
+        v-if="showModeChangeMessage"
+        class="absolute -top-14 left-1/2 z-20 -translate-x-1/2 rounded-full bg-accent/20 px-4 py-2 text-sm font-medium text-accent backdrop-blur-sm"
+      >
+        {{
+          searchInVideoTitlesModel
+            ? '🎬 Now searching in both game names and video titles'
+            : '🎮 Now searching in game names only'
+        }}
+      </div>
+    </Transition>
 
     <!-- Modern Game Grid with Pagination -->
     <div class="game-discovery-content min-h-0 w-full flex-1">
@@ -387,5 +516,41 @@ const handleSetPageSize = (size: number): void => {
   .game-grid {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
   }
+}
+
+/* Fade transition for mode change message */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Bloom pulse animation for results count */
+@keyframes bloomPulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 0 0 rgba(139, 92, 246, 0));
+    color: inherit;
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.5) drop-shadow(0 0 30px rgba(139, 92, 246, 1))
+      drop-shadow(0 0 60px rgba(139, 92, 246, 0.6));
+    color: #a78bfa;
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 0 0 rgba(139, 92, 246, 0));
+    color: inherit;
+  }
+}
+
+.bloom-pulse {
+  animation: bloomPulse 0.8s ease-out;
+  transform-origin: center;
 }
 </style>
