@@ -661,57 +661,80 @@ class SteamBulkPriceFetcher:
 
     def _process_batch_fetch_only(self, app_ids: list[str], country_code: str) -> dict[str, dict[str, Any]]:
         """Process a batch and return parsed results without applying updates"""
-        current_batch_size = len(app_ids)
-        general_attempts = 0
-        rate_limit_attempts = 0
+        remaining_app_ids = app_ids.copy()  # Work with a copy to track remaining apps
+        all_results = {}
 
-        while general_attempts < self.config['max_retries']:
-            try:
-                # Make bulk request using HTTP client
-                response_data = self.http_client.make_bulk_request(app_ids[:current_batch_size], country_code)
+        while remaining_app_ids:
+            current_batch_size = len(remaining_app_ids)
+            general_attempts = 0
+            rate_limit_attempts = 0
 
-                if response_data:
-                    # Parse response using response parser
-                    parsed_results = self.response_parser.parse_bulk_response(response_data, app_ids[:current_batch_size])
-                    logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
-                    return parsed_results
-                else:
-                    # Empty response - increment attempts first
-                    general_attempts += 1
-                    if self.error_handler.should_retry_empty_response(general_attempts - 1):
-                        logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts})")
+            while general_attempts < self.config['max_retries']:
+                try:
+                    # Process current batch (all remaining apps or reduced size)
+                    current_batch = remaining_app_ids[:current_batch_size]
+                    response_data = self.http_client.make_bulk_request(current_batch, country_code)
+
+                    if response_data:
+                        # Parse response using response parser
+                        parsed_results = self.response_parser.parse_bulk_response(response_data, current_batch)
+                        logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
+
+                        # Add successful results and remove processed apps
+                        all_results.update(parsed_results)
+                        remaining_app_ids = remaining_app_ids[current_batch_size:]
+                        break  # Success - move to next batch
+                    else:
+                        # Empty response - increment attempts first
+                        general_attempts += 1
+                        if self.error_handler.should_retry_empty_response(general_attempts - 1):
+                            logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts})")
+                            continue
+                        else:
+                            raise RuntimeError(f"Empty response after {general_attempts} attempts - batch fetch failed")
+
+                except requests.exceptions.HTTPError as e:
+                    if e.response and e.response.status_code == 500:
+                        new_batch_size, should_continue = self.error_handler.handle_server_error(current_batch_size, general_attempts)
+                        current_batch_size = new_batch_size
+                        general_attempts += 1
+                        if not should_continue:
+                            break
+                        continue
+                    elif e.response and e.response.status_code == 429:
+                        should_retry, delay = self.error_handler.handle_rate_limit(rate_limit_attempts)
+                        if should_retry:
+                            time.sleep(delay)
+                            rate_limit_attempts += 1
+                            continue
+                        else:
+                            raise RuntimeError("Rate limit exceeded - batch fetch failed") from e
+                    else:
+                        status_code = e.response.status_code if e.response else 0
+                        # HTTP 0 (connection errors) should be retryable like HTTP 500 errors
+                        if status_code == 0 or status_code >= 500:
+                            new_batch_size, should_continue = self.error_handler.handle_server_error(current_batch_size, general_attempts)
+                            current_batch_size = new_batch_size
+                            general_attempts += 1
+                            if not should_continue:
+                                raise RuntimeError(f"HTTP {status_code} error after retries - batch fetch failed") from e
+                            continue
+                        else:
+                            # Other HTTP errors (400, 404, etc.) are not retryable
+                            self.error_handler.handle_unexpected_http_error(status_code, e.response)
+                            raise RuntimeError(f"HTTP {status_code} error - batch fetch failed") from e
+                except Exception as e:
+                    if self.error_handler.should_retry_general_error(e, general_attempts):
+                        general_attempts += 1
                         continue
                     else:
-                        return {}
+                        raise RuntimeError(f"General error after {general_attempts} retries: {e}") from e
 
-            except requests.exceptions.HTTPError as e:
-                if e.response and e.response.status_code == 500:
-                    new_batch_size, should_continue = self.error_handler.handle_server_error(current_batch_size, general_attempts)
-                    current_batch_size = new_batch_size
-                    general_attempts += 1
-                    if not should_continue:
-                        break
-                    continue
-                elif e.response and e.response.status_code == 429:
-                    should_retry, delay = self.error_handler.handle_rate_limit(rate_limit_attempts)
-                    if should_retry:
-                        time.sleep(delay)
-                        rate_limit_attempts += 1
-                        continue
-                    else:
-                        raise RuntimeError("Rate limit exceeded - batch fetch failed") from e
-                else:
-                    status_code = e.response.status_code if e.response else 0
-                    self.error_handler.handle_unexpected_http_error(status_code, e.response)
-                    raise RuntimeError(f"HTTP {status_code} error - batch fetch failed") from e
-            except Exception as e:
-                if self.error_handler.should_retry_general_error(e, general_attempts):
-                    general_attempts += 1
-                    continue
-                else:
-                    raise RuntimeError(f"General error after {general_attempts} retries: {e}") from e
+            # If we get here without breaking, all retries failed for this sub-batch
+            if remaining_app_ids:
+                raise RuntimeError(f"All retries failed for batch fetch ({country_code}): "
+                                 f"attempts={general_attempts}, batch_size={current_batch_size}, "
+                                 f"remaining_apps={len(remaining_app_ids)}")
 
-        # If we get here, all retries failed
-        raise RuntimeError(f"All retries failed for batch fetch ({country_code}): "
-                          f"attempts={general_attempts}, batch_size={current_batch_size}")
+        return all_results
 
