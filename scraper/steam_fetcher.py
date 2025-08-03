@@ -608,30 +608,25 @@ class SteamBulkPriceFetcher:
         logging.info(f"Starting bulk price refresh for {len(app_ids)} apps")
         logging.info(f"Batch size: {batch_size}, Currencies: {currencies}, Dry run: {dry_run}")
 
-        # Collect all data first across all batches and currencies
+        # Collect all data first - let _process_batch_fetch_only handle all batching
         all_eur_updates = {}
         all_usd_updates = {}
 
-        # Split app IDs into batches
-        batches = self.batch_manager.create_batches(app_ids, batch_size)
+        # Fetch EUR prices if needed
+        if currencies in ['eur', 'both']:
+            logging.info("Fetching EUR prices for all games...")
+            eur_batch_results = self._process_batch_fetch_only(app_ids, 'at')
+            if len(eur_batch_results) == 0:
+                raise RuntimeError("EUR fetch failed - no results returned")
+            all_eur_updates.update(eur_batch_results)
 
-        # Fetch all data first (no saving yet)
-        for i, batch in enumerate(batches, 1):
-            logging.info(f"Processing batch {i}/{len(batches)} ({len(batch)} apps)")
-
-            # Fetch EUR prices if needed
-            if currencies in ['eur', 'both']:
-                eur_batch_results = self._process_batch_fetch_only(batch, 'at')
-                if not eur_batch_results:
-                    raise RuntimeError(f"Batch {i} EUR fetch failed - aborting atomic operation")
-                all_eur_updates.update(eur_batch_results)
-
-            # Fetch USD prices if needed
-            if currencies in ['usd', 'both']:
-                usd_batch_results = self._process_batch_fetch_only(batch, 'us')
-                if not usd_batch_results:
-                    raise RuntimeError(f"Batch {i} USD fetch failed - aborting atomic operation")
-                all_usd_updates.update(usd_batch_results)
+        # Fetch USD prices if needed
+        if currencies in ['usd', 'both']:
+            logging.info("Fetching USD prices for all games...")
+            usd_batch_results = self._process_batch_fetch_only(app_ids, 'us')
+            if len(usd_batch_results) == 0:
+                raise RuntimeError("USD fetch failed - no results returned")
+            all_usd_updates.update(usd_batch_results)
 
         # Validate that we have data for all requested apps
         expected_apps = set(app_ids)
@@ -661,18 +656,33 @@ class SteamBulkPriceFetcher:
 
     def _process_batch_fetch_only(self, app_ids: list[str], country_code: str) -> dict[str, dict[str, Any]]:
         """Process a batch and return parsed results without applying updates"""
-        remaining_app_ids = app_ids.copy()  # Work with a copy to track remaining apps
         all_results = {}
+        app_ids_to_process = app_ids.copy()
 
-        while remaining_app_ids:
-            current_batch_size = len(remaining_app_ids)
+        # Get the configured initial batch size
+        initial_batch_size = self.batch_manager.get_initial_batch_size(None)
+
+        batch_number = 0
+        total_apps = len(app_ids_to_process)
+
+        while app_ids_to_process:
+            batch_number += 1
+            processed_apps = total_apps - len(app_ids_to_process)
+
+            # Use configured batch size, but don't exceed remaining apps
+            current_batch_size = min(initial_batch_size, len(app_ids_to_process))
+            logging.info(f"Processing batch {batch_number} ({current_batch_size} apps, {processed_apps}/{total_apps} completed)")
+
             general_attempts = 0
             rate_limit_attempts = 0
 
+            # Retry loop for current batch with progressive size reduction
             while general_attempts < self.config['max_retries']:
                 try:
-                    # Process current batch (all remaining apps or reduced size)
-                    current_batch = remaining_app_ids[:current_batch_size]
+                    # Take only the apps we can handle with current batch size
+                    current_batch = app_ids_to_process[:current_batch_size]
+                    logging.debug(f"Attempting {len(current_batch)} apps with batch size {current_batch_size}")
+
                     response_data = self.http_client.make_bulk_request(current_batch, country_code)
 
                     if response_data:
@@ -682,59 +692,67 @@ class SteamBulkPriceFetcher:
 
                         # Add successful results and remove processed apps
                         all_results.update(parsed_results)
-                        remaining_app_ids = remaining_app_ids[current_batch_size:]
-                        break  # Success - move to next batch
+                        app_ids_to_process = app_ids_to_process[current_batch_size:]
+                        break  # Success - move to remaining apps
                     else:
-                        # Empty response - increment attempts first
+                        # Empty response - treat as error
                         general_attempts += 1
-                        if self.error_handler.should_retry_empty_response(general_attempts - 1):
-                            logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts})")
+                        if general_attempts < self.config['max_retries']:
+                            logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts}/{self.config['max_retries']})")
                             continue
                         else:
-                            raise RuntimeError(f"Empty response after {general_attempts} attempts - batch fetch failed")
+                            raise RuntimeError(f"Empty response after {general_attempts} attempts")
 
                 except requests.exceptions.HTTPError as e:
                     if e.response and e.response.status_code == 500:
-                        new_batch_size, should_continue = self.error_handler.handle_server_error(current_batch_size, general_attempts)
-                        current_batch_size = new_batch_size
+                        # Reduce batch size and retry
+                        new_batch_size, _ = self.error_handler.handle_server_error(current_batch_size, general_attempts)
+                        current_batch_size = min(new_batch_size, len(app_ids_to_process))  # Don't exceed remaining apps
                         general_attempts += 1
-                        if not should_continue:
-                            break
+
+                        if current_batch_size < 1:
+                            raise RuntimeError("Batch size reduced to less than 1 - cannot continue") from e
+                        if general_attempts >= self.config['max_retries']:
+                            raise RuntimeError(f"HTTP 500 error - exhausted {self.config['max_retries']} retries") from e
                         continue
+
                     elif e.response and e.response.status_code == 429:
                         should_retry, delay = self.error_handler.handle_rate_limit(rate_limit_attempts)
-                        if should_retry:
+                        if should_retry and general_attempts < self.config['max_retries']:
                             time.sleep(delay)
                             rate_limit_attempts += 1
+                            general_attempts += 1
                             continue
                         else:
-                            raise RuntimeError("Rate limit exceeded - batch fetch failed") from e
+                            raise RuntimeError("Rate limit exceeded - exhausted retries") from e
+
                     else:
                         status_code = e.response.status_code if e.response else 0
-                        # HTTP 0 (connection errors) should be retryable like HTTP 500 errors
+                        # HTTP 0 (connection errors) and 5xx should be retryable
                         if status_code == 0 or status_code >= 500:
-                            new_batch_size, should_continue = self.error_handler.handle_server_error(current_batch_size, general_attempts)
-                            current_batch_size = new_batch_size
+                            new_batch_size, _ = self.error_handler.handle_server_error(current_batch_size, general_attempts)
+                            current_batch_size = min(new_batch_size, len(app_ids_to_process))
                             general_attempts += 1
-                            if not should_continue:
-                                raise RuntimeError(f"HTTP {status_code} error after retries - batch fetch failed") from e
+
+                            if current_batch_size < 1:
+                                raise RuntimeError("Batch size reduced to less than 1 - cannot continue") from e
+                            if general_attempts >= self.config['max_retries']:
+                                raise RuntimeError(f"HTTP {status_code} error - exhausted {self.config['max_retries']} retries") from e
                             continue
                         else:
                             # Other HTTP errors (400, 404, etc.) are not retryable
                             self.error_handler.handle_unexpected_http_error(status_code, e.response)
-                            raise RuntimeError(f"HTTP {status_code} error - batch fetch failed") from e
+                            raise RuntimeError(f"HTTP {status_code} error - not retryable") from e
+
                 except Exception as e:
-                    if self.error_handler.should_retry_general_error(e, general_attempts):
-                        general_attempts += 1
+                    general_attempts += 1
+                    if general_attempts < self.config['max_retries']:
+                        logging.warning(f"General error (attempt {general_attempts}/{self.config['max_retries']}): {e}")
                         continue
                     else:
-                        raise RuntimeError(f"General error after {general_attempts} retries: {e}") from e
+                        raise RuntimeError(f"General error - exhausted {self.config['max_retries']} retries") from e
 
-            # If we get here without breaking, all retries failed for this sub-batch
-            if remaining_app_ids:
-                raise RuntimeError(f"All retries failed for batch fetch ({country_code}): "
-                                 f"attempts={general_attempts}, batch_size={current_batch_size}, "
-                                 f"remaining_apps={len(remaining_app_ids)}")
+            # If we're here, we broke out of retry loop successfully, continue with remaining apps
 
         return all_results
 

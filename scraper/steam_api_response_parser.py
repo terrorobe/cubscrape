@@ -31,9 +31,17 @@ class SteamApiResponseParser:
 
     def _parse_single_app_response(self, app_data: dict[str, Any], app_id: str) -> dict[str, Any] | None:
         """Parse individual app response from Steam API"""
-        if not app_data:
-            logging.debug(f"No data section for app {app_id}")
-            return None
+        # Handle empty data array (Steam returns [] for free/demo/unreleased games)
+        if not app_data or isinstance(app_data, list):
+            logging.debug(f"No data or empty data array for app {app_id} - treating as free game")
+            return {
+                'is_free': True,
+                'price_eur': None,
+                'price_usd': None,
+                'original_price_eur': None,
+                'original_price_usd': None,
+                'is_on_sale': False
+            }
 
         price_overview = app_data.get('price_overview')
         if not price_overview:

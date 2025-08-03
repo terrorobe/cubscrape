@@ -785,9 +785,15 @@ Examples:
         data_manager = DataManager(project_root)
         bulk_fetcher = SteamBulkPriceFetcher(data_manager)
 
-        # Get Steam games that need price updates
+        # Get Steam games that need price updates (exclude stubbed games)
         steam_games = data_manager.load_steam_games()
-        app_ids = list(steam_games.keys())
+        # Filter out stubbed games and demos that don't exist on Steam anymore
+        non_stub_games = {app_id: game for app_id, game in steam_games.items()
+                         if not game.is_stub and not game.is_demo}
+        app_ids = list(non_stub_games.keys())
+
+        logging.info(f"Filtered out {len(steam_games) - len(non_stub_games)} stubbed games and demos")
+
         if args.max_apps > 0:
             app_ids = app_ids[:args.max_apps]
 
