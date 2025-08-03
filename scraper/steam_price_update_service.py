@@ -6,12 +6,19 @@ Extracted from DataManager for better separation of concerns.
 """
 
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypedDict
 
 if TYPE_CHECKING:
     from .data_manager import DataManager, SteamDataDict
 
 from .models import SteamGameData
+
+
+class PriceUpdateResult(TypedDict):
+    """Type definition for price update service results"""
+    successful: int
+    failed: int
+    errors: list[str]
 
 
 class SteamPriceUpdateService:
@@ -20,7 +27,7 @@ class SteamPriceUpdateService:
     def __init__(self, data_manager: 'DataManager') -> None:
         self.data_manager = data_manager
 
-    def update_prices(self, price_updates: dict[str, dict[str, Any]], currency: str, dry_run: bool = False) -> dict[str, Any]:
+    def update_prices(self, price_updates: dict[str, dict[str, Any]], currency: str, dry_run: bool = False) -> PriceUpdateResult:
         """
         Update Steam game prices for a specific currency
 
@@ -65,13 +72,12 @@ class SteamPriceUpdateService:
             self.data_manager.save_steam_data(steam_data)
 
         return {
-            'successful': successful_updates,
-            'failed': failed_updates,
-            'currency': currency,
-            'total_processed': len(price_updates)
+            'successful': len(successful_updates),
+            'failed': len(failed_updates),
+            'errors': []
         }
 
-    def apply_atomic_updates(self, eur_updates: dict[str, dict[str, Any]], usd_updates: dict[str, dict[str, Any]], dry_run: bool = False) -> dict[str, Any]:
+    def apply_atomic_updates(self, eur_updates: dict[str, dict[str, Any]], usd_updates: dict[str, dict[str, Any]], dry_run: bool = False) -> PriceUpdateResult:
         """
         Apply EUR and USD price updates atomically
 
@@ -108,11 +114,9 @@ class SteamPriceUpdateService:
             logging.info(f"Applied atomic currency updates: {len(all_successful)} successful, {len(all_failed)} failed")
 
         return {
-            'successful': list(set(all_successful)),  # Remove duplicates
-            'failed': list(set(all_failed)),
-            'eur_updates': len(eur_updates),
-            'usd_updates': len(usd_updates),
-            'total_processed': len(set(list(eur_updates.keys()) + list(usd_updates.keys())))
+            'successful': len(set(all_successful)),  # Remove duplicates and count
+            'failed': len(set(all_failed)),
+            'errors': []
         }
 
     def _process_currency_updates(self, steam_data: 'SteamDataDict', price_updates: dict[str, dict[str, Any]], currency: str) -> tuple[list[str], list[str]]:

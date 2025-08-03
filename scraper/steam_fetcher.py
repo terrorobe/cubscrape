@@ -2,10 +2,11 @@
 Steam data fetching and parsing functionality
 """
 
+import json
 import logging
 import re
 import time
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypedDict
 
 import requests
 from bs4 import BeautifulSoup
@@ -15,7 +16,19 @@ if TYPE_CHECKING:
 
 from .base_fetcher import BaseFetcher
 from .models import SteamGameData
+from .steam_price_update_service import PriceUpdateResult
 from .utils import extract_steam_app_id, is_valid_date_string
+
+
+class RemovalDetectionResult(TypedDict):
+    """Type definition for removal detection results"""
+    removed_count: int
+    restored_count: int
+    price_updates: int
+    removed_games: list[str]
+    restored_games: list[str]
+
+
 
 
 class SteamDataFetcher(BaseFetcher):
@@ -591,13 +604,12 @@ class SteamBulkPriceFetcher:
 
 
     def _process_batch_fetch_only(self, app_ids: list[str], country_code: str) -> dict[str, dict[str, Any]]:
-        """Process a batch and return parsed results without applying updates"""
+        """Process batches and return parsed results without applying updates"""
         all_results = {}
         app_ids_to_process = app_ids.copy()
 
         # Get the configured initial batch size
         initial_batch_size = self.batch_manager.get_initial_batch_size(None)
-
         batch_number = 0
         total_apps = len(app_ids_to_process)
 
@@ -607,92 +619,135 @@ class SteamBulkPriceFetcher:
 
             # Use configured batch size, but don't exceed remaining apps
             current_batch_size = min(initial_batch_size, len(app_ids_to_process))
+            current_batch = app_ids_to_process[:current_batch_size]
+
             logging.info(f"Processing batch {batch_number} ({current_batch_size} apps, {processed_apps}/{total_apps} completed)")
 
-            general_attempts = 0
-            rate_limit_attempts = 0
+            try:
+                # Process this batch with all retry logic
+                batch_results = self._process_single_batch_with_retries(current_batch, country_code)
+                all_results.update(batch_results)
 
-            # Retry loop for current batch with progressive size reduction
-            while general_attempts < self.config['max_retries']:
-                try:
-                    # Take only the apps we can handle with current batch size
-                    current_batch = app_ids_to_process[:current_batch_size]
-                    logging.debug(f"Attempting {len(current_batch)} apps with batch size {current_batch_size}")
+                # Remove processed apps and continue
+                app_ids_to_process = app_ids_to_process[current_batch_size:]
 
-                    response_data = self.http_client.make_bulk_request(current_batch, country_code)
-
-                    if response_data:
-                        # Parse response using response parser
-                        parsed_results = self.response_parser.parse_bulk_response(response_data, current_batch)
-                        logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
-
-                        # Add successful results and remove processed apps
-                        all_results.update(parsed_results)
-                        app_ids_to_process = app_ids_to_process[current_batch_size:]
-                        break  # Success - move to remaining apps
-                    else:
-                        # Empty response - treat as error
-                        general_attempts += 1
-                        if general_attempts < self.config['max_retries']:
-                            logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts}/{self.config['max_retries']})")
-                            continue
-                        else:
-                            raise RuntimeError(f"Empty response after {general_attempts} attempts")
-
-                except requests.exceptions.HTTPError as e:
-                    if e.response and e.response.status_code == 500:
-                        # Reduce batch size and retry
-                        new_batch_size, _ = self.error_handler.handle_server_error(current_batch_size, general_attempts)
-                        current_batch_size = min(new_batch_size, len(app_ids_to_process))  # Don't exceed remaining apps
-                        general_attempts += 1
-
-                        if current_batch_size < 1:
-                            raise RuntimeError("Batch size reduced to less than 1 - cannot continue") from e
-                        if general_attempts >= self.config['max_retries']:
-                            raise RuntimeError(f"HTTP 500 error - exhausted {self.config['max_retries']} retries") from e
-                        continue
-
-                    elif e.response and e.response.status_code == 429:
-                        should_retry, delay = self.error_handler.handle_rate_limit(rate_limit_attempts)
-                        if should_retry and general_attempts < self.config['max_retries']:
-                            time.sleep(delay)
-                            rate_limit_attempts += 1
-                            general_attempts += 1
-                            continue
-                        else:
-                            raise RuntimeError("Rate limit exceeded - exhausted retries") from e
-
-                    else:
-                        status_code = e.response.status_code if e.response else 0
-                        # HTTP 0 (connection errors) and 5xx should be retryable
-                        if status_code == 0 or status_code >= 500:
-                            new_batch_size, _ = self.error_handler.handle_server_error(current_batch_size, general_attempts)
-                            current_batch_size = min(new_batch_size, len(app_ids_to_process))
-                            general_attempts += 1
-
-                            if current_batch_size < 1:
-                                raise RuntimeError("Batch size reduced to less than 1 - cannot continue") from e
-                            if general_attempts >= self.config['max_retries']:
-                                raise RuntimeError(f"HTTP {status_code} error - exhausted {self.config['max_retries']} retries") from e
-                            continue
-                        else:
-                            # Other HTTP errors (400, 404, etc.) are not retryable
-                            self.error_handler.handle_unexpected_http_error(status_code, e.response)
-                            raise RuntimeError(f"HTTP {status_code} error - not retryable") from e
-
-                except Exception as e:
-                    general_attempts += 1
-                    if general_attempts < self.config['max_retries']:
-                        logging.warning(f"General error (attempt {general_attempts}/{self.config['max_retries']}): {e}")
-                        continue
-                    else:
-                        raise RuntimeError(f"General error - exhausted {self.config['max_retries']} retries") from e
-
-            # If we're here, we broke out of retry loop successfully, continue with remaining apps
+            except RuntimeError as e:
+                logging.error(f"Failed to process batch {batch_number}: {e}")
+                raise
 
         return all_results
 
-    def refresh_prices_with_removal_detection(self, app_ids: list[str]) -> dict[str, Any]:
+    def _handle_http_error(self, error: requests.exceptions.HTTPError, current_batch_size: int,
+                          general_attempts: int, rate_limit_attempts: int, app_ids_remaining: int) -> tuple[int, int, bool]:
+        """
+        Handle HTTP errors and return (new_batch_size, new_rate_limit_attempts, should_continue)
+
+        Returns:
+            tuple: (batch_size, rate_limit_attempts, should_continue)
+        """
+        if not error.response:
+            return self._handle_server_error_with_retry(0, current_batch_size, general_attempts, app_ids_remaining)
+
+        status_code = error.response.status_code
+
+        if status_code == 500:
+            return self._handle_server_error_with_retry(status_code, current_batch_size, general_attempts, app_ids_remaining)
+        elif status_code == 429:
+            return self._handle_rate_limit_error(rate_limit_attempts, general_attempts)
+        elif status_code == 0 or status_code >= 500:
+            return self._handle_server_error_with_retry(status_code, current_batch_size, general_attempts, app_ids_remaining)
+        else:
+            # Non-retryable HTTP errors (400, 404, etc.)
+            self.error_handler.handle_unexpected_http_error(status_code, error.response)
+            raise RuntimeError(f"HTTP {status_code} error - not retryable") from error
+
+    def _handle_server_error_with_retry(self, status_code: int, current_batch_size: int,
+                                       general_attempts: int, app_ids_remaining: int) -> tuple[int, int, bool]:
+        """Handle 500/0 errors with batch size reduction"""
+        new_batch_size, _ = self.error_handler.handle_server_error(current_batch_size, general_attempts)
+        new_batch_size = min(new_batch_size, app_ids_remaining)
+
+        if new_batch_size < 1:
+            raise RuntimeError("Batch size reduced to less than 1 - cannot continue")
+
+        if general_attempts + 1 >= self.config['max_retries']:
+            raise RuntimeError(f"HTTP {status_code} error - exhausted {self.config['max_retries']} retries")
+
+        return new_batch_size, 0, True  # Reset rate limit attempts on server errors
+
+    def _handle_rate_limit_error(self, rate_limit_attempts: int, general_attempts: int) -> tuple[int, int, bool]:
+        """Handle rate limiting errors"""
+        should_retry, delay = self.error_handler.handle_rate_limit(rate_limit_attempts)
+
+        if not should_retry or general_attempts + 1 >= self.config['max_retries']:
+            raise RuntimeError("Rate limit exceeded - exhausted retries")
+
+        time.sleep(delay)
+        return -1, rate_limit_attempts + 1, True  # -1 indicates no batch size change
+
+    def _process_single_batch_with_retries(self, batch_apps: list[str], country_code: str) -> dict[str, dict[str, Any]]:
+        """Process a single batch with all retry logic"""
+        current_batch_size = len(batch_apps)
+        general_attempts = 0
+        rate_limit_attempts = 0
+
+        while general_attempts < self.config['max_retries']:
+            try:
+                # Take only the apps we can handle with current batch size
+                current_batch = batch_apps[:current_batch_size]
+                logging.debug(f"Attempting {len(current_batch)} apps with batch size {current_batch_size}")
+
+                response_data = self.http_client.make_bulk_request(current_batch, country_code)
+
+                if response_data:
+                    # Parse response using response parser
+                    parsed_results = self.response_parser.parse_bulk_response(response_data, current_batch)
+                    logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
+                    return parsed_results
+                else:
+                    # Empty response - treat as error
+                    if not self.error_handler.should_retry_empty_response(general_attempts):
+                        raise RuntimeError(f"Empty response after {general_attempts + 1} attempts")
+
+                    logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts + 1}/{self.config['max_retries']})")
+                    general_attempts += 1
+                    continue
+
+            except requests.exceptions.HTTPError as e:
+                new_batch_size, new_rate_limit_attempts, should_continue = self._handle_http_error(
+                    e, current_batch_size, general_attempts, rate_limit_attempts, len(batch_apps)
+                )
+
+                if not should_continue:
+                    raise
+
+                # Update batch size if it was changed (not -1)
+                if new_batch_size != -1:
+                    current_batch_size = new_batch_size
+
+                rate_limit_attempts = new_rate_limit_attempts
+                general_attempts += 1
+                continue
+
+            except requests.exceptions.RequestException as e:
+                should_retry, delay = self.error_handler.handle_request_exception(e, general_attempts, "batch")
+                if should_retry:
+                    time.sleep(delay)
+                    general_attempts += 1
+                    continue
+                else:
+                    raise RuntimeError(f"Network error after {self.config['max_retries']} attempts: {e}") from e
+
+            except Exception as e:
+                if self.error_handler.should_retry_general_error(e, general_attempts):
+                    general_attempts += 1
+                    continue
+                else:
+                    raise RuntimeError(f"General error after {self.config['max_retries']} attempts: {e}") from e
+
+        raise RuntimeError(f"Exhausted all {self.config['max_retries']} retry attempts")
+
+    def refresh_prices_with_removal_detection(self, app_ids: list[str]) -> RemovalDetectionResult:
         """
         Combined price refresh and removal detection for cron mode
 
@@ -702,45 +757,118 @@ class SteamBulkPriceFetcher:
         Returns:
             Dict with removal statistics and price update results
         """
-
         logging.info(f"Running price refresh with removal detection for {len(app_ids)} games")
 
-        # Collect all data for both EUR and USD
-        all_eur_updates = {}
-        all_usd_updates = {}
+        # Step 1: Fetch EUR prices and detect removed/restored games
+        eur_results, removed_games, restored_games = self._fetch_eur_with_removal_detection(app_ids)
+
+        # Step 2: Fetch USD prices for existing games only
+        usd_results = self._fetch_usd_for_existing_games(app_ids, removed_games)
+
+        # Step 3: Update removal status in database
+        self._process_removal_status_updates(removed_games, restored_games)
+
+        # Step 4: Apply atomic price updates
+        price_results = self._apply_price_updates(eur_results, usd_results)
+
+        return self._build_removal_detection_results(removed_games, restored_games, price_results)
+
+    def _fetch_eur_with_removal_detection(self, app_ids: list[str]) -> tuple[dict[str, Any], list[str], list[str]]:
+        """
+        Fetch EUR prices and detect removed/restored games
+
+        This is the first phase of removal detection. EUR prices are fetched for ALL games
+        (including stubs and demos) to determine which games Steam no longer recognizes.
+
+        Args:
+            app_ids: Complete list of Steam app IDs to check (includes stubs, demos, full games)
+
+        Returns:
+            tuple: (eur_price_results, removed_game_ids, restored_game_ids)
+                - eur_price_results: Dict of successful EUR price fetches {app_id: price_data}
+                - removed_game_ids: List of app IDs that Steam returned success=false for
+                - restored_game_ids: List of previously removed games that are now available again
+
+        Note:
+            Games with success=false are considered removed from Steam's store and will be
+            marked for removal processing. Previously removed games that now return success=true
+            are considered restored and their removal flags will be cleared.
+        """
+        logging.info("Fetching EUR prices for removal detection...")
         removed_games = []
         restored_games = []
+        eur_results = {}
 
-        # Fetch EUR prices for ALL games (including stubs/demos)
-        logging.info("Fetching EUR prices for removal detection...")
         try:
-            eur_batch_results = self._process_batch_fetch_only(app_ids, 'at')
-            all_eur_updates.update(eur_batch_results)
-
-            # Check for removed/restored games in the response
-            self._detect_removed_and_restored_games(eur_batch_results, app_ids, removed_games, restored_games)
+            eur_results = self._process_batch_fetch_only(app_ids, 'at')
+            self._detect_removed_and_restored_games(eur_results, app_ids, removed_games, restored_games)
+        except requests.exceptions.RequestException as e:
+            logging.error(f"EUR removal detection network error: {e}")
         except Exception as e:
             logging.error(f"EUR removal detection failed: {e}")
 
-        # Fetch USD prices for existing games only (not removed)
+        return eur_results, removed_games, restored_games
+
+    def _fetch_usd_for_existing_games(self, app_ids: list[str], removed_games: list[str]) -> dict[str, Any]:
+        """
+        Fetch USD prices for games that weren't removed
+
+        This is the second phase of price fetching. USD prices are only fetched for games
+        that were successfully fetched in EUR phase, avoiding wasted API calls for removed games.
+
+        Args:
+            app_ids: Original list of all Steam app IDs
+            removed_games: List of app IDs that were detected as removed in EUR phase
+
+        Returns:
+            dict: USD price results {app_id: price_data} for existing games only
+
+        Note:
+            This optimization reduces API load by ~50% when there are removed games,
+            since we don't waste USD API calls on games we know are removed.
+        """
         existing_games = [app_id for app_id in app_ids if app_id not in removed_games]
+        usd_results = {}
+
         if existing_games:
             logging.info("Fetching USD prices for existing games...")
             try:
-                usd_batch_results = self._process_batch_fetch_only(existing_games, 'us')
-                all_usd_updates.update(usd_batch_results)
+                usd_results = self._process_batch_fetch_only(existing_games, 'us')
+            except requests.exceptions.RequestException as e:
+                logging.error(f"USD price fetch network error: {e}")
             except Exception as e:
                 logging.error(f"USD price fetch failed: {e}")
 
-        # Update removal status in database
+        return usd_results
+
+    def _process_removal_status_updates(self, removed_games: list[str], restored_games: list[str]) -> None:
+        """
+        Update removal status in database
+
+        Sets removal_detected and removal_pending flags for detected games.
+        This marks games for processing by the Steam updater during the next cron cycle.
+
+        Args:
+            removed_games: App IDs that returned success=false (newly removed)
+            restored_games: App IDs that were previously removed but now return success=true
+
+        Side Effects:
+            - Sets removal_detected=today, removal_pending=true for removed games
+            - Clears removal_detected, removal_pending for restored games
+            - Saves updated steam_games.json to disk
+        """
         if removed_games or restored_games:
             self._update_removal_status(removed_games, restored_games)
 
-        # Apply price updates for existing games only
-        price_results = {}
-        if all_eur_updates or all_usd_updates:
-            price_results = self.price_service.apply_atomic_updates(all_eur_updates, all_usd_updates, dry_run=False)
+    def _apply_price_updates(self, eur_results: dict[str, Any], usd_results: dict[str, Any]) -> PriceUpdateResult:
+        """Apply atomic price updates for successful fetches"""
+        if eur_results or usd_results:
+            return self.price_service.apply_atomic_updates(eur_results, usd_results, dry_run=False)
+        return {'successful': 0, 'failed': 0, 'errors': []}
 
+    def _build_removal_detection_results(self, removed_games: list[str], restored_games: list[str],
+                                       price_results: PriceUpdateResult) -> RemovalDetectionResult:
+        """Build the final results dictionary"""
         return {
             'removed_count': len(removed_games),
             'restored_count': len(restored_games),
@@ -859,14 +987,38 @@ class SteamBulkPriceFetcher:
 
     def _parse_bulk_response_with_removal_detection(self, response_data: dict[str, Any], app_ids: list[str],
                                                    removed_games: list[str], restored_games: list[str]) -> dict[str, dict[str, Any]]:
-        """Parse bulk response and track removal/restoration status"""
+        """
+        Parse bulk API response and track removal/restoration status
+
+        Processes Steam's bulk price API response to identify removed and restored games
+        while extracting price data for successful responses.
+
+        Args:
+            response_data: Raw Steam API response {app_id: {success: bool, data: {...}}}
+            app_ids: List of app IDs that were requested
+            removed_games: List to append newly detected removed games to
+            restored_games: List to append restored games to
+
+        Returns:
+            dict: Price data for successful responses {app_id: price_data}
+
+        Side Effects:
+            - Modifies removed_games list with app IDs where success=false
+            - Modifies restored_games list with previously removed games now success=true
+
+        Logic:
+            - success=false → Game is removed/delisted, add to removed_games
+            - success=true + previously had removal_detected → Game restored, add to restored_games
+            - success=true + normal game → Extract price data normally
+        """
         # Use existing response parser for price data
         price_results = self.response_parser.parse_bulk_response(response_data, app_ids)
 
         # Load steam games data ONCE for this batch (performance fix)
         try:
             steam_games = self.data_manager.load_steam_games()
-        except Exception:
+        except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
+            logging.warning(f"Failed to load steam games data: {e}")
             steam_games = {}
 
         # Check each app for removal/restoration status
@@ -892,11 +1044,36 @@ class SteamBulkPriceFetcher:
     def _detect_removed_and_restored_games(self, batch_results: dict[str, dict[str, Any]],
                                          app_ids: list[str], removed_games: list[str],
                                          restored_games: list[str]) -> None:
-        """Analyze batch results to detect removed and restored games"""
+        """
+        Analyze batch price fetch results to detect removed and restored games
+
+        Compares the list of requested app IDs against successful price fetch results
+        to identify games that Steam no longer recognizes (removed) or that have
+        been restored after being previously removed.
+
+        Args:
+            batch_results: Results from price fetch {app_id: price_data} - only successful fetches
+            app_ids: Complete list of app IDs that were requested from Steam API
+            removed_games: List to append detected removed game IDs to
+            restored_games: List to append detected restored game IDs to
+
+        Side Effects:
+            - Modifies removed_games list with app IDs that failed to fetch
+            - Modifies restored_games list with previously removed games that now fetch successfully
+
+        Detection Logic:
+            - If app_id in app_ids but NOT in batch_results → Game was removed
+            - If app_id in batch_results AND game has removal_detected flag → Game was restored
+
+        Note:
+            This method complements _parse_bulk_response_with_removal_detection() by handling
+            cases where games completely fail to appear in the API response vs. returning success=false.
+        """
         # Load steam games data ONCE for all detection
         try:
             steam_games = self.data_manager.load_steam_games()
-        except Exception:
+        except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
+            logging.warning(f"Failed to load steam games data: {e}")
             steam_games = {}
 
         for app_id in app_ids:
@@ -915,7 +1092,30 @@ class SteamBulkPriceFetcher:
                     logging.info(f"Detected removed game: {app_id}")
 
     def _update_removal_status(self, removed_games: list[str], restored_games: list[str]) -> None:
-        """Update removal status for detected games"""
+        """
+        Update removal status flags in steam_games.json for detected changes
+
+        This method persists the removal detection results to the database by setting
+        appropriate flags that will be processed by the Steam updater in the next cron cycle.
+
+        Args:
+            removed_games: App IDs detected as newly removed from Steam
+            restored_games: App IDs that were previously removed but are now available again
+
+        Side Effects:
+            - Sets removal_detected=today and removal_pending=true for removed games
+            - Clears removal_detected and removal_pending flags for restored games
+            - Saves updated steam_games.json to disk
+            - Logs the number of games processed
+
+        Database Fields Modified:
+            - removal_detected: Date string when removal was first detected (YYYY-MM-DD)
+            - removal_pending: Boolean flag indicating game needs removal processing
+
+        Note:
+            Games marked with removal_pending=true will be processed by SteamDataUpdater
+            during the next cron cycle, either converting to stubs or deleting entirely.
+        """
         if not removed_games and not restored_games:
             return
 

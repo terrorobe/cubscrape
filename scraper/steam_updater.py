@@ -646,8 +646,10 @@ class SteamDataUpdater:
     def _process_pending_removals(self) -> None:
         """
         Process games with removal_pending: true.
-        - If referenced by videos: Convert to stub
-        - If not referenced: Delete + break demo/full game references
+        - Re-validates each game by fetching from Steam API
+        - If game is available: Clear removal flags (false positive)
+        - If game is still unavailable and referenced by videos: Convert to stub
+        - If game is still unavailable and not referenced: Delete + break demo/full game references
         """
         removal_pending_games = []
         for app_id, game_data in self.steam_data['games'].items():
@@ -658,15 +660,36 @@ class SteamDataUpdater:
             logging.debug("No removal pending games to process")
             return
 
-        logging.info(f"Processing {len(removal_pending_games)} removal pending games...")
+        logging.info(f"Processing {len(removal_pending_games)} removal pending games with re-validation...")
+
+        validated_removals = 0
+        false_positives = 0
 
         for app_id, game_data in removal_pending_games:
-            # Check if game is referenced by videos
+            # Re-validate by attempting to fetch current Steam data
+            logging.info(f"Re-validating removal for {app_id} ({game_data.name})...")
+
+            is_still_available = self._revalidate_game_availability(app_id)
+
+            if is_still_available:
+                # False positive - game is actually available
+                logging.info(f"Game {app_id} ({game_data.name}) is still available - clearing removal flags")
+                restored_data = game_data.model_copy(update={
+                    'removal_detected': None,
+                    'removal_pending': False,
+                    'last_updated': datetime.now().isoformat()
+                })
+                self.steam_data['games'][app_id] = restored_data
+                false_positives += 1
+                continue
+
+            # Game is confirmed to be unavailable - proceed with removal processing
+            validated_removals += 1
             is_referenced = self.data_manager.is_game_referenced_by_videos('steam', app_id)
 
             if is_referenced:
                 # Convert to stub
-                logging.info(f"Converting removal pending game {app_id} ({game_data.name}) to stub (referenced by videos)")
+                logging.info(f"Confirmed removal: Converting {app_id} ({game_data.name}) to stub (referenced by videos)")
                 stub_data = game_data.model_copy(update={
                     'name': game_data.name + " [REMOVED]",
                     'is_stub': True,
@@ -677,7 +700,7 @@ class SteamDataUpdater:
                 self.steam_data['games'][app_id] = stub_data
             else:
                 # Delete and break relationships
-                logging.info(f"Deleting removal pending game {app_id} ({game_data.name}) (not referenced by videos)")
+                logging.info(f"Confirmed removal: Deleting {app_id} ({game_data.name}) (not referenced by videos)")
 
                 # Break demo/full game relationships before deletion
                 self._break_game_relationships(app_id, game_data)
@@ -687,7 +710,40 @@ class SteamDataUpdater:
 
         # Save updated data
         self._save_steam_data()
-        logging.info(f"Completed processing {len(removal_pending_games)} removal pending games")
+        logging.info(f"Completed processing {len(removal_pending_games)} removal candidates: "
+                    f"{validated_removals} confirmed removals, {false_positives} false positives restored")
+
+    def _revalidate_game_availability(self, app_id: str) -> bool:
+        """
+        Re-validate if a game is available on Steam by attempting to fetch it with retries.
+
+        Args:
+            app_id: Steam app ID to validate
+
+        Returns:
+            bool: True if game is available, False if confirmed unavailable
+        """
+        steam_url = f"https://store.steampowered.com/app/{app_id}/"
+
+        # Use the existing Steam fetcher with its built-in retry logic
+        # Try with minimal data fetch (no USD price to be faster)
+        try:
+            logging.debug(f"Re-validating availability for Steam app {app_id}")
+            steam_data = self.steam_fetcher.fetch_data(steam_url, fetch_usd=False)
+
+            if steam_data and not steam_data.is_stub:
+                # Game was successfully fetched and is not a stub
+                logging.debug(f"Game {app_id} is confirmed available")
+                return True
+            else:
+                # Failed to fetch or returned stub data
+                logging.debug(f"Game {app_id} is confirmed unavailable")
+                return False
+
+        except Exception as e:
+            # Any exception during fetch means the game is likely unavailable
+            logging.warning(f"Re-validation failed for app {app_id}: {e}")
+            return False
 
     def _break_game_relationships(self, app_id: str, game_data: SteamGameData) -> None:
         """Break demo/full game relationships when deleting a game"""

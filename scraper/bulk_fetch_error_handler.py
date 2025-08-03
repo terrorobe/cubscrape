@@ -29,11 +29,10 @@ class BulkFetchErrorHandler:
         Returns:
             tuple: (new_batch_size, should_continue)
         """
-        # Import here to avoid circular imports
-        from .batch_manager import BatchManager
-        batch_manager = BatchManager(self.config)
+        new_batch_size = int(current_batch_size * self.config['batch_size_reduction_factor'])
+        # Ensure we never go below 1
+        new_batch_size = max(new_batch_size, 1)
 
-        new_batch_size = batch_manager.reduce_batch_size_on_error(current_batch_size)
         # Always continue as long as we have retries left
         should_continue = True
 
