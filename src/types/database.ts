@@ -53,7 +53,7 @@ export interface GameRecord {
   is_inferred_summary: boolean
   is_absorbed: boolean
   absorbed_into?: string
-  discount_percent: number
+  discount_percent?: number
   original_price_eur?: number
   original_price_usd?: number
   is_on_sale: boolean

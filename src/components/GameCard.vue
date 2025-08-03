@@ -234,7 +234,7 @@ const getPrice = (game: ParsedGameData) => {
     price_usd: game.price_usd,
     original_price_eur: game.original_price_eur,
     original_price_usd: game.original_price_usd,
-    discount_percent: game.discount_percent,
+    discount_percent: game.discount_percent ?? 0,
     is_free: game.is_free,
     is_on_sale: game.is_on_sale,
   }

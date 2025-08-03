@@ -55,8 +55,8 @@ class SteamGameData(BaseModel):
     categories: list[str] = Field(default_factory=list)
     developers: list[str] = Field(default_factory=list)
     publishers: list[str] = Field(default_factory=list)
-    price_eur: int | None = None  # Price in cents
-    price_usd: int | None = None  # Price in cents
+    price_eur: int | str | None = None  # Price in cents (int) or old format (str)
+    price_usd: int | str | None = None  # Price in cents (int) or old format (str)
     header_image: str = ""
     tags: list[str] = Field(default_factory=list)
     has_demo: bool = False
@@ -73,11 +73,12 @@ class SteamGameData(BaseModel):
     insufficient_reviews: bool = False
     planned_release_date: str | None = None
     itch_url: str | None = None  # Itch.io URL if this Steam game is also on Itch
-    discount_percent: int = 0  # 0-99 discount percentage
-    original_price_eur: int | None = None  # Original price in cents when on sale
-    original_price_usd: int | None = None  # Original price in cents when on sale
+    discount_percent: int | None = None  # 0-99 discount percentage (only set when > 0)
+    original_price_eur: int | str | None = None  # Original price in cents (int) or old format (str)
+    original_price_usd: int | str | None = None  # Original price in cents (int) or old format (str)
     is_on_sale: bool = False  # True if discount_percent > 0
     last_updated: str = Field(default_factory=lambda: datetime.now().isoformat())
+
     is_stub: bool = False  # True if this is a stub entry for a failed fetch
     stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")
     resolved_to: str | None = None  # Steam app ID this stub should resolve to

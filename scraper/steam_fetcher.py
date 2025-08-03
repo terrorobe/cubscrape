@@ -233,8 +233,12 @@ class SteamDataFetcher(BaseFetcher):
             return result
 
         discount_percent = price_data.get('discount_percent', 0)
-        result['discount_percent'] = int(discount_percent)
-        result['is_on_sale'] = discount_percent > 0
+        # Only set discount_percent if it's non-zero
+        if discount_percent > 0:
+            result['discount_percent'] = int(discount_percent)
+            result['is_on_sale'] = True
+        else:
+            result['is_on_sale'] = False
 
         # Extract original prices when on sale (in cents)
         if discount_percent > 0:

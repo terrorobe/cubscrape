@@ -42,7 +42,6 @@ class SteamApiResponseParser:
                 'is_free': True,
                 'price_eur': None,
                 'price_usd': None,
-                'discount_percent': 0,
                 'original_price_eur': None,
                 'original_price_usd': None,
                 'is_on_sale': False
@@ -60,9 +59,12 @@ class SteamApiResponseParser:
 
         result = {
             'is_free': final_price_cents == 0,
-            'discount_percent': discount_percent,
             'is_on_sale': discount_percent > 0
         }
+
+        # Only set discount_percent if it's non-zero
+        if discount_percent > 0:
+            result['discount_percent'] = discount_percent
 
         # Set currency-specific fields (storing cents directly)
         if is_eur:

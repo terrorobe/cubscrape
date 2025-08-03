@@ -9,7 +9,7 @@ export interface PriceData {
   price_usd?: number | null
   original_price_eur?: number | null
   original_price_usd?: number | null
-  discount_percent: number
+  discount_percent?: number
   is_free: boolean
   is_on_sale: boolean
 }
@@ -89,7 +89,7 @@ export function getPrice(
     current: currentPrice,
     original: originalPrice,
     hasDiscount: priceData.is_on_sale && originalPrice !== null,
-    discountPercent: priceData.discount_percent,
+    discountPercent: priceData.discount_percent ?? 0,
   }
 }
 
