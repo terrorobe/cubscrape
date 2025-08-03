@@ -48,6 +48,7 @@ export function useLivePriceCount(
       rating: tempFilters.rating,
       crossPlatform: tempFilters.crossPlatform ?? false,
       hiddenGems: tempFilters.hiddenGems ?? false,
+      onSale: tempFilters.onSale ?? false,
       selectedTags: tempFilters.selectedTags,
       tagLogic: tempFilters.tagLogic,
       selectedChannels: tempFilters.selectedChannels,

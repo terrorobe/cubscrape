@@ -27,6 +27,7 @@ export interface FilterState extends Record<string, unknown> {
   rating: string
   crossPlatform: boolean
   hiddenGems: boolean
+  onSale: boolean
   selectedTags: string[]
   tagLogic: 'and' | 'or'
   selectedChannels: string[]
@@ -73,6 +74,7 @@ const createDefaultFilters = (): FilterState => ({
   rating: '0',
   crossPlatform: false,
   hiddenGems: false,
+  onSale: false,
   selectedTags: [], // Multi-select tags
   tagLogic: 'and', // 'and' or 'or'
   selectedChannels: [], // Multi-select channels
@@ -292,6 +294,7 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
       current.rating !== defaultFilters.rating ||
       current.crossPlatform !== defaultFilters.crossPlatform ||
       current.hiddenGems !== defaultFilters.hiddenGems ||
+      current.onSale !== defaultFilters.onSale ||
       current.selectedTags.length > 0 ||
       current.selectedChannels.length > 0 ||
       current.sortBy !== defaultFilters.sortBy ||
@@ -371,6 +374,7 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
     rating: filters.value.rating,
     crossPlatform: filters.value.crossPlatform,
     hiddenGems: filters.value.hiddenGems,
+    onSale: filters.value.onSale,
     selectedTags: filters.value.selectedTags,
     tagLogic: filters.value.tagLogic,
     selectedChannels: filters.value.selectedChannels,

@@ -114,6 +114,7 @@ const initialLocalFilters: FilterConfig = {
   rating: props.initialFilters.rating || '0',
   crossPlatform: props.initialFilters.crossPlatform || false,
   hiddenGems: props.initialFilters.hiddenGems || false,
+  onSale: props.initialFilters.onSale || false,
   // Legacy single tag support for backward compatibility
   tag: props.initialFilters.tag || '',
   // New multi-tag support
@@ -167,6 +168,7 @@ watch(
         rating: newInitialFilters.rating || '0',
         crossPlatform: newInitialFilters.crossPlatform || false,
         hiddenGems: newInitialFilters.hiddenGems || false,
+        onSale: newInitialFilters.onSale || false,
         tag: newInitialFilters.tag || '',
         selectedTags:
           newInitialFilters.selectedTags ||
@@ -259,6 +261,9 @@ const basicFiltersCount = computed((): number => {
     count++
   }
   if (localFilters.hiddenGems) {
+    count++
+  }
+  if (localFilters.onSale) {
     count++
   }
   return count
@@ -413,6 +418,7 @@ const handleClearAllFilters = (): void => {
     localFilters.rating = '0'
     localFilters.crossPlatform = false
     localFilters.hiddenGems = false
+    localFilters.onSale = false
     localFilters.selectedTags = []
     localFilters.tagLogic = 'and'
     localFilters.selectedChannels = []
@@ -597,6 +603,23 @@ onUnmounted(() => {
               title="High quality games (80%+ rating) with limited video coverage (1-3 videos) and sufficient reviews (50+)"
             >
               Hidden Gems
+            </label>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input
+              id="onSale"
+              v-model="localFilters.onSale"
+              type="checkbox"
+              class="size-4 cursor-pointer rounded-sm border-gray-600 text-accent focus:ring-accent focus:ring-offset-0"
+              @change="debouncedEmitFiltersChanged"
+            />
+            <label
+              for="onSale"
+              class="cursor-pointer text-sm text-text-primary"
+              title="Show only games currently on sale with discounts"
+            >
+              On Sale
             </label>
           </div>
         </div>

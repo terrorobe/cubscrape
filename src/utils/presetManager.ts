@@ -30,6 +30,7 @@ export interface FilterConfig extends Record<string, unknown> {
   rating: string
   crossPlatform?: boolean
   hiddenGems?: boolean
+  onSale?: boolean
   tag?: string
   selectedTags: string[]
   tagLogic: 'and' | 'or'
@@ -290,6 +291,37 @@ export const POPULAR_PRESETS: Preset[] = [
     isPopular: true,
   },
   {
+    id: 'sale-spotlight',
+    name: 'Sale Spotlight',
+    description: 'Quality games currently on sale with significant discounts',
+    filters: {
+      releaseStatus: 'all',
+      platform: 'steam',
+      rating: '75',
+      onSale: true,
+      selectedTags: [],
+      tagLogic: 'and',
+      selectedChannels: [],
+      sortBy: 'best-value',
+      sortSpec: null,
+      currency: 'eur',
+      timeFilter: {
+        type: null,
+        preset: null,
+        startDate: null,
+        endDate: null,
+        smartLogic: null,
+      },
+      priceFilter: {
+        minPrice: 0,
+        maxPrice: 70,
+      },
+    },
+    category: 'deals',
+    tags: ['sale', 'discount'],
+    isPopular: true,
+  },
+  {
     id: 'trending-now',
     name: 'Trending Now',
     description: 'Games gaining momentum with recent coverage',
@@ -361,6 +393,7 @@ export function createDefaultFilters(): FilterConfig {
     rating: '0',
     crossPlatform: false,
     hiddenGems: false,
+    onSale: false,
     tag: '',
     selectedTags: [],
     tagLogic: 'and',

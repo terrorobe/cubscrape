@@ -625,39 +625,43 @@ watch(
               </div>
             </div>
 
-            <!-- Price with Sale Indicator -->
-            <div
-              v-if="getPriceInfo(game).current"
-              class="flex flex-col items-end gap-1"
-            >
-              <!-- Sale Badge -->
+            <!-- Price Display (Steam-style) -->
+            <div v-if="getPriceInfo(game).current">
+              <!-- Sale Price Block -->
               <div
                 v-if="game.is_on_sale && game.discount_percent"
-                class="rounded-sm bg-red-600 px-2 py-1 text-xs font-bold text-white"
+                class="flex items-center"
               >
-                -{{ game.discount_percent }}%
+                <!-- Discount Percentage -->
+                <div
+                  class="rounded-l bg-green-700 px-2 py-1 text-sm font-bold text-white"
+                >
+                  -{{ game.discount_percent }}%
+                </div>
+                <!-- Price Block -->
+                <div
+                  class="flex flex-col items-end rounded-r bg-black/20 px-3 py-1"
+                >
+                  <!-- Original Price -->
+                  <div
+                    v-if="getPriceInfo(game).original"
+                    class="text-[10px] leading-tight text-text-secondary line-through"
+                  >
+                    {{ getPriceInfo(game).original }}
+                  </div>
+                  <!-- Discounted Price -->
+                  <div class="text-sm font-semibold text-green-400">
+                    {{ getPriceInfo(game).current }}
+                  </div>
+                </div>
               </div>
 
-              <!-- Price Display -->
-              <div class="flex items-center gap-2">
-                <!-- Original Price (crossed out when on sale) -->
-                <div
-                  v-if="
-                    getPriceInfo(game).hasDiscount &&
-                    getPriceInfo(game).original
-                  "
-                  class="text-sm text-text-secondary line-through"
-                >
-                  {{ getPriceInfo(game).original }}
-                </div>
-
-                <!-- Current Price -->
-                <div
-                  class="rounded-sm bg-accent/10 px-3 py-1 text-lg font-bold"
-                  :class="game.is_on_sale ? 'text-red-600' : 'text-accent'"
-                >
-                  {{ getPriceInfo(game).current }}
-                </div>
+              <!-- Regular Price (no sale) -->
+              <div
+                v-else
+                class="rounded-sm bg-black/20 px-3 py-1 text-sm font-semibold text-text-primary"
+              >
+                {{ getPriceInfo(game).current }}
               </div>
             </div>
           </div>
