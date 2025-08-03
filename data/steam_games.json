@@ -13393,14 +13393,11 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1519090/header.jpg?t=1726132462",
-      "is_on_sale": true,
       "last_updated": "2025-07-27T03:14:10.392231",
       "name": "Welcome to ParadiZe",
-      "original_price_eur": 2999,
-      "original_price_usd": 2999,
       "positive_review_percentage": 65,
-      "price_eur": 899,
-      "price_usd": 899,
+      "price_eur": 2999,
+      "price_usd": 2999,
       "publishers": [
         "Nacon"
       ],
@@ -15021,7 +15018,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1569580/header.jpg?t=1751379489",
-      "last_updated": "2025-08-02T20:52:51.061771",
+      "last_updated": "2025-08-03T19:41:45.707583",
       "name": "Blue Prince",
       "positive_review_percentage": 86,
       "price_eur": 2999,
@@ -15029,11 +15026,11 @@
       "publishers": [
         "Raw Fury"
       ],
-      "recent_review_count": 735,
+      "recent_review_count": 726,
       "recent_review_percentage": 84,
       "recent_review_summary": "Very Positive",
       "release_date": "10 Apr, 2025",
-      "review_count": 9150,
+      "review_count": 9173,
       "review_summary": "Very Positive",
       "steam_app_id": "1569580",
       "steam_url": "https://store.steampowered.com/app/1569580",
@@ -24562,14 +24559,11 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1830970/header.jpg?t=1740882789",
-      "is_on_sale": true,
       "last_updated": "2025-08-02T03:14:24.193458",
       "name": "The Last Flame",
-      "original_price_eur": 1950,
-      "original_price_usd": 1999,
       "positive_review_percentage": 85,
-      "price_eur": 1170,
-      "price_usd": 1199,
+      "price_eur": 1950,
+      "price_usd": 1999,
       "publishers": [
         "Hotloop",
         "Surefire.Games"
@@ -35262,14 +35256,11 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2115760/c8cd32f5d401f19b977dc6beb1ca7962b822687b/header.jpg?t=1749547893",
-      "is_on_sale": true,
       "last_updated": "2025-07-29T09:04:26.920347",
       "name": "Oppidum",
-      "original_price_eur": 2999,
-      "original_price_usd": 2999,
       "positive_review_percentage": 71,
-      "price_eur": 2099,
-      "price_usd": 2099,
+      "price_eur": 2999,
+      "price_usd": 2999,
       "publishers": [
         "EP Games\u00ae"
       ],
@@ -49621,6 +49612,7 @@
       "developers": [
         "The Catalyst Crew"
       ],
+      "discount_percent": 30,
       "genres": [
         "Indie",
         "Simulation",
@@ -49628,11 +49620,14 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2378910/header.jpg?t=1741769772",
+      "is_on_sale": true,
       "last_updated": "2025-08-02T03:14:34.081966",
       "name": "Settlements Rising",
+      "original_price_eur": 1849,
+      "original_price_usd": 1899,
       "positive_review_percentage": 82,
-      "price_eur": 1849,
-      "price_usd": 1899,
+      "price_eur": 1294,
+      "price_usd": 1329,
       "publishers": [
         "The Catalyst Crew"
       ],
@@ -51463,14 +51458,11 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2407830/195f4221ca8e46c6d4a80695317d597ef03ff0a9/header_alt_assets_1.jpg?t=1753287282",
-      "is_on_sale": true,
       "last_updated": "2025-08-03T03:08:52.346931",
       "name": "Trash Goblin",
-      "original_price_eur": 1950,
-      "original_price_usd": 1999,
       "positive_review_percentage": 86,
-      "price_eur": 1170,
-      "price_usd": 1199,
+      "price_eur": 1950,
+      "price_usd": 1999,
       "publishers": [
         "Spilt Milk Studios Ltd"
       ],
@@ -76972,7 +76964,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2824490/02598f72d80e7c5da9f4b418f7fce15532d60388/header.jpg?t=1753379651",
       "is_early_access": true,
-      "last_updated": "2025-08-01T08:55:28.393289",
+      "last_updated": "2025-08-03T19:41:47.279689",
       "name": "He is Coming",
       "positive_review_percentage": 83,
       "price_eur": 1499,
@@ -76981,7 +76973,7 @@
         "Hooded Horse"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 1316,
+      "review_count": 1401,
       "review_summary": "Very Positive",
       "steam_app_id": "2824490",
       "steam_url": "https://store.steampowered.com/app/2824490",
@@ -93468,17 +93460,17 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3135530/header.jpg?t=1727917227",
       "is_free": true,
-      "last_updated": "2025-08-03T08:52:38.776796",
+      "last_updated": "2025-08-03T19:41:44.910833",
       "name": "Finn Dorset's Institute For Livestock Replication",
       "positive_review_percentage": 86,
       "publishers": [
         "CarlMorganArt"
       ],
-      "recent_review_count": 50,
+      "recent_review_count": 51,
       "recent_review_percentage": 78,
       "recent_review_summary": "Mostly Positive",
       "release_date": "2 Oct, 2024",
-      "review_count": 813,
+      "review_count": 814,
       "review_summary": "Very Positive",
       "steam_app_id": "3135530",
       "steam_url": "https://store.steampowered.com/app/3135530",
@@ -108576,8 +108568,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3467710/ef791e4a3898480a5e2aee1c23d2c6f90c7a7f3e/header_alt_assets_1.jpg?t=1754044420",
-      "is_free": true,
-      "last_updated": "2025-08-03T03:09:05.389986",
+      "last_updated": "2025-08-03T19:41:46.629935",
       "name": "Wall World 2",
       "planned_release_date": "2025",
       "publishers": [
@@ -109147,7 +109138,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/347940/header.jpg?t=1752850640",
-      "last_updated": "2025-07-30T08:55:53.455131",
+      "last_updated": "2025-08-03T19:41:47.945668",
       "name": "Forsaken Isle",
       "positive_review_percentage": 68,
       "price_eur": 1179,
@@ -109155,11 +109146,11 @@
       "publishers": [
         "Smoodlez"
       ],
-      "recent_review_count": 17,
-      "recent_review_percentage": 82,
-      "recent_review_summary": "Very Positive",
+      "recent_review_count": 18,
+      "recent_review_percentage": 77,
+      "recent_review_summary": "Mostly Positive",
       "release_date": "18 Jul, 2025",
-      "review_count": 420,
+      "review_count": 421,
       "review_summary": "Mixed",
       "steam_app_id": "347940",
       "steam_url": "https://store.steampowered.com/app/347940",
@@ -110744,17 +110735,21 @@
       "developers": [
         "Stingless"
       ],
+      "discount_percent": 20,
       "genres": [
         "Indie",
         "Strategy"
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3519530/8a9d3682c71135dd569b19856c1a7ac1e8390f4e/header.jpg?t=1752116201",
+      "is_on_sale": true,
       "last_updated": "2025-08-01T00:08:37.170303",
       "name": "Merge Maestro",
+      "original_price_eur": 299,
+      "original_price_usd": 299,
       "positive_review_percentage": 100,
-      "price_eur": 299,
-      "price_usd": 299,
+      "price_eur": 239,
+      "price_usd": 239,
       "publishers": [
         "Stingless"
       ],
