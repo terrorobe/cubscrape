@@ -136,4 +136,42 @@ class ConfigManager:
     def get_cron_backfill_total_videos(self) -> int:
         """Get total video budget for cron backfill runs (uses backfill_max_videos)"""
         max_videos = self.get_backfill_max_videos()
-        return max_videos if max_videos is not None else 50
+        from .constants import DEFAULT_MAX_VIDEOS_PER_CHANNEL
+        return max_videos if max_videos is not None else DEFAULT_MAX_VIDEOS_PER_CHANNEL
+
+    def get_steam_bulk_config(self) -> dict[str, Any]:
+        """Get Steam bulk refresh configuration"""
+        config = self.load_config()
+        bulk_config = config.get('steam_bulk_refresh', {})
+
+        if not isinstance(bulk_config, dict):
+            raise ValueError(
+                f"Invalid config: 'steam_bulk_refresh' must be a dict, got {type(bulk_config).__name__}. "
+                f"Check your config.json file."
+            )
+
+        # Default configuration
+        from .constants import STEAM_BULK_DEFAULTS
+        defaults = STEAM_BULK_DEFAULTS.copy()
+
+        # Merge with user config
+        final_config = defaults.copy()
+        final_config.update(bulk_config)
+
+        # Validate types
+        if not isinstance(final_config['default_batch_size'], int) or final_config['default_batch_size'] <= 0:
+            raise ValueError("steam_bulk_refresh.default_batch_size must be a positive integer")
+
+        if not isinstance(final_config['batch_size_reduction_factor'], int | float) or not 0 < final_config['batch_size_reduction_factor'] < 1:
+            raise ValueError("steam_bulk_refresh.batch_size_reduction_factor must be between 0 and 1")
+
+        if not isinstance(final_config['min_batch_size'], int) or final_config['min_batch_size'] <= 0:
+            raise ValueError("steam_bulk_refresh.min_batch_size must be a positive integer")
+
+        if not isinstance(final_config['rate_limit_delay'], int | float) or final_config['rate_limit_delay'] < 0:
+            raise ValueError("steam_bulk_refresh.rate_limit_delay must be non-negative")
+
+        if not isinstance(final_config['max_retries'], int) or final_config['max_retries'] < 0:
+            raise ValueError("steam_bulk_refresh.max_retries must be non-negative")
+
+        return final_config

@@ -397,6 +397,10 @@ export class GameDataProcessingService {
       absorbed_into: gameData.absorbed_into
         ? String(gameData.absorbed_into)
         : undefined,
+      discount_percent: Number(gameData.discount_percent) || 0,
+      original_price_eur: Number(gameData.original_price_eur) || undefined,
+      original_price_usd: Number(gameData.original_price_usd) || undefined,
+      is_on_sale: Boolean(gameData.is_on_sale),
     }
   }
 }

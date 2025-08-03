@@ -22,46 +22,65 @@ class SteamDataFetcher(BaseFetcher):
     """Handles fetching and parsing Steam game data"""
 
     def __init__(self, data_manager: 'DataManager | None' = None) -> None:
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-        self.cookies = {'birthtime': '0', 'mature_content': '1'}
-        self.max_retries = 10
-        self.base_delay = 16
         self.data_manager = data_manager
 
+        # Use centralized configuration
+        if data_manager and hasattr(data_manager, 'config_manager'):
+            self.config = data_manager.config_manager.get_steam_bulk_config()
+        else:
+            # Fallback to constants
+            from .constants import STEAM_BULK_DEFAULTS
+            self.config = STEAM_BULK_DEFAULTS.copy()
+
+        # Initialize shared HTTP client and error handler
+        from .bulk_fetch_error_handler import BulkFetchErrorHandler
+        from .constants import USER_AGENT
+        from .steam_bulk_http_client import SteamBulkHttpClient
+
+        self.http_client = SteamBulkHttpClient(self.config)
+        self.error_handler = BulkFetchErrorHandler(self.config)
+
+        # Keep headers and cookies for legacy store page requests
+        self.headers = {
+            'User-Agent': USER_AGENT
+        }
+        self.cookies = {'birthtime': '0', 'mature_content': '1'}
+
     def _make_request_with_retry(self, url: str, request_type: str = "API", **kwargs: Any) -> requests.Response | None:
-        """Make HTTP request with exponential backoff retry logic"""
-        for attempt in range(self.max_retries):
+        """Make HTTP request with unified error handling and retry logic"""
+        from .constants import HTTP_TIMEOUT_SECONDS
+
+        for attempt in range(int(self.config['max_retries'])):
             try:
-                response = requests.get(url, timeout=30, **kwargs)
+                response = requests.get(url, timeout=HTTP_TIMEOUT_SECONDS, **kwargs)
 
                 if response.status_code == 429:  # Rate limited
-                    delay = self.base_delay * (2 ** attempt)
-                    logging.warning(f"Rate limited for {request_type} request (attempt {attempt + 1}), waiting {delay}s")
-                    time.sleep(delay)
-                    continue
-
-                if response.status_code != 200:
-                    if attempt == self.max_retries - 1:  # Last attempt
-                        logging.error(f"Failed {request_type} request after {self.max_retries} attempts: HTTP {response.status_code}")
+                    should_retry, delay = self.error_handler.handle_rate_limit(attempt)
+                    if should_retry:
+                        time.sleep(delay)
+                        continue
+                    else:
                         return None
 
-                    delay = self.base_delay * (2 ** attempt)
-                    logging.warning(f"HTTP {response.status_code} for {request_type} request (attempt {attempt + 1}), retrying in {delay}s")
-                    time.sleep(delay)
-                    continue
+                if response.status_code != 200:
+                    should_retry, delay = self.error_handler.handle_standard_retry(
+                        response.status_code, attempt, request_type
+                    )
+                    if should_retry:
+                        time.sleep(delay)
+                        continue
+                    else:
+                        return None
 
                 return response
 
             except requests.exceptions.RequestException as e:
-                if attempt == self.max_retries - 1:  # Last attempt
-                    logging.error(f"Network error for {request_type} request after {self.max_retries} attempts: {e}")
+                should_retry, delay = self.error_handler.handle_request_exception(e, attempt, request_type)
+                if should_retry:
+                    time.sleep(delay)
+                    continue
+                else:
                     return None
-
-                delay = self.base_delay * (2 ** attempt)
-                logging.warning(f"Network error for {request_type} request (attempt {attempt + 1}): {e}, retrying in {delay}s")
-                time.sleep(delay)
 
         return None
 
@@ -107,6 +126,10 @@ class SteamDataFetcher(BaseFetcher):
                 api_data_usd = self._fetch_api_data(app_id, 'us')
                 if api_data_usd:
                     game_data.price_usd = self._get_price(api_data_usd)
+                    # Update USD-specific discount data
+                    usd_discount_data = self._extract_discount_data(api_data_usd)
+                    if usd_discount_data['original_price_usd']:
+                        game_data.original_price_usd = usd_discount_data['original_price_usd']
 
             # Fetch additional data from store page
             store_data = self._fetch_store_page_data(steam_url, api_data_eur, existing_data, known_full_game_id)
@@ -129,24 +152,18 @@ class SteamDataFetcher(BaseFetcher):
             return None
 
     def _fetch_api_data(self, app_id: str, country_code: str = 'at') -> dict[str, Any] | None:
-        """Fetch basic data from Steam API with country code and retry logic"""
-        api_url = f"https://store.steampowered.com/api/appdetails?appids={app_id}&cc={country_code}"
+        """Fetch basic data from Steam API using unified HTTP client"""
+        # Use the shared HTTP client instead of manual requests
+        response_data = self.http_client.make_single_app_request(app_id, country_code)
 
-        response = self._make_request_with_retry(api_url, f"Steam API (app {app_id})")
-        if not response:
+        if not response_data:
             return None
 
-        try:
-            data = response.json()
-        except (ValueError, TypeError) as e:
-            logging.error(f"Steam API returned invalid JSON for app {app_id}: {e}")
-            return None
-
-        if not isinstance(data, dict):
+        if not isinstance(response_data, dict):
             logging.error(f"Steam API returned non-dict response for app {app_id}")
             return None
 
-        app_info = data.get(app_id)
+        app_info = response_data.get(app_id)
         if not isinstance(app_info, dict):
             logging.error(f"Steam API missing app info for app {app_id}")
             return None
@@ -164,6 +181,9 @@ class SteamDataFetcher(BaseFetcher):
 
     def _parse_api_data(self, app_data: dict[str, Any], app_id: str, steam_url: str) -> SteamGameData:
         """Parse API data into SteamGameData object"""
+        # Extract discount data
+        discount_data = self._extract_discount_data(app_data)
+
         return SteamGameData(
             steam_app_id=app_id,
             steam_url=steam_url,
@@ -176,7 +196,11 @@ class SteamDataFetcher(BaseFetcher):
             developers=app_data.get('developers', []),
             publishers=app_data.get('publishers', []),
             price_eur=self._get_price(app_data),
-            header_image=app_data.get('header_image', '')
+            header_image=app_data.get('header_image', ''),
+            discount_percent=discount_data['discount_percent'],
+            original_price_eur=discount_data['original_price_eur'],
+            original_price_usd=discount_data['original_price_usd'],
+            is_on_sale=discount_data['is_on_sale']
         )
 
     def _get_price(self, app_data: dict[str, Any]) -> str | None:
@@ -190,6 +214,38 @@ class SteamDataFetcher(BaseFetcher):
             return str(price) if price is not None else None
 
         return None
+
+    def _extract_discount_data(self, app_data: dict[str, Any]) -> dict[str, Any]:
+        """Extract discount and sale information"""
+        result: dict[str, Any] = {
+            'discount_percent': 0,
+            'original_price_eur': None,
+            'original_price_usd': None,
+            'is_on_sale': False
+        }
+
+        if app_data.get('is_free'):
+            return result
+
+        price_data = app_data.get('price_overview', {})
+        if not price_data:
+            return result
+
+        discount_percent = price_data.get('discount_percent', 0)
+        result['discount_percent'] = int(discount_percent)
+        result['is_on_sale'] = discount_percent > 0
+
+        # Extract original prices when on sale
+        if discount_percent > 0:
+            initial_formatted = price_data.get('initial_formatted', '')
+            if initial_formatted:
+                # Determine currency and set appropriate field
+                if '€' in initial_formatted:
+                    result['original_price_eur'] = str(initial_formatted)
+                elif '$' in initial_formatted:
+                    result['original_price_usd'] = str(initial_formatted)
+
+        return result
 
     def _fetch_store_page_data(self, steam_url: str, app_data: dict[str, Any] | None = None, existing_data: 'SteamGameData | None' = None, known_full_game_id: str | None = None) -> dict[str, Any]:
         """Scrape additional data from Steam store page with retry logic"""
@@ -413,7 +469,8 @@ class SteamDataFetcher(BaseFetcher):
         # 1. Check for redirect - 91% of demos redirect to their main game
         try:
             demo_url = f"https://store.steampowered.com/app/{current_app_id}/"
-            response = requests.get(demo_url, timeout=30, allow_redirects=True)
+            from .constants import HTTP_TIMEOUT_SECONDS
+            response = requests.get(demo_url, timeout=HTTP_TIMEOUT_SECONDS, allow_redirects=True)
 
             if demo_url != response.url:
                 # Demo page redirected
@@ -501,3 +558,138 @@ class SteamDataFetcher(BaseFetcher):
             itch_url=preserved_itch_url,
             is_free=preserved_is_free
         )
+
+
+class SteamBulkPriceFetcher:
+    """Orchestrates bulk Steam price fetching using specialized components"""
+
+    def __init__(self, data_manager: 'DataManager | None' = None) -> None:
+        if not data_manager or not hasattr(data_manager, 'config_manager'):
+            raise ValueError("SteamBulkPriceFetcher requires a DataManager with config_manager")
+
+        self.data_manager = data_manager
+        self.config = data_manager.config_manager.get_steam_bulk_config()
+
+        # Initialize specialized components
+        from .batch_manager import BatchManager
+        from .bulk_fetch_error_handler import BulkFetchErrorHandler
+        from .steam_api_response_parser import SteamApiResponseParser
+        from .steam_bulk_http_client import SteamBulkHttpClient
+        from .steam_price_update_service import SteamPriceUpdateService
+
+        self.http_client = SteamBulkHttpClient(self.config)
+        self.response_parser = SteamApiResponseParser()
+        self.batch_manager = BatchManager(self.config)
+        self.error_handler = BulkFetchErrorHandler(self.config)
+        self.price_service = SteamPriceUpdateService(data_manager)
+
+    def refresh_prices_bulk(self, app_ids: list[str], batch_size: int | None = None,
+                          currencies: str = 'both', dry_run: bool = False) -> dict[str, Any]:
+        """
+        Main entry point for bulk price refresh
+
+        Args:
+            app_ids: List of Steam app IDs to refresh
+            batch_size: Apps per batch (uses config default if None)
+            currencies: 'eur', 'usd', or 'both'
+            dry_run: Preview changes without applying
+
+        Returns:
+            Dict with 'successful' and 'failed' lists
+        """
+        batch_size = self.batch_manager.get_initial_batch_size(batch_size)
+
+        logging.info(f"Starting bulk price refresh for {len(app_ids)} apps")
+        logging.info(f"Batch size: {batch_size}, Currencies: {currencies}, Dry run: {dry_run}")
+
+        # Collect all data first across all batches and currencies
+        all_eur_updates = {}
+        all_usd_updates = {}
+
+        # Split app IDs into batches
+        batches = self.batch_manager.create_batches(app_ids, batch_size)
+
+        # Fetch all data first (no saving yet)
+        for i, batch in enumerate(batches, 1):
+            logging.info(f"Processing batch {i}/{len(batches)} ({len(batch)} apps)")
+
+            try:
+                # Fetch EUR prices if needed
+                if currencies in ['eur', 'both']:
+                    eur_batch_results = self._process_batch_fetch_only(batch, 'at')
+                    all_eur_updates.update(eur_batch_results)
+
+                # Fetch USD prices if needed
+                if currencies in ['usd', 'both']:
+                    usd_batch_results = self._process_batch_fetch_only(batch, 'us')
+                    all_usd_updates.update(usd_batch_results)
+
+            except Exception as e:
+                logging.error(f"Batch {i} failed: {e}")
+                # Continue processing other batches
+
+        # Apply all updates using the price service
+        if currencies == 'both':
+            return self.price_service.apply_atomic_updates(all_eur_updates, all_usd_updates, dry_run)
+        elif currencies == 'eur':
+            return self.price_service.update_prices(all_eur_updates, 'eur', dry_run)
+        elif currencies == 'usd':
+            return self.price_service.update_prices(all_usd_updates, 'usd', dry_run)
+        else:
+            raise ValueError(f"Invalid currencies: {currencies}")
+
+    def _process_batch_fetch_only(self, app_ids: list[str], country_code: str) -> dict[str, dict[str, Any]]:
+        """Process a batch and return parsed results without applying updates"""
+        current_batch_size = len(app_ids)
+        general_attempts = 0
+        rate_limit_attempts = 0
+
+        while general_attempts < self.config['max_retries'] and self.batch_manager.should_continue_with_batch_size(current_batch_size):
+            try:
+                # Make bulk request using HTTP client
+                response_data = self.http_client.make_bulk_request(app_ids[:current_batch_size], country_code)
+
+                if response_data:
+                    # Parse response using response parser
+                    parsed_results = self.response_parser.parse_bulk_response(response_data, app_ids[:current_batch_size])
+                    logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
+                    return parsed_results
+                else:
+                    if self.error_handler.should_retry_empty_response(general_attempts):
+                        logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts + 1})")
+                        general_attempts += 1
+                        continue
+                    else:
+                        return {}
+
+            except requests.exceptions.HTTPError as e:
+                if e.response and e.response.status_code == 500:
+                    new_batch_size, should_continue = self.error_handler.handle_server_error(current_batch_size, general_attempts)
+                    current_batch_size = new_batch_size
+                    general_attempts += 1
+                    if not should_continue:
+                        break
+                    continue
+                elif e.response and e.response.status_code == 429:
+                    should_retry, delay = self.error_handler.handle_rate_limit(rate_limit_attempts)
+                    if should_retry:
+                        time.sleep(delay)
+                        rate_limit_attempts += 1
+                        continue
+                    else:
+                        return {}
+                else:
+                    self.error_handler.handle_unexpected_http_error(e.response.status_code if e.response else 0, e.response)
+                    return {}
+            except Exception as e:
+                if self.error_handler.should_retry_general_error(e, general_attempts):
+                    general_attempts += 1
+                    continue
+                else:
+                    return {}
+
+        # If we get here, all retries failed
+        logging.warning(f"All retries failed for batch fetch ({country_code}): "
+                       f"attempts={general_attempts}, batch_size={current_batch_size}")
+        return {}
+

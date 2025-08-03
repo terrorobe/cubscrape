@@ -48,7 +48,11 @@ CREATE TABLE games (
     review_tooltip TEXT,   -- Supplementary review info for tooltip
     is_inferred_summary BOOLEAN DEFAULT 0,  -- Whether review summary is inferred from non-Steam data
     is_absorbed BOOLEAN DEFAULT 0,  -- Whether this game is absorbed into another game
-    absorbed_into TEXT  -- game_key of parent game (if absorbed)
+    absorbed_into TEXT,  -- game_key of parent game (if absorbed)
+    discount_percent INTEGER DEFAULT 0,
+    original_price_eur REAL,
+    original_price_usd REAL,
+    is_on_sale BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE game_videos (
@@ -84,6 +88,7 @@ CREATE INDEX idx_multi_platform ON games(steam_url, itch_url, crazygames_url);
 CREATE INDEX idx_platform_absorbed_rating ON games(platform, is_absorbed, positive_review_percentage);
 CREATE INDEX idx_absorbed_video_date ON games(is_absorbed, latest_video_date);
 CREATE INDEX idx_hidden_gems ON games(positive_review_percentage, video_count, review_count) WHERE positive_review_percentage >= 80;
+CREATE INDEX idx_games_on_sale ON games(is_on_sale, discount_percent) WHERE is_on_sale = 1;
 
 -- Indexes for sorting performance
 CREATE INDEX idx_sort_rating_priority ON games(review_summary_priority, positive_review_percentage, review_count);

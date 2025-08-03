@@ -73,6 +73,10 @@ class SteamGameData(BaseModel):
     insufficient_reviews: bool = False
     planned_release_date: str | None = None
     itch_url: str | None = None  # Itch.io URL if this Steam game is also on Itch
+    discount_percent: int = 0  # 0-99 discount percentage
+    original_price_eur: str | None = None  # Original price when on sale
+    original_price_usd: str | None = None  # Original price when on sale
+    is_on_sale: bool = False  # True if discount_percent > 0
     last_updated: str = Field(default_factory=lambda: datetime.now().isoformat())
     is_stub: bool = False  # True if this is a stub entry for a failed fetch
     stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")

@@ -124,7 +124,7 @@ Examples:
 
         parser.add_argument(
             'mode',
-            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other', 'steam-changes', 'validate'],
+            choices=['backfill', 'cron', 'reprocess', 'fetch-steam-apps', 'data-quality', 'resolve-games', 'build-db', 'fetch-videos', 'refresh-steam', 'refresh-other', 'steam-changes', 'validate', 'steam-price-refresh'],
             help=mode_help
         )
         # Channel selection options
@@ -197,6 +197,35 @@ Examples:
             metavar='DATE',
             help='Date cutoff for steam-changes (e.g., "3 days ago", "2024-01-01", "1 week ago")'
         )
+
+        # Steam price refresh options
+        price_group = parser.add_argument_group('Steam Price Refresh Options')
+        price_group.add_argument(
+            '--max-apps',
+            type=int,
+            default=1000,
+            metavar='N',
+            help='Maximum apps to refresh (default: 1000, for steam-price-refresh mode)'
+        )
+        from .constants import STEAM_BULK_DEFAULTS
+        price_group.add_argument(
+            '--batch-size',
+            type=int,
+            default=STEAM_BULK_DEFAULTS['default_batch_size'],
+            metavar='N',
+            help=f'Apps per bulk request (default: {STEAM_BULK_DEFAULTS["default_batch_size"]}, for steam-price-refresh mode)'
+        )
+        price_group.add_argument(
+            '--currencies',
+            choices=['eur', 'usd', 'both'],
+            default='both',
+            help='Currencies to refresh (default: both, for steam-price-refresh mode)'
+        )
+        price_group.add_argument(
+            '--dry-run',
+            action='store_true',
+            help='Preview changes without applying (for steam-price-refresh mode)'
+        )
         special_group.add_argument(
             '--log-level',
             type=str,
@@ -231,7 +260,8 @@ Examples:
             'refresh-steam': self._handle_refresh_steam,
             'refresh-other': self._handle_refresh_other,
             'steam-changes': self._handle_steam_changes,
-            'validate': self._handle_validate
+            'validate': self._handle_validate,
+            'steam-price-refresh': self._handle_steam_price_refresh
         }
 
         handler = command_map.get(parsed_args.mode)
@@ -742,6 +772,53 @@ Examples:
             sys.exit(1)
         else:
             logging.info("All validation checks passed!")
+
+    def _handle_steam_price_refresh(self, args: argparse.Namespace) -> None:
+        """Handle steam-price-refresh command - bulk update Steam pricing data"""
+        from .data_manager import DataManager
+        from .steam_fetcher import SteamBulkPriceFetcher
+
+        logging.info("Starting Steam bulk price refresh...")
+
+        # Initialize components
+        project_root = self._get_project_root()
+        data_manager = DataManager(project_root)
+        bulk_fetcher = SteamBulkPriceFetcher(data_manager)
+
+        # Get Steam games that need price updates
+        steam_games = data_manager.load_steam_games()
+        app_ids = list(steam_games.keys())[:args.max_apps]
+
+        if not app_ids:
+            logging.info("No Steam games found to refresh")
+            return
+
+        logging.info(f"Refreshing prices for {len(app_ids)} Steam games (batch size: {args.batch_size})")
+
+        if args.dry_run:
+            logging.info("DRY RUN MODE - No changes will be applied")
+
+        try:
+            # Perform bulk price refresh
+            results = bulk_fetcher.refresh_prices_bulk(
+                app_ids=app_ids,
+                batch_size=args.batch_size,
+                currencies=args.currencies,
+                dry_run=args.dry_run
+            )
+
+            # Log results
+            successful = len(results.get('successful', []))
+            failed = len(results.get('failed', []))
+
+            logging.info(f"Price refresh completed: {successful} successful, {failed} failed")
+
+            if failed > 0:
+                logging.warning(f"Failed apps: {results.get('failed', [])}")
+
+        except Exception as e:
+            logging.error(f"Bulk price refresh failed: {e}")
+            sys.exit(1)
 
 
 def main() -> None:

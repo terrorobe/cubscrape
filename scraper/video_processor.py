@@ -32,7 +32,8 @@ class VideoProcessor:
         logging.debug(f"Processing videos from channel: {channel_url}")
 
         if not max_new_videos:
-            max_new_videos = 50
+            from .constants import DEFAULT_MAX_VIDEOS_PER_CHANNEL
+            max_new_videos = DEFAULT_MAX_VIDEOS_PER_CHANNEL
 
         # Parse cutoff date if provided
         cutoff_datetime = None
@@ -46,7 +47,8 @@ class VideoProcessor:
 
         known_video_ids = set(videos_data['videos'].keys())
         new_videos_processed = 0
-        batch_size = min(max_new_videos * 2, 50)  # Fetch more IDs to account for known videos
+        from .constants import DEFAULT_MAX_VIDEOS_PER_CHANNEL
+        batch_size = min(max_new_videos * 2, DEFAULT_MAX_VIDEOS_PER_CHANNEL)  # Fetch more IDs to account for known videos
         videos_fetched_total = 0
         consecutive_known_batches = 0
         cutoff_reached = False
@@ -98,8 +100,9 @@ class VideoProcessor:
             if not new_videos_in_batch:
                 consecutive_known_batches += 1
                 logging.debug("No new videos in this batch, continuing deeper into channel history")
-                # If we've had 3 consecutive batches with no new videos, we're likely caught up
-                if consecutive_known_batches >= 3:
+                # If we've had consecutive batches with no new videos, we're likely caught up
+                from .constants import CONSECUTIVE_KNOWN_BATCHES_THRESHOLD
+                if consecutive_known_batches >= CONSECUTIVE_KNOWN_BATCHES_THRESHOLD:
                     logging.debug("Hit 3 consecutive batches with no new videos, stopping search")
                     break
                 continue
@@ -160,7 +163,8 @@ class VideoProcessor:
             if batch_new_count == 0:
                 consecutive_known_batches += 1
                 logging.debug("No videos successfully processed in this batch, treating as empty batch")
-                if consecutive_known_batches >= 3:
+                from .constants import CONSECUTIVE_KNOWN_BATCHES_THRESHOLD
+                if consecutive_known_batches >= CONSECUTIVE_KNOWN_BATCHES_THRESHOLD:
                     logging.debug("Hit 3 consecutive unproductive batches, stopping search")
                     break
             else:

@@ -623,12 +623,48 @@ watch(
               </div>
             </div>
 
-            <!-- Price -->
-            <div
-              v-if="getPrice(game)"
-              class="rounded-sm bg-accent/10 px-3 py-1 text-lg font-bold text-accent"
-            >
-              {{ getPrice(game) }}
+            <!-- Price with Sale Indicator -->
+            <div v-if="getPrice(game)" class="flex flex-col items-end gap-1">
+              <!-- Sale Badge -->
+              <div
+                v-if="game.is_on_sale && game.discount_percent"
+                class="rounded-sm bg-red-600 px-2 py-1 text-xs font-bold text-white"
+              >
+                -{{ game.discount_percent }}%
+              </div>
+
+              <!-- Price Display -->
+              <div class="flex items-center gap-2">
+                <!-- Original Price (crossed out when on sale) -->
+                <div
+                  v-if="
+                    game.is_on_sale &&
+                    game.original_price_eur &&
+                    props.currency === 'eur'
+                  "
+                  class="text-sm text-text-secondary line-through"
+                >
+                  {{ game.original_price_eur }}
+                </div>
+                <div
+                  v-else-if="
+                    game.is_on_sale &&
+                    game.original_price_usd &&
+                    props.currency === 'usd'
+                  "
+                  class="text-sm text-text-secondary line-through"
+                >
+                  {{ game.original_price_usd }}
+                </div>
+
+                <!-- Current Price -->
+                <div
+                  class="rounded-sm bg-accent/10 px-3 py-1 text-lg font-bold"
+                  :class="game.is_on_sale ? 'text-red-600' : 'text-accent'"
+                >
+                  {{ getPrice(game) }}
+                </div>
+              </div>
             </div>
           </div>
 

@@ -7,6 +7,7 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 - **Multi-Platform Support**: Steam, Itch.io, and CrazyGames link extraction and metadata
 - **Multi-Channel Support**: Process multiple YouTube channels independently  
 - **Interactive Game Resolution**: Prompts for low confidence matches, handles missing/depublished games
+- **Sale Indicators**: Bulk Steam price refresh with discount badges and sale detection
 - **Web Interface**: Filterable, sortable game discovery with unified 0-100 rating scale
 
 ## Setup
@@ -73,6 +74,13 @@ cubscrape reprocess --channel idlecub
 **Single App Mode** - Fetch specific Steam game data:
 ```bash
 cubscrape single-app --app-id 123456
+```
+
+**Steam Price Refresh** - Bulk update Steam game prices with sale indicators:
+```bash
+cubscrape steam-price-refresh --max-apps 1000 --batch-size 500
+cubscrape steam-price-refresh --currencies eur --dry-run  # Preview EUR updates
+cubscrape steam-price-refresh --currencies both          # Atomic EUR+USD updates
 ```
 
 **Data Quality Mode** - Check data integrity and completeness:

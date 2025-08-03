@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, TypedDict
 if TYPE_CHECKING:
     from .reference_validator import ReferenceValidator, ValidationContext
 
+from .config_manager import ConfigManager
 from .models import OtherGameData, SteamGameData, VideoData, VideoGameReference
 from .utils import load_json, save_data
 
@@ -39,6 +40,7 @@ class DataManager:
         self.data_dir = project_root / 'data'
         self.validate_on_save = validate_on_save
         self._validator: ReferenceValidator | None = None  # Lazy-loaded to avoid circular imports
+        self.config_manager = ConfigManager(project_root)
 
     def get_videos_file_path(self, channel_id: str) -> Path:
         """Get path to videos data file for a channel"""
@@ -385,3 +387,9 @@ class DataManager:
     def is_steam_app_referenced_by_videos(self, app_id: str) -> bool:
         """Check if a Steam app ID is referenced by any video across all channels (legacy compatibility)"""
         return self.is_game_referenced_by_videos('steam', app_id)
+
+    def load_steam_games(self) -> dict[str, SteamGameData]:
+        """Load Steam games dictionary (convenience method for bulk operations)"""
+        steam_data = self.load_steam_data()
+        return steam_data['games']
+

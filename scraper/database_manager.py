@@ -226,8 +226,8 @@ class DatabaseManager:
                     crazygames_url, last_updated, video_count, latest_video_date,
                     unique_channels, genres, tags, developers, publishers,
                     demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary,
-                    is_absorbed, absorbed_into
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    is_absorbed, absorbed_into, discount_percent, original_price_eur, original_price_usd, is_on_sale
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -268,7 +268,11 @@ class DatabaseManager:
                 game.get('review_tooltip'),
                 game.get('is_inferred_summary', False),
                 game.get('is_absorbed', False),
-                game.get('absorbed_into')
+                game.get('absorbed_into'),
+                game.get('discount_percent', 0),
+                self._clean_price_value(game.get('original_price_eur')),
+                self._clean_price_value(game.get('original_price_usd')),
+                game.get('is_on_sale', False)
             ))
 
             game_id = cursor.lastrowid
