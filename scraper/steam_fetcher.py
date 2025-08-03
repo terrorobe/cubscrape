@@ -625,11 +625,11 @@ class SteamBulkPriceFetcher:
 
             try:
                 # Process this batch with all retry logic
-                batch_results = self._process_single_batch_with_retries(current_batch, country_code)
+                batch_results, actual_processed_count = self._process_single_batch_with_retries(current_batch, country_code)
                 all_results.update(batch_results)
 
-                # Remove processed apps and continue
-                app_ids_to_process = app_ids_to_process[current_batch_size:]
+                # Remove processed apps and continue - use actual processed count from retry logic
+                app_ids_to_process = app_ids_to_process[actual_processed_count:]
 
             except RuntimeError as e:
                 logging.error(f"Failed to process batch {batch_number}: {e}")
@@ -685,16 +685,22 @@ class SteamBulkPriceFetcher:
         time.sleep(delay)
         return -1, rate_limit_attempts + 1, True  # -1 indicates no batch size change
 
-    def _process_single_batch_with_retries(self, batch_apps: list[str], country_code: str) -> dict[str, dict[str, Any]]:
-        """Process a single batch with all retry logic"""
-        current_batch_size = len(batch_apps)
+    def _process_single_batch_with_retries(self, batch_apps: list[str], country_code: str) -> tuple[dict[str, dict[str, Any]], int]:
+        """Process a single batch with all retry logic, return (results, actual_processed_count)"""
+        original_batch_size = len(batch_apps)
+        current_batch_size = original_batch_size
         general_attempts = 0
         rate_limit_attempts = 0
 
         while general_attempts < self.config['max_retries']:
             try:
-                # Take only the apps we can handle with current batch size
-                current_batch = batch_apps[:current_batch_size]
+                # If batch size was reduced, process only the reduced batch size
+                if current_batch_size < original_batch_size:
+                    current_batch = batch_apps[:current_batch_size]
+                    logging.info(f"Processing reduced batch: {current_batch_size} of {original_batch_size} apps")
+                else:
+                    current_batch = batch_apps
+
                 logging.debug(f"Attempting {len(current_batch)} apps with batch size {current_batch_size}")
 
                 response_data = self.http_client.make_bulk_request(current_batch, country_code)
@@ -703,7 +709,7 @@ class SteamBulkPriceFetcher:
                     # Parse response using response parser
                     parsed_results = self.response_parser.parse_bulk_response(response_data, current_batch)
                     logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
-                    return parsed_results
+                    return parsed_results, len(current_batch)
                 else:
                     # Empty response - treat as error
                     if not self.error_handler.should_retry_empty_response(general_attempts):
@@ -747,6 +753,7 @@ class SteamBulkPriceFetcher:
 
         raise RuntimeError(f"Exhausted all {self.config['max_retries']} retry attempts")
 
+
     def refresh_prices_with_removal_detection(self, app_ids: list[str]) -> RemovalDetectionResult:
         """
         Combined price refresh and removal detection for cron mode
@@ -764,6 +771,9 @@ class SteamBulkPriceFetcher:
 
         # Step 2: Fetch USD prices for existing games only
         usd_results = self._fetch_usd_for_existing_games(app_ids, removed_games)
+
+        # Validation: Ensure EUR and USD counts match expectations
+        self._validate_price_fetch_counts(app_ids, removed_games, eur_results, usd_results)
 
         # Step 3: Update removal status in database
         self._process_removal_status_updates(removed_games, restored_games)
@@ -840,6 +850,38 @@ class SteamBulkPriceFetcher:
                 logging.error(f"USD price fetch failed: {e}")
 
         return usd_results
+
+    def _validate_price_fetch_counts(self, app_ids: list[str], removed_games: list[str],
+                                   eur_results: dict[str, Any], usd_results: dict[str, Any]) -> None:
+        """
+        Validate that EUR and USD price fetch counts match expectations
+
+        This catches batching logic errors that cause mismatched result counts.
+        """
+        total_apps = len(app_ids)
+        expected_existing_count = total_apps - len(removed_games)
+        actual_eur_count = len(eur_results)
+        actual_usd_count = len(usd_results)
+
+        logging.info(f"Price fetch validation: Total={total_apps}, Removed={len(removed_games)}, "
+                    f"Expected existing={expected_existing_count}")
+        logging.info(f"Actual results: EUR={actual_eur_count}, USD={actual_usd_count}")
+
+        # EUR should fetch prices for existing games (total - removed)
+        # Some games might fail to fetch due to network/Steam issues, so allow some tolerance
+        eur_missing = expected_existing_count - actual_eur_count
+        if eur_missing > 10:  # Allow up to 10 missing due to network issues
+            raise RuntimeError(f"EUR price fetch failed catastrophically: expected ~{expected_existing_count}, "
+                             f"got {actual_eur_count} (missing {eur_missing})")
+
+        # USD should match EUR count exactly (same games that had EUR success)
+        if actual_usd_count != actual_eur_count:
+            raise RuntimeError(f"EUR/USD price count mismatch! EUR={actual_eur_count}, USD={actual_usd_count}. "
+                             f"This indicates batching logic is dropping apps. "
+                             f"Expected USD count should equal EUR count ({actual_eur_count})")
+
+        if eur_missing > 0:
+            logging.warning(f"EUR fetch missing {eur_missing} games (network/Steam issues), but within tolerance")
 
     def _process_removal_status_updates(self, removed_games: list[str], restored_games: list[str]) -> None:
         """
