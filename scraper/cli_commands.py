@@ -198,34 +198,6 @@ Examples:
             help='Date cutoff for steam-changes (e.g., "3 days ago", "2024-01-01", "1 week ago")'
         )
 
-        # Steam price refresh options
-        price_group = parser.add_argument_group('Steam Price Refresh Options')
-        price_group.add_argument(
-            '--max-apps',
-            type=int,
-            default=0,
-            metavar='N',
-            help='Maximum apps to refresh (default: 0/unlimited, for steam-price-refresh mode)'
-        )
-        from .constants import STEAM_BULK_DEFAULTS
-        price_group.add_argument(
-            '--batch-size',
-            type=int,
-            default=STEAM_BULK_DEFAULTS['default_batch_size'],
-            metavar='N',
-            help=f'Apps per bulk request (default: {STEAM_BULK_DEFAULTS["default_batch_size"]}, for steam-price-refresh mode)'
-        )
-        price_group.add_argument(
-            '--currencies',
-            choices=['eur', 'usd', 'both'],
-            default='both',
-            help='Currencies to refresh (default: both, for steam-price-refresh mode)'
-        )
-        price_group.add_argument(
-            '--dry-run',
-            action='store_true',
-            help='Preview changes without applying (for steam-price-refresh mode)'
-        )
         special_group.add_argument(
             '--log-level',
             type=str,
@@ -564,6 +536,28 @@ Examples:
 
         # Update other platform games first (may contain Steam links)
         if enabled_channels:
+            # First: Run bulk price refresh with removal detection on ALL Steam games
+            logging.info("Running bulk price refresh with removal detection...")
+            from .data_manager import DataManager
+            from .steam_fetcher import SteamBulkPriceFetcher
+
+            project_root = self._get_project_root()
+            data_manager = DataManager(project_root)
+            bulk_fetcher = SteamBulkPriceFetcher(data_manager)
+
+            # Get ALL Steam games (including stubs, demos) for removal detection
+            steam_games = data_manager.load_steam_games()
+            all_app_ids = list(steam_games.keys())
+
+            if all_app_ids:
+                try:
+                    # Run bulk price refresh with removal detection
+                    results = bulk_fetcher.refresh_prices_with_removal_detection(all_app_ids)
+                    logging.info(f"Removal detection completed: {results.get('removed_count', 0)} games marked for removal")
+                except Exception as e:
+                    logging.error(f"Bulk price refresh with removal detection failed: {e}")
+                    # Continue with regular cron workflow even if removal detection fails
+
             other_games_updater = OtherGamesUpdater()
             steam_updater = SteamDataUpdater()
 
@@ -773,7 +767,7 @@ Examples:
         else:
             logging.info("All validation checks passed!")
 
-    def _handle_steam_price_refresh(self, args: argparse.Namespace) -> None:
+    def _handle_steam_price_refresh(self, _args: argparse.Namespace) -> None:
         """Handle steam-price-refresh command - bulk update Steam pricing data"""
         from .data_manager import DataManager
         from .steam_fetcher import SteamBulkPriceFetcher
@@ -785,44 +779,39 @@ Examples:
         data_manager = DataManager(project_root)
         bulk_fetcher = SteamBulkPriceFetcher(data_manager)
 
-        # Get Steam games that need price updates (exclude stubbed games)
+        # Get Steam games that need price updates (exclude stubbed games only)
         steam_games = data_manager.load_steam_games()
-        # Filter out stubbed games and demos that don't exist on Steam anymore
+        # Only filter out stubbed games (demos can still be removed from Steam)
         non_stub_games = {app_id: game for app_id, game in steam_games.items()
-                         if not game.is_stub and not game.is_demo}
+                         if not game.is_stub}
         app_ids = list(non_stub_games.keys())
 
-        logging.info(f"Filtered out {len(steam_games) - len(non_stub_games)} stubbed games and demos")
-
-        if args.max_apps > 0:
-            app_ids = app_ids[:args.max_apps]
+        logging.info(f"Filtered out {len(steam_games) - len(non_stub_games)} stubbed games")
 
         if not app_ids:
             logging.info("No Steam games found to refresh")
             return
 
-        logging.info(f"Refreshing prices for {len(app_ids)} Steam games (batch size: {args.batch_size})")
-
-        if args.dry_run:
-            logging.info("DRY RUN MODE - No changes will be applied")
+        logging.info(f"Refreshing prices for {len(app_ids)} Steam games")
 
         try:
-            # Perform bulk price refresh
-            results = bulk_fetcher.refresh_prices_bulk(
-                app_ids=app_ids,
-                batch_size=args.batch_size,
-                currencies=args.currencies,
-                dry_run=args.dry_run
-            )
+            # Perform bulk price refresh with removal detection
+            results = bulk_fetcher.refresh_prices_with_removal_detection(app_ids)
 
             # Log results
-            successful = len(results.get('successful', []))
-            failed = len(results.get('failed', []))
+            removed_count = results.get('removed_count', 0)
+            restored_count = results.get('restored_count', 0)
+            price_results = results.get('price_results', {})
+            successful = len(price_results.get('successful', []))
+            failed = len(price_results.get('failed', []))
 
-            logging.info(f"Price refresh completed: {successful} successful, {failed} failed")
+            logging.info("Price refresh with removal detection completed:")
+            logging.info(f"  Price updates: {successful} successful, {failed} failed")
+            logging.info(f"  Removal detection: {removed_count} games marked as removed")
+            logging.info(f"  Restoration detection: {restored_count} games restored")
 
             if failed > 0:
-                logging.warning(f"Failed apps: {results.get('failed', [])}")
+                logging.warning(f"Failed price updates: {price_results.get('failed', [])}")
 
         except Exception as e:
             logging.error(f"Bulk price refresh failed: {e}")

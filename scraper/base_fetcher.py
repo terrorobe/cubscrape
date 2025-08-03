@@ -73,12 +73,6 @@ class BaseFetcher:
         element = soup.select_one(selector)
         return BaseFetcher.safe_get_attr(element, attr, default)
 
-    @staticmethod
-    def safe_has_attr(element: Tag | PageElement | NavigableString | None, attr: str) -> bool:
-        """Safely check if element has attribute"""
-        if isinstance(element, Tag):
-            return element.has_attr(attr)
-        return False
 
     @staticmethod
     def safe_find_parent(element: Tag | PageElement | NavigableString | None, *args: Any, **kwargs: Any) -> Tag | None:

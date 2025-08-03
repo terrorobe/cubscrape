@@ -282,6 +282,9 @@ class SteamDataUpdater:
         """
         logging.info("Updating Steam data using age-based refresh intervals")
 
+        # First: Process pending removals from removal detection
+        self._process_pending_removals()
+
         # Collect all Steam app IDs from unified data source and build latest video date cache
         steam_app_ids: set[str] = set()
         latest_video_dates: dict[str, datetime] = {}  # app_id -> latest datetime
@@ -381,6 +384,11 @@ class SteamDataUpdater:
                             should_update = False
                         else:
                             update_reason = "scheduled refresh"
+
+            # Skip removal_pending games in age-based refresh
+            if app_id in self.steam_data['games'] and self.steam_data['games'][app_id].removal_pending:
+                logging.debug(f"Skipping removal_pending game {app_id} in age-based refresh")
+                should_update = False
 
             if should_update:
                 # Log update info including name and last update if known
@@ -634,3 +642,78 @@ class SteamDataUpdater:
             self._save_steam_data()
 
         return success
+
+    def _process_pending_removals(self) -> None:
+        """
+        Process games with removal_pending: true.
+        - If referenced by videos: Convert to stub
+        - If not referenced: Delete + break demo/full game references
+        """
+        removal_pending_games = []
+        for app_id, game_data in self.steam_data['games'].items():
+            if game_data.removal_pending:
+                removal_pending_games.append((app_id, game_data))
+
+        if not removal_pending_games:
+            logging.debug("No removal pending games to process")
+            return
+
+        logging.info(f"Processing {len(removal_pending_games)} removal pending games...")
+
+        for app_id, game_data in removal_pending_games:
+            # Check if game is referenced by videos
+            is_referenced = self.data_manager.is_game_referenced_by_videos('steam', app_id)
+
+            if is_referenced:
+                # Convert to stub
+                logging.info(f"Converting removal pending game {app_id} ({game_data.name}) to stub (referenced by videos)")
+                stub_data = game_data.model_copy(update={
+                    'name': game_data.name + " [REMOVED]",
+                    'is_stub': True,
+                    'stub_reason': "Removed from Steam",
+                    'removal_pending': False,
+                    'last_updated': datetime.now().isoformat()
+                })
+                self.steam_data['games'][app_id] = stub_data
+            else:
+                # Delete and break relationships
+                logging.info(f"Deleting removal pending game {app_id} ({game_data.name}) (not referenced by videos)")
+
+                # Break demo/full game relationships before deletion
+                self._break_game_relationships(app_id, game_data)
+
+                # Delete the game
+                del self.steam_data['games'][app_id]
+
+        # Save updated data
+        self._save_steam_data()
+        logging.info(f"Completed processing {len(removal_pending_games)} removal pending games")
+
+    def _break_game_relationships(self, app_id: str, game_data: SteamGameData) -> None:
+        """Break demo/full game relationships when deleting a game"""
+        if game_data.is_demo and game_data.full_game_app_id:
+            # This is a demo, clean up the main game's demo reference
+            full_game_id = game_data.full_game_app_id
+            if full_game_id in self.steam_data['games']:
+                full_game = self.steam_data['games'][full_game_id]
+                if full_game.demo_app_id == app_id:
+                    updated_full_game = full_game.model_copy(update={
+                        'demo_app_id': None,
+                        'has_demo': False,
+                        'last_updated': datetime.now().isoformat()
+                    })
+                    self.steam_data['games'][full_game_id] = updated_full_game
+                    logging.info(f"  Cleared demo reference {app_id} from full game {full_game_id}")
+
+        elif game_data.has_demo and game_data.demo_app_id:
+            # This is a full game with a demo, clean up the demo's full game reference
+            demo_id = game_data.demo_app_id
+            if demo_id in self.steam_data['games']:
+                demo_game = self.steam_data['games'][demo_id]
+                if demo_game.full_game_app_id == app_id:
+                    updated_demo = demo_game.model_copy(update={
+                        'full_game_app_id': None,
+                        'last_updated': datetime.now().isoformat()
+                    })
+                    self.steam_data['games'][demo_id] = updated_demo
+                    logging.info(f"  Cleared full game reference {app_id} from demo {demo_id}")

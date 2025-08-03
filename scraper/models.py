@@ -79,6 +79,10 @@ class SteamGameData(BaseModel):
     is_on_sale: bool = False  # True if discount_percent > 0
     last_updated: str = Field(default_factory=lambda: datetime.now().isoformat())
 
+    # Removal detection fields
+    removal_detected: str | None = None  # Date when removal was detected
+    removal_pending: bool = False  # True if game needs removal processing
+
     is_stub: bool = False  # True if this is a stub entry for a failed fetch
     stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")
     resolved_to: str | None = None  # Steam app ID this stub should resolve to
