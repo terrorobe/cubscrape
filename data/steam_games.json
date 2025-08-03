@@ -2352,14 +2352,14 @@
       "developers": [
         "KatHawk Studios"
       ],
+      "discount_percent": 0,
       "genres": [
         "RPG",
         "Simulation",
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1113400/header.jpg?t=1733429957",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:57:05.650606",
+      "last_updated": "2025-08-03T18:04:25.808650",
       "name": "Alliance of the Sacred Suns",
       "planned_release_date": "2025",
       "publishers": [
@@ -5364,6 +5364,7 @@
       "developers": [
         "Strategy Labs"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "818520",
       "genres": [
         "Indie",
@@ -5373,7 +5374,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1207590/header.jpg?t=1736290293",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:13:55.434840",
+      "last_updated": "2025-08-03T18:04:41.210836",
       "name": "Builders of Egypt: Prologue",
       "positive_review_percentage": 72,
       "publishers": [
@@ -5905,6 +5906,7 @@
       "developers": [
         "Zugalu Entertainment"
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Adventure",
@@ -5915,23 +5917,24 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245250/header.jpg?t=1750458686",
-      "last_updated": "2025-07-27T16:14:18.675592",
+      "last_updated": "2025-08-03T18:04:34.943036",
       "name": "Thrive: Heavy Lies The Crown",
-      "positive_review_percentage": 60,
+      "positive_review_percentage": 59,
       "price_eur": 2699,
       "price_usd": 2799,
       "publishers": [
         "PlaySide"
       ],
-      "recent_review_count": 35,
-      "recent_review_percentage": 22,
+      "recent_review_count": 18,
+      "recent_review_percentage": 27,
       "recent_review_summary": "Mostly Negative",
       "release_date": "18 Jun, 2025",
-      "review_count": 299,
+      "review_count": 301,
       "review_summary": "Mixed",
       "steam_app_id": "1245250",
       "steam_url": "https://store.steampowered.com/app/1245250",
       "tags": [
+        "4X",
         "Grand Strategy",
         "City Builder",
         "Strategy",
@@ -5940,8 +5943,7 @@
         "Singleplayer",
         "Online Co-Op",
         "Multiplayer",
-        "Medieval",
-        "Building"
+        "Medieval"
       ]
     },
     "1252070": {
@@ -6596,6 +6598,7 @@
       "developers": [
         "Trialforge Studio"
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Adventure",
@@ -6603,7 +6606,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1277130/fcf6db1acc75919efaba24aba497856eb9ea2833/header.jpg?t=1744281729",
-      "last_updated": "2025-07-27T16:56:59.176563",
+      "last_updated": "2025-08-03T18:04:44.024699",
       "name": "Deathbound",
       "positive_review_percentage": 72,
       "price_eur": 2999,
@@ -12472,6 +12475,7 @@
       "developers": [
         "Hellride Games"
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Simulation",
@@ -12479,8 +12483,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1490930/5923eb16c62a8ef7d0fddd74f155a2f2e4887d3e/header.jpg?t=1753379353",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:56:59.943127",
+      "last_updated": "2025-08-03T18:04:32.431407",
       "name": "Capital Command",
       "planned_release_date": "2025",
       "publishers": [
@@ -14024,13 +14027,14 @@
       "developers": [
         "Crunchy Leaf Games"
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Adventure",
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1536620/dbcd9a0fa951b7c2092f9498e15f4e9543f7080e/header.jpg?t=1749077965",
-      "last_updated": "2025-07-27T16:57:43.793326",
+      "last_updated": "2025-08-03T18:04:24.549378",
       "name": "Galactic Glitch",
       "positive_review_percentage": 86,
       "price_eur": 1499,
@@ -14039,7 +14043,7 @@
         "Crunchy Leaf Games"
       ],
       "release_date": "3 Jun, 2025",
-      "review_count": 500,
+      "review_count": 502,
       "review_summary": "Very Positive",
       "steam_app_id": "1536620",
       "steam_url": "https://store.steampowered.com/app/1536620",
@@ -14763,6 +14767,7 @@
       "developers": [
         "Billionworlds"
       ],
+      "discount_percent": 0,
       "genres": [
         "Indie",
         "Simulation",
@@ -14771,7 +14776,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1561960/header.jpg?t=1750326873",
       "is_early_access": true,
-      "last_updated": "2025-07-27T16:13:08.357340",
+      "last_updated": "2025-08-03T18:04:39.407435",
       "name": "Yield! Fall of Rome",
       "positive_review_percentage": 75,
       "price_eur": 1999,
@@ -17679,14 +17684,14 @@
       "developers": [
         "Scifan Studios"
       ],
+      "discount_percent": 0,
       "genres": [
         "Simulation",
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1638030/header.jpg?t=1742536309",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:56:51.924568",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1638030/header.jpg?t=1754054688",
+      "last_updated": "2025-08-03T18:04:46.999385",
       "name": "Generation Ship",
       "planned_release_date": "2025",
       "publishers": [
@@ -19021,12 +19026,13 @@
       "developers": [
         "Hellride Games"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "1490930",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1660320/5923eb16c62a8ef7d0fddd74f155a2f2e4887d3e/header.jpg?t=1753056846",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:57:00.893383",
+      "last_updated": "2025-08-03T18:04:33.472613",
       "name": "Capital Command Demo",
       "publishers": [
         "Hooded Horse"
@@ -23518,14 +23524,14 @@
       "developers": [
         "DinoBoss"
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Indie"
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1808160/header.jpg?t=1751365280",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:14:11.028155",
+      "last_updated": "2025-08-03T18:04:20.608721",
       "name": "Demon Spore",
       "planned_release_date": "2025",
       "publishers": [
@@ -34154,6 +34160,7 @@
       "developers": [
         "1LastGame"
       ],
+      "discount_percent": 0,
       "genres": [
         "Adventure",
         "Indie",
@@ -34162,9 +34169,9 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2096860/header.jpg?t=1752511625",
-      "last_updated": "2025-07-27T16:18:41.665993",
+      "last_updated": "2025-08-03T18:04:34.249144",
       "name": "Reclaim The Sea",
-      "positive_review_percentage": 85,
+      "positive_review_percentage": 83,
       "price_eur": 1179,
       "price_usd": 1199,
       "publishers": [
@@ -34172,7 +34179,7 @@
         "indienova"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 28,
+      "review_count": 30,
       "review_summary": "Positive",
       "steam_app_id": "2096860",
       "steam_url": "https://store.steampowered.com/app/2096860",
@@ -35875,6 +35882,7 @@
       "developers": [
         "Dino Rocket"
       ],
+      "discount_percent": 0,
       "genres": [
         "Casual",
         "Indie",
@@ -35882,7 +35890,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2125540/header.jpg?t=1746778856",
-      "last_updated": "2025-07-27T16:57:21.578848",
+      "last_updated": "2025-08-03T18:04:51.850087",
       "name": "K\u0101domon: Hyper Auto Battlers",
       "positive_review_percentage": 66,
       "price_eur": 999,
@@ -39486,14 +39494,14 @@
       "developers": [
         "Progenitor Game Studios Ltd."
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Indie",
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2201470/header.jpg?t=1741107781",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:57:41.266851",
+      "last_updated": "2025-08-03T18:04:51.079052",
       "name": "Remnant Protocol",
       "planned_release_date": "2025",
       "publishers": [
@@ -42608,6 +42616,7 @@
       "developers": [
         "Starmote Interactve"
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Indie",
@@ -42617,8 +42626,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2259590/header.jpg?t=1750104558",
       "is_early_access": true,
-      "is_free": true,
-      "last_updated": "2025-07-27T16:14:37.058483",
+      "last_updated": "2025-08-03T18:04:23.767236",
       "name": "Arcticide",
       "planned_release_date": "2025",
       "publishers": [
@@ -45771,13 +45779,14 @@
       "developers": [
         "Darenn Keller"
       ],
+      "discount_percent": 0,
       "genres": [
         "Indie",
         "Strategy"
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2308630/cb4b5a2904242ae28fd40ac8b7bd373cf5881bbe/header.jpg?t=1751987886",
-      "last_updated": "2025-07-27T16:13:31.287287",
+      "last_updated": "2025-08-03T18:04:28.389553",
       "name": "Dawnfolk",
       "positive_review_percentage": 95,
       "price_eur": 1479,
@@ -45785,11 +45794,11 @@
       "publishers": [
         "Astra Logical"
       ],
-      "recent_review_count": 15,
-      "recent_review_percentage": 93,
+      "recent_review_count": 17,
+      "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "13 Feb, 2025",
-      "review_count": 400,
+      "review_count": 410,
       "review_summary": "Very Positive",
       "steam_app_id": "2308630",
       "steam_url": "https://store.steampowered.com/app/2308630",
@@ -49519,6 +49528,7 @@
       "developers": [
         "River End Games"
       ],
+      "discount_percent": 0,
       "genres": [
         "Action",
         "Adventure",
@@ -49526,7 +49536,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2377280/header.jpg?t=1752669881",
-      "last_updated": "2025-07-27T16:14:08.630723",
+      "last_updated": "2025-08-03T18:04:35.636795",
       "name": "Eriksholm: The Stolen Dream",
       "positive_review_percentage": 94,
       "price_eur": 3999,
@@ -49535,7 +49545,7 @@
         "Nordcurrent Labs"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 500,
+      "review_count": 641,
       "review_summary": "Very Positive",
       "steam_app_id": "2377280",
       "steam_url": "https://store.steampowered.com/app/2377280",
@@ -52155,22 +52165,23 @@
       "developers": [
         "Darenn Keller"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "2308630",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2423630/header.jpg?t=1724777540",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:13:32.328582",
+      "last_updated": "2025-08-03T18:04:29.519095",
       "name": "Dawnfolk Demo",
       "positive_review_percentage": 95,
       "publishers": [
         "Darenn Keller"
       ],
-      "recent_review_count": 15,
-      "recent_review_percentage": 93,
+      "recent_review_count": 17,
+      "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "31 May, 2023",
-      "review_count": 400,
+      "review_count": 410,
       "review_summary": "Very Positive",
       "steam_app_id": "2423630",
       "steam_url": "https://store.steampowered.com/app/2423630",
@@ -53091,6 +53102,7 @@
       "developers": [
         "Seizo Games"
       ],
+      "discount_percent": 0,
       "genres": [
         "Adventure",
         "RPG",
@@ -53100,7 +53112,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2437330/header.jpg?t=1741883440",
       "is_early_access": true,
-      "last_updated": "2025-07-27T16:57:02.002158",
+      "last_updated": "2025-08-03T18:04:26.649410",
       "name": "Novus Orbis",
       "positive_review_percentage": 97,
       "price_eur": 975,
@@ -53396,13 +53408,14 @@
       "developers": [
         "Efrem Serreli"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "2437330",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2440450/header.jpg?t=1734100736",
       "is_demo": true,
       "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:57:02.992549",
+      "last_updated": "2025-08-03T18:04:27.710528",
       "name": "Novus Orbis Demo",
       "positive_review_percentage": 97,
       "publishers": [
@@ -59631,14 +59644,14 @@
       "developers": [
         "Bad Logic Studios"
       ],
+      "discount_percent": 0,
       "genres": [
         "Simulation",
         "Strategy"
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2533000/header.jpg?t=1751982153",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:13:03.235108",
+      "last_updated": "2025-08-03T18:04:44.964761",
       "name": "Small Kingdoms",
       "planned_release_date": "2025",
       "publishers": [
@@ -60903,6 +60916,7 @@
       "developers": [
         "Piece of Cake Fabulous"
       ],
+      "discount_percent": 0,
       "genres": [
         "Indie",
         "Simulation",
@@ -60910,8 +60924,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2556470/header.jpg?t=1745569694",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:57:16.854348",
+      "last_updated": "2025-08-03T18:04:42.190197",
       "name": "Fantastic Haven",
       "planned_release_date": "Q3 2025",
       "publishers": [
@@ -63305,12 +63318,13 @@
       "developers": [
         "Piece of Cake Fabulous"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "2556470",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2604500/header.jpg?t=1718351812",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:57:17.823038",
+      "last_updated": "2025-08-03T18:04:43.225335",
       "name": "Fantastic Haven Demo",
       "publishers": [
         "Goblinz Publishing"
@@ -64652,10 +64666,9 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2628570/cb48aed6efae35b4a3cb2ae640b1941e5880c3b5/header.jpg?t=1752641002",
       "is_on_sale": true,
-      "last_updated": "2025-07-27T16:14:02.122939",
+      "last_updated": "2025-08-03T18:04:22.992453",
       "name": "Stellar Settlers: Space Base Builder",
       "original_price_eur": 1199,
-      "original_price_usd": 1199,
       "positive_review_percentage": 72,
       "price_eur": 539,
       "price_usd": 539,
@@ -64663,8 +64676,11 @@
         "Rogue Duck Interactive",
         "Gamersky Games"
       ],
+      "recent_review_count": 16,
+      "recent_review_percentage": 75,
+      "recent_review_summary": "Mostly Positive",
       "release_date": "22 Feb, 2025",
-      "review_count": 652,
+      "review_count": 660,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2628570",
       "steam_url": "https://store.steampowered.com/app/2628570",
@@ -71580,6 +71596,7 @@
       "developers": [
         "DinoBoss"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "1808160",
       "genres": [
         "Action"
@@ -71587,7 +71604,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2744940/header.jpg?t=1740246935",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:14:11.836458",
+      "last_updated": "2025-08-03T18:04:21.628537",
       "name": "Demon Spore Demo",
       "positive_review_percentage": 86,
       "publishers": [
@@ -72215,12 +72232,13 @@
       "developers": [
         "Bad Logic Studios"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "2533000",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2752920/header.jpg?t=1715357149",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:13:04.133812",
+      "last_updated": "2025-08-03T18:04:46.122043",
       "name": "Small Kingdoms Demo",
       "publishers": [
         "Bad Logic Studios"
@@ -72993,6 +73011,7 @@
       "developers": [
         "Ephiam"
       ],
+      "discount_percent": 0,
       "genres": [
         "Adventure",
         "Indie",
@@ -73000,19 +73019,19 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2769210/header.jpg?t=1730140340",
-      "last_updated": "2025-07-27T16:57:32.166129",
+      "last_updated": "2025-08-03T18:04:30.258607",
       "name": "Scarmonde",
-      "positive_review_percentage": 100,
+      "positive_review_percentage": 98,
       "price_eur": 1379,
       "price_usd": 1399,
       "publishers": [
         "Ephiam"
       ],
-      "recent_review_count": 10,
-      "recent_review_percentage": 100,
+      "recent_review_count": 11,
+      "recent_review_percentage": 81,
       "recent_review_summary": "Very Positive",
       "release_date": "7 Oct, 2024",
-      "review_count": 163,
+      "review_count": 167,
       "review_summary": "Very Positive",
       "steam_app_id": "2769210",
       "steam_url": "https://store.steampowered.com/app/2769210",
@@ -77337,22 +77356,23 @@
       "developers": [
         "Ephiam"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "2769210",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2827900/header.jpg?t=1722378902",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:57:33.145686",
+      "last_updated": "2025-08-03T18:04:31.364708",
       "name": "Scarmonde Demo",
-      "positive_review_percentage": 100,
+      "positive_review_percentage": 98,
       "publishers": [
         "Ephiam"
       ],
-      "recent_review_count": 10,
-      "recent_review_percentage": 100,
+      "recent_review_count": 11,
+      "recent_review_percentage": 81,
       "recent_review_summary": "Very Positive",
       "release_date": "12 Feb, 2024",
-      "review_count": 163,
+      "review_count": 167,
       "review_summary": "Very Positive",
       "steam_app_id": "2827900",
       "steam_url": "https://store.steampowered.com/app/2827900",
@@ -87928,12 +87948,13 @@
       "developers": [
         "FireFly Studios"
       ],
+      "discount_percent": 0,
       "genres": [
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3024040/6e854e906a4c5c2bdb74bbcc5828d10ea2714dba/header_alt_assets_0.jpg?t=1753292258",
-      "last_updated": "2025-07-27T16:13:47.696648",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3024040/6e854e906a4c5c2bdb74bbcc5828d10ea2714dba/header_alt_assets_0.jpg?t=1754066570",
+      "last_updated": "2025-08-03T18:04:22.263021",
       "name": "Stronghold Crusader: Definitive Edition",
       "positive_review_percentage": 90,
       "price_eur": 1999,
@@ -87942,7 +87963,7 @@
         "FireFly Studios"
       ],
       "release_date": "15 Jul, 2025",
-      "review_count": 3522,
+      "review_count": 4248,
       "review_summary": "Very Positive",
       "steam_app_id": "3024040",
       "steam_url": "https://store.steampowered.com/app/3024040",
@@ -91132,12 +91153,13 @@
       "developers": [
         "Scifan Studios"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "1638030",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3089250/header.jpg?t=1753274792",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:56:52.864249",
+      "last_updated": "2025-08-03T18:04:48.186588",
       "name": "Generationship Demo",
       "publishers": [
         "Scifan Studios"
@@ -99971,6 +99993,7 @@
       "developers": [
         "ONESECONDGAMES"
       ],
+      "discount_percent": 0,
       "genres": [
         "Indie",
         "Simulation",
@@ -99978,8 +100001,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3259660/header.jpg?t=1733324194",
-      "is_free": true,
-      "last_updated": "2025-07-27T16:14:14.038718",
+      "last_updated": "2025-08-03T18:04:37.435548",
       "name": "Pick Me Up",
       "planned_release_date": "2025",
       "publishers": [
@@ -101197,6 +101219,7 @@
       "developers": [
         "ONESECONDGAMES"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "3259660",
       "genres": [
         "Indie",
@@ -101206,7 +101229,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3287350/header.jpg?t=1731233035",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:14:15.019777",
+      "last_updated": "2025-08-03T18:04:38.684880",
       "name": "Pick Me Up Demo",
       "publishers": [
         "ONESECONDGAMES"
@@ -102098,6 +102121,7 @@
         "TinyTakinTeller",
         "Abyssal_Novelist"
       ],
+      "discount_percent": 0,
       "genres": [
         "Casual",
         "Simulation",
@@ -102106,7 +102130,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3314970/d6d5761329b3036a336ced749fed379628954dd4/header.jpg?t=1749838155",
       "is_free": true,
-      "last_updated": "2025-07-27T16:13:38.935789",
+      "last_updated": "2025-08-03T18:04:49.164584",
       "name": "A Dark Forest",
       "planned_release_date": "Q3 2025",
       "publishers": [
@@ -114967,25 +114991,26 @@
       "developers": [
         " River End Games"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "2377280",
       "genres": [
         "Action",
         "Adventure"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3675810/3ad4f5aab1f75e58a815108ed1f50a3efc839d73/header.jpg?t=1749414932",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3675810/3ad4f5aab1f75e58a815108ed1f50a3efc839d73/header.jpg?t=1753768184",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-24T20:53:29.288048",
+      "last_updated": "2025-08-03T18:04:36.572948",
       "name": "Eriksholm: The Stolen Dream Demo",
       "positive_review_percentage": 94,
       "publishers": [
         " Nordcurrent Labs"
       ],
-      "recent_review_count": 126,
-      "recent_review_percentage": 90,
+      "recent_review_count": 106,
+      "recent_review_percentage": 86,
       "recent_review_summary": "Very Positive",
       "release_date": "8 Jun, 2025",
-      "review_count": 521,
+      "review_count": 535,
       "review_summary": "Very Positive",
       "steam_app_id": "3675810",
       "steam_url": "https://store.steampowered.com/app/3675810",
@@ -115354,12 +115379,13 @@
         "Alex the Abyssal Novelist",
         "TinyTakinTeller"
       ],
+      "discount_percent": 0,
       "full_game_app_id": "3314970",
       "genres": [],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3687160/01b498f68bc798183f60ba1fa924f24ef5185c95/header.jpg?t=1749838099",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-07-27T16:13:39.890932",
+      "last_updated": "2025-08-03T18:04:50.207253",
       "name": "A Dark Forest: Incremental Horror Demo",
       "publishers": [
         "TinyTakinTeller",
@@ -124051,21 +124077,20 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/818520/header.jpg?t=1739960414",
       "is_on_sale": true,
-      "last_updated": "2025-07-27T16:13:54.636635",
+      "last_updated": "2025-08-03T18:04:40.260089",
       "name": "Builders of Egypt",
       "original_price_eur": 1950,
-      "original_price_usd": 1999,
-      "positive_review_percentage": 42,
+      "positive_review_percentage": 41,
       "price_eur": 975,
       "price_usd": 999,
       "publishers": [
         "PlayWay S.A."
       ],
-      "recent_review_count": 10,
+      "recent_review_count": 13,
       "recent_review_percentage": 30,
       "recent_review_summary": "Mostly Negative",
       "release_date": "8 Jan, 2025",
-      "review_count": 309,
+      "review_count": 314,
       "review_summary": "Mixed",
       "steam_app_id": "818520",
       "steam_url": "https://store.steampowered.com/app/818520",
