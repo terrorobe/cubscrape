@@ -34,7 +34,8 @@ class BulkFetchErrorHandler:
         batch_manager = BatchManager(self.config)
 
         new_batch_size = batch_manager.reduce_batch_size_on_error(current_batch_size)
-        should_continue = batch_manager.should_continue_with_batch_size(new_batch_size)
+        # Always continue as long as we have retries left
+        should_continue = True
 
         logging.warning(f"HTTP 500 error (attempt {attempts + 1}), reducing batch size: {current_batch_size} → {new_batch_size}")
 

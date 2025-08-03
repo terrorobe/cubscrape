@@ -29,17 +29,14 @@ class BatchManager:
 
     def reduce_batch_size_on_error(self, current_batch_size: int) -> int:
         """Reduce batch size when encountering server errors"""
-        new_batch_size = max(
-            int(current_batch_size * self.config['batch_size_reduction_factor']),
-            int(self.config['min_batch_size'])
-        )
+        new_batch_size = int(current_batch_size * self.config['batch_size_reduction_factor'])
+
+        # Ensure we never go below 1
+        new_batch_size = max(new_batch_size, 1)
 
         logging.warning(f"Reducing batch size: {current_batch_size} → {new_batch_size}")
         return new_batch_size
 
-    def should_continue_with_batch_size(self, current_batch_size: int) -> bool:
-        """Check if we should continue with the current batch size"""
-        return current_batch_size >= self.config['min_batch_size']
 
     def get_initial_batch_size(self, requested_batch_size: int | None) -> int:
         """Get the initial batch size, using config default if none requested"""

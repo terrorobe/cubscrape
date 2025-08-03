@@ -165,9 +165,6 @@ class ConfigManager:
         if not isinstance(final_config['batch_size_reduction_factor'], int | float) or not 0 < final_config['batch_size_reduction_factor'] < 1:
             raise ValueError("steam_bulk_refresh.batch_size_reduction_factor must be between 0 and 1")
 
-        if not isinstance(final_config['min_batch_size'], int) or final_config['min_batch_size'] <= 0:
-            raise ValueError("steam_bulk_refresh.min_batch_size must be a positive integer")
-
         if not isinstance(final_config['rate_limit_delay'], int | float) or final_config['rate_limit_delay'] < 0:
             raise ValueError("steam_bulk_refresh.rate_limit_delay must be non-negative")
 

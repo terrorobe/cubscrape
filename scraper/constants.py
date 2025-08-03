@@ -6,9 +6,8 @@ Centralized constants for the scraper application
 STEAM_BULK_DEFAULTS = {
     'default_batch_size': 500,
     'batch_size_reduction_factor': 0.8,  # Reduce by 20% on each retry
-    'min_batch_size': 50,
     'rate_limit_delay': 2.5,
-    'max_retries': 3
+    'max_retries': 10
 }
 
 # HTTP Configuration

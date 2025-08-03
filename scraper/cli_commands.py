@@ -203,9 +203,9 @@ Examples:
         price_group.add_argument(
             '--max-apps',
             type=int,
-            default=1000,
+            default=0,
             metavar='N',
-            help='Maximum apps to refresh (default: 1000, for steam-price-refresh mode)'
+            help='Maximum apps to refresh (default: 0/unlimited, for steam-price-refresh mode)'
         )
         from .constants import STEAM_BULK_DEFAULTS
         price_group.add_argument(
@@ -787,7 +787,9 @@ Examples:
 
         # Get Steam games that need price updates
         steam_games = data_manager.load_steam_games()
-        app_ids = list(steam_games.keys())[:args.max_apps]
+        app_ids = list(steam_games.keys())
+        if args.max_apps > 0:
+            app_ids = app_ids[:args.max_apps]
 
         if not app_ids:
             logging.info("No Steam games found to refresh")

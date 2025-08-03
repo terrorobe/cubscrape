@@ -644,7 +644,7 @@ class SteamBulkPriceFetcher:
         general_attempts = 0
         rate_limit_attempts = 0
 
-        while general_attempts < self.config['max_retries'] and self.batch_manager.should_continue_with_batch_size(current_batch_size):
+        while general_attempts < self.config['max_retries']:
             try:
                 # Make bulk request using HTTP client
                 response_data = self.http_client.make_bulk_request(app_ids[:current_batch_size], country_code)
@@ -655,9 +655,10 @@ class SteamBulkPriceFetcher:
                     logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
                     return parsed_results
                 else:
-                    if self.error_handler.should_retry_empty_response(general_attempts):
-                        logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts + 1})")
-                        general_attempts += 1
+                    # Empty response - increment attempts first
+                    general_attempts += 1
+                    if self.error_handler.should_retry_empty_response(general_attempts - 1):
+                        logging.warning(f"Empty response from bulk request for {country_code} (attempt {general_attempts})")
                         continue
                     else:
                         return {}
