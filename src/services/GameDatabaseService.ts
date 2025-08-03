@@ -58,11 +58,11 @@ export class GameDatabaseService {
     const statsResults = this.executeQuery(
       database,
       `
-      SELECT 
+      SELECT
         COUNT(*) as total_games,
         COUNT(CASE WHEN is_free = 1 OR price_final = 0 THEN 1 END) as free_games,
         MAX(CASE WHEN price_final > 0 THEN price_final ELSE 0 END) as max_price
-      FROM games 
+      FROM games
       WHERE is_absorbed = 0
     `,
       [],

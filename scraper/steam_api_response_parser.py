@@ -50,33 +50,29 @@ class SteamApiResponseParser:
 
         # Extract price information
         currency = price_overview.get('currency', 'EUR')
-        final_price = price_overview.get('final', 0)  # Price in cents
-        initial_price = price_overview.get('initial', final_price)  # Original price in cents
+        final_price_cents = price_overview.get('final', 0)  # Price in cents
+        initial_price_cents = price_overview.get('initial', final_price_cents)  # Original price in cents
         discount_percent = price_overview.get('discount_percent', 0)
-
-        # Convert cents to currency string format
-        price_str = self._format_price(final_price, currency)
-        original_price_str = self._format_price(initial_price, currency) if initial_price != final_price else None
 
         # Determine which currency this is
         is_eur = currency == 'EUR'
         is_usd = currency == 'USD'
 
         result = {
-            'is_free': final_price == 0,
+            'is_free': final_price_cents == 0,
             'discount_percent': discount_percent,
             'is_on_sale': discount_percent > 0
         }
 
-        # Set currency-specific fields
+        # Set currency-specific fields (storing cents directly)
         if is_eur:
-            result['price_eur'] = price_str
-            result['original_price_eur'] = original_price_str
+            result['price_eur'] = final_price_cents if final_price_cents > 0 else None
+            result['original_price_eur'] = initial_price_cents if initial_price_cents != final_price_cents and initial_price_cents > 0 else None
             result['price_usd'] = None
             result['original_price_usd'] = None
         elif is_usd:
-            result['price_usd'] = price_str
-            result['original_price_usd'] = original_price_str
+            result['price_usd'] = final_price_cents if final_price_cents > 0 else None
+            result['original_price_usd'] = initial_price_cents if initial_price_cents != final_price_cents and initial_price_cents > 0 else None
             result['price_eur'] = None
             result['original_price_eur'] = None
         else:
@@ -86,17 +82,3 @@ class SteamApiResponseParser:
 
         return result
 
-    def _format_price(self, price_cents: int, currency: str) -> str:
-        """Format price from cents to currency string"""
-        if price_cents == 0:
-            return "Free"
-
-        # Convert cents to major currency unit
-        price_major = price_cents / 100.0
-
-        if currency == 'EUR':
-            return f"€{price_major:.2f}"
-        elif currency == 'USD':
-            return f"${price_major:.2f}"
-        else:
-            return f"{price_major:.2f} {currency}"

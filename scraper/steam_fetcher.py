@@ -203,15 +203,16 @@ class SteamDataFetcher(BaseFetcher):
             is_on_sale=discount_data['is_on_sale']
         )
 
-    def _get_price(self, app_data: dict[str, Any]) -> str | None:
-        """Extract price information"""
+    def _get_price(self, app_data: dict[str, Any]) -> int | None:
+        """Extract price information in cents"""
         if app_data.get('is_free'):
-            return "Free"
+            return None
 
         price_data = app_data.get('price_overview', {})
         if price_data:
-            price = price_data.get('final_formatted', '')
-            return str(price) if price is not None else None
+            # Steam API provides price in cents
+            final_price_cents = price_data.get('final', 0)
+            return final_price_cents if final_price_cents > 0 else None
 
         return None
 
@@ -235,15 +236,16 @@ class SteamDataFetcher(BaseFetcher):
         result['discount_percent'] = int(discount_percent)
         result['is_on_sale'] = discount_percent > 0
 
-        # Extract original prices when on sale
+        # Extract original prices when on sale (in cents)
         if discount_percent > 0:
-            initial_formatted = price_data.get('initial_formatted', '')
-            if initial_formatted:
-                # Determine currency and set appropriate field
-                if '€' in initial_formatted:
-                    result['original_price_eur'] = str(initial_formatted)
-                elif '$' in initial_formatted:
-                    result['original_price_usd'] = str(initial_formatted)
+            initial_price_cents = price_data.get('initial', 0)
+            currency = price_data.get('currency', 'EUR')
+            if initial_price_cents > 0:
+                # Set currency-specific field based on API currency
+                if currency == 'EUR':
+                    result['original_price_eur'] = initial_price_cents
+                elif currency == 'USD':
+                    result['original_price_usd'] = initial_price_cents
 
         return result
 

@@ -412,8 +412,8 @@ export class QueryBuilderService {
           'LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date',
           `LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date
                LEFT JOIN (
-                 SELECT game_id, MIN(video_date) as first_video_date 
-                 FROM game_videos 
+                 SELECT game_id, MIN(video_date) as first_video_date
+                 FROM game_videos
                  GROUP BY game_id
                ) fv ON g.id = fv.game_id`,
         )
@@ -427,10 +427,10 @@ export class QueryBuilderService {
           'LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date',
           `LEFT JOIN game_videos gv ON g.id = gv.game_id AND gv.video_date = g.latest_video_date
                LEFT JOIN (
-                 SELECT game_id, COUNT(*) as recent_video_count 
-                 FROM game_videos 
-                 WHERE video_date >= ? 
-                 GROUP BY game_id 
+                 SELECT game_id, COUNT(*) as recent_video_count
+                 FROM game_videos
+                 WHERE video_date >= ?
+                 GROUP BY game_id
                  HAVING COUNT(*) >= 2
                ) rv ON g.id = rv.game_id`,
         )
@@ -623,7 +623,7 @@ export class QueryBuilderService {
       case 'best-value':
         // High rating + reasonable price (prioritize quality over cheapness)
         return `
-            CASE 
+            CASE
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.BUDGET}) THEN 1
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} AND (is_free = 1 OR price_final <= ${PRICING.VALUE_THRESHOLDS.MODERATE}) THEN 2
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MIXED} THEN 3
@@ -636,7 +636,7 @@ export class QueryBuilderService {
       case 'hidden-gems':
         // High rating + low video coverage (undiscovered quality games)
         return `
-            CASE 
+            CASE
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.EXCELLENT} AND video_count <= ${VIDEO_COVERAGE.LOW} THEN 1
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} AND video_count <= ${VIDEO_COVERAGE.MEDIUM} THEN 2
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.POSITIVE} AND video_count <= ${VIDEO_COVERAGE.HIGH} THEN 3
@@ -653,7 +653,7 @@ export class QueryBuilderService {
       case 'trending':
         // Recent videos + increasing coverage (games gaining momentum)
         return `
-            CASE 
+            CASE
               WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.RECENT} days') AND video_count >= ${VIDEO_COVERAGE.TRENDING_MIN} THEN 1
               WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.SEMI_RECENT} days') AND video_count >= ${VIDEO_COVERAGE.STRONG_CONSENSUS} THEN 2
               WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.MONTHLY} days') AND video_count >= ${VIDEO_COVERAGE.TRENDING_MIN} THEN 3
@@ -666,7 +666,7 @@ export class QueryBuilderService {
       case 'creator-consensus':
         // Multiple channels + high ratings (broadly appreciated games)
         return `
-            CASE 
+            CASE
               WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.STRONG_CONSENSUS} AND positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} THEN 1
               WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.CONSENSUS_MIN} AND positive_review_percentage >= ${RATINGS.SMART_SORT.POSITIVE} THEN 2
               WHEN (LENGTH(unique_channels) - LENGTH(REPLACE(unique_channels, ',', '')) + 1) >= ${VIDEO_COVERAGE.CONSENSUS_MIN} THEN 3
@@ -679,13 +679,13 @@ export class QueryBuilderService {
       case 'recent-discoveries':
         // Recently covered games worth checking out
         return `
-            CASE 
+            CASE
               WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.SEMI_RECENT} days') THEN 1
               WHEN latest_video_date >= datetime('now', '-${TIME_RANGES.MONTHLY} days') THEN 2
               ELSE 3
             END ASC,
             latest_video_date DESC,
-            CASE 
+            CASE
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.VERY_POSITIVE} THEN 1
               WHEN positive_review_percentage >= ${RATINGS.SMART_SORT.MOSTLY_POSITIVE} THEN 2
               ELSE 3

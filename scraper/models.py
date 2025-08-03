@@ -55,8 +55,8 @@ class SteamGameData(BaseModel):
     categories: list[str] = Field(default_factory=list)
     developers: list[str] = Field(default_factory=list)
     publishers: list[str] = Field(default_factory=list)
-    price_eur: str | None = None
-    price_usd: str | None = None
+    price_eur: int | None = None  # Price in cents
+    price_usd: int | None = None  # Price in cents
     header_image: str = ""
     tags: list[str] = Field(default_factory=list)
     has_demo: bool = False
@@ -74,8 +74,8 @@ class SteamGameData(BaseModel):
     planned_release_date: str | None = None
     itch_url: str | None = None  # Itch.io URL if this Steam game is also on Itch
     discount_percent: int = 0  # 0-99 discount percentage
-    original_price_eur: str | None = None  # Original price when on sale
-    original_price_usd: str | None = None  # Original price when on sale
+    original_price_eur: int | None = None  # Original price in cents when on sale
+    original_price_usd: int | None = None  # Original price in cents when on sale
     is_on_sale: bool = False  # True if discount_percent > 0
     last_updated: str = Field(default_factory=lambda: datetime.now().isoformat())
     is_stub: bool = False  # True if this is a stub entry for a failed fetch

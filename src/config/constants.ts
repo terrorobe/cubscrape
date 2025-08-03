@@ -241,7 +241,7 @@ export const SORT_SPECS: Record<string, SortSpec> = {
     sql: `
       ORDER BY
         search_score DESC,
-        CASE 
+        CASE
           WHEN positive_review_percentage >= 80 AND (is_free = 1 OR price_final <= 20) THEN 1
           WHEN positive_review_percentage >= 70 AND (is_free = 1 OR price_final <= 30) THEN 2
           WHEN positive_review_percentage >= 60 THEN 3
@@ -265,7 +265,7 @@ export const SORT_SPECS: Record<string, SortSpec> = {
   'rating-desc': {
     sql: `
       ORDER BY
-        CASE 
+        CASE
           WHEN positive_review_percentage >= 80 THEN 1
           WHEN positive_review_percentage >= 70 THEN 2
           ELSE 3

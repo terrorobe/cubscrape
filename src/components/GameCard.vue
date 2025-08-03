@@ -16,6 +16,10 @@ import {
 import { UI_LIMITS } from '../config/index'
 import type { ParsedGameData, VideoData } from '../types/database'
 import { debug } from '../utils/debug'
+import {
+  getPrice as formatPrice,
+  type PriceData,
+} from '../utils/priceFormatter'
 
 // Component props interface
 interface Props {
@@ -223,21 +227,19 @@ const getRatingStyle = (
 ): { backgroundColor: string } =>
   getRatingStyleConfig(percentage, reviewSummary)
 
-const getPrice = (game: ParsedGameData): string | null => {
-  if (game.is_free) {
-    return 'Free'
+const getPrice = (game: ParsedGameData) => {
+  // Use new price formatting utility
+  const priceData: PriceData = {
+    price_eur: game.price_eur,
+    price_usd: game.price_usd,
+    original_price_eur: game.original_price_eur,
+    original_price_usd: game.original_price_usd,
+    discount_percent: game.discount_percent,
+    is_free: game.is_free,
+    is_on_sale: game.is_on_sale,
   }
 
-  // Get the appropriate price based on selected currency
-  if (game.display_price && game.display_price !== 'null') {
-    return game.display_price
-  } else if (props.currency === 'usd' && game.price_usd) {
-    return `$${game.price_usd}`
-  } else if (game.price_eur) {
-    return `€${game.price_eur}`
-  }
-
-  return null
+  return formatPrice(priceData, props.currency)
 }
 
 const getReleaseInfo = (game: ParsedGameData): string => {
