@@ -714,10 +714,11 @@ class SteamBulkPriceFetcher:
         # Fetch EUR prices for ALL games (including stubs/demos)
         logging.info("Fetching EUR prices for removal detection...")
         try:
-            eur_batch_results = self._process_batch_fetch_only_with_removal_detection(app_ids, 'at')
-            all_eur_updates.update(eur_batch_results['price_data'])
-            removed_games.extend(eur_batch_results['removed_games'])
-            restored_games.extend(eur_batch_results['restored_games'])
+            eur_batch_results = self._process_batch_fetch_only(app_ids, 'at')
+            all_eur_updates.update(eur_batch_results)
+
+            # Check for removed/restored games in the response
+            self._detect_removed_and_restored_games(eur_batch_results, app_ids, removed_games, restored_games)
         except Exception as e:
             logging.error(f"EUR removal detection failed: {e}")
 
@@ -862,6 +863,12 @@ class SteamBulkPriceFetcher:
         # Use existing response parser for price data
         price_results = self.response_parser.parse_bulk_response(response_data, app_ids)
 
+        # Load steam games data ONCE for this batch (performance fix)
+        try:
+            steam_games = self.data_manager.load_steam_games()
+        except Exception:
+            steam_games = {}
+
         # Check each app for removal/restoration status
         for app_id in app_ids:
             app_response = response_data.get(app_id, {})
@@ -874,20 +881,38 @@ class SteamBulkPriceFetcher:
                     logging.info(f"Detected removed game: {app_id}")
             else:
                 # Game exists - check if it was previously marked as removed
-                if self._was_game_marked_as_removed(app_id) and app_id not in restored_games:
+                game_data = steam_games.get(app_id)
+                was_removed = bool(game_data and game_data.removal_pending)
+                if was_removed and app_id not in restored_games:
                     restored_games.append(app_id)
                     logging.info(f"Detected restored game: {app_id}")
 
         return price_results
 
-    def _was_game_marked_as_removed(self, app_id: str) -> bool:
-        """Check if game was previously marked as removed"""
+    def _detect_removed_and_restored_games(self, batch_results: dict[str, dict[str, Any]],
+                                         app_ids: list[str], removed_games: list[str],
+                                         restored_games: list[str]) -> None:
+        """Analyze batch results to detect removed and restored games"""
+        # Load steam games data ONCE for all detection
         try:
             steam_games = self.data_manager.load_steam_games()
-            game_data = steam_games.get(app_id)
-            return bool(game_data and game_data.removal_pending)
         except Exception:
-            return False
+            steam_games = {}
+
+        for app_id in app_ids:
+            # Check if app was successfully fetched
+            if app_id in batch_results:
+                # Game exists - check if it was previously marked as removed
+                game_data = steam_games.get(app_id)
+                was_removed = bool(game_data and game_data.removal_pending)
+                if was_removed and app_id not in restored_games:
+                    restored_games.append(app_id)
+                    logging.info(f"Detected restored game: {app_id}")
+            else:
+                # Game is missing from results - likely removed/delisted
+                if app_id not in removed_games:
+                    removed_games.append(app_id)
+                    logging.info(f"Detected removed game: {app_id}")
 
     def _update_removal_status(self, removed_games: list[str], restored_games: list[str]) -> None:
         """Update removal status for detected games"""
