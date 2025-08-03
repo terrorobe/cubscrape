@@ -2,6 +2,7 @@
 import { reactive, computed, watch, ref } from 'vue'
 import { PRICING } from '../config/index'
 import type { ProcessedGameData } from '../services/GameDataProcessingService'
+import { getPriceValue } from '../utils/priceFormatter'
 
 /**
  * Currency type
@@ -80,56 +81,59 @@ const sliderRef = ref<HTMLElement>()
 const hoveredHandle = ref<'min' | 'max' | null>(null)
 
 // Price presets based on common price ranges
-const pricePresets = computed((): PricePreset[] => [
-  {
-    key: 'free',
-    label: 'Free',
-    minPrice: PRICING.MIN_PRICE,
-    maxPrice: PRICING.MIN_PRICE,
-  },
-  {
-    key: 'under-5',
-    label: '< $5',
-    minPrice: PRICING.MIN_PRICE,
-    maxPrice: 5,
-  },
-  {
-    key: 'under-10',
-    label: '< $10',
-    minPrice: PRICING.MIN_PRICE,
-    maxPrice: 10,
-  },
-  {
-    key: '5-15',
-    label: '$5-15',
-    minPrice: 5,
-    maxPrice: 15,
-  },
-  {
-    key: '10-30',
-    label: '$10-30',
-    minPrice: 10,
-    maxPrice: 30,
-  },
-  {
-    key: '15-40',
-    label: '$15-40',
-    minPrice: 15,
-    maxPrice: 40,
-  },
-  {
-    key: '30-plus',
-    label: '$30+',
-    minPrice: 30,
-    maxPrice: maxPossiblePrice.value,
-  },
-  {
-    key: 'all',
-    label: 'All',
-    minPrice: PRICING.MIN_PRICE,
-    maxPrice: maxPossiblePrice.value,
-  },
-])
+const pricePresets = computed((): PricePreset[] => {
+  const symbol = props.currency === 'eur' ? '€' : '$'
+  return [
+    {
+      key: 'free',
+      label: 'Free',
+      minPrice: PRICING.MIN_PRICE,
+      maxPrice: PRICING.MIN_PRICE,
+    },
+    {
+      key: 'under-5',
+      label: `< ${symbol}5`,
+      minPrice: PRICING.MIN_PRICE,
+      maxPrice: 5,
+    },
+    {
+      key: 'under-10',
+      label: `< ${symbol}10`,
+      minPrice: PRICING.MIN_PRICE,
+      maxPrice: 10,
+    },
+    {
+      key: '5-15',
+      label: `${symbol}5-15`,
+      minPrice: 5,
+      maxPrice: 15,
+    },
+    {
+      key: '10-30',
+      label: `${symbol}10-30`,
+      minPrice: 10,
+      maxPrice: 30,
+    },
+    {
+      key: '15-40',
+      label: `${symbol}15-40`,
+      minPrice: 15,
+      maxPrice: 40,
+    },
+    {
+      key: '30-plus',
+      label: `${symbol}30+`,
+      minPrice: 30,
+      maxPrice: maxPossiblePrice.value,
+    },
+    {
+      key: 'all',
+      label: 'All',
+      minPrice: PRICING.MIN_PRICE,
+      maxPrice: maxPossiblePrice.value,
+    },
+  ]
+})
 
 // Format price according to currency
 const formatPrice = (price: number): string => {
@@ -375,14 +379,8 @@ const filteredGameCount = computed((): number => {
   }
 
   return props.filteredGames.filter((game) => {
-    // Get the price based on current currency
-    const priceField = props.currency === 'usd' ? 'price_usd' : 'price_eur'
-    const price = game[priceField] ?? (game.is_free ? 0 : null)
-
-    // If price is null, skip this game
-    if (price === null) {
-      return false
-    }
+    // Get the decimal price value using the price formatter utility
+    const price = getPriceValue(game, props.currency)
 
     return (
       price >= localPriceFilter.minPrice && price <= localPriceFilter.maxPrice

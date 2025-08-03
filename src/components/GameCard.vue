@@ -227,7 +227,7 @@ const getRatingStyle = (
 ): { backgroundColor: string } =>
   getRatingStyleConfig(percentage, reviewSummary)
 
-const getPrice = (game: ParsedGameData) => {
+const getPriceInfo = (game: ParsedGameData) => {
   // Use new price formatting utility
   const priceData: PriceData = {
     price_eur: game.price_eur,
@@ -626,7 +626,10 @@ watch(
             </div>
 
             <!-- Price with Sale Indicator -->
-            <div v-if="getPrice(game)" class="flex flex-col items-end gap-1">
+            <div
+              v-if="getPriceInfo(game).current"
+              class="flex flex-col items-end gap-1"
+            >
               <!-- Sale Badge -->
               <div
                 v-if="game.is_on_sale && game.discount_percent"
@@ -640,23 +643,12 @@ watch(
                 <!-- Original Price (crossed out when on sale) -->
                 <div
                   v-if="
-                    game.is_on_sale &&
-                    game.original_price_eur &&
-                    props.currency === 'eur'
+                    getPriceInfo(game).hasDiscount &&
+                    getPriceInfo(game).original
                   "
                   class="text-sm text-text-secondary line-through"
                 >
-                  {{ game.original_price_eur }}
-                </div>
-                <div
-                  v-else-if="
-                    game.is_on_sale &&
-                    game.original_price_usd &&
-                    props.currency === 'usd'
-                  "
-                  class="text-sm text-text-secondary line-through"
-                >
-                  {{ game.original_price_usd }}
+                  {{ getPriceInfo(game).original }}
                 </div>
 
                 <!-- Current Price -->
@@ -664,7 +656,7 @@ watch(
                   class="rounded-sm bg-accent/10 px-3 py-1 text-lg font-bold"
                   :class="game.is_on_sale ? 'text-red-600' : 'text-accent'"
                 >
-                  {{ getPrice(game) }}
+                  {{ getPriceInfo(game).current }}
                 </div>
               </div>
             </div>

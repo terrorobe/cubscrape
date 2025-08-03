@@ -112,7 +112,7 @@ export const POPULAR_PRESETS: Preset[] = [
   {
     id: 'weekend-indie',
     name: 'Weekend Indie Games',
-    description: 'Recent indie games under $20 perfect for weekend browsing',
+    description: 'Recent indie games under 20 perfect for weekend browsing',
     filters: {
       releaseStatus: 'all',
       platform: 'all',
@@ -262,7 +262,7 @@ export const POPULAR_PRESETS: Preset[] = [
   {
     id: 'budget-gaming',
     name: 'Budget Gaming',
-    description: 'High-rated free and cheap games under $10',
+    description: 'High-rated free and cheap games under 10',
     filters: {
       releaseStatus: 'all',
       platform: 'all',

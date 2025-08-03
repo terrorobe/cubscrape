@@ -238,8 +238,9 @@ export class QueryBuilderService {
         if (priceFilter.maxPrice > 0) {
           const paidCondition = `(g.is_free = 0 AND g.${currencyField} IS NOT NULL AND g.${currencyField} >= ? AND g.${currencyField} <= ?)`
           priceConditions.push(paidCondition)
-          params.push(priceFilter.minPrice)
-          params.push(priceFilter.maxPrice)
+          // Convert decimal price values to cents for database comparison
+          params.push(Math.round(priceFilter.minPrice * 100))
+          params.push(Math.round(priceFilter.maxPrice * 100))
         }
 
         if (priceConditions.length > 0) {

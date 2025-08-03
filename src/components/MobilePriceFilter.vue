@@ -21,13 +21,14 @@ export default {
     const localMinPrice = ref(props.initialPriceFilter.minPrice)
     const localMaxPrice = ref(props.initialPriceFilter.maxPrice)
 
+    const symbol = props.currency === 'usd' ? '$' : '€'
     const pricePresets = [
       { label: 'Free Only', min: 0, max: 0 },
-      { label: 'Under $5', min: 0, max: 5 },
-      { label: 'Under $10', min: 0, max: 10 },
-      { label: 'Under $20', min: 0, max: 20 },
-      { label: '$10-$30', min: 10, max: 30 },
-      { label: '$30+', min: 30, max: 70 },
+      { label: `Under ${symbol}5`, min: 0, max: 5 },
+      { label: `Under ${symbol}10`, min: 0, max: 10 },
+      { label: `Under ${symbol}20`, min: 0, max: 20 },
+      { label: `${symbol}10-${symbol}30`, min: 10, max: 30 },
+      { label: `${symbol}30+`, min: 30, max: 70 },
     ]
 
     const formatPrice = (price) => {

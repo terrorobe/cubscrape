@@ -169,8 +169,11 @@ export class GameDataProcessingService {
     }
 
     if (games.length > 0) {
-      // Calculate max price
-      stats.maxPrice = Math.max(...games.map((game) => game.price_final ?? 0))
+      // Calculate max price (convert from cents to decimal)
+      const maxPriceCents = Math.max(
+        ...games.map((game) => game.price_final ?? 0),
+      )
+      stats.maxPrice = maxPriceCents / 100
 
       // Calculate average rating (only for games with reviews)
       const gamesWithRatings = games.filter(

@@ -73,7 +73,9 @@ export class GameDatabaseService {
       return {
         totalGames: (stats[0] as number) || 0,
         freeGames: (stats[1] as number) || 0,
-        maxPrice: Math.ceil((stats[2] as number) || PRICING.DEFAULT_MAX_PRICE),
+        maxPrice: Math.ceil(
+          ((stats[2] as number) || PRICING.DEFAULT_MAX_PRICE * 100) / 100,
+        ),
       }
     }
 
