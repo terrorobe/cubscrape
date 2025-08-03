@@ -545,9 +545,13 @@ Examples:
             data_manager = DataManager(project_root)
             bulk_fetcher = SteamBulkPriceFetcher(data_manager)
 
-            # Get ALL Steam games (including stubs, demos) for removal detection
+            # Get Steam games for removal detection (exclude stubs, include demos)
             steam_games = data_manager.load_steam_games()
-            all_app_ids = list(steam_games.keys())
+            non_stub_games = {app_id: game for app_id, game in steam_games.items()
+                             if not game.is_stub}
+            all_app_ids = list(non_stub_games.keys())
+
+            logging.info(f"Filtered out {len(steam_games) - len(non_stub_games)} stubbed games from price refresh")
 
             if all_app_ids:
                 try:

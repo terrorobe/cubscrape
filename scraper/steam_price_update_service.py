@@ -162,7 +162,9 @@ class SteamPriceUpdateService:
 
         # Update sale/discount fields (global for all currencies)
         if 'discount_percent' in price_data:
-            updates['discount_percent'] = price_data['discount_percent']
+            discount_value = price_data['discount_percent']
+            # Only set discount_percent if it's > 0, otherwise use None
+            updates['discount_percent'] = discount_value if discount_value > 0 else None
         if 'is_on_sale' in price_data:
             updates['is_on_sale'] = price_data['is_on_sale']
         if 'is_free' in price_data:
@@ -181,7 +183,7 @@ class SteamPriceUpdateService:
             name=f"[PRICE DATA ONLY] {app_id}",
             is_stub=True,
             stub_reason="Price data fetched before full game data",
-            discount_percent=price_data.get('discount_percent', 0),
+            discount_percent=price_data.get('discount_percent') if price_data.get('discount_percent', 0) > 0 else None,
             is_on_sale=price_data.get('is_on_sale', False),
             is_free=price_data.get('is_free', False)
         )

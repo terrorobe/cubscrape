@@ -232,7 +232,7 @@ class SteamDataFetcher(BaseFetcher):
     def _extract_discount_data(self, app_data: dict[str, Any]) -> dict[str, Any]:
         """Extract discount and sale information"""
         result: dict[str, Any] = {
-            'discount_percent': 0,
+            'discount_percent': None,
             'original_price_eur': None,
             'original_price_usd': None,
             'is_on_sale': False
