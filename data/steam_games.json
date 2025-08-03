@@ -3567,7 +3567,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154030/670afa06a336567dad235bdef373d58c918b538e/header_alt_assets_0.jpg?t=1754133385",
       "is_early_access": true,
-      "last_updated": "2025-08-02T20:52:49.266363",
+      "last_updated": "2025-08-03T15:01:43.899833",
       "name": "Titan Quest II",
       "positive_review_percentage": 83,
       "price_eur": "23,99\u20ac",
@@ -3576,12 +3576,11 @@
         "THQ Nordic"
       ],
       "release_date": "1 Aug, 2025",
-      "review_count": 2008,
+      "review_count": 3401,
       "review_summary": "Very Positive",
       "steam_app_id": "1154030",
       "steam_url": "https://store.steampowered.com/app/1154030",
       "tags": [
-        "Early Access",
         "RPG",
         "Action RPG",
         "Action",
@@ -3590,7 +3589,8 @@
         "Dungeon Crawler",
         "3D",
         "Open World",
-        "Colorful"
+        "Colorful",
+        "Realistic"
       ]
     },
     "1155970": {
@@ -27574,7 +27574,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920430/header.jpg?t=1753763380",
       "is_early_access": true,
-      "last_updated": "2025-08-02T08:58:27.398912",
+      "last_updated": "2025-08-03T15:01:44.526393",
       "name": "FUMES",
       "positive_review_percentage": 97,
       "price_eur": "12,59\u20ac",
@@ -27583,7 +27583,7 @@
         "FUMES team"
       ],
       "release_date": "28 Jul, 2025",
-      "review_count": 385,
+      "review_count": 467,
       "review_summary": "Very Positive",
       "steam_app_id": "1920430",
       "steam_url": "https://store.steampowered.com/app/1920430",
@@ -34009,7 +34009,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2098160/03fe2d4b3b40036f109fcd1d28b9f88c0f8d7c0e/header_alt_assets_0.jpg?t=1753811409",
       "is_early_access": true,
-      "last_updated": "2025-08-02T08:52:55.354835",
+      "last_updated": "2025-08-03T15:01:43.185362",
       "name": "Star Vortex",
       "positive_review_percentage": 84,
       "price_eur": "20,25\u20ac",
@@ -34018,8 +34018,8 @@
         "Hunted Cow Games"
       ],
       "release_date": "28 Jul, 2025",
-      "review_count": 45,
-      "review_summary": "Positive",
+      "review_count": 50,
+      "review_summary": "Very Positive",
       "steam_app_id": "2098160",
       "steam_url": "https://store.steampowered.com/app/2098160",
       "tags": [
