@@ -352,38 +352,44 @@ class SteamDataUpdater:
             if app_id in self.steam_data['games']:
                 steam_game_data: SteamGameData = self.steam_data['games'][app_id]
 
+                # Check for needs_full_refresh flag
+                if hasattr(steam_game_data, 'needs_full_refresh') and steam_game_data.needs_full_refresh:
+                    should_update = True
+                    update_reason = "needs full refresh"
+
                 # Check for missing cross-platform reference
-                related_itch_url = steam_to_itch_urls.get(app_id)
-                if related_itch_url and not steam_game_data.itch_url:
-                    should_update = True
-                    update_reason = "missing itch_url cross-reference"
-
-                # Check for overdue release trigger
-                elif self._is_overdue_release(steam_game_data):
-                    should_update = True
-                    update_reason = "overdue release"
-
-                # Check for recent video reference trigger
-                elif steam_game_data.last_updated:
-                    last_updated_date = datetime.fromisoformat(steam_game_data.last_updated)
-                    latest_video_date = latest_video_dates.get(app_id)
-
-                    if latest_video_date and latest_video_date > last_updated_date:
+                else:
+                    related_itch_url = steam_to_itch_urls.get(app_id)
+                    if related_itch_url and not steam_game_data.itch_url:
                         should_update = True
-                        update_reason = "recent video reference"
+                        update_reason = "missing itch_url cross-reference"
 
-                    # Check normal age-based refresh intervals
-                    else:
-                        refresh_interval_days = self._get_refresh_interval_days(steam_game_data)
-                        stale_date = datetime.now() - timedelta(days=refresh_interval_days)
+                    # Check for overdue release trigger
+                    elif self._is_overdue_release(steam_game_data):
+                        should_update = True
+                        update_reason = "overdue release"
 
-                        if last_updated_date > stale_date:
-                            release_date_info = self._get_release_date_info(steam_game_data)
-                            GameUpdateLogger.log_game_skip("steam", steam_game_data.name, steam_game_data.last_updated,
-                                                         refresh_interval_days, release_info=release_date_info)
-                            should_update = False
+                    # Check for recent video reference trigger
+                    elif steam_game_data.last_updated:
+                        last_updated_date = datetime.fromisoformat(steam_game_data.last_updated)
+                        latest_video_date = latest_video_dates.get(app_id)
+
+                        if latest_video_date and latest_video_date > last_updated_date:
+                            should_update = True
+                            update_reason = "recent video reference"
+
+                        # Check normal age-based refresh intervals
                         else:
-                            update_reason = "scheduled refresh"
+                            refresh_interval_days = self._get_refresh_interval_days(steam_game_data)
+                            stale_date = datetime.now() - timedelta(days=refresh_interval_days)
+
+                            if last_updated_date > stale_date:
+                                release_date_info = self._get_release_date_info(steam_game_data)
+                                GameUpdateLogger.log_game_skip("steam", steam_game_data.name, steam_game_data.last_updated,
+                                                             refresh_interval_days, release_info=release_date_info)
+                                should_update = False
+                            else:
+                                update_reason = "scheduled refresh"
 
             # Skip removal_pending games in age-based refresh
             if app_id in self.steam_data['games'] and self.steam_data['games'][app_id].removal_pending:
@@ -457,11 +463,13 @@ class SteamDataUpdater:
             # Save old data before updating (needed for demo removal detection)
             old_data = self.steam_data['games'].get(app_id)
 
-            # Update with timestamp and Itch URL if provided
-            steam_data = steam_data.model_copy(update={
+            # Update with timestamp, clear needs_full_refresh flag, and add Itch URL if provided
+            update_data = {
                 'last_updated': datetime.now().isoformat(),
+                'needs_full_refresh': False,  # Clear the flag after successful refresh
                 'itch_url': itch_url
-            })
+            }
+            steam_data = steam_data.model_copy(update=update_data)
             self.steam_data['games'][app_id] = steam_data
 
             # Check if a demo became stubbed and clean up main game reference
@@ -562,7 +570,10 @@ class SteamDataUpdater:
             existing_app_data = self.steam_data['games'].get(app_id)
             app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True, existing_data=existing_app_data, known_full_game_id=known_full_game_id)
             if app_data:
-                app_data = app_data.model_copy(update={'last_updated': datetime.now().isoformat()})
+                app_data = app_data.model_copy(update={
+                    'last_updated': datetime.now().isoformat(),
+                    'needs_full_refresh': False  # Clear the flag after successful refresh
+                })
                 self.steam_data['games'][app_id] = app_data
                 GameUpdateLogger.log_game_update_success(app_data.name, additional_info=app_type)
                 return True

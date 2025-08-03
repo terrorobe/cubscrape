@@ -706,8 +706,16 @@ class SteamBulkPriceFetcher:
                 response_data = self.http_client.make_bulk_request(current_batch, country_code)
 
                 if response_data:
+                    # Load existing games data for comparison
+                    try:
+                        steam_games = self.data_manager.load_steam_games()
+                        existing_games = {app_id: steam_games.get(app_id) for app_id in current_batch}
+                    except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
+                        logging.warning(f"Failed to load steam games data for comparison: {e}")
+                        existing_games = {}
+
                     # Parse response using response parser
-                    parsed_results = self.response_parser.parse_bulk_response(response_data, current_batch)
+                    parsed_results = self.response_parser.parse_bulk_response(response_data, current_batch, existing_games)
                     logging.debug(f"Batch fetch successful: {len(parsed_results)} results for {country_code}")
                     return parsed_results, len(current_batch)
                 else:
@@ -1053,15 +1061,18 @@ class SteamBulkPriceFetcher:
             - success=true + previously had removal_detected → Game restored, add to restored_games
             - success=true + normal game → Extract price data normally
         """
-        # Use existing response parser for price data
-        price_results = self.response_parser.parse_bulk_response(response_data, app_ids)
-
         # Load steam games data ONCE for this batch (performance fix)
         try:
             steam_games = self.data_manager.load_steam_games()
         except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
             logging.warning(f"Failed to load steam games data: {e}")
             steam_games = {}
+
+        # Prepare existing games data for comparison
+        existing_games = {app_id: steam_games.get(app_id) for app_id in app_ids}
+
+        # Use existing response parser for price data
+        price_results = self.response_parser.parse_bulk_response(response_data, app_ids, existing_games)
 
         # Check each app for removal/restoration status
         for app_id in app_ids:

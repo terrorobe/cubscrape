@@ -83,6 +83,9 @@ class SteamGameData(BaseModel):
     removal_detected: str | None = None  # Date when removal was detected
     removal_pending: bool = False  # True if game needs removal processing
 
+    # Full refresh flag for bidirectional change detection
+    needs_full_refresh: bool = False  # True if game needs full refresh due to pricing changes
+
     is_stub: bool = False  # True if this is a stub entry for a failed fetch
     stub_reason: str | None = None  # Reason for stub creation (e.g., "HTTP 400", "Not found")
     resolved_to: str | None = None  # Steam app ID this stub should resolve to
