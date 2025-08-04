@@ -402,7 +402,6 @@
       "positive_review_percentage": 90,
       "release_date": "21 March 2025",
       "review_count": 153,
-      "steam_url": "https://store.steampowered.com/app/3618390",
       "tags": [
         "Clicker",
         "Idle",
@@ -624,14 +623,14 @@
       "url": "https://logos-psychagogia.itch.io/time-survivor"
     },
     "https://louidev.itch.io/incro-pachinko": {
-      "header_image": "https://img.itch.zone/aW1nLzIyMjcxNDYxLnBuZw==/original/UJajao.png",
+      "header_image": "https://img.itch.zone/aW1nLzIyMzg2MTE2LnBuZw==/original/fV5jkW.png",
       "is_free": true,
-      "last_updated": "2025-07-28T00:54:47.299622",
+      "last_updated": "2025-08-04T04:34:18.358588",
       "name": "PACHINCRO!",
       "platform": "itch",
-      "positive_review_percentage": 70,
+      "positive_review_percentage": 78,
       "release_date": "09 July 2025",
-      "review_count": 10,
+      "review_count": 17,
       "steam_url": "",
       "tags": [
         "2D",
@@ -732,12 +731,12 @@
     "https://ome6a1717.itch.io/the-last-spire": {
       "header_image": "https://img.itch.zone/aW1nLzIyMTAxMjc2LnBuZw==/original/6hOccj.png",
       "is_free": true,
-      "last_updated": "2025-07-28T00:54:52.933637",
+      "last_updated": "2025-08-04T04:34:19.420755",
       "name": "The Last Spire",
       "platform": "itch",
       "positive_review_percentage": 92,
       "release_date": "12 July 2025",
-      "review_count": 57,
+      "review_count": 74,
       "steam_url": "",
       "tags": [
         "Cartoon",
@@ -1351,12 +1350,12 @@
     "https://www.crazygames.com/game/stick-war": {
       "header_image": "https://imgs.crazygames.com/games/stick-war/cover-1659084995039.jpg?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "is_free": true,
-      "last_updated": "2025-08-03T20:52:49.876343",
+      "last_updated": "2025-08-04T04:34:19.584170",
       "name": "Stick War",
       "platform": "crazygames",
       "positive_review_percentage": 93,
       "release_date": "",
-      "review_count": 221307,
+      "review_count": 221336,
       "steam_url": "",
       "tags": [
         "Action",
