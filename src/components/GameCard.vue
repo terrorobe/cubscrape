@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, type Ref } from 'vue'
+import { ref, watch, computed, onUnmounted, type Ref } from 'vue'
 import { useProgressiveLoading } from '../composables/useProgressiveLoading'
 import {
   HIDDEN_GEM_CRITERIA,
@@ -13,7 +13,6 @@ import {
   getPlatformConfig,
   type AvailablePlatform,
 } from '../config/platforms'
-import { UI_LIMITS } from '../config/index'
 import type { ParsedGameData, VideoData } from '../types/database'
 import { debug } from '../utils/debug'
 import {
@@ -481,6 +480,108 @@ const handleTagClick = (tag: string): void => {
 const isTagHighlighted = (tag: string): boolean =>
   props.selectedTags.includes(tag)
 
+// Context-aware tag display
+const isUserFilteringByTags = computed(() => props.selectedTags.length > 0)
+const isHoveringTags = ref(false)
+const hoverShowTimer = ref<NodeJS.Timeout | null>(null)
+const hoverHideTimer = ref<NodeJS.Timeout | null>(null)
+
+// Hover delay constants
+const HOVER_DELAYS = {
+  SHOW: 200, // 200ms delay before showing expanded tags
+  HIDE: 0, // Immediate hide when leaving
+}
+
+const handleTagAreaMouseEnter = () => {
+  // Clear any pending hide timer
+  if (hoverHideTimer.value) {
+    clearTimeout(hoverHideTimer.value)
+    hoverHideTimer.value = null
+  }
+
+  // Set timer to show expanded tags after delay
+  hoverShowTimer.value = setTimeout(() => {
+    isHoveringTags.value = true
+  }, HOVER_DELAYS.SHOW)
+}
+
+const handleTagAreaMouseLeave = () => {
+  // Clear any pending show timer
+  if (hoverShowTimer.value) {
+    clearTimeout(hoverShowTimer.value)
+    hoverShowTimer.value = null
+  }
+
+  // Hide immediately when leaving
+  if (HOVER_DELAYS.HIDE === 0) {
+    isHoveringTags.value = false
+  } else {
+    // Set timer to hide expanded tags with delay (if any)
+    hoverHideTimer.value = setTimeout(() => {
+      isHoveringTags.value = false
+    }, HOVER_DELAYS.HIDE)
+  }
+}
+
+// Calculate visible tags based on context and character budget
+const getVisibleTags = (tags: string[]): string[] => {
+  if (!tags || tags.length === 0) {
+    return []
+  }
+
+  // Show all tags when user is filtering by tags
+  if (isUserFilteringByTags.value) {
+    return tags
+  }
+
+  // Show more tags on hover
+  if (isHoveringTags.value) {
+    // Show up to 10 tags on hover
+    return tags.slice(0, 10)
+  }
+
+  // Use character budget approach while maintaining order
+  const characterBudget = 46 // Approximately fits 4-6 tags depending on length
+  const minTags = 3 // Always show at least 3 tags
+  const maxTags = 7 // Never show more than 7 tags in compact mode
+
+  const visibleTags: string[] = []
+  let currentCharCount = 0
+
+  // Process tags in original order
+  for (let i = 0; i < tags.length; i++) {
+    const tag = tags[i]
+    const tagLength = tag.length + 4 // +4 for padding/spacing
+
+    // Always include minimum tags
+    if (visibleTags.length < minTags) {
+      visibleTags.push(tag)
+      currentCharCount += tagLength
+    }
+    // After minimum, only add if within budget AND under max
+    else if (
+      currentCharCount + tagLength <= characterBudget &&
+      visibleTags.length < maxTags
+    ) {
+      visibleTags.push(tag)
+      currentCharCount += tagLength
+    } else {
+      // Stop once we can't fit more tags
+      break
+    }
+  }
+
+  return visibleTags
+}
+
+const getRemainingTagCount = (tags: string[]): number => {
+  if (!tags || isUserFilteringByTags.value || isHoveringTags.value) {
+    return 0
+  }
+  const visibleCount = getVisibleTags(tags).length
+  return tags.length - visibleCount
+}
+
 const groupVideosByChannel = (videos?: VideoData[]): VideosByChannel => {
   if (!videos || !Array.isArray(videos)) {
     return {}
@@ -518,6 +619,16 @@ watch(
     }
   },
 )
+
+// Cleanup hover timers on unmount
+onUnmounted(() => {
+  if (hoverShowTimer.value) {
+    clearTimeout(hoverShowTimer.value)
+  }
+  if (hoverHideTimer.value) {
+    clearTimeout(hoverHideTimer.value)
+  }
+})
 </script>
 
 <template>
@@ -720,24 +831,45 @@ watch(
         </div>
 
         <!-- Tags -->
-        <div class="mt-2 flex flex-wrap gap-1">
-          <button
-            v-for="tag in (game.tags || []).slice(
-              0,
-              UI_LIMITS.GAME_CARD_TAG_LIMIT,
-            )"
-            :key="tag"
-            class="my-1 mr-1 rounded-full px-2 py-1 text-xs transition-colors"
+        <div
+          class="mt-2 flex items-center gap-1"
+          :class="{
+            'overflow-hidden': !isHoveringTags && !isUserFilteringByTags,
+            'flex-wrap': isHoveringTags || isUserFilteringByTags,
+          }"
+          @mouseenter="handleTagAreaMouseEnter"
+          @mouseleave="handleTagAreaMouseLeave"
+        >
+          <TransitionGroup
+            name="tag-fade"
+            tag="div"
             :class="{
-              'bg-bg-secondary text-text-secondary hover:bg-accent hover:text-white':
-                !isTagHighlighted(tag),
-              'bg-accent text-white': isTagHighlighted(tag),
+              'flex gap-1': !isHoveringTags && !isUserFilteringByTags,
+              'flex flex-wrap gap-1': isHoveringTags || isUserFilteringByTags,
             }"
-            :title="`Filter by ${tag}`"
-            @click.stop="handleTagClick(tag)"
           >
-            {{ tag }}
-          </button>
+            <button
+              v-for="tag in getVisibleTags(game.tags || [])"
+              :key="tag"
+              class="rounded-full px-2 py-1 text-xs transition-all duration-200"
+              :class="{
+                'my-1 mr-1': isHoveringTags || isUserFilteringByTags,
+                'bg-bg-secondary text-text-secondary hover:bg-accent hover:text-white':
+                  !isTagHighlighted(tag),
+                'bg-accent text-white': isTagHighlighted(tag),
+              }"
+              :title="tag"
+              @click.stop="handleTagClick(tag)"
+            >
+              {{ tag }}
+            </button>
+          </TransitionGroup>
+          <span
+            v-if="getRemainingTagCount(game.tags || []) > 0"
+            class="shrink-0 rounded-full px-2 py-1 text-xs text-text-secondary"
+          >
+            +{{ getRemainingTagCount(game.tags || []) }} more
+          </span>
         </div>
 
         <!-- Video Info -->
@@ -978,5 +1110,31 @@ watch(
     transform: scale(1);
     outline-color: transparent;
   }
+}
+
+/* Tag transitions */
+.tag-fade-enter-active,
+.tag-fade-leave-active {
+  transition: all 0.2s ease;
+}
+
+.tag-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.tag-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

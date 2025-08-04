@@ -432,7 +432,7 @@ onUnmounted(() => {
             <input
               type="checkbox"
               :checked="selectedTags.includes(tag.name)"
-              @click.stop
+              @click.stop="toggleTag(tag.name)"
               class="text-accent focus:ring-accent"
             />
             <span class="flex-1 text-sm">{{ tag.name }}</span>
