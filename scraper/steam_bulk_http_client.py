@@ -33,7 +33,11 @@ class SteamBulkHttpClient:
         return self._make_steam_api_request([app_id], country_code)
 
     def _make_steam_api_request(self, app_ids: list[str], country_code: str, filters: str | None = None) -> dict[str, Any] | None:
-        """Make a request to Steam API with optional filters and retry logic"""
+        """Make a request to Steam API with optional filters and retry logic
+
+        Only retries network errors. All HTTP errors (429, 500, etc) are passed
+        through to business logic for appropriate handling.
+        """
         # Build the request URL
         app_ids_str = ','.join(app_ids)
         url = f"https://store.steampowered.com/api/appdetails?appids={app_ids_str}&cc={country_code}"
@@ -41,7 +45,7 @@ class SteamBulkHttpClient:
         if filters:
             url += f"&filters={filters}"
 
-        max_retries = 10
+        max_retries = 5  # Reduced since we only retry rate limits and network errors
 
         for attempt in range(max_retries):
             try:
@@ -55,25 +59,20 @@ class SteamBulkHttpClient:
                 if response.status_code == 200:
                     return response.json()
                 elif response.status_code == 429:  # Rate limited
-                    # Calculate exponential backoff delay starting at 10s
-                    delay = 10 * (2 ** attempt)
-                    logging.warning(f"Rate limited (429) on attempt {attempt + 1}/{max_retries}. Waiting {delay:.1f}s before retry...")
-
-                    if attempt < max_retries - 1:  # Don't sleep on last attempt
-                        time.sleep(delay)
-                        continue
-                    else:
-                        # Last attempt failed, raise the error
-                        response.raise_for_status()
+                    # Let business logic handle rate limiting with proper configuration
+                    response.raise_for_status()
                 else:
-                    # Other HTTP errors, raise immediately
+                    # Other HTTP errors (including 500), raise immediately to let business logic handle
                     response.raise_for_status()
 
+            except requests.exceptions.HTTPError:
+                # HTTP errors (including 500) should be handled by business logic
+                raise
             except requests.RequestException as e:
                 if attempt < max_retries - 1:
-                    # Exponential backoff for network errors too starting at 10s
-                    delay = 10 * (2 ** attempt)
-                    logging.warning(f"Request failed on attempt {attempt + 1}/{max_retries}: {e}. Waiting {delay:.1f}s before retry...")
+                    # Only retry actual network errors (connection, timeout, etc.)
+                    delay = min(2 * (2 ** attempt), 30)  # Cap at 30s for network issues
+                    logging.warning(f"Network error on attempt {attempt + 1}/{max_retries}: {e}. Waiting {delay:.1f}s before retry...")
                     time.sleep(delay)
                     continue
                 else:

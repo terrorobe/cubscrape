@@ -29,7 +29,7 @@ class BatchManager:
 
     def reduce_batch_size_on_error(self, current_batch_size: int) -> int:
         """Reduce batch size when encountering server errors"""
-        new_batch_size = int(current_batch_size * self.config['batch_size_reduction_factor'])
+        new_batch_size = int(current_batch_size * self.config['server_error_batch_reduction'])
 
         # Ensure we never go below 1
         new_batch_size = max(new_batch_size, 1)

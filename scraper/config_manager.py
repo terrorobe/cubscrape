@@ -162,11 +162,24 @@ class ConfigManager:
         if not isinstance(final_config['default_batch_size'], int) or final_config['default_batch_size'] <= 0:
             raise ValueError("steam_bulk_refresh.default_batch_size must be a positive integer")
 
-        if not isinstance(final_config['batch_size_reduction_factor'], int | float) or not 0 < final_config['batch_size_reduction_factor'] < 1:
-            raise ValueError("steam_bulk_refresh.batch_size_reduction_factor must be between 0 and 1")
+        # Validate error-specific settings
+        if not isinstance(final_config['server_error_batch_reduction'], int | float) or not 0 < final_config['server_error_batch_reduction'] < 1:
+            raise ValueError("steam_bulk_refresh.server_error_batch_reduction must be between 0 and 1")
+
+        if not isinstance(final_config['server_error_max_delay'], int | float) or final_config['server_error_max_delay'] < 0:
+            raise ValueError("steam_bulk_refresh.server_error_max_delay must be non-negative")
 
         if not isinstance(final_config['rate_limit_delay'], int | float) or final_config['rate_limit_delay'] < 0:
             raise ValueError("steam_bulk_refresh.rate_limit_delay must be non-negative")
+
+        if not isinstance(final_config['rate_limit_max_delay'], int | float) or final_config['rate_limit_max_delay'] < 0:
+            raise ValueError("steam_bulk_refresh.rate_limit_max_delay must be non-negative")
+
+        if not isinstance(final_config['network_error_base_delay'], int | float) or final_config['network_error_base_delay'] < 0:
+            raise ValueError("steam_bulk_refresh.network_error_base_delay must be non-negative")
+
+        if not isinstance(final_config['network_error_max_delay'], int | float) or final_config['network_error_max_delay'] < 0:
+            raise ValueError("steam_bulk_refresh.network_error_max_delay must be non-negative")
 
         if not isinstance(final_config['max_retries'], int) or final_config['max_retries'] < 0:
             raise ValueError("steam_bulk_refresh.max_retries must be non-negative")

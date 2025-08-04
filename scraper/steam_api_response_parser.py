@@ -14,13 +14,33 @@ class SteamApiResponseParser:
 
     def parse_bulk_response(self, response: dict[str, Any], app_ids: list[str], existing_games: dict[str, Any] | None = None) -> dict[str, dict[str, Any]]:
         """Parse Steam bulk API response into standardized format"""
+        results, _ = self.parse_bulk_response_with_removal_info(response, app_ids, existing_games)
+        return results
+
+    def parse_bulk_response_with_removal_info(self, response: dict[str, Any], app_ids: list[str], existing_games: dict[str, Any] | None = None) -> tuple[dict[str, dict[str, Any]], list[str]]:
+        """
+        Parse bulk Steam API response and return both successful results and removed games
+
+        Args:
+            response: Raw Steam API response
+            app_ids: List of app IDs that were requested
+            existing_games: Optional dict of existing game data for comparison
+
+        Returns:
+            Tuple of (successful_results, removed_app_ids)
+            - successful_results: Dict of games that exist on Steam {app_id: parsed_data}
+            - removed_app_ids: List of app IDs where Steam returned success=false
+        """
         results = {}
+        removed_games = []
         existing_games = existing_games or {}
 
         for app_id in app_ids:
             app_data = response.get(app_id, {})
 
             if not app_data.get('success', False):
+                # Steam explicitly said this game doesn't exist
+                removed_games.append(app_id)
                 logging.debug(f"Steam API returned success=false for app {app_id}")
                 continue
 
@@ -29,7 +49,7 @@ class SteamApiResponseParser:
             if parsed_data:
                 results[app_id] = parsed_data
 
-        return results
+        return results, removed_games
 
     def _parse_single_app_response(self, app_data: dict[str, Any], app_id: str, existing_game: Any = None) -> dict[str, Any] | None:
         """Parse individual app response from Steam API"""

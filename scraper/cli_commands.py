@@ -806,8 +806,8 @@ Examples:
             removed_count = results.get('removed_count', 0)
             restored_count = results.get('restored_count', 0)
             price_results = results.get('price_results', {})
-            successful = len(price_results.get('successful', []))
-            failed = len(price_results.get('failed', []))
+            successful = price_results.get('successful', 0)
+            failed = price_results.get('failed', 0)
 
             logging.info("Price refresh with removal detection completed:")
             logging.info(f"  Price updates: {successful} successful, {failed} failed")
