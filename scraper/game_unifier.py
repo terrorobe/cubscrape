@@ -12,34 +12,36 @@ from typing import Any
 from .utils import generate_review_summary
 
 
-def _resolve_stub_entries(steam_data: dict[str, Any]) -> dict[str, Any]:
-    """Resolve stub entries by replacing them with their resolved targets"""
+def _resolve_stub_entries(steam_data: dict[str, Any]) -> tuple[dict[str, Any], dict[str, str]]:
+    """
+    Handle stub entries by removing them while preserving target games.
+    Returns resolved data and stub-to-target mapping for video attribution.
+
+    Returns:
+        tuple: (resolved_data, stub_to_target_mapping)
+    """
     resolved_data = {}
+    stub_to_target_mapping = {}
 
-    # First pass: collect all target IDs that are resolved by stubs
-    resolved_target_ids = set()
-    for game_data in steam_data.values():
-        if game_data.get('is_stub') and game_data.get('resolved_to'):
-            resolved_target_ids.add(game_data['resolved_to'])
-
+    # First pass: identify all stub relationships
     for app_id, game_data in steam_data.items():
-        # Check if this is a stub with a resolution
         if game_data.get('is_stub') and game_data.get('resolved_to'):
-            resolved_app_id = game_data['resolved_to']
-            resolved_game = steam_data.get(resolved_app_id)
+            target_id = game_data['resolved_to']
+            stub_to_target_mapping[app_id] = target_id
+            logging.info(f"Recording stub mapping: {app_id} -> {target_id} ({game_data.get('name', 'Unknown')})")
 
-            if resolved_game:
-                logging.info(f"Resolving stub {app_id} to {resolved_app_id}: {resolved_game.get('name')}")
-                resolved_data[app_id] = resolved_game
-            else:
-                logging.warning(f"Stub {app_id} points to missing game {resolved_app_id}")
-                resolved_data[app_id] = game_data
-        elif app_id not in resolved_target_ids:
-            # Only include non-stub games that are not already resolved by a stub
-            resolved_data[app_id] = game_data
-        # else: Skip this entry because it's a target that's resolved by a stub
+    # Second pass: include only non-stub games under their original IDs
+    for app_id, game_data in steam_data.items():
+        if game_data.get('is_stub'):
+            # Skip stub entries - they're just redirects
+            logging.info(f"Removing stub entry: {app_id} ({game_data.get('name', 'Unknown')})")
+            continue
 
-    return resolved_data
+        # Include all legitimate games under their original IDs
+        resolved_data[app_id] = game_data
+
+    logging.info(f"Stub resolution complete: {len(stub_to_target_mapping)} mappings, {len(resolved_data)} games preserved")
+    return resolved_data, stub_to_target_mapping
 
 
 def _create_fallback_game(game_key: str, game_data: Any, missing_ref_id: str | None = None) -> dict[str, Any]:
@@ -177,7 +179,7 @@ def create_unified_steam_games(steam_data: dict[str, Any]) -> dict[str, Any]:
     logging.info(f"Creating unified games from {len(steam_data)} Steam entries")
 
     # Resolve stub entries before processing
-    resolved_steam_data = _resolve_stub_entries(steam_data)
+    resolved_steam_data, _ = _resolve_stub_entries(steam_data)
 
     for game_key, game_data in resolved_steam_data.items():
         if game_key in processed_games:
@@ -249,8 +251,11 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
     """Process games using existing logic adapted from JavaScript processGames()"""
     unified_games = {}
 
-    # First, create unified demo/full game entries
+    # First, create unified demo/full game entries and get stub mappings
     unified_games = create_unified_steam_games(steam_data)
+
+    # Get stub mappings for video attribution
+    _, stub_to_target_mapping = _resolve_stub_entries(steam_data)
 
     # Add other platform games (itch, crazygames)
     # But skip Itch games that have been absorbed into Steam games
@@ -322,13 +327,21 @@ def process_and_unify_games(steam_data: dict[str, Any], other_games: dict[str, A
         platform = game_ref.get('platform')
         platform_id = game_ref.get('platform_id')
 
-        if platform == 'steam':
-            # Find the unified game entry for this Steam app ID
+        if platform == 'steam' and platform_id:
+            # Check for stub redirect first
+            resolved_platform_id = stub_to_target_mapping.get(platform_id, platform_id)
+            if resolved_platform_id != platform_id:
+                logging.debug(f"Video attribution: Resolving stub {platform_id} -> {resolved_platform_id}")
+
+            # Find the unified game entry for this Steam app ID (original or resolved)
             for game_key, game_data in unified_games.items():
                 if (game_data.get('platform') == 'steam' and
-                    (game_key == platform_id or  # Direct match
-                     game_data.get('_demo_app_id') == platform_id or  # Demo video
-                     game_data.get('_full_game_app_id') == platform_id)):  # Full game video
+                    (game_key == resolved_platform_id or  # Direct match (possibly resolved)
+                     game_key == platform_id or  # Direct match (original)
+                     game_data.get('_demo_app_id') == resolved_platform_id or  # Demo video
+                     game_data.get('_demo_app_id') == platform_id or
+                     game_data.get('_full_game_app_id') == resolved_platform_id or  # Full game video
+                     game_data.get('_full_game_app_id') == platform_id)):
                         return game_key
         elif platform == 'itch':
             # Check if this Itch URL maps to a Steam game
