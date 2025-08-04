@@ -211,11 +211,17 @@ const clearSearch = (): void => {
   if (searchInput.value) {
     searchInput.value.focus()
   }
+  // Keep dropdown visible after clearing search
+  showDropdown.value = true
 }
 
 const filterTags = (): void => {
   // Update the progressive loading search
   updateTagSearch(searchQuery.value)
+  // Show dropdown when typing
+  if (!showDropdown.value) {
+    showDropdown.value = true
+  }
 }
 
 // Watch for search changes to update progressive loading
