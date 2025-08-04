@@ -96,6 +96,41 @@ class SteamChangesAnalyzer:
             return match.group(1), match.group(2)
         return None, None
 
+    def _format_price(self, value: str, currency: str) -> str:
+        """Format price value from cents to currency display."""
+        if value == "null" or value is None:
+            return "null"
+
+        try:
+            cents = int(value)
+            if cents == 0:
+                return "Free"
+
+            # Convert cents to decimal amount
+            amount = cents / 100
+
+            if currency == 'EUR':
+                return f"€{amount:.2f}"
+            elif currency == 'USD':
+                return f"${amount:.2f}"
+            else:
+                return f"{amount:.2f}"
+        except (ValueError, TypeError):
+            return value
+
+    def _format_discount(self, value: str) -> str:
+        """Format discount percentage."""
+        if value == "null" or value is None:
+            return "null"
+
+        try:
+            discount = int(value)
+            if discount == 0:
+                return "0%"
+            return f"-{discount}%"
+        except (ValueError, TypeError):
+            return value
+
     def compare_games(self, old_data: dict[str, Any] | None, new_data: dict[str, Any] | None) -> list[str]:
         """Compare two versions of steam_games.json and return changes."""
         changes = []
@@ -238,13 +273,22 @@ class SteamChangesAnalyzer:
                 for field, (old_val, new_val) in price_changes.items():
                     # Format with arrow for later coloring
                     if field == 'price_eur':
-                        price_parts.append(f"EUR: {old_val} → {new_val}")
+                        # Format cents to EUR currency
+                        old_formatted = self._format_price(old_val, 'EUR')
+                        new_formatted = self._format_price(new_val, 'EUR')
+                        price_parts.append(f"{old_formatted} → {new_formatted}")
                     elif field == 'price_usd':
-                        price_parts.append(f"USD: {old_val} → {new_val}")
+                        # Format cents to USD currency
+                        old_formatted = self._format_price(old_val, 'USD')
+                        new_formatted = self._format_price(new_val, 'USD')
+                        price_parts.append(f"{old_formatted} → {new_formatted}")
                     elif field == 'is_free':
                         price_parts.append(f"free: {old_val} → {new_val}")
                     elif field == 'discount':
-                        price_parts.append(f"discount: {old_val} → {new_val}")
+                        # Format discount percentage
+                        old_formatted = self._format_discount(old_val)
+                        new_formatted = self._format_discount(new_val)
+                        price_parts.append(f"discount: {old_formatted} → {new_formatted}")
                     else:
                         price_parts.append(f"{field}: {old_val} → {new_val}")
                 game_changes.append(f"PRICE: {', '.join(price_parts)}")
@@ -446,9 +490,7 @@ class SteamChangesAnalyzer:
 
                             # Special handling for consolidated fields
                             if field_name == 'PRICE':
-                                # Color individual currency labels
-                                colored_desc = colored_desc.replace('EUR:', f'{self.colors["bold"]}EUR:{self.colors["reset"]}')
-                                colored_desc = colored_desc.replace('USD:', f'{self.colors["bold"]}USD:{self.colors["reset"]}')
+                                # Only highlight labels that still exist
                                 colored_desc = colored_desc.replace('free:', f'{self.colors["bold"]}free:{self.colors["reset"]}')
                                 colored_desc = colored_desc.replace('discount:', f'{self.colors["bold"]}discount:{self.colors["reset"]}')
                             elif field_name == 'REVIEWS':
