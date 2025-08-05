@@ -118,18 +118,120 @@ class SteamChangesAnalyzer:
         except (ValueError, TypeError):
             return value
 
-    def _format_discount(self, value: str) -> str:
-        """Format discount percentage."""
-        if value == "null" or value is None:
-            return "null"
 
-        try:
-            discount = int(value)
-            if discount == 0:
-                return "0%"
-            return f"-{discount}%"
-        except (ValueError, TypeError):
-            return value
+    def _format_price_change_with_discount(self, price_changes: dict[str, tuple[str, str]],
+                                         currency: str, new_game: dict[str, Any], old_game: dict[str, Any]) -> str | None:
+        """Format price changes considering discounts for a specific currency."""
+        currency_upper = currency.upper()
+        price_field = f'price_{currency}'
+        original_price_field = f'original_price_{currency}'
+
+        # Get current values from game data
+        new_original = new_game.get(original_price_field)
+        new_discount_percent = new_game.get('discount_percent')
+
+        old_original = old_game.get(original_price_field)
+        old_discount_percent = old_game.get('discount_percent')
+
+        # Check if this currency had any changes
+        has_price_change = price_field in price_changes
+        has_original_change = original_price_field in price_changes
+        has_discount_change = 'discount_percent' in price_changes
+
+        if not (has_price_change or has_original_change or has_discount_change):
+            return None
+
+        # Determine if we're dealing with a sale scenario
+        new_has_sale = new_original and new_discount_percent and int(str(new_discount_percent)) > 0
+        old_has_sale = old_original and old_discount_percent and int(str(old_discount_percent)) > 0
+
+        # Format the change based on sale status
+        if new_has_sale:
+            # New state has a sale - show base price and discount
+            base_price = self._format_price(str(new_original), currency_upper)
+            discount_rate = f"-{new_discount_percent}%"
+
+            if old_has_sale:
+                # Was on sale, still on sale - show change if significant
+                old_base_price = self._format_price(str(old_original), currency_upper)
+                old_discount_rate = f"-{old_discount_percent}%"
+
+                if old_base_price != base_price or old_discount_rate != discount_rate:
+                    return f"{old_base_price} {old_discount_rate} → {base_price} {discount_rate}"
+                else:
+                    return None  # No meaningful change
+            else:
+                # Went on sale - just show base price and discount rate
+                return f"{base_price} {discount_rate}"
+
+        elif old_has_sale and not new_has_sale:
+            # Sale ended - show the change from discounted to regular price
+            if has_price_change:
+                old_base_price = self._format_price(str(old_original), currency_upper)
+                old_discount_rate = f"-{old_discount_percent}%"
+                new_formatted = self._format_price(price_changes[price_field][1], currency_upper)
+                return f"{old_base_price} {old_discount_rate} → {new_formatted} (sale ended)"
+            else:
+                return "(sale ended)"
+
+        elif has_price_change:
+            # Regular price change (no sales involved)
+            old_formatted = self._format_price(price_changes[price_field][0], currency_upper)
+            new_formatted = self._format_price(price_changes[price_field][1], currency_upper)
+            return f"{old_formatted} → {new_formatted}"
+
+        return None
+
+    def _format_individual_price_change(self, price_changes: dict[str, tuple[str, str]],
+                                      currency: str, new_game: dict[str, Any], old_game: dict[str, Any]) -> str | None:
+        """Format individual currency price changes without discount logic."""
+        currency_upper = currency.upper()
+        price_field = f'price_{currency}'
+        original_price_field = f'original_price_{currency}'
+
+        # Check if this currency had any changes
+        has_price_change = price_field in price_changes
+        has_original_change = original_price_field in price_changes
+
+        if not (has_price_change or has_original_change):
+            return None
+
+        # For price changes, show the base price (original if on sale, otherwise current price)
+        if has_price_change:
+            old_val, new_val = price_changes[price_field]
+
+            # Check if new state is on sale - if so, show original price instead
+            new_original = new_game.get(original_price_field)
+            new_discount_percent = new_game.get('discount_percent')
+            is_on_sale = new_original and new_discount_percent and int(str(new_discount_percent)) > 0
+
+            if is_on_sale:
+                # Show original (base) price instead of discounted price
+                new_formatted = self._format_price(str(new_original), currency_upper)
+            else:
+                new_formatted = self._format_price(new_val, currency_upper)
+
+            # Check if old state was on sale
+            old_original = old_game.get(original_price_field)
+            old_discount_percent = old_game.get('discount_percent')
+            was_on_sale = old_original and old_discount_percent and int(str(old_discount_percent)) > 0
+
+            if was_on_sale:
+                old_formatted = self._format_price(str(old_original), currency_upper)
+            else:
+                old_formatted = self._format_price(old_val, currency_upper)
+
+            if old_formatted != new_formatted:
+                return f"{old_formatted} → {new_formatted}"
+
+        # Handle original price changes (base price changes while on sale)
+        elif has_original_change:
+            old_val, new_val = price_changes[original_price_field]
+            old_formatted = self._format_price(old_val, currency_upper)
+            new_formatted = self._format_price(new_val, currency_upper)
+            return f"{old_formatted} → {new_formatted}"
+
+        return None
 
     def compare_games(self, old_data: dict[str, Any] | None, new_data: dict[str, Any] | None) -> list[str]:
         """Compare two versions of steam_games.json and return changes."""
@@ -202,16 +304,18 @@ class SteamChangesAnalyzer:
 
             # Check all fields except stub fields, last_updated, and header_image
             fields_to_check = [
-                'name', 'release_date', 'price', 'discount', 'tags', 'description',
+                'name', 'release_date', 'price', 'tags', 'description',
                 'steam_url', 'is_free', 'coming_soon', 'genres', 'categories',
                 'developers', 'publishers', 'price_eur', 'price_usd',
+                'original_price_eur', 'original_price_usd', 'discount_percent',
                 'has_demo', 'demo_app_id', 'is_demo', 'full_game_app_id', 'is_early_access',
                 'positive_review_percentage', 'review_count', 'review_summary',
                 'recent_review_percentage', 'recent_review_count', 'recent_review_summary',
                 'insufficient_reviews', 'planned_release_date', 'itch_url'
             ]
 
-            price_fields = ['price', 'price_eur', 'price_usd', 'discount', 'is_free']
+            price_fields = ['price', 'price_eur', 'price_usd', 'original_price_eur', 'original_price_usd',
+                          'discount_percent', 'is_free']
             review_fields = ['positive_review_percentage', 'review_count', 'review_summary',
                            'recent_review_percentage', 'recent_review_count', 'recent_review_summary']
 
@@ -270,28 +374,76 @@ class SteamChangesAnalyzer:
             # Add consolidated price changes
             if price_changes:
                 price_parts = []
+
+                # Handle individual currency price changes (without discount handling)
+                if 'price_eur' in price_changes or 'original_price_eur' in price_changes:
+                    eur_part = self._format_individual_price_change(price_changes, 'eur', new_game, old_game)
+                    if eur_part:
+                        price_parts.append(eur_part)
+
+                if 'price_usd' in price_changes or 'original_price_usd' in price_changes:
+                    usd_part = self._format_individual_price_change(price_changes, 'usd', new_game, old_game)
+                    if usd_part:
+                        price_parts.append(usd_part)
+
+                # Handle global discount rate changes - check if discount state actually changed
+                # The real discount state is determined by original_price fields, not just discount_percent
+                old_has_real_discount = bool(old_game.get('original_price_eur') or old_game.get('original_price_usd'))
+                new_has_real_discount = bool(new_game.get('original_price_eur') or new_game.get('original_price_usd'))
+
+                old_discount_percent = old_game.get('discount_percent', 0)
+                new_discount_percent = new_game.get('discount_percent', 0)
+
+                old_discount_int = int(str(old_discount_percent)) if old_discount_percent else 0
+                new_discount_int = int(str(new_discount_percent)) if new_discount_percent else 0
+
+                # Check if discount state actually changed (based on original_price fields)
+                if old_has_real_discount != new_has_real_discount or (old_has_real_discount and new_has_real_discount and old_discount_int != new_discount_int):
+
+                    if not old_has_real_discount and new_has_real_discount:
+                        # Discount introduced - show base prices and discount transition
+                        base_prices = []
+                        new_eur_original = new_game.get('original_price_eur')
+                        new_usd_original = new_game.get('original_price_usd')
+
+                        if new_eur_original:
+                            base_prices.append(self._format_price(str(new_eur_original), 'EUR'))
+                        if new_usd_original:
+                            base_prices.append(self._format_price(str(new_usd_original), 'USD'))
+
+                        if base_prices:
+                            price_parts.append(f"{', '.join(base_prices)}, discount: 0% → -{new_discount_int}%")
+                        else:
+                            price_parts.append(f"discount: 0% → -{new_discount_int}%")
+                    elif old_has_real_discount and not new_has_real_discount:
+                        # Discount removed - show final prices and discount transition
+                        final_prices = []
+                        new_eur_price = new_game.get('price_eur')
+                        new_usd_price = new_game.get('price_usd')
+
+                        if new_eur_price:
+                            final_prices.append(self._format_price(str(new_eur_price), 'EUR'))
+                        if new_usd_price:
+                            final_prices.append(self._format_price(str(new_usd_price), 'USD'))
+
+                        if final_prices:
+                            price_parts.append(f"{', '.join(final_prices)}, discount: -{old_discount_int}% → 0%")
+                        else:
+                            price_parts.append(f"discount: -{old_discount_int}% → 0%")
+                    elif old_has_real_discount and new_has_real_discount and old_discount_int != new_discount_int:
+                        # Discount changed (both states have real discounts but percentage changed)
+                        price_parts.append(f"discount: -{old_discount_int}% → -{new_discount_int}%")
+
+                # Handle other price fields
                 for field, (old_val, new_val) in price_changes.items():
-                    # Format with arrow for later coloring
-                    if field == 'price_eur':
-                        # Format cents to EUR currency
-                        old_formatted = self._format_price(old_val, 'EUR')
-                        new_formatted = self._format_price(new_val, 'EUR')
-                        price_parts.append(f"{old_formatted} → {new_formatted}")
-                    elif field == 'price_usd':
-                        # Format cents to USD currency
-                        old_formatted = self._format_price(old_val, 'USD')
-                        new_formatted = self._format_price(new_val, 'USD')
-                        price_parts.append(f"{old_formatted} → {new_formatted}")
-                    elif field == 'is_free':
-                        price_parts.append(f"free: {old_val} → {new_val}")
-                    elif field == 'discount':
-                        # Format discount percentage
-                        old_formatted = self._format_discount(old_val)
-                        new_formatted = self._format_discount(new_val)
-                        price_parts.append(f"discount: {old_formatted} → {new_formatted}")
-                    else:
-                        price_parts.append(f"{field}: {old_val} → {new_val}")
-                game_changes.append(f"PRICE: {', '.join(price_parts)}")
+                    if field not in ['price_eur', 'price_usd', 'original_price_eur', 'original_price_usd', 'discount_percent']:
+                        if field == 'is_free':
+                            price_parts.append(f"free: {old_val} → {new_val}")
+                        else:
+                            price_parts.append(f"{field}: {old_val} → {new_val}")
+
+                if price_parts:
+                    game_changes.append(f"PRICE: {', '.join(price_parts)}")
 
             # Add consolidated review changes
             if review_changes:
