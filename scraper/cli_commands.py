@@ -67,7 +67,7 @@ class CLICommands:
         signal.signal(signal.SIGTERM, self._signal_handler)
         signal.signal(signal.SIGINT, self._signal_handler)
 
-        logging.info(f"Created lock file: {self.lock_file_path}")
+        logging.debug(f"Created lock file: {self.lock_file_path}")
 
     def _signal_handler(self, signum: int, _frame: object) -> None:
         """Handle termination signals gracefully"""
@@ -81,7 +81,7 @@ class CLICommands:
         if self.lock_file_path and self.lock_file_path.exists():
             try:
                 self.lock_file_path.unlink()
-                logging.info(f"Removed lock file: {self.lock_file_path}")
+                logging.debug(f"Removed lock file: {self.lock_file_path}")
             except Exception as e:
                 logging.error(f"Failed to remove lock file: {e}")
 
@@ -196,6 +196,12 @@ Examples:
             type=str,
             metavar='DATE',
             help='Date cutoff for steam-changes (e.g., "3 days ago", "2024-01-01", "1 week ago")'
+        )
+
+        special_group.add_argument(
+            '--last-commit',
+            action='store_true',
+            help='Analyze only the last commit for steam-changes'
         )
 
         special_group.add_argument(
@@ -737,9 +743,13 @@ Examples:
         project_root = self._get_project_root()
         analyzer = SteamChangesAnalyzer(project_root)
 
-        # Use default of "1 week ago" if not specified
-        since_date = args.since or "1 week ago"
-        analyzer.analyze_changes(since_date)
+        if args.last_commit:
+            # Analyze only the last commit
+            analyzer.analyze_last_commit()
+        else:
+            # Use default of "1 week ago" if not specified
+            since_date = args.since or "1 week ago"
+            analyzer.analyze_changes(since_date)
 
     def _handle_validate(self, _args: argparse.Namespace) -> None:
         """Handle validate command - validate cross-references and data integrity"""

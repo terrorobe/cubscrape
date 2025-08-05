@@ -47,3 +47,8 @@ jobs:
         with:
           commit_message: Update game data
           file_pattern: 'data/'
+
+      - name: Show changes in last commit
+        if: success()
+        run: |
+          uv run cubscrape steam-changes --last-commit
