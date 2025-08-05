@@ -456,9 +456,11 @@ class SteamDataUpdater:
                     steam_data_with_usd = self.steam_fetcher.fetch_data(steam_url, fetch_usd=True, existing_data=existing_data)
                     if steam_data_with_usd:
                         steam_data.price_usd = steam_data_with_usd.price_usd
+                        steam_data.original_price_usd = steam_data_with_usd.original_price_usd
                 else:
-                    # EUR price hasn't changed, preserve existing USD price
+                    # EUR price hasn't changed, preserve existing USD price and original price
                     steam_data.price_usd = existing_data.price_usd
+                    steam_data.original_price_usd = existing_data.original_price_usd
 
             # Save old data before updating (needed for demo removal detection)
             old_data = self.steam_data['games'].get(app_id)
