@@ -51476,6 +51476,7 @@
       "last_updated": "2025-08-05T01:06:55.239163",
       "name": "The Warrior",
       "original_price_eur": 499,
+      "original_price_usd": 499,
       "positive_review_percentage": 94,
       "price_eur": 424,
       "price_usd": 424,
@@ -53012,6 +53013,7 @@
       "last_updated": "2025-08-05T01:06:43.837300",
       "name": "Novus Orbis",
       "original_price_eur": 975,
+      "original_price_usd": 999,
       "positive_review_percentage": 97,
       "price_eur": 780,
       "price_usd": 799,
@@ -55650,17 +55652,16 @@
       "insufficient_reviews": true,
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-05T01:06:35.258836",
+      "last_updated": "2025-08-05T03:08:30.692901",
       "name": "Magic Inn",
       "original_price_eur": 1499,
-      "original_price_usd": 1499,
       "price_eur": 1349,
       "price_usd": 1349,
       "publishers": [
         "Purpledoor Studios"
       ],
       "release_date": "4 Aug, 2025",
-      "review_count": 7,
+      "review_count": 8,
       "review_summary": "Need more reviews for score",
       "steam_app_id": "2468630",
       "steam_url": "https://store.steampowered.com/app/2468630",
@@ -60800,6 +60801,7 @@
       "developers": [
         "AZAMATIKA"
       ],
+      "discount_percent": 10,
       "genres": [
         "Casual",
         "Indie",
@@ -60808,11 +60810,14 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2555430/header.jpg?t=1749822047",
       "is_early_access": true,
+      "is_on_sale": true,
       "last_updated": "2025-07-26T03:14:56.048734",
       "name": "TRADESMAN: Deal to Dealer",
+      "original_price_eur": 299,
+      "original_price_usd": 299,
       "positive_review_percentage": 81,
-      "price_eur": 299,
-      "price_usd": 299,
+      "price_eur": 269,
+      "price_usd": 269,
       "publishers": [
         "AZAMATIKA"
       ],
@@ -88673,6 +88678,7 @@
       "last_updated": "2025-08-05T01:06:51.104278",
       "name": "Demon Hunt",
       "original_price_eur": 689,
+      "original_price_usd": 699,
       "positive_review_percentage": 75,
       "price_eur": 551,
       "price_usd": 559,
@@ -96699,7 +96705,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3201070/ae257c20c490396ce243d42371cebac7f9c4636a/header.jpg?t=1754325959",
       "is_early_access": true,
-      "last_updated": "2025-08-05T01:06:43.025193",
+      "last_updated": "2025-08-05T03:08:29.016062",
       "name": "Gigantes Ex Machina",
       "publishers": [
         "AcrylByte"
@@ -97187,6 +97193,7 @@
       "last_updated": "2025-08-05T01:06:58.159110",
       "name": "Luck & Loot",
       "original_price_eur": 779,
+      "original_price_usd": 799,
       "positive_review_percentage": 100,
       "price_eur": 701,
       "price_usd": 719,
@@ -114521,7 +114528,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3641940/5f8b540ed696f002adf0eb924b201a276645aadf/header.jpg?t=1753746345",
-      "last_updated": "2025-08-05T01:06:47.666955",
+      "last_updated": "2025-08-05T03:08:29.969461",
       "name": "The Count of Monte Clicker",
       "publishers": [
         "Adam Travers"
@@ -118067,6 +118074,7 @@
       "last_updated": "2025-08-05T01:06:52.642679",
       "name": "Keep on Mining!",
       "original_price_eur": 499,
+      "original_price_usd": 499,
       "positive_review_percentage": 93,
       "price_eur": 424,
       "price_usd": 424,
