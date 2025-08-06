@@ -19,6 +19,7 @@ yarn-error.log*
 dist/
 .vite/
 public/app-version.json
+public/webfonts/
 
 # Logs
 *.log

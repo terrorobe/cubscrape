@@ -369,6 +369,9 @@ export class GameDataProcessingService {
       latest_video_id: gameData.latest_video_id
         ? String(gameData.latest_video_id)
         : undefined,
+      latest_video_channel: gameData.latest_video_channel
+        ? String(gameData.latest_video_channel)
+        : undefined,
       latest_video_date: gameData.latest_video_date
         ? String(gameData.latest_video_date)
         : undefined,

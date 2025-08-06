@@ -3,9 +3,34 @@ import vue from '@vitejs/plugin-vue'
 import { createDatabaseRebuildPlugin } from './scripts/database-rebuild-plugin.js'
 import { resolve } from 'path'
 import { fileURLToPath, URL } from 'node:url'
+import { copyFileSync, mkdirSync } from 'fs'
 
 export default defineConfig({
-  plugins: [vue(), createDatabaseRebuildPlugin()],
+  plugins: [
+    vue(),
+    createDatabaseRebuildPlugin(),
+    // Copy Font Awesome fonts to dist directory
+    {
+      name: 'copy-fontawesome-fonts',
+      generateBundle() {
+        const fontFiles = [
+          'fa-brands-400.woff2',
+          'fa-regular-400.woff2',
+          'fa-solid-900.woff2',
+          'fa-v4compatibility.woff2',
+        ]
+
+        mkdirSync('dist/webfonts', { recursive: true })
+
+        fontFiles.forEach((font) => {
+          copyFileSync(
+            `node_modules/@fortawesome/fontawesome-free/webfonts/${font}`,
+            `dist/webfonts/${font}`,
+          )
+        })
+      },
+    },
+  ],
   base: '/cubscrape/',
   resolve: {
     alias: {

@@ -738,12 +738,12 @@ watch(showSaveDialog, (newValue: boolean) => {
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
+  background: rgb(156, 163, 175, 50%);
   border-radius: 3px;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
+  background: rgb(156, 163, 175, 70%);
 }
 
 /* Animation for dropdown */
@@ -753,11 +753,12 @@ watch(showSaveDialog, (newValue: boolean) => {
 
 @keyframes slideDown {
   from {
-    opacity: 0;
+    opacity: 0%;
     transform: translateY(-10px);
   }
+
   to {
-    opacity: 1;
+    opacity: 100%;
     transform: translateY(0);
   }
 }

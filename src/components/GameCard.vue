@@ -19,6 +19,7 @@ import {
   getPrice as formatPrice,
   type PriceData,
 } from '../utils/priceFormatter'
+import PlatformLinks from './PlatformLinks.vue'
 
 // Component props interface
 interface Props {
@@ -97,6 +98,21 @@ const isHiddenGem = computed((): boolean =>
 // Compute available platforms using centralized configuration
 const availablePlatforms = computed((): AvailablePlatform[] =>
   getAvailablePlatforms(props.game),
+)
+
+// Platforms for the new PlatformLinks component
+const platformsForLinks = computed(() =>
+  availablePlatforms.value.map((platform) => ({
+    id: platform.id,
+    url: platform.url,
+  })),
+)
+
+// YouTube video URL for PlatformLinks component
+const youtubeVideoUrl = computed(() =>
+  props.game.latest_video_id
+    ? `https://www.youtube.com/watch?v=${props.game.latest_video_id}`
+    : undefined,
 )
 
 const toggleVideos = async (gameId: number): Promise<void> => {
@@ -316,7 +332,9 @@ const formatDate = (dateString?: string | null): string => {
   })
 }
 
-const getMainPlatformUrl = (game: ParsedGameData): string | null => {
+// These functions are now handled by the PlatformLinks component
+// Kept for reference if needed elsewhere, but prefixed with underscore to indicate they're unused
+const _getMainPlatformUrl = (game: ParsedGameData): string | null => {
   // Use unified display links if available
   if (game.display_links && game.display_links.main) {
     return game.display_links.main
@@ -336,7 +354,7 @@ const getMainPlatformUrl = (game: ParsedGameData): string | null => {
   return game.steam_url || null
 }
 
-const getMainPlatformName = (game: ParsedGameData): string => {
+const _getMainPlatformName = (game: ParsedGameData): string => {
   const platformConfig = getPlatformConfig(game.platform)
   return platformConfig ? platformConfig.displayName : 'Unknown Platform'
 }
@@ -966,91 +984,49 @@ onUnmounted(() => {
 
       <!-- Game Footer -->
       <div class="mt-auto flex items-center justify-between pt-3">
-        <div class="flex items-center gap-3">
-          <!-- Platform availability indicators -->
-          <div
-            v-if="availablePlatforms.length > 1"
-            class="flex items-center gap-1.5"
-          >
-            <span
-              v-for="platform in availablePlatforms"
-              :key="platform.name"
-              :title="`Available on ${platform.displayName}`"
-              class="inline-flex size-6 items-center justify-center rounded-sm bg-bg-secondary text-xs font-medium text-text-secondary"
+        <!-- Left side: Platform links and demos -->
+        <div class="flex items-center gap-1.5">
+          <PlatformLinks
+            :platforms="platformsForLinks"
+            :youtube-url="youtubeVideoUrl"
+            :game-data="{
+              latest_video_title: game.latest_video_title,
+              latest_video_channel: game.latest_video_channel,
+            }"
+            :show-text-link="false"
+          />
+
+          <!-- Demo badge integrated with platform hierarchy -->
+          <template v-if="getDemoUrl(game)">
+            <span class="mx-1 text-xs opacity-50">•</span>
+            <a
+              :href="getDemoUrl(game) ?? undefined"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="demo-badge flex items-center justify-center rounded-sm text-xs font-medium transition-all duration-200 hover:scale-105"
+              title="Try the demo version on Steam"
+              aria-label="Try the demo version on Steam"
             >
-              {{ platform.icon }}
-            </span>
-          </div>
+              <i class="fab fa-steam mr-1 text-xs"></i>
+              Demo
+            </a>
+          </template>
 
-          <!-- Main platform link -->
-          <a
-            :href="getMainPlatformUrl(game) ?? undefined"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-accent hover:underline"
-          >
-            {{ getMainPlatformName(game) }}
-          </a>
-
-          <!-- Demo link -->
-          <a
-            v-if="getDemoUrl(game)"
-            :href="getDemoUrl(game) ?? undefined"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-accent hover:underline"
-          >
-            Demo
-          </a>
-
-          <!-- Absorbed game link to Steam parent -->
-          <a
-            v-if="game.is_absorbed && getSteamParentUrl(game)"
-            :href="getSteamParentUrl(game) ?? undefined"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm font-medium text-accent hover:underline"
-          >
-            Steam Version
-          </a>
-
-          <!-- Cross-platform links -->
-          <a
-            v-if="
-              game.itch_url && game.platform !== 'itch' && !game.is_absorbed
-            "
-            :href="game.itch_url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-accent hover:underline"
-          >
-            Itch.io
-          </a>
-          <a
-            v-if="
-              game.crazygames_url &&
-              game.platform !== 'crazygames' &&
-              !game.is_absorbed
-            "
-            :href="game.crazygames_url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-accent hover:underline"
-          >
-            CrazyGames
-          </a>
-
-          <!-- YouTube link -->
-          <a
-            v-if="game.latest_video_id"
-            :href="`https://www.youtube.com/watch?v=${game.latest_video_id}`"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-accent hover:underline"
-          >
-            YouTube
-          </a>
+          <!-- Absorbed game link -->
+          <template v-if="game.is_absorbed && getSteamParentUrl(game)">
+            <span class="mx-1 text-xs opacity-50">•</span>
+            <a
+              :href="getSteamParentUrl(game) ?? undefined"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs font-medium text-accent opacity-80 hover:underline"
+            >
+              Full Version
+            </a>
+          </template>
         </div>
+
+        <!-- Right side: Timestamp -->
 
         <div
           v-if="game.last_updated"
@@ -1085,11 +1061,12 @@ onUnmounted(() => {
   0%,
   100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 5px rgba(0, 123, 255, 0.3));
+    filter: drop-shadow(0 0 5px rgb(0, 123, 255, 30%));
   }
+
   50% {
     transform: scale(1.01);
-    filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.6));
+    filter: drop-shadow(0 0 15px rgb(0, 123, 255, 60%));
   }
 }
 
@@ -1102,11 +1079,12 @@ onUnmounted(() => {
 
 @keyframes highlightFadeOut {
   from {
-    opacity: 1;
+    opacity: 100%;
     transform: scale(1);
   }
+
   to {
-    opacity: 1;
+    opacity: 100%;
     transform: scale(1);
     outline-color: transparent;
   }
@@ -1119,12 +1097,12 @@ onUnmounted(() => {
 }
 
 .tag-fade-enter-from {
-  opacity: 0;
+  opacity: 0%;
   transform: scale(0.8);
 }
 
 .tag-fade-leave-to {
-  opacity: 0;
+  opacity: 0%;
   transform: scale(0.8);
 }
 
@@ -1135,6 +1113,6 @@ onUnmounted(() => {
 
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0;
+  opacity: 0%;
 }
 </style>

@@ -47,7 +47,8 @@ uv run basedpyright
 4. **Run linters**: 
    - Python: `uv run ruff check --fix`
    - Python types: `uv run basedpyright`
-   - JavaScript/Vue: `npx eslint . --fix`
+   - JavaScript/Vue/CSS/HTML: `npm run lint:fix`
+   - CI check: `npm run ci:check`
 
 ## Web Development Environment
 
@@ -153,18 +154,21 @@ npm run dev
 # Build for production
 npm run build
 
-# Run ESLint to check code quality
-npx eslint src/
+# Run all linting (JS, CSS, HTML)
+npm run lint
 
-# Fix auto-fixable ESLint issues
-npx eslint src/ --fix
+# Fix auto-fixable issues
+npm run lint:fix
+
+# Run full CI check (format + lint + types)
+npm run ci:check
 ```
 
 ### Vue.js Development Workflow
 
 1. **Development**: Run `npm run dev` to start the Vite dev server with HMR
-2. **Linting**: Run `npx eslint src/` to check for issues
-3. **Auto-fix**: Use `npx eslint src/ --fix` to automatically fix many issues
+2. **Linting**: Run `npm run lint` to check all code quality (JS/CSS/HTML)
+3. **Auto-fix**: Use `npm run lint:fix` to automatically fix issues
 4. **Building**: Run `npm run build` for production builds
 
 ## Testing & Debugging
@@ -194,13 +198,17 @@ cubscrape cron
 - vite - Fast build tool and dev server
 
 **Development dependencies**:
-- eslint - JavaScript/Vue linter for code quality and consistency
+- eslint - JavaScript/Vue linter
+- stylelint - CSS linter with Tailwind support
+- htmlhint - HTML validator
+- prettier - Code formatter
 
-### ESLint Configuration
-The project uses ESLint configured for Vue.js that enforces:
-- **Vue.js best practices**: Proper component structure and composition API usage
-- **Code quality**: No console statements (warnings), no debugger, consistent variable declarations
-- **Modern JavaScript**: ES6+ features, proper async/await usage
+### Code Quality Tools
+Comprehensive linting across all file types:
+- **JavaScript/Vue**: ESLint with Vue.js best practices
+- **CSS**: Stylelint with Tailwind CSS support  
+- **HTML**: HTMLHint for semantic markup and accessibility
+- **Formatting**: Prettier for consistent code style
 
 ## Production Deployment
 

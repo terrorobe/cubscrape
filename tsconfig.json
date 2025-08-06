@@ -11,11 +11,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    
+
     /* Performance optimizations */
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
-    
+
     /* TypeScript settings */
     "allowJs": true,
     "checkJs": false,
@@ -27,20 +27,20 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    
+
     /* Enhanced type checking for better development experience */
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": false,
     "exactOptionalPropertyTypes": false,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
-    
+
     /* Path mapping for clean imports */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
-    
+
     /* Vue.js and modern JavaScript support */
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -50,15 +50,12 @@
     "sourceMap": false
   },
   "include": [
-    "src/**/*.ts", 
-    "src/**/*.d.ts", 
-    "src/**/*.tsx", 
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.js"
   ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
+  "exclude": ["node_modules", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

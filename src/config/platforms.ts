@@ -35,6 +35,9 @@ export interface PlatformConfig {
   name: string
   displayName: string
   icon: string
+  iconClass: string // Font Awesome class for logos
+  priority: number // Display priority (1 = primary, 2+ = secondary)
+  containerSize: 'primary' | 'secondary' // Visual sizing tier
   urlPattern: RegExp
   storeUrlPrefix: string
   colors: PlatformColors
@@ -69,6 +72,9 @@ export const PLATFORMS: Record<PlatformId, PlatformConfig> = {
     name: 'Steam',
     displayName: 'Steam',
     icon: 'S',
+    iconClass: 'fab fa-steam',
+    priority: 1,
+    containerSize: 'primary',
     urlPattern: /^https?:\/\/(store\.)?steampowered\.com/,
     storeUrlPrefix: 'https://store.steampowered.com/app/',
     urlField: 'steam_url',
@@ -90,6 +96,9 @@ export const PLATFORMS: Record<PlatformId, PlatformConfig> = {
     name: 'Itch.io',
     displayName: 'Itch.io',
     icon: 'I',
+    iconClass: 'fab fa-itch-io',
+    priority: 2,
+    containerSize: 'secondary',
     urlPattern: /^https?:\/\/.*\.itch\.io/,
     storeUrlPrefix: 'https://itch.io/',
     urlField: 'itch_url',
@@ -111,6 +120,9 @@ export const PLATFORMS: Record<PlatformId, PlatformConfig> = {
     name: 'CrazyGames',
     displayName: 'CrazyGames',
     icon: 'C',
+    iconClass: 'fas fa-gamepad',
+    priority: 3,
+    containerSize: 'secondary',
     urlPattern: /^https?:\/\/(www\.)?crazygames\.com/,
     storeUrlPrefix: 'https://www.crazygames.com/game/',
     urlField: 'crazygames_url',

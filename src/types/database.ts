@@ -103,6 +103,7 @@ export interface ParsedGameData
   // Video-related properties
   latest_video_title?: string
   latest_video_id?: string
+  latest_video_channel?: string
   // Computed properties from display links
   display_links?: {
     main?: string

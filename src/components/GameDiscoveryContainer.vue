@@ -526,25 +526,27 @@ const handleSetPageSize = (size: number): void => {
 
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0;
+  opacity: 0%;
 }
 
 /* Bloom pulse animation for results count */
 @keyframes bloomPulse {
   0% {
     transform: scale(1);
-    filter: brightness(1) drop-shadow(0 0 0 rgba(139, 92, 246, 0));
+    filter: brightness(1) drop-shadow(0 0 0 rgb(139, 92, 246, 0%));
     color: inherit;
   }
+
   50% {
     transform: scale(1.1);
-    filter: brightness(1.5) drop-shadow(0 0 30px rgba(139, 92, 246, 1))
-      drop-shadow(0 0 60px rgba(139, 92, 246, 0.6));
+    filter: brightness(1.5) drop-shadow(0 0 30px rgb(139, 92, 246, 100%))
+      drop-shadow(0 0 60px rgb(139, 92, 246, 60%));
     color: #a78bfa;
   }
+
   100% {
     transform: scale(1);
-    filter: brightness(1) drop-shadow(0 0 0 rgba(139, 92, 246, 0));
+    filter: brightness(1) drop-shadow(0 0 0 rgb(139, 92, 246, 0%));
     color: inherit;
   }
 }

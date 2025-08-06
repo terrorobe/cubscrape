@@ -99,7 +99,8 @@ export class QueryBuilderService {
     const selectClauses = {
       full: `SELECT g.*,
                gv.video_title as latest_video_title,
-               gv.video_id as latest_video_id`,
+               gv.video_id as latest_video_id,
+               gv.channel_name as latest_video_channel`,
       count: `SELECT COUNT(*) as count`,
       'price-only': `SELECT g.id, g.price_usd, g.price_eur, g.is_free`,
     }
