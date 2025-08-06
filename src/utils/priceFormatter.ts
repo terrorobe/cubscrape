@@ -5,10 +5,10 @@
 export type Currency = 'eur' | 'usd'
 
 export interface PriceData {
-  price_eur?: number | null
-  price_usd?: number | null
-  original_price_eur?: number | null
-  original_price_usd?: number | null
+  price_eur?: number
+  price_usd?: number
+  original_price_eur?: number
+  original_price_usd?: number
   discount_percent?: number
   is_free: boolean
   is_on_sale: boolean
@@ -65,13 +65,28 @@ export function getPrice(
       ? priceData.original_price_usd
       : priceData.original_price_eur
 
-  // Handle free games
-  if (
-    priceData.is_free ||
-    priceCents === null ||
-    priceCents === undefined ||
-    priceCents === 0
-  ) {
+  // Handle explicitly free games
+  if (priceData.is_free) {
+    return {
+      current: 'Free',
+      original: null,
+      hasDiscount: false,
+      discountPercent: 0,
+    }
+  }
+
+  // Handle games with no pricing information (unreleased games)
+  if (priceCents === undefined || priceCents === null) {
+    return {
+      current: null, // No price display for unreleased games
+      original: null,
+      hasDiscount: false,
+      discountPercent: 0,
+    }
+  }
+
+  // Handle zero-priced games (should be rare, but treat as free)
+  if (priceCents === 0) {
     return {
       current: 'Free',
       original: null,
@@ -121,12 +136,12 @@ export function getBestPrice(
  * Format a price for display in filters or sorting (numeric value)
  * @param priceData Game price data
  * @param currency Currency preference
- * @returns Numeric price value for comparisons, or 0 for free games
+ * @returns Numeric price value for comparisons, 0 for free games, null for unreleased games
  */
 export function getPriceValue(
   priceData: PriceData,
   currency: Currency,
-): number {
+): number | null {
   if (priceData.is_free) {
     return 0
   }
@@ -138,7 +153,12 @@ export function getPriceValue(
     // Fall back to other currency
     const fallbackCents =
       currency === 'usd' ? priceData.price_eur : priceData.price_usd
-    return fallbackCents ? fallbackCents / 100 : 0
+    if (fallbackCents !== null && fallbackCents !== undefined) {
+      return fallbackCents / 100
+    }
+    // Return null for unreleased games - safer than magic numbers
+    // Filtering logic must handle null explicitly
+    return null
   }
 
   return priceCents / 100

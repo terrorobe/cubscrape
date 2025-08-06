@@ -382,6 +382,11 @@ const filteredGameCount = computed((): number => {
     // Get the decimal price value using the price formatter utility
     const price = getPriceValue(game, props.currency)
 
+    // Exclude unreleased games (null price) from price-based filtering
+    if (price === null) {
+      return false
+    }
+
     return (
       price >= localPriceFilter.minPrice && price <= localPriceFilter.maxPrice
     )

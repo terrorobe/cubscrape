@@ -323,8 +323,8 @@ export class GameDataProcessingService {
       header_image: gameData.header_image
         ? String(gameData.header_image)
         : undefined,
-      price_eur: Number(gameData.price_eur),
-      price_usd: Number(gameData.price_usd),
+      price_eur: gameData.price_eur !== null ? Number(gameData.price_eur) : undefined,
+      price_usd: gameData.price_usd !== null ? Number(gameData.price_usd) : undefined,
       is_free: Boolean(gameData.is_free),
       release_date: gameData.release_date
         ? String(gameData.release_date)
@@ -403,8 +403,8 @@ export class GameDataProcessingService {
         ? String(gameData.absorbed_into)
         : undefined,
       discount_percent: Number(gameData.discount_percent) || 0,
-      original_price_eur: Number(gameData.original_price_eur) || undefined,
-      original_price_usd: Number(gameData.original_price_usd) || undefined,
+      original_price_eur: gameData.original_price_eur !== null ? Number(gameData.original_price_eur) : undefined,
+      original_price_usd: gameData.original_price_usd !== null ? Number(gameData.original_price_usd) : undefined,
       is_on_sale: Boolean(gameData.is_on_sale),
     }
   }
