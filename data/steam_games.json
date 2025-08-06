@@ -7836,17 +7836,17 @@
         "RPG",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1315320/217d3a95d7ea819a754a8ee8dae8d21ff9df041c/header.jpg?t=1753366815",
-      "last_updated": "2025-07-30T08:55:16.154865",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1315320/217d3a95d7ea819a754a8ee8dae8d21ff9df041c/header.jpg?t=1754424321",
+      "last_updated": "2025-08-06T08:55:40.672145",
       "name": "The Necromancer's Tale",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 93,
       "price_eur": 2399,
       "price_usd": 2499,
       "publishers": [
         "Psychic Software"
       ],
       "release_date": "17 Jul, 2025",
-      "review_count": 227,
+      "review_count": 287,
       "review_summary": "Very Positive",
       "steam_app_id": "1315320",
       "steam_url": "https://store.steampowered.com/app/1315320",
@@ -14139,9 +14139,9 @@
         "Strategy",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1546080/fcb4026260f395095e137eab4da9408b76fbc271/header.jpg?t=1753379539",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1546080/fcb4026260f395095e137eab4da9408b76fbc271/header.jpg?t=1754302619",
       "is_early_access": true,
-      "last_updated": "2025-07-30T03:08:54.073088",
+      "last_updated": "2025-08-06T08:55:34.855133",
       "name": "Every Day We Fight",
       "positive_review_percentage": 74,
       "price_eur": 2999,
@@ -14150,7 +14150,7 @@
         "Hooded Horse"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 205,
+      "review_count": 212,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1546080",
       "steam_url": "https://store.steampowered.com/app/1546080",
@@ -19267,8 +19267,8 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1669170/header.jpg?t=1745815225",
-      "last_updated": "2025-07-30T03:08:32.920152",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1669170/header.jpg?t=1754018139",
+      "last_updated": "2025-08-06T08:55:28.029133",
       "name": "Northend Tower Defense",
       "positive_review_percentage": 78,
       "price_eur": 779,
@@ -19278,7 +19278,7 @@
         "Gamersky Games"
       ],
       "release_date": "4 Sep, 2024",
-      "review_count": 1210,
+      "review_count": 1212,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1669170",
       "steam_url": "https://store.steampowered.com/app/1669170",
@@ -24237,19 +24237,19 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1823390/header.jpg?t=1746725874",
       "is_early_access": true,
-      "last_updated": "2025-07-30T08:55:22.144383",
+      "last_updated": "2025-08-06T08:55:31.398842",
       "name": "Escape The Mad Empire",
-      "positive_review_percentage": 89,
+      "positive_review_percentage": 88,
       "price_eur": 1749,
       "price_usd": 1799,
       "publishers": [
         "Paradox Arc"
       ],
-      "recent_review_count": 24,
-      "recent_review_percentage": 100,
+      "recent_review_count": 20,
+      "recent_review_percentage": 90,
       "recent_review_summary": "Very Positive",
       "release_date": "22 Apr, 2025",
-      "review_count": 248,
+      "review_count": 254,
       "review_summary": "Very Positive",
       "steam_app_id": "1823390",
       "steam_url": "https://store.steampowered.com/app/1823390",
@@ -29812,14 +29812,11 @@
         "Adventure"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1985960/header.jpg?t=1753242792",
-      "is_on_sale": true,
       "last_updated": "2025-07-25T09:02:00.464141",
       "name": "Ogu and the Secret Forest",
-      "original_price_eur": 2450,
-      "original_price_usd": 2499,
       "positive_review_percentage": 93,
-      "price_eur": 1641,
-      "price_usd": 1674,
+      "price_eur": 2450,
+      "price_usd": 2499,
       "publishers": [
         " Sinkhole Studio"
       ],
@@ -33686,7 +33683,6 @@
       "developers": [
         "Fiveamp"
       ],
-      "discount_percent": 20,
       "genres": [
         "Action",
         "Adventure",
@@ -33697,7 +33693,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2086430/3f14c6da7aae5394d02cf862d547f8ebadd4a4d0/header_alt_assets_0.jpg?t=1753289797",
       "is_early_access": true,
-      "last_updated": "2025-07-30T03:08:31.200782",
+      "last_updated": "2025-08-06T08:55:39.296841",
       "name": "NIMRODS",
       "positive_review_percentage": 84,
       "price_eur": 975,
@@ -33705,11 +33701,11 @@
       "publishers": [
         "Fiveamp"
       ],
-      "recent_review_count": 43,
-      "recent_review_percentage": 81,
+      "recent_review_count": 76,
+      "recent_review_percentage": 84,
       "recent_review_summary": "Very Positive",
       "release_date": "28 Oct, 2024",
-      "review_count": 1282,
+      "review_count": 1321,
       "review_summary": "Very Positive",
       "steam_app_id": "2086430",
       "steam_url": "https://store.steampowered.com/app/2086430",
@@ -34422,7 +34418,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2103140/c67d87d288165604423bcac5f3857d555f9dabd9/header.jpg?t=1751460044",
-      "last_updated": "2025-07-30T03:08:40.037296",
+      "last_updated": "2025-08-06T08:55:26.473619",
       "name": "Magicraft",
       "positive_review_percentage": 92,
       "price_eur": 1579,
@@ -34430,11 +34426,11 @@
       "publishers": [
         "bilibili"
       ],
-      "recent_review_count": 233,
+      "recent_review_count": 219,
       "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "1 Nov, 2024",
-      "review_count": 12517,
+      "review_count": 12563,
       "review_summary": "Very Positive",
       "steam_app_id": "2103140",
       "steam_url": "https://store.steampowered.com/app/2103140",
@@ -47997,7 +47993,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2348610/header.jpg?t=1752158092",
       "is_on_sale": true,
-      "last_updated": "2025-07-30T08:55:18.493884",
+      "last_updated": "2025-08-06T08:55:39.928081",
       "name": "Slime 3K: Rise Against Despot",
       "original_price_eur": 499,
       "original_price_usd": 499,
@@ -48007,9 +48003,6 @@
       "publishers": [
         "tinyBuild"
       ],
-      "recent_review_count": 13,
-      "recent_review_percentage": 61,
-      "recent_review_summary": "Mixed",
       "release_date": "31 Oct, 2024",
       "review_count": 1387,
       "review_summary": "Very Positive",
@@ -55255,7 +55248,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2462060/header.jpg?t=1731164896",
       "is_on_sale": true,
-      "last_updated": "2025-07-30T03:08:45.792300",
+      "last_updated": "2025-08-06T08:55:32.029271",
       "name": "Graveyard Gunslingers",
       "original_price_eur": 975,
       "original_price_usd": 999,
@@ -56374,6 +56367,51 @@
         "Trading",
         "Family Friendly",
         "Management"
+      ]
+    },
+    "2476680": {
+      "categories": [
+        "Single-player",
+        "Steam Cloud",
+        "Family Sharing"
+      ],
+      "demo_app_id": "3797610",
+      "developers": [
+        "Adelie Penguin"
+      ],
+      "discount_percent": 15,
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2476680/d83234607b07b019f073901a059c41c464bfdfb1/header.jpg?t=1753966508",
+      "is_on_sale": true,
+      "last_updated": "2025-08-06T08:55:28.885919",
+      "name": "Arc Tracker",
+      "original_price_eur": 1079,
+      "original_price_usd": 1099,
+      "price_eur": 917,
+      "price_usd": 934,
+      "publishers": [
+        "Adelie Penguin"
+      ],
+      "release_date": "30 Jul, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2476680",
+      "steam_url": "https://store.steampowered.com/app/2476680",
+      "tags": [
+        "Casual",
+        "Puzzle",
+        "Minimalist",
+        "Arcade",
+        "Abstract",
+        "Relaxing",
+        "Surreal",
+        "Nonlinear",
+        "Sci-fi",
+        "Space"
       ]
     },
     "2477090": {
@@ -58914,7 +58952,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2525310/31d94b7861f47e10afdba4be98abc58f42f9c12e/header.jpg?t=1752069607",
-      "last_updated": "2025-07-30T08:55:25.809236",
+      "last_updated": "2025-08-06T08:55:33.338505",
       "name": "Drop Duchy",
       "positive_review_percentage": 89,
       "price_eur": 1499,
@@ -58922,11 +58960,11 @@
       "publishers": [
         "The Arcade Crew"
       ],
-      "recent_review_count": 194,
-      "recent_review_percentage": 89,
+      "recent_review_count": 157,
+      "recent_review_percentage": 94,
       "recent_review_summary": "Very Positive",
       "release_date": "5 May, 2025",
-      "review_count": 1695,
+      "review_count": 1716,
       "review_summary": "Very Positive",
       "steam_app_id": "2525310",
       "steam_url": "https://store.steampowered.com/app/2525310",
@@ -59324,8 +59362,8 @@
         "Indie",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2531940/header.jpg?t=1753730370",
-      "last_updated": "2025-07-30T03:08:50.847268",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2531940/header.jpg?t=1754303878",
+      "last_updated": "2025-08-06T08:55:24.228102",
       "name": "Stray Path",
       "positive_review_percentage": 72,
       "price_eur": 1479,
@@ -59334,11 +59372,8 @@
         "Yogscast Games",
         "Gamersky Games"
       ],
-      "recent_review_count": 14,
-      "recent_review_percentage": 71,
-      "recent_review_summary": "Mostly Positive",
       "release_date": "6 Feb, 2025",
-      "review_count": 669,
+      "review_count": 670,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2531940",
       "steam_url": "https://store.steampowered.com/app/2531940",
@@ -60351,11 +60386,11 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2545360/header.jpg?t=1753105833",
       "is_on_sale": true,
-      "last_updated": "2025-07-30T03:08:49.045372",
+      "last_updated": "2025-08-06T08:55:25.760704",
       "name": "Lonely Mountains: Snow Riders",
       "original_price_eur": 2499,
       "original_price_usd": 2499,
-      "positive_review_percentage": 89,
+      "positive_review_percentage": 90,
       "price_eur": 2124,
       "price_usd": 2124,
       "publishers": [
@@ -60365,7 +60400,7 @@
       "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "21 Jan, 2025",
-      "review_count": 485,
+      "review_count": 490,
       "review_summary": "Very Positive",
       "steam_app_id": "2545360",
       "steam_url": "https://store.steampowered.com/app/2545360",
@@ -71480,7 +71515,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2741390/06daf2c2523ffd4319f9f8c012f4554a92bfa9b9/header.jpg?t=1751390112",
       "is_early_access": true,
-      "last_updated": "2025-07-30T03:09:02.473156",
+      "last_updated": "2025-08-06T08:55:30.501802",
       "name": "Check Inn",
       "positive_review_percentage": 90,
       "price_eur": 1199,
@@ -72462,7 +72497,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2756920/header.jpg?t=1750858478",
-      "last_updated": "2025-07-30T03:08:52.469948",
+      "last_updated": "2025-08-06T08:55:36.320676",
       "name": "Keep Driving",
       "positive_review_percentage": 94,
       "price_eur": 1800,
@@ -72470,11 +72505,11 @@
       "publishers": [
         "YCJY Games"
       ],
-      "recent_review_count": 326,
-      "recent_review_percentage": 92,
+      "recent_review_count": 254,
+      "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "6 Feb, 2025",
-      "review_count": 3153,
+      "review_count": 3201,
       "review_summary": "Very Positive",
       "steam_app_id": "2756920",
       "steam_url": "https://store.steampowered.com/app/2756920",
@@ -78299,16 +78334,16 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2841950/header.jpg?t=1747120481",
-      "last_updated": "2025-07-30T03:08:43.801496",
+      "last_updated": "2025-08-06T08:55:23.080246",
       "name": "Robot Arena Survivors",
-      "positive_review_percentage": 94,
+      "positive_review_percentage": 95,
       "price_eur": 689,
       "price_usd": 699,
       "publishers": [
         "ShidyGames"
       ],
       "release_date": "4 Dec, 2024",
-      "review_count": 39,
+      "review_count": 40,
       "review_summary": "Positive",
       "steam_app_id": "2841950",
       "steam_url": "https://store.steampowered.com/app/2841950",
@@ -85601,7 +85636,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2990500/header.jpg?t=1732632488",
       "is_early_access": true,
-      "last_updated": "2025-07-30T08:55:17.796095",
+      "last_updated": "2025-08-06T08:55:35.602893",
       "name": "Necromancer's Revenge",
       "positive_review_percentage": 9,
       "price_eur": 499,
@@ -87749,9 +87784,9 @@
         "RPG"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3021630/header.jpg?t=1751009484",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3021630/header.jpg?t=1754315668",
       "is_on_sale": true,
-      "last_updated": "2025-07-30T03:08:35.942584",
+      "last_updated": "2025-08-06T08:55:32.634630",
       "name": "Savara",
       "original_price_eur": 1950,
       "original_price_usd": 1999,
@@ -87761,11 +87796,11 @@
       "publishers": [
         "Ankama Games"
       ],
-      "recent_review_count": 33,
-      "recent_review_percentage": 87,
+      "recent_review_count": 30,
+      "recent_review_percentage": 90,
       "recent_review_summary": "Very Positive",
       "release_date": "6 May, 2025",
-      "review_count": 401,
+      "review_count": 404,
       "review_summary": "Very Positive",
       "steam_app_id": "3021630",
       "steam_url": "https://store.steampowered.com/app/3021630",
@@ -89271,7 +89306,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3051470/8efbc5e1278bee36070e5a61ae8cd69ff6ddbea6/header.jpg?t=1749572912",
-      "last_updated": "2025-07-30T03:08:59.575815",
+      "last_updated": "2025-08-06T08:55:34.078496",
       "name": "Kaya's Prophecy",
       "positive_review_percentage": 71,
       "price_eur": 1379,
@@ -92089,7 +92124,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3110250/header.jpg?t=1737797773",
-      "last_updated": "2025-07-30T08:55:19.252802",
+      "last_updated": "2025-08-06T08:55:21.440853",
       "name": "Calice",
       "positive_review_percentage": 78,
       "price_eur": 975,
@@ -95093,7 +95128,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3167970/header.jpg?t=1746027636",
-      "last_updated": "2025-07-30T03:08:47.397909",
+      "last_updated": "2025-08-06T08:55:27.281813",
       "name": "Starless Abyss",
       "positive_review_percentage": 84,
       "price_eur": 1950,
@@ -95102,7 +95137,7 @@
         "No More Robots"
       ],
       "release_date": "25 Apr, 2025",
-      "review_count": 207,
+      "review_count": 209,
       "review_summary": "Very Positive",
       "steam_app_id": "3167970",
       "steam_url": "https://store.steampowered.com/app/3167970",
@@ -95111,8 +95146,8 @@
         "Indie",
         "Lovecraftian",
         "Roguelike Deckbuilder",
-        "Turn-Based Combat",
         "2D",
+        "Turn-Based Combat",
         "Turn-Based Strategy",
         "Singleplayer",
         "Card Game",
@@ -95950,7 +95985,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3183220/d05bae7c51b2851d31a65a9082150c98ab5652e8/header.jpg?t=1752209873",
       "is_early_access": true,
-      "last_updated": "2025-07-30T03:08:34.374215",
+      "last_updated": "2025-08-06T08:55:36.986551",
       "name": "Aurora Defense",
       "positive_review_percentage": 70,
       "price_eur": 1299,
@@ -95959,7 +95994,7 @@
         "Moka Games"
       ],
       "release_date": "10 Jul, 2025",
-      "review_count": 74,
+      "review_count": 75,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3183220",
       "steam_url": "https://store.steampowered.com/app/3183220",
@@ -96732,7 +96767,7 @@
       "insufficient_reviews": true,
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-06T03:08:23.597458",
+      "last_updated": "2025-08-06T08:55:37.712883",
       "name": "Gigantes Ex Machina",
       "original_price_eur": 1479,
       "original_price_usd": 1499,
@@ -96742,7 +96777,7 @@
         "AcrylByte"
       ],
       "release_date": "5 Aug, 2025",
-      "review_count": 4,
+      "review_count": 9,
       "review_summary": "Need more reviews for score",
       "steam_app_id": "3201070",
       "steam_url": "https://store.steampowered.com/app/3201070",
@@ -101733,7 +101768,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3308190/3b69a291feb69999cf69972dcd1ba0092183f659/header.jpg?t=1749929501",
       "is_on_sale": true,
-      "last_updated": "2025-07-30T08:55:11.547136",
+      "last_updated": "2025-08-06T08:55:25.006156",
       "name": "Ringer",
       "original_price_eur": 975,
       "original_price_usd": 999,
@@ -106822,7 +106857,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/343160/8b5c9c92a4600258ba697655f1baba67fa3a36ea/header.jpg?t=1750443407",
       "insufficient_reviews": true,
-      "last_updated": "2025-07-30T03:08:38.406959",
+      "last_updated": "2025-08-06T08:55:38.605420",
       "name": "Reef Defense",
       "price_eur": 1479,
       "price_usd": 1499,
@@ -106830,7 +106865,7 @@
         "Swift Creek Games"
       ],
       "release_date": "20 Jun, 2025",
-      "review_count": 3,
+      "review_count": 4,
       "review_summary": "Need more reviews for score",
       "steam_app_id": "343160",
       "steam_url": "https://store.steampowered.com/app/343160",
@@ -114021,7 +114056,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3618590/2cce4618ca5a4de2f40dc64aafedf4872d0b3531/header.jpg?t=1752753077",
-      "last_updated": "2025-07-30T08:55:14.014357",
+      "last_updated": "2025-08-06T08:55:22.213789",
       "name": "Combo Overload",
       "positive_review_percentage": 68,
       "price_eur": 499,
@@ -118530,6 +118565,45 @@
         "Relaxing"
       ]
     },
+    "3797610": {
+      "categories": [
+        "Single-player",
+        "Game demo"
+      ],
+      "developers": [
+        "Adelie Penguin"
+      ],
+      "full_game_app_id": "2476680",
+      "genres": [
+        "Casual",
+        "Indie"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3797610/d83234607b07b019f073901a059c41c464bfdfb1/header.jpg?t=1749530268",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-08-06T08:55:29.725913",
+      "name": "Arc Tracker Demo",
+      "publishers": [
+        "Adelie Penguin"
+      ],
+      "release_date": "8 Jun, 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "3797610",
+      "steam_url": "https://store.steampowered.com/app/3797610",
+      "tags": [
+        "Casual",
+        "Strategy",
+        "Arcade",
+        "Puzzle",
+        "2D",
+        "Abstract",
+        "Colorful",
+        "Minimalist",
+        "Emotional",
+        "Family Friendly"
+      ]
+    },
     "3811840": {
       "categories": [
         "Single-player",
@@ -121670,7 +121744,7 @@
       "last_updated": "2025-07-26T08:59:53.830641",
       "name": "Yuppie Psycho: Executive Edition",
       "positive_review_percentage": 95,
-      "price_eur": 1699,
+      "price_eur": 1619,
       "price_usd": 1699,
       "publishers": [
         "Neon Doctrine"
