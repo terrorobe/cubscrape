@@ -162,10 +162,9 @@ def _merge_itch_data_into_steam_game(steam_game: dict[str, Any], itch_data: Any)
     # Steam tags maintain their semantic "Top 10" ordering
     # Itch tags maintain their creator-defined ordering
 
-    # Use Itch pricing info if available
-    if itch_data.get('is_free') and not steam_game.get('price'):
-        steam_game['is_free'] = True
-        steam_game['price'] = 'Free'
+    # Don't use Itch pricing - Itch versions are treated as demos when Steam version exists
+    # Steam is the authoritative source for pricing of Steam games
+    # The Itch version is typically an early demo/prototype of the full Steam game
 
     logging.info(f"Merged Itch.io data into Steam game: {steam_game.get('name')}")
     return steam_game

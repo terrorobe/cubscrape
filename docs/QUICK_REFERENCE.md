@@ -8,8 +8,8 @@
 npm run dev
 
 # Python scraper
-cubscrape cron
-cubscrape backfill --channel olexa --max-new 5
+uv run cubscrape cron
+uv run cubscrape backfill --channel olexa --max-new 5
 
 # Linting
 uv run ruff check --fix
@@ -24,7 +24,7 @@ npm run type-check
 ```bash
 # Build for deployment
 npm run build
-cubscrape build-db
+uv run cubscrape build-db
 ```
 
 ## Key File Locations
@@ -108,13 +108,13 @@ interface GameRecord {
 ### Data Issues
 ```bash
 # Check data quality
-cubscrape data-quality
+uv run cubscrape data-quality
 
 # Test single game fetch
-cubscrape single-app --app-id 3586420
+uv run cubscrape single-app --app-id 3586420
 
 # Interactive game resolution
-cubscrape infer-games
+uv run cubscrape infer-games
 ```
 
 ### Build Issues

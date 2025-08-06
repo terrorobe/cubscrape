@@ -47,13 +47,13 @@ A tool that scrapes YouTube gaming channels to discover Steam games, fetches the
 
 ### Processing Modes
 
-Note: If `cubscrape` command is not available in your PATH, prefix all commands with `uv run`.
+Note: All commands should be prefixed with `uv run` to ensure proper environment activation.
 
 **Backfill Mode** - Process a specific channel with full options:
 ```bash
-cubscrape backfill --channel idlecub --max-new 20
-cubscrape backfill --channel dextag --max-steam-updates 10
-cubscrape backfill --channel olexa --max-new 50
+uv run cubscrape backfill --channel idlecub --max-new 20
+uv run cubscrape backfill --channel dextag --max-steam-updates 10
+uv run cubscrape backfill --channel olexa --max-new 50
 ```
 
 Note: Steam games now use age-based refresh intervals automatically:
@@ -63,35 +63,35 @@ Note: Steam games now use age-based refresh intervals automatically:
 
 **Cron Mode** - Process recent videos from all enabled channels:
 ```bash
-cubscrape cron
+uv run cubscrape cron
 ```
 
 **Reprocess Mode** - Reprocess existing videos to extract new game links:
 ```bash
-cubscrape reprocess --channel idlecub
+uv run cubscrape reprocess --channel idlecub
 ```
 
 **Single App Mode** - Fetch specific Steam game data:
 ```bash
-cubscrape single-app --app-id 123456
+uv run cubscrape single-app --app-id 123456
 ```
 
 **Steam Price Refresh** - Bulk update Steam game prices with sale indicators:
 ```bash
-cubscrape steam-price-refresh --max-apps 1000 --batch-size 500
-cubscrape steam-price-refresh --currencies eur --dry-run  # Preview EUR updates
-cubscrape steam-price-refresh --currencies both          # Atomic EUR+USD updates
+uv run cubscrape steam-price-refresh --max-apps 1000 --batch-size 500
+uv run cubscrape steam-price-refresh --currencies eur --dry-run  # Preview EUR updates
+uv run cubscrape steam-price-refresh --currencies both          # Atomic EUR+USD updates
 ```
 
 **Data Quality Mode** - Check data integrity and completeness:
 ```bash
-cubscrape data-quality
+uv run cubscrape data-quality
 # Identifies missing Steam games referenced in videos
 ```
 
 **Game Inference Mode** - Find games from video titles and resolve missing Steam games:
 ```bash
-cubscrape infer-games
+uv run cubscrape infer-games
 # Uses YouTube's game detection when available (more reliable)
 # Falls back to title parsing for game name extraction  
 # Interactive prompts for low confidence matches
@@ -130,7 +130,7 @@ npm run preview
 The Vue app expects a SQLite database at `/data/games.db`:
 ```bash
 # Build the SQLite database
-cubscrape build-db
+uv run cubscrape build-db
 # OR
 npm run build-db
 ```

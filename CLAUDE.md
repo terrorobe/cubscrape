@@ -27,12 +27,9 @@ This project uses **uv** for Python dependency management and virtual environmen
 uv sync --extra dev
 
 # Run the scraper
-cubscrape cron
-cubscrape backfill --channel dextag
-cubscrape --help
-
-# Alternative module execution
-uv run python -m scraper.cli_commands cron
+uv run cubscrape cron
+uv run cubscrape backfill --channel dextag
+uv run cubscrape --help
 
 # Development tools
 uv run ruff check
@@ -42,7 +39,7 @@ uv run basedpyright
 ### Development Workflow
 
 1. **Initial setup**: `uv sync --extra dev`
-2. **Run scraper**: `cubscrape cron` or `uv run python -m scraper.cli_commands cron`
+2. **Run scraper**: `uv run cubscrape cron`
 3. **Add dependencies**: Edit `pyproject.toml` then run `uv sync`
 4. **Run linters**: 
    - Python: `uv run ruff check --fix`
@@ -176,19 +173,19 @@ npm run ci:check
 ### Manual Testing Commands
 ```bash
 # Test specific channel processing
-cubscrape backfill --channel olexa --max-new 5
+uv run cubscrape backfill --channel olexa --max-new 5
 
 # Test missing Steam games resolution (interactive)
-cubscrape infer-games
+uv run cubscrape infer-games
 
 # Test data quality checks
-cubscrape data-quality
+uv run cubscrape data-quality
 
 # Fetch single Steam app (useful for debugging)
-cubscrape single-app --app-id 3586420
+uv run cubscrape single-app --app-id 3586420
 
 # Test all channels (cron mode)
-cubscrape cron
+uv run cubscrape cron
 ```
 
 ### Frontend Dependencies
