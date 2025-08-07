@@ -5133,7 +5133,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1201700/dccee1a827d368a643303be8ac7c25f65e30bd39/header.jpg?t=1754514150",
-      "last_updated": "2025-08-07T08:55:22.576332",
+      "last_updated": "2025-08-07T15:04:54.585965",
       "name": "Warnament",
       "publishers": [
         "Luden.io"
@@ -36602,7 +36602,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2133760/519031e524f64d61ea58b75df39dccfe31b68834/header.jpg?t=1754430013",
-      "last_updated": "2025-08-07T08:55:20.796849",
+      "last_updated": "2025-08-07T15:04:52.505002",
       "name": "Tiny Bookshop",
       "publishers": [
         "Skystone Games",
@@ -37284,14 +37284,11 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2144640/490cf79ed3dec8fa5eef65213a215b8350913d67/header_alt_assets_5.jpg?t=1753366767",
-      "is_on_sale": true,
       "last_updated": "2025-08-06T20:54:37.945672",
       "name": "Endzone 2",
-      "original_price_eur": 2499,
-      "original_price_usd": 2499,
       "positive_review_percentage": 68,
-      "price_eur": 1249,
-      "price_usd": 1249,
+      "price_eur": 2499,
+      "price_usd": 2499,
       "publishers": [
         "Assemble Entertainment"
       ],
@@ -56604,8 +56601,9 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2476680/d83234607b07b019f073901a059c41c464bfdfb1/header.jpg?t=1753966508",
+      "insufficient_reviews": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-06T08:55:28.885919",
+      "last_updated": "2025-08-07T15:05:01.118037",
       "name": "Arc Tracker",
       "original_price_eur": 1079,
       "original_price_usd": 1099,
@@ -56615,8 +56613,8 @@
         "Adelie Penguin"
       ],
       "release_date": "30 Jul, 2025",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "review_count": 1,
+      "review_summary": "Need more reviews for score",
       "steam_app_id": "2476680",
       "steam_url": "https://store.steampowered.com/app/2476680",
       "tags": [
@@ -60465,7 +60463,6 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "developers": [
         "Game Swing"
       ],
@@ -60473,8 +60470,9 @@
         "Action",
         "Indie"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2543510/e27c2729a08364e82860ec4d9a68ab168055968b/header.jpg?t=1754490242",
-      "last_updated": "2025-08-07T08:55:21.677543",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2543510/98d544c7a4a44d721cf47ae418788af44314bab6/header_alt_assets_2.jpg?t=1754563450",
+      "is_free": true,
+      "last_updated": "2025-08-07T15:04:59.599372",
       "name": "GUNTOUCHABLES",
       "publishers": [
         "Ghost Ship Publishing"
@@ -61821,6 +61819,7 @@
       "developers": [
         "Moonskull Games"
       ],
+      "discount_percent": 35,
       "genres": [
         "Action",
         "Casual",
@@ -61828,11 +61827,14 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2569330/header.jpg?t=1728337189",
+      "is_on_sale": true,
       "last_updated": "2025-08-07T03:08:36.917090",
       "name": "Pixel Descent",
+      "original_price_eur": 589,
+      "original_price_usd": 599,
       "positive_review_percentage": 82,
-      "price_eur": 589,
-      "price_usd": 599,
+      "price_eur": 382,
+      "price_usd": 389,
       "publishers": [
         "Moonskull Games"
       ],
@@ -64614,6 +64616,54 @@
         "Turn-Based Tactics",
         "Turn-Based Combat",
         "Roguelite"
+      ]
+    },
+    "2624080": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Partial Controller Support",
+        "Family Sharing"
+      ],
+      "coming_soon": true,
+      "demo_app_id": "2747040",
+      "developers": [
+        "Sandy Dingo Games"
+      ],
+      "genres": [
+        "Action",
+        "Adventure",
+        "Indie",
+        "RPG",
+        "Early Access"
+      ],
+      "has_demo": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2624080/header.jpg?t=1754322886",
+      "is_early_access": true,
+      "last_updated": "2025-08-07T15:04:55.848013",
+      "name": "MycoRelic",
+      "planned_release_date": "September 2025",
+      "publishers": [
+        "Sandy Dingo Games"
+      ],
+      "release_date": "September 2025",
+      "review_count": 0,
+      "review_summary": "No user reviews",
+      "steam_app_id": "2624080",
+      "steam_url": "https://store.steampowered.com/app/2624080",
+      "tags": [
+        "Early Access",
+        "Souls-like",
+        "Action RPG",
+        "Online Co-Op",
+        "Exploration",
+        "Multiplayer",
+        "RPG",
+        "Third Person",
+        "3D",
+        "Co-op"
       ]
     },
     "2625850": {
@@ -69600,7 +69650,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2702170/fb48930b7cd516449aaabda3c92b80cd6aae8ed5/header.jpg?t=1754321849",
-      "last_updated": "2025-08-07T08:55:24.248063",
+      "last_updated": "2025-08-07T15:04:57.980824",
       "name": "Strange Jigsaws",
       "publishers": [
         "FLEB"
@@ -72220,6 +72270,54 @@
         "Precision Platformer",
         "Online Co-Op",
         "Parkour"
+      ]
+    },
+    "2747040": {
+      "categories": [
+        "Single-player",
+        "Multi-player",
+        "Co-op",
+        "Online Co-op",
+        "Game demo",
+        "Partial Controller Support"
+      ],
+      "developers": [
+        "Sandy Dingo Games"
+      ],
+      "full_game_app_id": "2624080",
+      "genres": [
+        "Action",
+        "Adventure",
+        "RPG"
+      ],
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2747040/5148f40ba3c862d69677aa6ac290c7b2772e5c55/header.jpg?t=1754322940",
+      "is_demo": true,
+      "is_free": true,
+      "last_updated": "2025-08-07T15:04:56.882039",
+      "name": "MycoRelic Demo",
+      "positive_review_percentage": 98,
+      "publishers": [
+        "Sandy Dingo Games"
+      ],
+      "recent_review_count": 12,
+      "recent_review_percentage": 100,
+      "recent_review_summary": "Very Positive",
+      "release_date": "26 Feb, 2024",
+      "review_count": 62,
+      "review_summary": "Very Positive",
+      "steam_app_id": "2747040",
+      "steam_url": "https://store.steampowered.com/app/2747040",
+      "tags": [
+        "Souls-like",
+        "PvE",
+        "Action RPG",
+        "Online Co-Op",
+        "RPG",
+        "Action",
+        "3D",
+        "Third Person",
+        "Fantasy",
+        "Magic"
       ]
     },
     "2747060": {
@@ -97037,19 +97135,19 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3201070/ae257c20c490396ce243d42371cebac7f9c4636a/header.jpg?t=1754413223",
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-06T20:54:47.960686",
+      "last_updated": "2025-08-07T15:04:53.385718",
       "name": "Gigantes Ex Machina",
       "original_price_eur": 1479,
       "original_price_usd": 1499,
-      "positive_review_percentage": 71,
+      "positive_review_percentage": 63,
       "price_eur": 1331,
       "price_usd": 1349,
       "publishers": [
         "AcrylByte"
       ],
       "release_date": "5 Aug, 2025",
-      "review_count": 21,
-      "review_summary": "Mostly Positive",
+      "review_count": 30,
+      "review_summary": "Mixed",
       "steam_app_id": "3201070",
       "steam_url": "https://store.steampowered.com/app/3201070",
       "tags": [
@@ -108428,8 +108526,9 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3456690/header.jpg?t=1753411087",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:59:43.865313",
-      "name": "Just A Shadow Game Demo",
+      "is_stub": true,
+      "last_updated": "2025-08-07T15:04:51.409946",
+      "name": "Just A Shadow Game Demo [REMOVED]",
       "positive_review_percentage": 100,
       "publishers": [
         "Neon Doctrine"
@@ -108438,10 +108537,12 @@
       "recent_review_percentage": 100,
       "recent_review_summary": "Very Positive",
       "release_date": "23 Jan, 2025",
+      "removal_detected": "2025-08-07",
       "review_count": 115,
       "review_summary": "Very Positive",
       "steam_app_id": "3456690",
       "steam_url": "https://store.steampowered.com/app/3456690",
+      "stub_reason": "Removed from Steam",
       "tags": [
         "Card Battler",
         "Dark",
@@ -112186,6 +112287,7 @@
       "developers": [
         "verty"
       ],
+      "discount_percent": 20,
       "genres": [
         "Casual",
         "Indie",
@@ -112193,11 +112295,14 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3546440/bb3a199d409ca1961f8362129ebf0488a2b0af05/header.jpg?t=1752642527",
+      "is_on_sale": true,
       "last_updated": "2025-08-05T15:05:21.024232",
       "name": "Rentlord",
+      "original_price_eur": 499,
+      "original_price_usd": 499,
       "positive_review_percentage": 71,
-      "price_eur": 499,
-      "price_usd": 499,
+      "price_eur": 399,
+      "price_usd": 399,
       "publishers": [
         "Rogue Duck Interactive"
       ],
