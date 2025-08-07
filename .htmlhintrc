@@ -19,7 +19,7 @@
   "inline-script-disabled": false,
   "space-tab-mixed-disabled": "space",
   "id-class-ad-disabled": false,
-  "head-script-disabled": true,
+  "head-script-disabled": false,
   "href-abs-or-rel": false,
   "attr-unsafe-chars": true
 }

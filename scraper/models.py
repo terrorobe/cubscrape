@@ -63,6 +63,7 @@ class SteamGameData(BaseModel):
     demo_app_id: str | None = None
     is_demo: bool = False
     full_game_app_id: str | None = None
+    has_playtest: bool = False
     is_early_access: bool = False
     positive_review_percentage: int | None = None
     review_count: int | None = None

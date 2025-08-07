@@ -219,7 +219,7 @@ class DatabaseManager:
             cursor.execute('''
                 INSERT INTO games (
                     game_key, steam_app_id, name, platform, coming_soon,
-                    is_early_access, is_demo, is_free, price_eur, price_usd,
+                    is_early_access, is_demo, has_playtest, is_free, price_eur, price_usd,
                     positive_review_percentage, review_count, review_summary, review_summary_priority,
                     recent_review_percentage, recent_review_count, recent_review_summary,
                     insufficient_reviews, release_date, planned_release_date, release_date_sortable, header_image, steam_url, itch_url,
@@ -227,7 +227,7 @@ class DatabaseManager:
                     unique_channels, genres, tags, developers, publishers,
                     demo_steam_app_id, demo_steam_url, review_tooltip, is_inferred_summary,
                     is_absorbed, absorbed_into, discount_percent, original_price_eur, original_price_usd, is_on_sale
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 game_key,
                 game.get('steam_app_id'),
@@ -236,6 +236,7 @@ class DatabaseManager:
                 game.get('coming_soon', False),
                 game.get('is_early_access', False),
                 game.get('is_demo', False),
+                game.get('has_playtest', False),
                 game.get('is_free', False),
                 cleaned_price_eur,
                 cleaned_price_usd,

@@ -1012,6 +1012,22 @@ onUnmounted(() => {
             </a>
           </template>
 
+          <!-- Playtest badge -->
+          <template v-if="game.has_playtest">
+            <span class="mx-1 text-xs opacity-50">•</span>
+            <a
+              :href="game.steam_url ?? undefined"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="demo-badge flex items-center justify-center rounded-sm text-xs font-medium transition-all duration-200 hover:scale-105"
+              title="Join the playtest on Steam"
+              aria-label="Join the playtest on Steam"
+            >
+              <i class="fab fa-steam mr-1 text-xs"></i>
+              Playtest
+            </a>
+          </template>
+
           <!-- Absorbed game link -->
           <template v-if="game.is_absorbed && getSteamParentUrl(game)">
             <span class="mx-1 text-xs opacity-50">•</span>

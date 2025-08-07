@@ -287,6 +287,7 @@ class SteamDataFetcher(BaseFetcher):
         # Extract various data types
         result.update(self._extract_tags(soup))
         result.update(self._extract_demo_info(soup, page_text, html_content, steam_url, app_data, existing_data, known_full_game_id))
+        result.update(self._extract_playtest_info(html_content))
         result.update(self._extract_early_access(soup))
         result.update(self._extract_review_data(page_text))
         result.update(self._extract_release_info(soup, page_text, app_data))
@@ -344,6 +345,20 @@ class SteamDataFetcher(BaseFetcher):
         """Extract early access information"""
         early_access = soup.find('div', class_='early_access_header')
         return {'is_early_access': early_access is not None}
+
+    def _extract_playtest_info(self, html_content: str) -> dict[str, Any]:
+        """Detect if game has an active playtest using AJAX endpoint"""
+        try:
+            # Use regex to ensure we're matching the actual endpoint, not random text
+            has_playtest = bool(re.search(r'/ajaxrequestplaytestaccess/\d+', html_content))
+
+            if has_playtest:
+                logging.debug("Detected active playtest via AJAX endpoint")
+
+            return {'has_playtest': has_playtest}
+        except Exception as e:
+            logging.warning(f"Playtest detection failed: {e}")
+            return {'has_playtest': False}
 
     def _extract_review_data(self, page_text: str) -> dict[str, Any]:
         """Extract review data from page text"""

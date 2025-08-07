@@ -16,6 +16,7 @@ CREATE TABLE games (
     coming_soon BOOLEAN DEFAULT 0,
     is_early_access BOOLEAN DEFAULT 0,
     is_demo BOOLEAN DEFAULT 0,
+    has_playtest BOOLEAN DEFAULT 0,
     is_free BOOLEAN DEFAULT 0,
     price_eur INTEGER,
     price_usd INTEGER,

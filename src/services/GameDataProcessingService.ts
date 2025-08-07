@@ -323,8 +323,10 @@ export class GameDataProcessingService {
       header_image: gameData.header_image
         ? String(gameData.header_image)
         : undefined,
-      price_eur: gameData.price_eur !== null ? Number(gameData.price_eur) : undefined,
-      price_usd: gameData.price_usd !== null ? Number(gameData.price_usd) : undefined,
+      price_eur:
+        gameData.price_eur !== null ? Number(gameData.price_eur) : undefined,
+      price_usd:
+        gameData.price_usd !== null ? Number(gameData.price_usd) : undefined,
       is_free: Boolean(gameData.is_free),
       release_date: gameData.release_date
         ? String(gameData.release_date)
@@ -385,6 +387,7 @@ export class GameDataProcessingService {
       coming_soon: Boolean(gameData.coming_soon),
       is_early_access: Boolean(gameData.is_early_access),
       is_demo: Boolean(gameData.is_demo),
+      has_playtest: Boolean(gameData.has_playtest),
       planned_release_date: gameData.planned_release_date
         ? String(gameData.planned_release_date)
         : undefined,
@@ -403,8 +406,14 @@ export class GameDataProcessingService {
         ? String(gameData.absorbed_into)
         : undefined,
       discount_percent: Number(gameData.discount_percent) || 0,
-      original_price_eur: gameData.original_price_eur !== null ? Number(gameData.original_price_eur) : undefined,
-      original_price_usd: gameData.original_price_usd !== null ? Number(gameData.original_price_usd) : undefined,
+      original_price_eur:
+        gameData.original_price_eur !== null
+          ? Number(gameData.original_price_eur)
+          : undefined,
+      original_price_usd:
+        gameData.original_price_usd !== null
+          ? Number(gameData.original_price_usd)
+          : undefined,
       is_on_sale: Boolean(gameData.is_on_sale),
     }
   }

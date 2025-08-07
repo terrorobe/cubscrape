@@ -20,6 +20,7 @@ export interface GameRecord {
   coming_soon: boolean
   is_early_access: boolean
   is_demo: boolean
+  has_playtest?: boolean
   is_free: boolean
   price_eur?: number
   price_usd?: number
