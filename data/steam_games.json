@@ -21116,7 +21116,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1721110/33ece4c783c48a3edc560882adecc1d5ad6380f6/header.jpg?t=1754044737",
-      "last_updated": "2025-08-08T01:36:02.277940",
+      "last_updated": "2025-08-09T03:08:19.843949",
       "name": "Abyssus",
       "publishers": [
         "The Arcade Crew"
@@ -71184,7 +71184,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2725260/header.jpg?t=1740447961",
-      "last_updated": "2025-08-02T03:08:13.444167",
+      "last_updated": "2025-08-09T03:08:18.865880",
       "name": "ENDER MAGNOLIA: Bloom in the Mist",
       "positive_review_percentage": 95,
       "price_eur": 2499,
@@ -71192,11 +71192,11 @@
       "publishers": [
         "Binary Haze Interactive"
       ],
-      "recent_review_count": 453,
-      "recent_review_percentage": 92,
+      "recent_review_count": 383,
+      "recent_review_percentage": 94,
       "recent_review_summary": "Very Positive",
       "release_date": "22 Jan, 2025",
-      "review_count": 13241,
+      "review_count": 13305,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "2725260",
       "steam_url": "https://store.steampowered.com/app/2725260",
@@ -73731,18 +73731,18 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2769780/0e9662970e09dd410bc96ba10327996d9217bb06/header.jpg?t=1754660781",
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-08T23:10:39.955708",
+      "last_updated": "2025-08-09T03:08:18.180757",
       "name": "CleanFall",
       "original_price_eur": 1479,
       "original_price_usd": 1999,
-      "positive_review_percentage": 96,
+      "positive_review_percentage": 97,
       "price_eur": 1109,
       "price_usd": 1499,
       "publishers": [
         "Humanyoyo"
       ],
       "release_date": "8 Aug, 2025",
-      "review_count": 32,
+      "review_count": 35,
       "review_summary": "Positive",
       "steam_app_id": "2769780",
       "steam_url": "https://store.steampowered.com/app/2769780",
@@ -103661,9 +103661,9 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338950/6b09ae2705668a3b6de7ac5ab90d9c582258284a/header.jpg?t=1753872204",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338950/6b09ae2705668a3b6de7ac5ab90d9c582258284a/header.jpg?t=1754681222",
       "is_early_access": true,
-      "last_updated": "2025-08-08T01:36:06.968151",
+      "last_updated": "2025-08-09T03:08:15.654485",
       "name": "The Scouring",
       "publishers": [
         "Orc Group"
@@ -113695,7 +113695,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3586420/6706c4b10959a738805b6a42528c5e379e654b11/header.jpg?t=1754666897",
       "is_on_sale": true,
-      "last_updated": "2025-08-08T23:10:57.897766",
+      "last_updated": "2025-08-09T03:08:16.297407",
       "name": "Iron Core: Mech Survivor",
       "original_price_eur": 879,
       "original_price_usd": 899,
@@ -113707,7 +113707,7 @@
         "Solo Game"
       ],
       "release_date": "8 Aug, 2025",
-      "review_count": 65,
+      "review_count": 66,
       "review_summary": "Very Positive",
       "steam_app_id": "3586420",
       "steam_url": "https://store.steampowered.com/app/3586420",
@@ -117212,14 +117212,14 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3707160/f280add1398014d13544370fc679071a7288feb1/header.jpg?t=1754053164",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-08T23:10:59.096103",
+      "last_updated": "2025-08-09T03:08:17.415742",
       "name": "Iron Core: Mech Survivor Demo",
       "positive_review_percentage": 86,
       "publishers": [
         "Soda Game Studio"
       ],
       "release_date": "30 May, 2025",
-      "review_count": 65,
+      "review_count": 66,
       "review_summary": "Very Positive",
       "steam_app_id": "3707160",
       "steam_url": "https://store.steampowered.com/app/3707160",
