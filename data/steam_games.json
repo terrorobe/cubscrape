@@ -3004,7 +3004,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1129570/b006727c4bb7e2a1a43f64953a90a0c4fcc177f8/header.jpg?t=1754051282",
       "is_early_access": true,
-      "last_updated": "2025-08-03T03:09:35.102702",
+      "last_updated": "2025-08-10T08:52:05.437902",
       "name": "Industry Giant 4.0",
       "positive_review_percentage": 45,
       "price_eur": 2499,
@@ -3012,11 +3012,8 @@
       "publishers": [
         "Toplitz Productions"
       ],
-      "recent_review_count": 16,
-      "recent_review_percentage": 25,
-      "recent_review_summary": "Mostly Negative",
       "release_date": "15 Nov, 2024",
-      "review_count": 346,
+      "review_count": 347,
       "review_summary": "Mixed",
       "steam_app_id": "1129570",
       "steam_url": "https://store.steampowered.com/app/1129570",
@@ -4276,7 +4273,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1171690/header.jpg?t=1738083724",
-      "last_updated": "2025-08-03T03:09:19.576581",
+      "last_updated": "2025-08-10T08:52:04.094684",
       "name": "Wayfinder",
       "positive_review_percentage": 58,
       "price_eur": 2450,
@@ -4284,11 +4281,11 @@
       "publishers": [
         "Airship Syndicate"
       ],
-      "recent_review_count": 91,
-      "recent_review_percentage": 78,
+      "recent_review_count": 71,
+      "recent_review_percentage": 74,
       "recent_review_summary": "Mostly Positive",
       "release_date": "21 Oct, 2024",
-      "review_count": 23359,
+      "review_count": 23366,
       "review_summary": "Mixed",
       "steam_app_id": "1171690",
       "steam_url": "https://store.steampowered.com/app/1171690",
@@ -10359,7 +10356,6 @@
       "developers": [
         "Albert Wiatr"
       ],
-      "discount_percent": 65,
       "genres": [
         "Indie",
         "Simulation",
@@ -10367,7 +10363,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1403740/header.jpg?t=1746808684",
-      "last_updated": "2025-08-03T03:09:08.563494",
+      "last_updated": "2025-08-10T08:52:04.776365",
       "name": "Space Architect",
       "positive_review_percentage": 77,
       "price_eur": 949,
@@ -10375,11 +10371,11 @@
       "publishers": [
         "PlayWay S.A."
       ],
-      "recent_review_count": 19,
-      "recent_review_percentage": 78,
-      "recent_review_summary": "Mostly Positive",
+      "recent_review_count": 18,
+      "recent_review_percentage": 88,
+      "recent_review_summary": "Very Positive",
       "release_date": "23 Nov, 2024",
-      "review_count": 217,
+      "review_count": 220,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1403740",
       "steam_url": "https://store.steampowered.com/app/1403740",
@@ -25965,16 +25961,16 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1866300/9569bf5c864c4cefe1ab4461eff461b89d042a30/header.jpg?t=1752509241",
       "is_early_access": true,
-      "last_updated": "2025-08-03T03:09:27.411219",
+      "last_updated": "2025-08-10T08:52:02.425016",
       "name": "Dawn Apart",
-      "positive_review_percentage": 82,
+      "positive_review_percentage": 81,
       "price_eur": 1999,
       "price_usd": 1999,
       "publishers": [
         "Astra Logical"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 237,
+      "review_count": 241,
       "review_summary": "Very Positive",
       "steam_app_id": "1866300",
       "steam_url": "https://store.steampowered.com/app/1866300",
@@ -43419,13 +43415,11 @@
       "genres": [
         "Indie",
         "Simulation",
-        "Strategy",
-        "Early Access"
+        "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2275940/header.jpg?t=1753610488",
-      "is_early_access": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2275940/header.jpg?t=1754755834",
       "is_on_sale": true,
-      "last_updated": "2025-08-03T03:09:07.690334",
+      "last_updated": "2025-08-10T08:51:59.254705",
       "name": "Rogue Hex",
       "original_price_eur": 1950,
       "original_price_usd": 1999,
@@ -43435,13 +43429,12 @@
       "publishers": [
         "Topstitch Games"
       ],
-      "release_date": "13 Jan, 2025",
-      "review_count": 150,
+      "release_date": "9 Aug, 2025",
+      "review_count": 152,
       "review_summary": "Very Positive",
       "steam_app_id": "2275940",
       "steam_url": "https://store.steampowered.com/app/2275940",
       "tags": [
-        "Early Access",
         "4X",
         "Roguelike Deckbuilder",
         "Strategy",
@@ -43450,7 +43443,8 @@
         "Deckbuilding",
         "Turn-Based Strategy",
         "Replay Value",
-        "Hex Grid"
+        "Hex Grid",
+        "Card Game"
       ]
     },
     "2276830": {
@@ -51682,26 +51676,25 @@
       "developers": [
         "Spilt Milk Studios Ltd"
       ],
-      "discount_percent": 40,
       "genres": [
         "Casual",
         "Simulation"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2407830/195f4221ca8e46c6d4a80695317d597ef03ff0a9/header_alt_assets_1.jpg?t=1753287282",
-      "last_updated": "2025-08-03T03:08:52.346931",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2407830/195f4221ca8e46c6d4a80695317d597ef03ff0a9/header_alt_assets_1.jpg?t=1754389684",
+      "last_updated": "2025-08-10T08:51:59.978879",
       "name": "Trash Goblin",
-      "positive_review_percentage": 86,
+      "positive_review_percentage": 87,
       "price_eur": 1950,
       "price_usd": 1999,
       "publishers": [
         "Spilt Milk Studios Ltd"
       ],
-      "recent_review_count": 107,
-      "recent_review_percentage": 85,
+      "recent_review_count": 100,
+      "recent_review_percentage": 87,
       "recent_review_summary": "Very Positive",
       "release_date": "28 May, 2025",
-      "review_count": 747,
+      "review_count": 769,
       "review_summary": "Very Positive",
       "steam_app_id": "2407830",
       "steam_url": "https://store.steampowered.com/app/2407830",
@@ -66971,16 +66964,16 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2651220/5263be8eeec9c7535cd3a4669c0aa91bf37c738f/header.jpg?t=1752579820",
-      "last_updated": "2025-08-03T03:08:54.209382",
+      "last_updated": "2025-08-10T08:52:00.696381",
       "name": "Blacksmith: Ignite the Forge",
-      "positive_review_percentage": 68,
+      "positive_review_percentage": 69,
       "price_eur": 975,
       "price_usd": 999,
       "publishers": [
         "Awaken Realms"
       ],
       "release_date": "14 Jul, 2025",
-      "review_count": 41,
+      "review_count": 43,
       "review_summary": "Mixed",
       "steam_app_id": "2651220",
       "steam_url": "https://store.steampowered.com/app/2651220",
@@ -72651,7 +72644,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2747060/header.jpg?t=1725863203",
       "insufficient_reviews": true,
-      "last_updated": "2025-08-03T03:09:10.573525",
+      "last_updated": "2025-08-10T08:52:03.318609",
       "name": "Office Fight",
       "price_eur": 975,
       "price_usd": 999,
@@ -78266,7 +78259,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2830150/header.jpg?t=1745589220",
-      "last_updated": "2025-08-03T03:09:28.188662",
+      "last_updated": "2025-08-10T08:52:08.169266",
       "name": "Super Mining Mechs",
       "positive_review_percentage": 88,
       "price_eur": 499,
@@ -78275,7 +78268,7 @@
         "Delayed Victory"
       ],
       "release_date": "25 Oct, 2024",
-      "review_count": 578,
+      "review_count": 579,
       "review_summary": "Very Positive",
       "steam_app_id": "2830150",
       "steam_url": "https://store.steampowered.com/app/2830150",
@@ -81312,16 +81305,16 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884080/header.jpg?t=1735928005",
-      "last_updated": "2025-08-03T03:09:06.246721",
+      "last_updated": "2025-08-10T08:52:06.221261",
       "name": "OMG Words",
-      "positive_review_percentage": 85,
+      "positive_review_percentage": 84,
       "price_eur": 975,
       "price_usd": 999,
       "publishers": [
         "Dave"
       ],
       "release_date": "2 Jan, 2025",
-      "review_count": 64,
+      "review_count": 65,
       "review_summary": "Very Positive",
       "steam_app_id": "2884080",
       "steam_url": "https://store.steampowered.com/app/2884080",
@@ -81821,7 +81814,6 @@
       "developers": [
         "CATINRAIN LLC"
       ],
-      "discount_percent": 20,
       "genres": [
         "Casual",
         "Indie",
@@ -81829,7 +81821,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2897240/f366c87005f7d7269d6ef950d34bf67aeba990b9/header.jpg?t=1753512905",
-      "last_updated": "2025-08-03T03:09:13.237049",
+      "last_updated": "2025-08-10T08:52:01.538972",
       "name": "Puffin Planes",
       "positive_review_percentage": 95,
       "price_eur": 1179,
@@ -81838,7 +81830,7 @@
         "CATINRAIN LLC"
       ],
       "release_date": "4 Sep, 2024",
-      "review_count": 275,
+      "review_count": 278,
       "review_summary": "Very Positive",
       "steam_app_id": "2897240",
       "steam_url": "https://store.steampowered.com/app/2897240",
@@ -101991,14 +101983,13 @@
       "developers": [
         "EVIL CORP GAMES"
       ],
-      "discount_percent": 30,
       "genres": [
         "Casual",
         "Indie",
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3288990/header.jpg?t=1734955075",
-      "last_updated": "2025-08-03T03:09:17.849333",
+      "last_updated": "2025-08-10T08:52:07.234548",
       "name": "Grove Fisher",
       "positive_review_percentage": 75,
       "price_eur": 499,
@@ -102006,8 +101997,8 @@
       "publishers": [
         "EVIL CORP GAMES"
       ],
-      "recent_review_count": 12,
-      "recent_review_percentage": 75,
+      "recent_review_count": 10,
+      "recent_review_percentage": 70,
       "recent_review_summary": "Mostly Positive",
       "release_date": "23 Dec, 2024",
       "review_count": 57,
