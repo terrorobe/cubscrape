@@ -3606,7 +3606,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154030/670afa06a336567dad235bdef373d58c918b538e/header_alt_assets_0.jpg?t=1754654510",
       "is_early_access": true,
-      "last_updated": "2025-08-10T14:59:46.387601",
+      "last_updated": "2025-08-11T15:03:44.740025",
       "name": "Titan Quest II",
       "positive_review_percentage": 85,
       "price_eur": 2999,
@@ -3615,7 +3615,7 @@
         "THQ Nordic"
       ],
       "release_date": "1 Aug, 2025",
-      "review_count": 8498,
+      "review_count": 8826,
       "review_summary": "Very Positive",
       "steam_app_id": "1154030",
       "steam_url": "https://store.steampowered.com/app/1154030",
@@ -22995,17 +22995,17 @@
         "Indie",
         "RPG"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1753725496",
-      "last_updated": "2025-08-04T11:01:56.051058",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1782460/header.jpg?t=1754342412",
+      "last_updated": "2025-08-11T15:03:51.473206",
       "name": "Hell Clock",
-      "positive_review_percentage": 81,
+      "positive_review_percentage": 82,
       "price_eur": 1950,
       "price_usd": 1999,
       "publishers": [
         "Mad Mushroom"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 1498,
+      "review_count": 1790,
       "review_summary": "Very Positive",
       "steam_app_id": "1782460",
       "steam_url": "https://store.steampowered.com/app/1782460",
@@ -26256,17 +26256,17 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1869780/5cbe4cb4e8f3180c54e5c401ba66e0e390278f1d/header.jpg?t=1753197806",
       "is_early_access": true,
-      "last_updated": "2025-08-04T11:01:54.741487",
+      "last_updated": "2025-08-11T15:03:42.594952",
       "name": "UnderMine 2",
-      "positive_review_percentage": 66,
+      "positive_review_percentage": 70,
       "price_eur": 1950,
       "price_usd": 1999,
       "publishers": [
         "Thorium"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 399,
-      "review_summary": "Mixed",
+      "review_count": 454,
+      "review_summary": "Mostly Positive",
       "steam_app_id": "1869780",
       "steam_url": "https://store.steampowered.com/app/1869780",
       "tags": [
@@ -28750,7 +28750,6 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "2595010",
       "developers": [
         "Toge Productions"
@@ -28761,10 +28760,12 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1953230/edb92ad5ee3092f5c6a42311723ea5838742a083/header.jpg?t=1754560664",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1953230/edb92ad5ee3092f5c6a42311723ea5838742a083/header.jpg?t=1754917218",
       "is_early_access": true,
-      "last_updated": "2025-08-11T08:54:56.246346",
+      "last_updated": "2025-08-11T15:03:49.213266",
       "name": "Whisper Mountain Outbreak",
+      "price_eur": 779,
+      "price_usd": 799,
       "publishers": [
         "Toge Productions"
       ],
@@ -34203,7 +34204,6 @@
       "developers": [
         "Wise Wombat Games"
       ],
-      "discount_percent": 10,
       "genres": [
         "Action",
         "Adventure",
@@ -34213,7 +34213,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2092270/4e1edba7dc84db3cb56f8350c3943c75250c56eb/header.jpg?t=1753215462",
       "insufficient_reviews": true,
-      "last_updated": "2025-08-04T11:02:02.554889",
+      "last_updated": "2025-08-11T15:03:50.807978",
       "name": "Resonant Blade",
       "price_eur": 1950,
       "price_usd": 1999,
@@ -60111,7 +60111,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2532770/header.jpg?t=1749555111",
-      "last_updated": "2025-08-04T11:01:59.771667",
+      "last_updated": "2025-08-11T15:03:41.942617",
       "name": "Dragonero",
       "positive_review_percentage": 74,
       "price_eur": 1950,
@@ -72816,11 +72816,11 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2749000/header.jpg?t=1752573371",
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-04T11:02:01.753959",
+      "last_updated": "2025-08-11T15:03:44.068181",
       "name": "Inn Tycoon",
       "original_price_eur": 967,
       "original_price_usd": 990,
-      "positive_review_percentage": 79,
+      "positive_review_percentage": 80,
       "price_eur": 725,
       "price_usd": 742,
       "publishers": [
@@ -72828,8 +72828,8 @@
         "Gamersky Games"
       ],
       "release_date": "26 Aug, 2024",
-      "review_count": 393,
-      "review_summary": "Mostly Positive",
+      "review_count": 395,
+      "review_summary": "Very Positive",
       "steam_app_id": "2749000",
       "steam_url": "https://store.steampowered.com/app/2749000",
       "tags": [
@@ -82111,6 +82111,7 @@
         "Single-player",
         "Steam Achievements",
         "Full controller support",
+        "Steam Trading Cards",
         "Adjustable Text Size",
         "Custom Volume Controls",
         "Mouse Only Option",
@@ -82122,14 +82123,13 @@
       "developers": [
         "Definitely Named Steve"
       ],
-      "discount_percent": 15,
       "genres": [
         "Indie",
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1754009349",
-      "last_updated": "2025-08-04T11:01:52.778851",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2902440/1250afcde0096492fde90897ae9df20935c93c50/header.jpg?t=1754591656",
+      "last_updated": "2025-08-11T15:03:41.018293",
       "name": "Steve's Warehouse: Physics. Roguelike. Chaos.",
       "positive_review_percentage": 91,
       "price_eur": 799,
@@ -82139,7 +82139,7 @@
         "Definitely Named Steve"
       ],
       "release_date": "22 Jul, 2025",
-      "review_count": 73,
+      "review_count": 86,
       "review_summary": "Very Positive",
       "steam_app_id": "2902440",
       "steam_url": "https://store.steampowered.com/app/2902440",
@@ -82148,8 +82148,8 @@
         "Roguelike Deckbuilder",
         "Deckbuilding",
         "Score Attack",
-        "Roguelike",
         "Roguelite",
+        "Roguelike",
         "Funny",
         "Casual",
         "Colorful",
@@ -89397,18 +89397,18 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3039910/1394a0c79555ecfaeebffbf9f9e3274c027f6aa9/header.jpg?t=1753887620",
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-11T08:54:51.687651",
+      "last_updated": "2025-08-11T15:03:47.560818",
       "name": "Demon Hunt",
       "original_price_eur": 689,
       "original_price_usd": 699,
-      "positive_review_percentage": 72,
+      "positive_review_percentage": 73,
       "price_eur": 551,
       "price_usd": 559,
       "publishers": [
         "Massive Hug"
       ],
       "release_date": "30 Jul, 2025",
-      "review_count": 203,
+      "review_count": 204,
       "review_summary": "Mostly Positive",
       "steam_app_id": "3039910",
       "steam_url": "https://store.steampowered.com/app/3039910",
@@ -90239,14 +90239,11 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3057190/header.jpg?t=1747885526",
       "is_early_access": true,
-      "is_on_sale": true,
       "last_updated": "2025-08-05T08:56:35.636221",
       "name": "LOOTPLOT",
-      "original_price_eur": 499,
-      "original_price_usd": 699,
       "positive_review_percentage": 94,
-      "price_eur": 399,
-      "price_usd": 559,
+      "price_eur": 499,
+      "price_usd": 699,
       "publishers": [
         "CodeTheory Ltd"
       ],
@@ -94506,23 +94503,23 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3140120/header.jpg?t=1750698699",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3140120/header.jpg?t=1754324932",
       "is_on_sale": true,
-      "last_updated": "2025-08-04T11:01:56.801678",
+      "last_updated": "2025-08-11T15:03:48.537170",
       "name": "Wordatro!",
       "original_price_eur": 999,
       "original_price_usd": 999,
-      "positive_review_percentage": 85,
+      "positive_review_percentage": 84,
       "price_eur": 799,
       "price_usd": 799,
       "publishers": [
         "Abiding Bridge"
       ],
-      "recent_review_count": 38,
-      "recent_review_percentage": 92,
+      "recent_review_count": 37,
+      "recent_review_percentage": 83,
       "recent_review_summary": "Very Positive",
       "release_date": "23 Jun, 2025",
-      "review_count": 214,
+      "review_count": 226,
       "review_summary": "Very Positive",
       "steam_app_id": "3140120",
       "steam_url": "https://store.steampowered.com/app/3140120",
@@ -100505,7 +100502,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3252310/header.jpg?t=1743429631",
-      "last_updated": "2025-08-04T11:01:52.030143",
+      "last_updated": "2025-08-11T15:03:46.845751",
       "name": "Comet Rogue",
       "positive_review_percentage": 100,
       "price_eur": 499,
@@ -100514,7 +100511,7 @@
         "Antique Gear Games"
       ],
       "release_date": "31 Mar, 2025",
-      "review_count": 18,
+      "review_count": 19,
       "review_summary": "Positive",
       "steam_app_id": "3252310",
       "steam_url": "https://store.steampowered.com/app/3252310",
@@ -102194,19 +102191,24 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "3454100",
       "developers": [
         "TopCog"
       ],
+      "discount_percent": 10,
       "genres": [
         "Action",
         "RPG"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3298080/header.jpg?t=1754514827",
-      "last_updated": "2025-08-11T08:54:47.365813",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3298080/header.jpg?t=1754909091",
+      "is_on_sale": true,
+      "last_updated": "2025-08-11T15:03:43.297662",
       "name": "Neon Spellstorm",
+      "original_price_eur": 1950,
+      "original_price_usd": 1999,
+      "price_eur": 1755,
+      "price_usd": 1799,
       "publishers": [
         "TopCog"
       ],
@@ -112181,7 +112183,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3527290/31bac6b2eccf09b368f5e95ce510bae2baf3cfcd/header.jpg?t=1753856675",
-      "last_updated": "2025-08-04T11:02:00.433495",
+      "last_updated": "2025-08-11T15:03:45.350583",
       "name": "PEAK",
       "positive_review_percentage": 93,
       "price_eur": 749,
@@ -112190,11 +112192,11 @@
         "Aggro Crab",
         "Landfall"
       ],
-      "recent_review_count": 35964,
+      "recent_review_count": 31112,
       "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "16 Jun, 2025",
-      "review_count": 67813,
+      "review_count": 73547,
       "review_summary": "Very Positive",
       "steam_app_id": "3527290",
       "steam_url": "https://store.steampowered.com/app/3527290",
@@ -119157,7 +119159,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3769130/320ecc31730377d03c319b411fbf9ee95908d3c2/header.jpg?t=1754584654",
-      "last_updated": "2025-08-10T14:59:47.755534",
+      "last_updated": "2025-08-11T15:03:49.935245",
       "name": "Keep on Mining!",
       "positive_review_percentage": 93,
       "price_eur": 499,
@@ -119166,7 +119168,7 @@
         "EagleEye Games"
       ],
       "release_date": "30 Jul, 2025",
-      "review_count": 2165,
+      "review_count": 2289,
       "review_summary": "Very Positive",
       "steam_app_id": "3769130",
       "steam_url": "https://store.steampowered.com/app/3769130",
@@ -120674,7 +120676,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427410/62bb338ff214d4fde1a07f0f768082832a8c2d0a/header.jpg?t=1753890309",
-      "last_updated": "2025-08-04T11:01:58.942861",
+      "last_updated": "2025-08-11T15:03:46.155314",
       "name": "Abiotic Factor",
       "positive_review_percentage": 96,
       "price_eur": 3399,
@@ -120682,11 +120684,11 @@
       "publishers": [
         "Playstack"
       ],
-      "recent_review_count": 2652,
+      "recent_review_count": 3325,
       "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "22 Jul, 2025",
-      "review_count": 26222,
+      "review_count": 27027,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "427410",
       "steam_url": "https://store.steampowered.com/app/427410",
