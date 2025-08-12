@@ -5,7 +5,6 @@ Handles HTTP requests to Steam API with retry logic and rate limiting.
 Separated from business logic for better maintainability.
 """
 
-import logging
 import time
 from typing import Any
 
@@ -33,11 +32,19 @@ class SteamBulkHttpClient:
         return self._make_steam_api_request([app_id], country_code)
 
     def _make_steam_api_request(self, app_ids: list[str], country_code: str, filters: str | None = None) -> dict[str, Any] | None:
-        """Make a request to Steam API with optional filters and retry logic
+        """Make a request to Steam API with comprehensive retry logic
 
-        Only retries network errors. All HTTP errors (429, 500, etc) are passed
-        through to business logic for appropriate handling.
+        Handles all retryable errors at the HTTP layer including:
+        - 429 rate limiting with exponential backoff
+        - 500/502/503 server errors with linear backoff
+        - Network errors (timeouts, connection issues)
+
+        This centralizes all retry logic in the HTTP layer to maintain proper separation of concerns.
         """
+        # Import error handler here to avoid circular dependencies
+        from .bulk_fetch_error_handler import BulkFetchErrorHandler
+        error_handler = BulkFetchErrorHandler(self.config)
+
         # Build the request URL
         app_ids_str = ','.join(app_ids)
         url = f"https://store.steampowered.com/api/appdetails?appids={app_ids_str}&cc={country_code}"
@@ -45,7 +52,7 @@ class SteamBulkHttpClient:
         if filters:
             url += f"&filters={filters}"
 
-        max_retries = 5  # Reduced since we only retry rate limits and network errors
+        max_retries = int(self.config.get('max_retries', 5))
 
         for attempt in range(max_retries):
             try:
@@ -59,24 +66,33 @@ class SteamBulkHttpClient:
                 if response.status_code == 200:
                     return response.json()
                 elif response.status_code == 429:  # Rate limited
-                    # Let business logic handle rate limiting with proper configuration
-                    response.raise_for_status()
+                    should_retry, delay = error_handler.handle_rate_limit(attempt)
+                    if should_retry:
+                        time.sleep(delay)
+                        continue
+                    else:
+                        response.raise_for_status()  # Final failure
+                elif response.status_code in [500, 502, 503]:  # Server errors
+                    should_retry, delay = error_handler.handle_standard_retry(response.status_code, attempt, "Steam API")
+                    if should_retry:
+                        time.sleep(delay)
+                        continue
+                    else:
+                        response.raise_for_status()  # Final failure
                 else:
-                    # Other HTTP errors (including 500), raise immediately to let business logic handle
+                    # Other HTTP errors, don't retry
                     response.raise_for_status()
 
             except requests.exceptions.HTTPError:
-                # HTTP errors (including 500) should be handled by business logic
+                # HTTP errors that couldn't be retried, re-raise to business logic
                 raise
             except requests.RequestException as e:
-                if attempt < max_retries - 1:
-                    # Only retry actual network errors (connection, timeout, etc.)
-                    delay = min(2 * (2 ** attempt), 30)  # Cap at 30s for network issues
-                    logging.warning(f"Network error on attempt {attempt + 1}/{max_retries}: {e}. Waiting {delay:.1f}s before retry...")
+                should_retry, delay = error_handler.handle_network_error(e, attempt)
+                if should_retry:
                     time.sleep(delay)
                     continue
                 else:
-                    # Last attempt, re-raise the exception
+                    # Final network error, re-raise
                     raise
 
         return None

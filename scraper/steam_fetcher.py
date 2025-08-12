@@ -166,32 +166,43 @@ class SteamDataFetcher(BaseFetcher):
             return None
 
     def _fetch_api_data(self, app_id: str, country_code: str = 'at') -> dict[str, Any] | None:
-        """Fetch basic data from Steam API using unified HTTP client"""
-        # Use the shared HTTP client instead of manual requests
-        response_data = self.http_client.make_single_app_request(app_id, country_code)
+        """Fetch basic data from Steam API
 
-        if not response_data:
+        Retry logic is now handled by the HTTP client layer for proper separation of concerns.
+        This method focuses solely on data validation and extraction.
+        """
+        try:
+            # Use the shared HTTP client (now handles all retries internally)
+            response_data = self.http_client.make_single_app_request(app_id, country_code)
+
+            if not response_data:
+                return None
+
+            if not isinstance(response_data, dict):
+                logging.error(f"Steam API returned non-dict response for app {app_id}")
+                return None
+
+            app_info = response_data.get(app_id)
+            if not isinstance(app_info, dict):
+                logging.error(f"Steam API missing app info for app {app_id}")
+                return None
+
+            if not app_info.get('success'):
+                logging.warning(f"Steam API returned success=false for app {app_id}")
+                return None
+
+            app_data = app_info.get('data')
+            if not isinstance(app_data, dict):
+                logging.error(f"Steam API app data is not a dict for app {app_id}")
+                return None
+
+            return app_data
+
+        except requests.exceptions.RequestException as e:
+            # All retryable errors have been handled by the HTTP client
+            # Any exception reaching here represents a final failure
+            logging.error(f"Failed to fetch API data for app {app_id}: {e}")
             return None
-
-        if not isinstance(response_data, dict):
-            logging.error(f"Steam API returned non-dict response for app {app_id}")
-            return None
-
-        app_info = response_data.get(app_id)
-        if not isinstance(app_info, dict):
-            logging.error(f"Steam API missing app info for app {app_id}")
-            return None
-
-        if not app_info.get('success'):
-            logging.warning(f"Steam API returned success=false for app {app_id}")
-            return None
-
-        app_data = app_info.get('data')
-        if not isinstance(app_data, dict):
-            logging.error(f"Steam API app data is not a dict for app {app_id}")
-            return None
-
-        return app_data
 
     def _parse_api_data(self, app_data: dict[str, Any], app_id: str, steam_url: str) -> SteamGameData:
         """Parse API data into SteamGameData object"""
