@@ -21125,7 +21125,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1721110/33ece4c783c48a3edc560882adecc1d5ad6380f6/header.jpg?t=1754044737",
-      "last_updated": "2025-08-12T02:03:26.063222",
+      "last_updated": "2025-08-12T03:11:07.982401",
       "name": "Abyssus",
       "publishers": [
         "The Arcade Crew"
@@ -24017,7 +24017,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1812860/402c8e0fb372c53d694589d346e0f7bdc94ff9bc/header.jpg?t=1754575966",
-      "last_updated": "2025-08-11T03:09:25.589740",
+      "last_updated": "2025-08-12T03:10:55.290291",
       "name": "Dice Gambit",
       "publishers": [
         "Spelkollektivet",
@@ -28782,16 +28782,16 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1953230/edb92ad5ee3092f5c6a42311723ea5838742a083/header.jpg?t=1754917218",
       "is_early_access": true,
-      "last_updated": "2025-08-12T02:03:34.570565",
+      "last_updated": "2025-08-12T03:11:06.346655",
       "name": "Whisper Mountain Outbreak",
-      "positive_review_percentage": 63,
+      "positive_review_percentage": 65,
       "price_eur": 779,
       "price_usd": 799,
       "publishers": [
         "Toge Productions"
       ],
       "release_date": "11 Aug, 2025",
-      "review_count": 230,
+      "review_count": 258,
       "review_summary": "Mixed",
       "steam_app_id": "1953230",
       "steam_url": "https://store.steampowered.com/app/1953230",
@@ -29894,35 +29894,35 @@
         "RPG",
         "Early Access"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1982120/header.jpg?t=1754635848",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1982120/header.jpg?t=1754926031",
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-11T03:08:58.618850",
+      "last_updated": "2025-08-12T03:11:01.477945",
       "name": "Paper Animal Adventure",
       "original_price_eur": 1479,
       "original_price_usd": 1499,
-      "positive_review_percentage": 100,
+      "positive_review_percentage": 97,
       "price_eur": 1257,
       "price_usd": 1274,
       "publishers": [
         "Top Hat Studios, Inc."
       ],
       "release_date": "7 Aug, 2025",
-      "review_count": 23,
+      "review_count": 39,
       "review_summary": "Positive",
       "steam_app_id": "1982120",
       "steam_url": "https://store.steampowered.com/app/1982120",
       "tags": [
         "Early Access",
+        "Pixel Graphics",
+        "Strategy",
         "Mystery Dungeon",
-        "Cute",
-        "Action RPG",
-        "Exploration",
-        "Tactical RPG",
-        "Dungeon Crawler",
+        "Real Time Tactics",
+        "Puzzle",
         "Roguelike",
-        "RPG",
-        "Funny"
+        "Deckbuilding",
+        "Card Game",
+        "Dungeon Crawler"
       ]
     },
     "1983260": {
@@ -56538,7 +56538,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2471970/2ab5d49405baa35c3c7862f987c276f890719faf/header.jpg?t=1754771910",
       "is_early_access": true,
-      "last_updated": "2025-08-11T03:08:41.716243",
+      "last_updated": "2025-08-12T03:11:04.623108",
       "name": "Planetary Life",
       "publishers": [
         "Sotenbox"
@@ -56890,7 +56890,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2476680/d83234607b07b019f073901a059c41c464bfdfb1/header.jpg?t=1753966508",
       "insufficient_reviews": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-11T03:09:17.169233",
+      "last_updated": "2025-08-12T03:10:56.853235",
       "name": "Arc Tracker",
       "original_price_eur": 1079,
       "original_price_usd": 1099,
@@ -58591,7 +58591,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2509200/45da35e5ff9fac78b3d2751a3af7688e23e26d15/header.jpg?t=1754656101",
       "is_early_access": true,
-      "last_updated": "2025-08-11T03:08:47.662577",
+      "last_updated": "2025-08-12T03:11:07.034811",
       "name": "ERA ONE",
       "positive_review_percentage": 82,
       "price_eur": 2999,
@@ -58600,7 +58600,7 @@
         "Team Complex LTD"
       ],
       "release_date": "6 Aug, 2025",
-      "review_count": 331,
+      "review_count": 372,
       "review_summary": "Very Positive",
       "steam_app_id": "2509200",
       "steam_url": "https://store.steampowered.com/app/2509200",
@@ -58612,8 +58612,8 @@
         "Sandbox",
         "RTS",
         "PvP",
-        "Female Protagonist",
         "Strategy",
+        "Female Protagonist",
         "Base Building"
       ]
     },
@@ -70017,9 +70017,9 @@
         "Casual",
         "Indie"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2702170/fb48930b7cd516449aaabda3c92b80cd6aae8ed5/header.jpg?t=1754578828",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2702170/fb48930b7cd516449aaabda3c92b80cd6aae8ed5/header.jpg?t=1754937353",
       "is_on_sale": true,
-      "last_updated": "2025-08-11T03:09:03.841122",
+      "last_updated": "2025-08-12T03:11:08.681049",
       "name": "Strange Jigsaws",
       "original_price_eur": 499,
       "original_price_usd": 499,
@@ -70030,7 +70030,7 @@
         "FLEB"
       ],
       "release_date": "7 Aug, 2025",
-      "review_count": 533,
+      "review_count": 614,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "2702170",
       "steam_url": "https://store.steampowered.com/app/2702170",
@@ -73054,17 +73054,17 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2753240/ce687b5234b961de177ec8abd637dadbe90f3241/header.jpg?t=1749555744",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:44:55.480957",
+      "last_updated": "2025-08-12T03:10:56.208047",
       "name": "Dice Gambit: The First Act",
       "positive_review_percentage": 95,
       "publishers": [
         "Spelkollektivet"
       ],
-      "recent_review_count": 14,
-      "recent_review_percentage": 100,
+      "recent_review_count": 16,
+      "recent_review_percentage": 93,
       "recent_review_summary": "Very Positive",
       "release_date": "25 Sep, 2024",
-      "review_count": 187,
+      "review_count": 195,
       "review_summary": "Very Positive",
       "steam_app_id": "2753240",
       "steam_url": "https://store.steampowered.com/app/2753240",
@@ -73841,18 +73841,18 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2769780/0e9662970e09dd410bc96ba10327996d9217bb06/header.jpg?t=1754839745",
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-11T03:09:06.233215",
+      "last_updated": "2025-08-12T03:10:59.882345",
       "name": "CleanFall",
       "original_price_eur": 1479,
       "original_price_usd": 1999,
-      "positive_review_percentage": 95,
+      "positive_review_percentage": 93,
       "price_eur": 1109,
       "price_usd": 1499,
       "publishers": [
         "Humanyoyo"
       ],
       "release_date": "8 Aug, 2025",
-      "review_count": 83,
+      "review_count": 102,
       "review_summary": "Very Positive",
       "steam_app_id": "2769780",
       "steam_url": "https://store.steampowered.com/app/2769780",
@@ -75767,7 +75767,7 @@
       "is_demo": true,
       "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:46:50.637797",
+      "last_updated": "2025-08-12T03:11:05.654040",
       "name": "Planetary Life Demo",
       "publishers": [
         "Sotenbox"
@@ -94713,7 +94713,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3141310/6d796fa737977c601ebeba73e06855e6fc8a7f20/header.jpg?t=1754323274",
-      "last_updated": "2025-08-11T03:09:11.728475",
+      "last_updated": "2025-08-12T03:11:02.510826",
       "name": "Inkshade",
       "publishers": [
         "Studio Vezelle"
@@ -102327,7 +102327,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3298080/header.jpg?t=1754909091",
       "insufficient_reviews": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-12T02:09:50.662362",
+      "last_updated": "2025-08-12T03:10:59.007448",
       "name": "Neon Spellstorm",
       "original_price_eur": 1950,
       "original_price_usd": 1999,
@@ -103841,7 +103841,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338950/6b09ae2705668a3b6de7ac5ab90d9c582258284a/header.jpg?t=1754908853",
       "is_early_access": true,
-      "last_updated": "2025-08-12T02:23:11.746597",
+      "last_updated": "2025-08-12T03:10:57.753968",
       "name": "The Scouring",
       "publishers": [
         "Orc Group"
@@ -104997,7 +104997,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3369710/6d796fa737977c601ebeba73e06855e6fc8a7f20/header.jpg?t=1743084814",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:58:24.746612",
+      "last_updated": "2025-08-12T03:11:03.565209",
       "name": "Inkshade Demo",
       "publishers": [
         "Studio Vezelle"
@@ -108712,20 +108712,20 @@
         "Strategy"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451380/f3967338826c1be6bb7c5677680137fa5c921730/header.jpg?t=1754065680",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3451380/f3967338826c1be6bb7c5677680137fa5c921730/header.jpg?t=1754927771",
       "is_on_sale": true,
-      "last_updated": "2025-08-11T03:08:47.002968",
+      "last_updated": "2025-08-12T03:11:00.812380",
       "name": "Game of Grass",
       "original_price_eur": 689,
       "original_price_usd": 699,
-      "positive_review_percentage": 89,
+      "positive_review_percentage": 88,
       "price_eur": 585,
       "price_usd": 594,
       "publishers": [
         "Hipsterdufus"
       ],
       "release_date": "31 Jul, 2025",
-      "review_count": 114,
+      "review_count": 118,
       "review_summary": "Very Positive",
       "steam_app_id": "3451380",
       "steam_url": "https://store.steampowered.com/app/3451380",
@@ -123889,7 +123889,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/674190/header.jpg?t=1667154309",
-      "last_updated": "2025-07-13T03:08:36.039140",
+      "last_updated": "2025-08-12T03:10:58.413310",
       "name": "Conquest of the New World",
       "positive_review_percentage": 95,
       "price_eur": 999,
@@ -123898,7 +123898,7 @@
         "Interplay"
       ],
       "release_date": "21 Jul, 2017",
-      "review_count": 99,
+      "review_count": 103,
       "review_summary": "Very Positive",
       "steam_app_id": "674190",
       "steam_url": "https://store.steampowered.com/app/674190",
