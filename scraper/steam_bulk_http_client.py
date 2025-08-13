@@ -73,12 +73,8 @@ class SteamBulkHttpClient:
                     else:
                         response.raise_for_status()  # Final failure
                 elif response.status_code in [500, 502, 503]:  # Server errors
-                    should_retry, delay = error_handler.handle_standard_retry(response.status_code, attempt, "Steam API")
-                    if should_retry:
-                        time.sleep(delay)
-                        continue
-                    else:
-                        response.raise_for_status()  # Final failure
+                    # Server overload - bubble up immediately for batch size reduction
+                    response.raise_for_status()
                 else:
                     # Other HTTP errors, don't retry
                     response.raise_for_status()
