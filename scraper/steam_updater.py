@@ -80,10 +80,15 @@ class SteamDataUpdater:
     def _get_refresh_interval_days(self, game_data: SteamGameData) -> int:
         """
         Get refresh interval in days based on game age or proximity to release.
+        Applies deterministic skew to weekly (20%) and monthly (10%) refreshes to distribute load.
 
         For stub entries: Always return 30 days (monthly) to avoid frequent retries
         For released games: Based on age since release
         For unreleased games: Based on days until earliest possible release
+
+        Skew applied:
+        - Weekly games (7 days): ±20% (5-8 days)
+        - Monthly games (30 days): ±10% (27-33 days)
         """
         # For stub entries, use monthly refresh interval to avoid frequent retries
         if game_data.is_stub:
@@ -91,19 +96,23 @@ class SteamDataUpdater:
 
         release_info = game_data.planned_release_date or game_data.release_date
         if not release_info:
-            return 30 if game_data.coming_soon else 7  # Monthly for unknown unreleased, weekly for unknown released
+            base_interval = 30 if game_data.coming_soon else 7  # Monthly for unknown unreleased, weekly for unknown released
+            return self._apply_refresh_skew(base_interval, game_data.last_updated)
 
         if game_data.coming_soon:
             days_until_release = self._get_days_until_release(release_info)
-            return self._interval_for_days_until_release(days_until_release, release_info)
+            base_interval = self._interval_for_days_until_release(days_until_release, release_info)
+            return self._apply_refresh_skew(base_interval, game_data.last_updated)
         else:
             # For released games, use flexible parsing
             parsed_date, _ = self._parse_steam_date(release_info)
             if parsed_date:
                 age_days = (datetime.now() - parsed_date).days
-                return self._interval_for_age(age_days)
+                base_interval = self._interval_for_age(age_days)
+                return self._apply_refresh_skew(base_interval, game_data.last_updated)
             else:
-                return 7  # Default to weekly if unparseable
+                base_interval = 7  # Default to weekly if unparseable
+                return self._apply_refresh_skew(base_interval, game_data.last_updated)
 
     def _get_days_until_release(self, release_info: str) -> int:
         """
@@ -142,6 +151,45 @@ class SteamDataUpdater:
             return max(base_interval, 7)
         else:
             return base_interval
+
+    def _apply_refresh_skew(self, base_interval_days: int, last_updated: str | None) -> int:
+        """
+        Apply deterministic skew to refresh intervals to distribute load over time.
+
+        Uses last_updated timestamp as input to ensure fair rotation - each time a game
+        updates, it gets a new timestamp and thus a new skew position for its next refresh.
+
+        Args:
+            base_interval_days: Base refresh interval in days
+            last_updated: ISO timestamp string of last update
+
+        Returns:
+            Adjusted interval with skew applied (minimum 1 day)
+        """
+        # Apply different skew percentages based on interval type
+        if not last_updated:
+            return base_interval_days
+
+        skew_range = None
+        if base_interval_days == 7:
+            # Weekly games: ±20% skew (±1.4 days)
+            skew_range = 1.4
+        elif base_interval_days == 30:
+            # Monthly games: ±10% skew (±3 days)
+            skew_range = 3.0
+        else:
+            # No skew for other intervals (daily, immediate, etc.)
+            return base_interval_days
+
+        # Hash the timestamp to get a consistent but varied number
+        timestamp_hash = hash(last_updated) % 1000
+
+        # Apply skew
+        skew_factor = (timestamp_hash / 1000) * 2 - 1  # -1 to +1
+        skew_days = skew_factor * skew_range
+
+        skewed_interval = base_interval_days + skew_days
+        return max(1, int(skewed_interval))
 
     def _interval_for_age(self, age_days: int) -> int:
         """Convert game age to refresh interval in days."""
