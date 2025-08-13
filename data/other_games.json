@@ -603,6 +603,23 @@
       ],
       "url": "https://kristoff-red.itch.io/combolite"
     },
+    "https://lectvs.itch.io/auto-balls-incremental": {
+      "header_image": "https://img.itch.zone/aW1nLzIxNjEyNzc3LmdpZg==/original/Fhsomc.gif",
+      "is_free": true,
+      "last_updated": "2025-08-14T01:24:12.066653",
+      "name": "Auto Balls Incremental [Demo]",
+      "platform": "itch",
+      "positive_review_percentage": 92,
+      "release_date": "10 June 2025",
+      "review_count": 16,
+      "steam_url": "",
+      "tags": [
+        "auto-balls",
+        "Incremental",
+        "Pixel Art"
+      ],
+      "url": "https://lectvs.itch.io/auto-balls-incremental"
+    },
     "https://logos-psychagogia.itch.io/time-survivor": {
       "header_image": "https://img.itch.zone/aW1nLzIxMTU3ODIyLmpwZw==/original/osfaos.jpg",
       "is_free": true,
@@ -1368,12 +1385,12 @@
     "https://www.crazygames.com/game/stick-war": {
       "header_image": "https://imgs.crazygames.com/games/stick-war/cover-1659084995039.jpg?metadata=none&quality=100&width=1200&height=630&fit=crop",
       "is_free": true,
-      "last_updated": "2025-08-12T15:05:08.496986",
+      "last_updated": "2025-08-14T01:24:12.202914",
       "name": "Stick War",
       "platform": "crazygames",
       "positive_review_percentage": 93,
       "release_date": "",
-      "review_count": 222294,
+      "review_count": 222454,
       "steam_url": "",
       "tags": [
         "Action",
