@@ -502,39 +502,51 @@ class SteamDataUpdater:
             # Handle demo -> full game relationship
             if steam_data.is_demo and steam_data.full_game_app_id:
                 full_game_id = steam_data.full_game_app_id
-                if self._should_update_related_app(full_game_id):
+
+                # Check if we need to establish/fix bidirectional relationship
+                needs_relationship_fix = self._needs_bidirectional_relationship_fix(app_id, full_game_id, "demo_to_full")
+                if needs_relationship_fix:
+                    logging.info(f"  Full game {full_game_id} doesn't reference demo {app_id}, forcing fetch to establish relationship")
+
+                if needs_relationship_fix or self._should_update_related_app(full_game_id):
                     logging.info(f"  Found full game {full_game_id}, fetching data")
-                    self._fetch_related_app(full_game_id, "full game")
+                    self._fetch_related_app(full_game_id, "full game", known_demo_id=app_id)
 
             # Handle main game -> demo relationship
             # Check both current data and old data for demo_app_id
             demo_id = None
-            force_demo_check = False
+            demo_was_removed = False
 
             if steam_data.has_demo and steam_data.demo_app_id:
                 demo_id = steam_data.demo_app_id
             elif old_data and old_data.demo_app_id:
                 demo_id = old_data.demo_app_id
-                # Force immediate check when demo was removed
-                force_demo_check = True
+                # Force immediate check when demo was removed from main game
+                demo_was_removed = True
                 logging.info(f"  Game no longer has demo, forcing check of previous demo {demo_id}")
 
-            if demo_id and (force_demo_check or self._should_update_related_app(demo_id)):
-                logging.info(f"  Fetching demo {demo_id}")
-                demo_fetched = self._fetch_related_app(demo_id, "demo", known_full_game_id=app_id)
+            if demo_id:
+                # Check if we need to establish/fix bidirectional relationship
+                needs_relationship_fix = self._needs_bidirectional_relationship_fix(app_id, demo_id, "full_to_demo")
+                if needs_relationship_fix:
+                    logging.info(f"  Demo {demo_id} doesn't reference full game {app_id}, forcing fetch to establish relationship")
 
-                # If we force-fetched a demo that was removed from sale but still exists,
-                # restore the bidirectional relationship
-                if demo_fetched and force_demo_check and demo_id in self.steam_data['games']:
-                    demo_data = self.steam_data['games'][demo_id]
-                    if demo_data.full_game_app_id == app_id:
-                        # Demo still points to this full game, restore the relationship
-                        logging.info(f"  Restoring demo relationship for game {app_id} -> demo {demo_id}")
-                        updated_game = steam_data.model_copy(update={
-                            'demo_app_id': demo_id,
-                            'has_demo': True
-                        })
-                        self.steam_data['games'][app_id] = updated_game
+                if needs_relationship_fix or demo_was_removed or self._should_update_related_app(demo_id):
+                    logging.info(f"  Fetching demo {demo_id}")
+                    demo_fetched = self._fetch_related_app(demo_id, "demo", known_full_game_id=app_id)
+
+                    # If we force-fetched a demo that was removed from sale but still exists,
+                    # restore the bidirectional relationship
+                    if demo_fetched and demo_was_removed and demo_id in self.steam_data['games']:
+                        demo_data = self.steam_data['games'][demo_id]
+                        if demo_data.full_game_app_id == app_id:
+                            # Demo still points to this full game, restore the relationship
+                            logging.info(f"  Restoring demo relationship for game {app_id} -> demo {demo_id}")
+                            updated_game = steam_data.model_copy(update={
+                                'demo_app_id': demo_id,
+                                'has_demo': True
+                            })
+                            self.steam_data['games'][app_id] = updated_game
 
             return True
 
@@ -554,7 +566,38 @@ class SteamDataUpdater:
                 return last_updated_date < stale_date
         return True
 
-    def _fetch_related_app(self, app_id: str, app_type: str, known_full_game_id: str | None = None) -> bool:
+    def _needs_bidirectional_relationship_fix(self, source_id: str, target_id: str, relationship_type: str) -> bool:
+        """
+        Check if we need to force fetch to establish bidirectional relationship.
+
+        Args:
+            source_id: The app we're currently processing (demo or full game)
+            target_id: The related app (full game or demo)
+            relationship_type: Either "demo_to_full" or "full_to_demo"
+
+        Returns:
+            True if the target needs to be fetched to fix the relationship
+        """
+        if target_id not in self.steam_data['games']:
+            return False  # Target doesn't exist, will be fetched anyway
+
+        target_game = self.steam_data['games'][target_id]
+
+        if relationship_type == "demo_to_full":
+            # Check if full game knows about this demo
+            if target_game.demo_app_id != source_id:
+                if target_game.demo_app_id:
+                    logging.warning(f"  Full game {target_id} references different demo {target_game.demo_app_id}, will update to {source_id}")
+                return True
+        elif relationship_type == "full_to_demo" and target_game.full_game_app_id != source_id:
+            # Check if demo knows about this full game
+            if target_game.full_game_app_id:
+                logging.warning(f"  Demo {target_id} references different full game {target_game.full_game_app_id}, will update to {source_id}")
+            return True
+
+        return False
+
+    def _fetch_related_app(self, app_id: str, app_type: str, known_full_game_id: str | None = None, known_demo_id: str | None = None) -> bool:
         """
         Fetch related app (demo or full game).
 
@@ -562,6 +605,7 @@ class SteamDataUpdater:
             app_id: Steam app ID to fetch
             app_type: Type description for logging ("demo" or "full game")
             known_full_game_id: If fetching a demo, the known full game ID that references it
+            known_demo_id: If fetching a full game, the known demo ID that references it
 
         Returns:
             True if successfully fetched, False otherwise
@@ -572,10 +616,23 @@ class SteamDataUpdater:
             existing_app_data = self.steam_data['games'].get(app_id)
             app_data = self.steam_fetcher.fetch_data(app_url, fetch_usd=True, existing_data=existing_app_data, known_full_game_id=known_full_game_id)
             if app_data:
-                app_data = app_data.model_copy(update={
+                update_fields = {
                     'last_updated': datetime.now().isoformat(),
                     'needs_full_refresh': False  # Clear the flag after successful refresh
-                })
+                }
+
+                # If this is a full game being fetched because a demo references it,
+                # establish the bidirectional relationship
+                if known_demo_id and app_type == "full game":
+                    # Check if we're overwriting an existing demo reference
+                    if app_data.demo_app_id and app_data.demo_app_id != known_demo_id:
+                        logging.warning(f"  Overwriting existing demo reference on full game {app_id}: {app_data.demo_app_id} -> {known_demo_id}")
+
+                    update_fields['demo_app_id'] = known_demo_id
+                    update_fields['has_demo'] = True
+                    logging.info(f"  Establishing bidirectional relationship: full game {app_id} <- demo {known_demo_id}")
+
+                app_data = app_data.model_copy(update=update_fields)
                 self.steam_data['games'][app_id] = app_data
                 GameUpdateLogger.log_game_update_success(app_data.name, additional_info=app_type)
                 return True
