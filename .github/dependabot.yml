@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: 'uv' # Python dependencies via uv
     directory: '/' # Location of package manifests
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     groups:
       python-dependencies:
         patterns:
@@ -19,7 +19,7 @@ updates:
   - package-ecosystem: 'npm' # JavaScript dependencies
     directory: '/' # Location of package manifests
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     groups:
       js-dependencies:
         patterns:
