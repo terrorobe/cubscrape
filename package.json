@@ -32,20 +32,20 @@
     "vue-tsc": "^3.0.5"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
+    "@eslint/js": "^9.33.0",
     "@tailwindcss/postcss": "^4.1.11",
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.2.1",
     "@types/sql.js": "^1.4.9",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/eslint-config-typescript": "^14.6.0",
-    "@vue/typescript-plugin": "^3.0.4",
+    "@vue/typescript-plugin": "^3.0.5",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.31.0",
+    "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-better-tailwindcss": "^3.7.1",
-    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-better-tailwindcss": "^3.7.4",
+    "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-vue": "^10.4.0",
     "globals": "^16.3.0",
     "htmlhint": "^1.6.3",
@@ -53,11 +53,11 @@
     "postcss-html": "^1.8.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
-    "stylelint": "^16.23.0",
+    "stylelint": "^16.23.1",
     "stylelint-config-standard": "^39.0.0",
     "stylelint-config-tailwindcss": "^1.0.0",
     "tailwindcss": "^4.1.11",
-    "typescript": "^5.8.3",
-    "vite": "^7.1.1"
+    "typescript": "^5.9.2",
+    "vite": "^7.1.2"
   }
 }
