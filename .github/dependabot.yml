@@ -5,11 +5,25 @@
 
 version: 2
 updates:
-  - package-ecosystem: 'uv' # See documentation for possible values
+  - package-ecosystem: 'uv' # Python dependencies via uv
     directory: '/' # Location of package manifests
     schedule:
       interval: 'weekly'
-  - package-ecosystem: 'npm' # See documentation for possible values
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: 'npm' # JavaScript dependencies
     directory: '/' # Location of package manifests
     schedule:
       interval: 'weekly'
+    groups:
+      js-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
