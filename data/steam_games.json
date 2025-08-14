@@ -10058,20 +10058,20 @@
         "Simulation",
         "Strategy"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1373090/header.jpg?t=1748358621",
-      "last_updated": "2025-08-08T15:04:29.157487",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1373090/header.jpg?t=1754986617",
+      "last_updated": "2025-08-14T03:08:42.715764",
       "name": "Yes, Your Grace 2: Snowfall",
-      "positive_review_percentage": 70,
+      "positive_review_percentage": 71,
       "price_eur": 2450,
       "price_usd": 2499,
       "publishers": [
         "Brave At Night"
       ],
-      "recent_review_count": 76,
-      "recent_review_percentage": 69,
+      "recent_review_count": 67,
+      "recent_review_percentage": 65,
       "recent_review_summary": "Mixed",
       "release_date": "8 May, 2025",
-      "review_count": 857,
+      "review_count": 868,
       "review_summary": "Mostly Positive",
       "steam_app_id": "1373090",
       "steam_url": "https://store.steampowered.com/app/1373090",
@@ -11474,7 +11474,7 @@
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1439750/header.jpg?t=1729596253",
-      "last_updated": "2025-08-08T08:55:16.846577",
+      "last_updated": "2025-08-14T03:08:33.162097",
       "name": "9-Bit Armies: A Bit Too Far",
       "positive_review_percentage": 81,
       "price_eur": 1950,
@@ -11482,8 +11482,8 @@
       "publishers": [
         "Petroglyph"
       ],
-      "recent_review_count": 15,
-      "recent_review_percentage": 80,
+      "recent_review_count": 13,
+      "recent_review_percentage": 84,
       "recent_review_summary": "Very Positive",
       "release_date": "26 Aug, 2024",
       "review_count": 833,
@@ -21696,7 +21696,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1724770/header.jpg?t=1744299472",
       "is_on_sale": true,
-      "last_updated": "2025-08-08T15:04:13.409855",
+      "last_updated": "2025-08-14T03:08:23.547690",
       "name": "Castle Of Alchemists",
       "original_price_eur": 1479,
       "original_price_usd": 1499,
@@ -21708,7 +21708,7 @@
         "IndieArk"
       ],
       "release_date": "10 Apr, 2025",
-      "review_count": 555,
+      "review_count": 558,
       "review_summary": "Very Positive",
       "steam_app_id": "1724770",
       "steam_url": "https://store.steampowered.com/app/1724770",
@@ -24491,7 +24491,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1812860/402c8e0fb372c53d694589d346e0f7bdc94ff9bc/header.jpg?t=1755100961",
-      "last_updated": "2025-08-14T02:35:20.585450",
+      "last_updated": "2025-08-14T03:08:46.382295",
       "name": "Dice Gambit",
       "publishers": [
         "Spelkollektivet",
@@ -28066,14 +28066,14 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1908300/header.jpg?t=1730737914",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:33:02.656216",
+      "last_updated": "2025-08-14T03:08:24.683963",
       "name": "Castle Of Alchemists Demo",
       "positive_review_percentage": 83,
       "publishers": [
         "Team Machiavelli"
       ],
       "release_date": "21 Feb, 2022",
-      "review_count": 554,
+      "review_count": 558,
       "review_summary": "Very Positive",
       "steam_app_id": "1908300",
       "steam_url": "https://store.steampowered.com/app/1908300",
@@ -39146,7 +39146,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2183900/header.jpg?t=1754572474",
-      "last_updated": "2025-08-08T15:04:34.011705",
+      "last_updated": "2025-08-14T03:08:29.338300",
       "name": "Warhammer 40,000: Space Marine 2",
       "positive_review_percentage": 83,
       "price_eur": 5999,
@@ -39154,11 +39154,11 @@
       "publishers": [
         "Focus Entertainment"
       ],
-      "recent_review_count": 2813,
-      "recent_review_percentage": 79,
-      "recent_review_summary": "Mostly Positive",
+      "recent_review_count": 2537,
+      "recent_review_percentage": 81,
+      "recent_review_summary": "Very Positive",
       "release_date": "9 Sep, 2024",
-      "review_count": 124652,
+      "review_count": 124967,
       "review_summary": "Very Positive",
       "steam_app_id": "2183900",
       "steam_url": "https://store.steampowered.com/app/2183900",
@@ -45118,7 +45118,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2285940/header.jpg?t=1745488932",
-      "last_updated": "2025-08-08T08:55:18.171248",
+      "last_updated": "2025-08-14T03:08:40.781468",
       "name": "Hollow Survivors",
       "positive_review_percentage": 79,
       "price_eur": 999,
@@ -46801,13 +46801,12 @@
       "genres": [
         "Simulation",
         "Strategy",
-        "Free To Play",
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2308690/header.jpg?t=1752770798",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2308690/header.jpg?t=1755022749",
       "is_early_access": true,
-      "last_updated": "2025-08-08T23:10:49.441408",
+      "last_updated": "2025-08-14T03:08:38.664183",
       "name": "Ground of Aces",
       "positive_review_percentage": 86,
       "price_eur": 2450,
@@ -46815,22 +46814,25 @@
       "publishers": [
         "Blindflug Studios AG"
       ],
+      "recent_review_count": 311,
+      "recent_review_percentage": 88,
+      "recent_review_summary": "Very Positive",
       "release_date": "10 Jul, 2025",
-      "review_count": 448,
+      "review_count": 462,
       "review_summary": "Very Positive",
       "steam_app_id": "2308690",
       "steam_url": "https://store.steampowered.com/app/2308690",
       "tags": [
-        "Early Access",
         "Strategy",
         "Simulation",
         "Base Building",
         "City Builder",
+        "World War II",
         "Colony Sim",
         "Resource Management",
         "Management",
         "RTS",
-        "World War II"
+        "Military"
       ]
     },
     "2311990": {
@@ -47703,7 +47705,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2332260/header.jpg?t=1729229462",
-      "last_updated": "2025-08-08T15:04:37.896372",
+      "last_updated": "2025-08-14T03:08:27.506439",
       "name": "Feed the Deep",
       "positive_review_percentage": 90,
       "price_eur": 689,
@@ -47712,7 +47714,7 @@
         "Luke Muscat"
       ],
       "release_date": "16 Aug, 2024",
-      "review_count": 432,
+      "review_count": 433,
       "review_summary": "Very Positive",
       "steam_app_id": "2332260",
       "steam_url": "https://store.steampowered.com/app/2332260",
@@ -55758,7 +55760,7 @@
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2455460/header.jpg?t=1748512997",
       "is_early_access": true,
-      "last_updated": "2025-08-08T15:04:17.377858",
+      "last_updated": "2025-08-14T03:08:25.646982",
       "name": "Milord",
       "positive_review_percentage": 75,
       "price_eur": 975,
@@ -58811,7 +58813,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2501600/header.jpg?t=1753408397",
-      "last_updated": "2025-08-08T15:04:22.492960",
+      "last_updated": "2025-08-14T03:08:36.757478",
       "name": "DICEOMANCER",
       "positive_review_percentage": 96,
       "price_eur": 1479,
@@ -58819,11 +58821,11 @@
       "publishers": [
         "Gamirror Games"
       ],
-      "recent_review_count": 87,
-      "recent_review_percentage": 85,
+      "recent_review_count": 79,
+      "recent_review_percentage": 86,
       "recent_review_summary": "Very Positive",
       "release_date": "9 Oct, 2024",
-      "review_count": 4161,
+      "review_count": 4175,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "2501600",
       "steam_url": "https://store.steampowered.com/app/2501600",
@@ -59395,7 +59397,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2510180/header.jpg?t=1746484119",
       "is_early_access": true,
-      "last_updated": "2025-08-08T08:55:49.241218",
+      "last_updated": "2025-08-14T03:08:30.101523",
       "name": "Deep Space Directive",
       "positive_review_percentage": 90,
       "price_eur": 1079,
@@ -63758,14 +63760,14 @@
       "insufficient_reviews": true,
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:42:49.286395",
+      "last_updated": "2025-08-14T03:08:41.980005",
       "name": "Hollow Survivors Demo",
       "publishers": [
         "Gameparic",
         "PlayWay S.A."
       ],
       "release_date": "11 Sep, 2023",
-      "review_count": 3,
+      "review_count": 4,
       "review_summary": "Need more reviews for score",
       "steam_app_id": "2589310",
       "steam_url": "https://store.steampowered.com/app/2589310",
@@ -65752,6 +65754,9 @@
         "Multi-player",
         "Co-op",
         "Online Co-op",
+        "Camera Comfort",
+        "Custom Volume Controls",
+        "Stereo Sound",
         "Partial Controller Support",
         "Family Sharing"
       ],
@@ -65768,9 +65773,9 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2624080/header.jpg?t=1754322886",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2624080/header.jpg?t=1755033708",
       "is_early_access": true,
-      "last_updated": "2025-08-07T15:04:55.848013",
+      "last_updated": "2025-08-14T03:08:43.709913",
       "name": "MycoRelic",
       "planned_release_date": "September 2025",
       "publishers": [
@@ -66203,7 +66208,7 @@
       "is_demo": true,
       "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:43:22.405257",
+      "last_updated": "2025-08-14T03:08:31.386358",
       "name": "Deep Space Directive Demo",
       "positive_review_percentage": 90,
       "publishers": [
@@ -72353,7 +72358,6 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "coming_soon": true,
       "demo_app_id": "3176230",
       "developers": [
         "Creative Storm Entertainment"
@@ -72363,19 +72367,19 @@
         "Early Access"
       ],
       "has_demo": true,
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2734270/4842cfb0ee3a3aac92a1e484451e87c3635c8ef1/header.jpg?t=1752643967",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2734270/4842cfb0ee3a3aac92a1e484451e87c3635c8ef1/header.jpg?t=1754426610",
       "is_early_access": true,
-      "last_updated": "2025-07-16T15:02:50.666017",
+      "last_updated": "2025-08-14T03:08:44.531341",
       "name": "Sector Unknown",
-      "planned_release_date": "Coming soon",
+      "positive_review_percentage": 93,
       "price_eur": 2450,
       "price_usd": 2499,
       "publishers": [
         "Creative Storm Entertainment"
       ],
-      "release_date": "Coming soon",
-      "review_count": 0,
-      "review_summary": "No user reviews",
+      "release_date": "16 Jul, 2025",
+      "review_count": 58,
+      "review_summary": "Very Positive",
       "steam_app_id": "2734270",
       "steam_url": "https://store.steampowered.com/app/2734270",
       "tags": [
@@ -74854,17 +74858,17 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2774550/header.jpg?t=1709087865",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:45:11.307645",
+      "last_updated": "2025-08-14T03:08:37.974462",
       "name": "DICEOMANCER Demo",
       "positive_review_percentage": 96,
       "publishers": [
         "Gamera Games"
       ],
-      "recent_review_count": 113,
-      "recent_review_percentage": 87,
+      "recent_review_count": 79,
+      "recent_review_percentage": 86,
       "recent_review_summary": "Very Positive",
       "release_date": "4 Feb, 2024",
-      "review_count": 4149,
+      "review_count": 4175,
       "review_summary": "Overwhelmingly Positive",
       "steam_app_id": "2774550",
       "steam_url": "https://store.steampowered.com/app/2774550",
@@ -77022,7 +77026,7 @@
         "RPG"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2803280/2f4992193b3cacfdd9dd3fdf65eaf58a5d6005aa/header.jpg?t=1751874140",
-      "last_updated": "2025-08-08T23:10:57.248789",
+      "last_updated": "2025-08-14T03:08:32.204750",
       "name": "Dragon Is Dead",
       "positive_review_percentage": 77,
       "price_eur": 1950,
@@ -77030,11 +77034,11 @@
       "publishers": [
         "PM Studios, inc."
       ],
-      "recent_review_count": 18,
+      "recent_review_count": 17,
       "recent_review_percentage": 94,
       "recent_review_summary": "Very Positive",
       "release_date": "6 Jun, 2025",
-      "review_count": 576,
+      "review_count": 577,
       "review_summary": "Mostly Positive",
       "steam_app_id": "2803280",
       "steam_url": "https://store.steampowered.com/app/2803280",
@@ -80352,14 +80356,13 @@
       "developers": [
         "KORO.GAMES"
       ],
-      "discount_percent": 60,
       "genres": [
         "Adventure",
         "Indie",
         "Strategy"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2852980/header.jpg?t=1753698888",
-      "last_updated": "2025-08-08T15:04:41.012626",
+      "last_updated": "2025-08-14T03:08:20.199898",
       "name": "Necroking",
       "positive_review_percentage": 81,
       "price_eur": 499,
@@ -80367,11 +80370,11 @@
       "publishers": [
         "Alawar"
       ],
-      "recent_review_count": 17,
-      "recent_review_percentage": 52,
+      "recent_review_count": 20,
+      "recent_review_percentage": 60,
       "recent_review_summary": "Mixed",
       "release_date": "4 Sep, 2024",
-      "review_count": 664,
+      "review_count": 670,
       "review_summary": "Very Positive",
       "steam_app_id": "2852980",
       "steam_url": "https://store.steampowered.com/app/2852980",
@@ -80588,7 +80591,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2855990/header.jpg?t=1738398695",
-      "last_updated": "2025-08-08T08:55:23.234870",
+      "last_updated": "2025-08-14T03:08:33.964149",
       "name": "Hadley's Run: A Starship Saga",
       "positive_review_percentage": 90,
       "price_eur": 1179,
@@ -83364,7 +83367,7 @@
       "insufficient_reviews": true,
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:48:30.579013",
+      "last_updated": "2025-08-14T03:08:34.998407",
       "name": "Hadley's Run: A Starship Saga Demo",
       "publishers": [
         "Unsigned Double Collective"
@@ -86876,7 +86879,7 @@
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2983410/c3c3f64cf373361772582ec43a01c26fbb1e7640/header.jpg?t=1753986560",
       "is_early_access": true,
-      "last_updated": "2025-08-07T03:08:54.635330",
+      "last_updated": "2025-08-14T03:08:21.209047",
       "name": "Xenopurge",
       "positive_review_percentage": 93,
       "price_eur": 1249,
@@ -86884,8 +86887,11 @@
       "publishers": [
         "Firesquid"
       ],
+      "recent_review_count": 69,
+      "recent_review_percentage": 94,
+      "recent_review_summary": "Very Positive",
       "release_date": "11 Jul, 2025",
-      "review_count": 110,
+      "review_count": 116,
       "review_summary": "Very Positive",
       "steam_app_id": "2983410",
       "steam_url": "https://store.steampowered.com/app/2983410",
@@ -91868,28 +91874,31 @@
       "is_demo": true,
       "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:52:07.396878",
+      "last_updated": "2025-08-14T03:08:39.956192",
       "name": "Ground of Aces Demo",
-      "positive_review_percentage": 85,
+      "positive_review_percentage": 86,
       "publishers": [
         "Blindflug Studios AG"
       ],
+      "recent_review_count": 311,
+      "recent_review_percentage": 88,
+      "recent_review_summary": "Very Positive",
       "release_date": "18 Jul, 2024",
-      "review_count": 375,
+      "review_count": 462,
       "review_summary": "Very Positive",
       "steam_app_id": "3068740",
       "steam_url": "https://store.steampowered.com/app/3068740",
       "tags": [
-        "Early Access",
         "Strategy",
         "Simulation",
         "Base Building",
         "City Builder",
+        "World War II",
         "Colony Sim",
         "Resource Management",
         "Management",
         "RTS",
-        "World War II"
+        "Military"
       ]
     },
     "3069810": {
@@ -94610,7 +94619,7 @@
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3126530/a34c10fc3111a6d2c680baf8c6f8164b918f3ea0/header_alt_assets_0.jpg?t=1755111360",
       "is_early_access": true,
       "is_on_sale": true,
-      "last_updated": "2025-08-14T02:35:27.193144",
+      "last_updated": "2025-08-14T03:08:47.026168",
       "name": "Jupiter Hell Classic",
       "original_price_eur": 1479,
       "original_price_usd": 1499,
@@ -95565,7 +95574,7 @@
       ],
       "has_demo": true,
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3141310/6d796fa737977c601ebeba73e06855e6fc8a7f20/header.jpg?t=1754323274",
-      "last_updated": "2025-08-14T02:35:25.700822",
+      "last_updated": "2025-08-14T03:08:26.621312",
       "name": "Inkshade",
       "publishers": [
         "Studio Vezelle"
@@ -97114,14 +97123,17 @@
       "is_demo": true,
       "is_early_access": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:53:28.007678",
+      "last_updated": "2025-08-14T03:08:22.394244",
       "name": "Xenopurge Demo",
-      "positive_review_percentage": 92,
+      "positive_review_percentage": 93,
       "publishers": [
         "Firesquid"
       ],
+      "recent_review_count": 69,
+      "recent_review_percentage": 94,
+      "recent_review_summary": "Very Positive",
       "release_date": "30 May, 2025",
-      "review_count": 107,
+      "review_count": 116,
       "review_summary": "Very Positive",
       "steam_app_id": "3175750",
       "steam_url": "https://store.steampowered.com/app/3175750",
@@ -97152,18 +97164,18 @@
       "genres": [
         "RPG"
       ],
-      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3176230/6c76d1cd20bb81573c332a5bb66a4098d194d76f/header.jpg?t=1750268122",
-      "insufficient_reviews": true,
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3176230/6c76d1cd20bb81573c332a5bb66a4098d194d76f/header.jpg?t=1752682060",
       "is_demo": true,
       "is_free": true,
-      "last_updated": "2025-08-04T16:53:29.191749",
+      "last_updated": "2025-08-14T03:08:45.467014",
       "name": "Sector Unknown Demo",
+      "positive_review_percentage": 80,
       "publishers": [
         "Creative Storm Entertainment"
       ],
       "release_date": "18 Jun, 2025",
-      "review_count": 8,
-      "review_summary": "Need more reviews for score",
+      "review_count": 10,
+      "review_summary": "Positive",
       "steam_app_id": "3176230",
       "steam_url": "https://store.steampowered.com/app/3176230",
       "tags": [
@@ -102824,7 +102836,7 @@
         "Indie"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3283230/header.jpg?t=1739220022",
-      "last_updated": "2025-08-08T15:04:19.081875",
+      "last_updated": "2025-08-14T03:08:35.987384",
       "name": "Randotura",
       "positive_review_percentage": 100,
       "price_eur": 199,
@@ -102833,7 +102845,7 @@
         "blinyadebil"
       ],
       "release_date": "20 Nov, 2024",
-      "review_count": 19,
+      "review_count": 20,
       "review_summary": "Positive",
       "steam_app_id": "3283230",
       "steam_url": "https://store.steampowered.com/app/3283230",
@@ -124358,7 +124370,6 @@
       "developers": [
         "Flashbulb"
       ],
-      "discount_percent": 60,
       "genres": [
         "Action",
         "Adventure",
@@ -124367,7 +124378,7 @@
         "Simulation"
       ],
       "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/585420/007e3884b218b63a0fdcd10a278bd07e179b4db1/header.jpg?t=1750164940",
-      "last_updated": "2025-07-16T03:08:00.624313",
+      "last_updated": "2025-08-14T03:08:28.600331",
       "name": "Trailmakers",
       "positive_review_percentage": 92,
       "price_eur": 2499,
@@ -124375,11 +124386,11 @@
       "publishers": [
         "Flashbulb"
       ],
-      "recent_review_count": 586,
-      "recent_review_percentage": 84,
+      "recent_review_count": 394,
+      "recent_review_percentage": 86,
       "recent_review_summary": "Very Positive",
       "release_date": "18 Sep, 2019",
-      "review_count": 24302,
+      "review_count": 24650,
       "review_summary": "Very Positive",
       "steam_app_id": "585420",
       "steam_url": "https://store.steampowered.com/app/585420",
