@@ -1191,7 +1191,7 @@
     "https://torcado.itch.io/break-the-tower": {
       "header_image": "https://img.itch.zone/aW1nLzIwNjM0NzcwLnBuZw==/original/R6Vgmn.png",
       "is_free": true,
-      "last_updated": "2025-08-19T14:59:14.688338",
+      "last_updated": "2025-08-19T20:51:50.945195",
       "name": "Break The Tower",
       "platform": "itch",
       "positive_review_percentage": 94,
@@ -1362,6 +1362,27 @@
       ],
       "url": "https://www.crazygames.com/game/crusher-block-jwd"
     },
+    "https://www.crazygames.com/game/crusher-clicker": {
+      "header_image": "https://imgs.crazygames.com/crusher-clicker_16x9/20240429100853/crusher-clicker_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop",
+      "is_free": true,
+      "last_updated": "2025-08-19T20:51:49.802975",
+      "name": "Crusher Clicker",
+      "platform": "crazygames",
+      "positive_review_percentage": 92,
+      "release_date": "April 2024",
+      "review_count": 202614,
+      "steam_url": "",
+      "tags": [
+        "Clicker",
+        "Destroy",
+        "Physics",
+        "Editors' Choice",
+        "Incremental",
+        "Mouse",
+        "Idle"
+      ],
+      "url": "https://www.crazygames.com/game/crusher-clicker"
+    },
     "https://www.crazygames.com/game/mini-crushers": {
       "header_image": "https://imgs.crazygames.com/mini-crushers_16x9/20240408085816/mini-crushers_16x9-cover?metadata=none&quality=60&width=1200&height=630&fit=crop",
       "is_free": true,
@@ -1407,12 +1428,12 @@
     "https://www.crazygames.com/game/stick-war": {
       "header_image": "https://imgs.crazygames.com/games/stick-war/cover-1659084995039.jpg?metadata=none&quality=100&width=1200&height=630&fit=crop",
       "is_free": true,
-      "last_updated": "2025-08-19T14:59:15.047669",
+      "last_updated": "2025-08-19T20:51:51.334158",
       "name": "Stick War",
       "platform": "crazygames",
       "positive_review_percentage": 93,
       "release_date": "",
-      "review_count": 223122,
+      "review_count": 223140,
       "steam_url": "",
       "tags": [
         "Action",
