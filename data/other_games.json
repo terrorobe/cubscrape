@@ -712,12 +712,12 @@
     "https://notlordb.itch.io/idle-racing": {
       "header_image": "https://img.itch.zone/aW1nLzIyNDQ3MTYwLnBuZw==/original/Oao8vn.png",
       "is_free": true,
-      "last_updated": "2025-08-12T02:01:59.533572",
+      "last_updated": "2025-08-19T03:08:13.826559",
       "name": "Idle Racing",
       "platform": "itch",
-      "positive_review_percentage": 84,
+      "positive_review_percentage": 86,
       "release_date": "01 August 2025",
-      "review_count": 21,
+      "review_count": 29,
       "steam_url": "",
       "tags": [
         "Clicker",
@@ -1191,7 +1191,7 @@
     "https://torcado.itch.io/break-the-tower": {
       "header_image": "https://img.itch.zone/aW1nLzIwNjM0NzcwLnBuZw==/original/R6Vgmn.png",
       "is_free": true,
-      "last_updated": "2025-08-18T20:53:28.788838",
+      "last_updated": "2025-08-19T03:08:14.687193",
       "name": "Break The Tower",
       "platform": "itch",
       "positive_review_percentage": 94,
@@ -1407,12 +1407,12 @@
     "https://www.crazygames.com/game/stick-war": {
       "header_image": "https://imgs.crazygames.com/games/stick-war/cover-1659084995039.jpg?metadata=none&quality=100&width=1200&height=630&fit=crop",
       "is_free": true,
-      "last_updated": "2025-08-18T20:53:29.362944",
+      "last_updated": "2025-08-19T03:08:15.443806",
       "name": "Stick War",
       "platform": "crazygames",
       "positive_review_percentage": 93,
       "release_date": "",
-      "review_count": 223039,
+      "review_count": 223058,
       "steam_url": "",
       "tags": [
         "Action",
